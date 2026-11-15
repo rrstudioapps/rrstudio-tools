@@ -33,14 +33,21 @@ watchdog.unref();
 
 let browser;
 try {
-  browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+  // http su un IP non è un contesto sicuro: senza questo flag crypto.subtle (hash) non esisterebbe
+  browser = await chromium.launch({
+    ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}),
+    args: [`--unsafely-treat-insecure-origin-as-secure=${base}`],
+  });
 } catch (e) {
   console.error(e.message);
   process.exit(1);
 }
 const errors = [];
 try {
+  // ONLY=home-light.png,base64.png limita gli screenshot a quelli elencati
+  const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
   async function shot(name, { width, dark, path = '/', setup }) {
+    if (only && !only.includes(name)) return;
     const ctx = await browser.newContext({
       viewport: { width, height: 900 },
       colorScheme: dark ? 'dark' : 'light',
@@ -200,6 +207,26 @@ try {
     path: '/json-formatter/',
     setup: async (page) => {
       await page.getByRole('button', { name: 'Prova con un esempio' }).click();
+    },
+  });
+  await shot('password-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/password-generator/',
+    setup: async (page) => {
+      await page.waitForFunction(() => document.querySelector('#pw-out')?.textContent.trim().length > 0);
+      await page.getByRole('button', { name: 'Genera 10' }).click();
+      await page.waitForSelector('[data-testid=pw-list] code');
+    },
+  });
+  await shot('hash-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/hash-generator/',
+    setup: async (page) => {
+      await page.fill('#hash-in', 'abc');
+      await page.fill('#hash-cmp', 'BA7816BF 8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD');
+      await page.waitForSelector('article.match');
     },
   });
 } finally {

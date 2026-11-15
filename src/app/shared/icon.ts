@@ -42,6 +42,8 @@ const ICONS = {
   left: 'M19 12H5M12 19l-7-7 7-7',
   right: 'M5 12h14M12 5l7 7-7 7',
   close: 'M18 6L6 18M6 6l12 12',
+  hash: 'M4 9h16M4 15h16M10 3L8 21M16 3l-2 18',
+  refresh: 'M23 4v6h-6M1 20v-6h6M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15',
 } as const;
 
 export type IconName = keyof typeof ICONS;

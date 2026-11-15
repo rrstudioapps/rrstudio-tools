@@ -34,6 +34,8 @@
 | [**JSON Formatter and Validator**](https://tools.rr-dev.eu/json-formatter) | Format (2 / 4 spaces or tab), minify and sort keys, with live validation: errors show line and column, plus size, key count and depth, and light syntax highlighting. |
 | [**Image compressor & converter**](https://tools.rr-dev.eu/image-compressor) | Compress and convert many images at once to JPEG, WebP, PNG or AVIF, with quality and resize options, a before/after slider and a ZIP download. Done in your browser; EXIF metadata (GPS included) is stripped. |
 | [**PDF tools: merge, split, rotate**](https://tools.rr-dev.eu/pdf-tools) | Merge several PDFs, extract or split pages (every page, every N pages or by ranges like `1-3, 5, 8-10`), rotate, delete and reorder pages from a grid of thumbnails. Your PDFs are never uploaded: fine for confidential documents. |
+| [**Password generator**](https://tools.rr-dev.eu/password-generator) | Random passwords (4-128 characters, choose the character sets, exclude ambiguous ones) and passphrases (3-12 words from the EFF large wordlist), with honest entropy in bits, a strength bar and the estimated time to guess. Nothing is stored. |
+| [**Hash & checksum**](https://tools.rr-dev.eu/hash-generator) | MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of a text (live) or a file up to 2 GB, in hex and Base64, with a progress bar, cancel and a "compare with a checksum" field. |
 
 More tools are coming, with the same rule: nothing leaves your browser.
 
@@ -81,6 +83,24 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Per page: rotate left/right, delete, select. Reorder by drag & drop (native HTML5) or with the move buttons / Alt + arrow keys, with screen-reader announcements.
 - Actions: merge everything in the current order and rotation, extract the selected pages, rotate all, or split (every page, every N pages, or by ranges such as `1-3, 5, 8-10`, validated with clear errors). Several output files come as a ZIP (fflate).
 - Output PDFs are built with pdf-lib (MIT); Producer/Creator are "rrstudio Tools" and the title of the first file is kept. Thumbnails are drawn lazily, one at a time, with pdf.js (Apache-2.0); its worker and standard fonts are served from the same origin (no CDN, no `unsafe-eval`).
+
+### Password generator
+
+![Password generator](docs/screenshots/password-generator.png)
+
+- Passwords of 4-128 characters from lowercase, uppercase, digits and symbols (at least one set always on), optional "exclude ambiguous characters" (`0 O o 1 l I |`) and a guarantee of at least one character per chosen set. Passphrases of 3-12 words with a separator, capitalisation and an optional number.
+- Randomness only from `crypto.getRandomValues`, with rejection sampling (no modulo bias); unit tests check the absence of bias and the set guarantee.
+- Entropy is the log2 of the real number of possible results (inclusion-exclusion for the set guarantee), with a bar, a label (weak < 50, fair < 80, strong < 110, very strong) and the average time to guess at 10^10 guesses/s. "Generate 10" gives a copyable list; Ctrl/Cmd + Enter generates.
+- Nothing is stored (not even in `localStorage`). Passphrases use the [EFF Large Wordlist](https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases) (CC BY 3.0 US, dice numbers removed), a static file loaded from the same origin only when needed.
+
+### Hash & checksum
+
+![Hash & checksum](docs/screenshots/hash-generator.png)
+
+- MD5, SHA-1, SHA-256, SHA-384, SHA-512 of a text (live) or a file up to 2 GB read in blocks with `file.stream()`, with a progress bar and cancel; hex (optionally uppercase) and Base64, each copyable.
+- SHA-1/256/384/512 use Web Crypto, which needs the whole buffer: up to 500 MB the file is assembled in memory. Above that, a warning appears and only MD5 and SHA-256 are computed, incrementally, by pure TypeScript implementations tested against the official vectors and Web Crypto.
+- MD5 is not in Web Crypto (it is considered broken): it is implemented in TypeScript (RFC 1321 vectors) and flagged, like SHA-1, as not secure for cryptography.
+- "Compare with a checksum": paste an expected hash (case and spaces ignored) and the matching algorithm is highlighted, or you get "No match".
 
 ### URL Encode/Decode
 
@@ -165,7 +185,9 @@ a server esterni, nessun cookie, nessun tracciamento o analytics.
   [JSON Formatter](https://tools.rr-dev.eu/json-formatter) e
   [Comprimi e converti immagini](https://tools.rr-dev.eu/image-compressor) (JPEG, WebP, PNG, AVIF, con
   confronto prima/dopo e ZIP) e [Strumenti PDF](https://tools.rr-dev.eu/pdf-tools) (unisci, dividi, ruota),
-  tutti con elaborazione solo nel browser.
+  [Generatore di password](https://tools.rr-dev.eu/password-generator) (password e passphrase, con
+  entropia) e [Hash e checksum](https://tools.rr-dev.eu/hash-generator) (MD5, SHA-1, SHA-256, SHA-384,
+  SHA-512 di testi e file), tutti con elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build
   statica (`dist/rrstudio-tools/browser`, pubblicabile su qualsiasi hosting statico).
 - **Licenza:** AGPL-3.0-or-later. L'uso è libero, anche commerciale. Chi distribuisce una versione

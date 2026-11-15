@@ -133,6 +133,14 @@
 html {
   -webkit-text-size-adjust: 100%;
 }
+// Niente legature in tutto il sito: JetBrains Mono disegna per esempio "|>" come "▷" e "!=" come "≠",
+// e in password, hash, JSON o Base64 ogni carattere deve restare quello che è.
+*,
+::before,
+::after {
+  font-variant-ligatures: none;
+  font-feature-settings: 'calt' 0, 'liga' 0;
+}
 body {
   margin: 0;
   background: var(--bg);
@@ -389,5 +397,22 @@ select option {
   &:has(input:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+// Barra di avanzamento / misuratore (entropia, avanzamento dei file): il valore si legge anche dal testo accanto
+.meter {
+  height: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: transparent;
+  > span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--ink);
+    border-radius: var(--radius-pill);
+    transition: width var(--dur) var(--ease);
   }
 }

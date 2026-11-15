@@ -1,0 +1,128 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.hash.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('hash.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <label class="check">
+      <input type="checkbox" [checked]="upper()" (change)="upper.set($any($event.target).checked)" />
+      {{ i18n.t('hash.upper') }}
+    </label>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('hash.clear') }}
+    </button>
+  </div>
+
+  <app-file-drop [hint]="i18n.t('hash.drop')" (fileSelected)="onFile($event)">
+    <app-io-panel [label]="i18n.t('hash.in')" inputId="hash-in" [meta]="inputMeta()">
+      @if (file(); as f) {
+        <div class="filecard" role="group" [attr.aria-label]="i18n.t('hash.file.group')">
+          <app-icon name="file" class="big" />
+          <span class="fname">{{ f.name }}</span>
+          <button type="button" class="btn small" (click)="removeFile()">
+            <app-icon name="trash" /> {{ i18n.t('hash.file.remove') }}
+          </button>
+        </div>
+      } @else {
+        <textarea
+          id="hash-in"
+          class="io-textarea"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('hash.ph')"
+          [value]="text()"
+          (input)="onInput($event)"
+        ></textarea>
+      }
+    </app-io-panel>
+  </app-file-drop>
+
+  @if (busy()) {
+    <div class="progress-block">
+      <div class="progress-head">
+        <span class="mono" role="status" aria-live="polite" data-testid="hash-progress-text">{{ progressText() }}</span>
+        <button type="button" class="btn small" (click)="cancel()">
+          <app-icon name="close" /> {{ i18n.t('hash.cancel') }}
+        </button>
+      </div>
+      <div
+        class="meter"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-valuenow]="progressPct()"
+        [attr.aria-label]="i18n.t('hash.progress.label')"
+      >
+        <span [style.width.%]="progressPct()"></span>
+      </div>
+    </div>
+  }
+
+  <div class="tool-status" aria-live="polite">
+    @if (statusMessage()) {
+      <p class="tool-error" data-testid="hash-status">{{ statusMessage() }}</p>
+    }
+    @if (largeWarning()) {
+      <p class="tool-error" data-testid="hash-warning">{{ largeWarning() }}</p>
+    }
+  </div>
+
+  <section class="compare" [attr.aria-label]="i18n.t('hash.cmp.label')">
+    <label class="eyebrow" for="hash-cmp">{{ i18n.t('hash.cmp.label') }}</label>
+    <input
+      id="hash-cmp"
+      type="text"
+      class="mono cmp-input"
+      spellcheck="false"
+      autocomplete="off"
+      autocapitalize="off"
+      [placeholder]="i18n.t('hash.cmp.ph')"
+      [value]="expected()"
+      (input)="expected.set($any($event.target).value)"
+    />
+    <p class="cmp-status" aria-live="polite" [class.ok]="matches().length > 0" data-testid="hash-cmp-status">{{ compareMessage() }}</p>
+  </section>
+
+  <section class="results" [attr.aria-label]="i18n.t('hash.results')" aria-live="polite" [attr.aria-busy]="busy()">
+    @for (r of rows(); track r.algo) {
+      <article class="algo" [class.match]="r.match" [attr.data-algo]="r.algo">
+        <header class="algo-head">
+          <h2 class="algo-name mono">{{ r.label }}</h2>
+          @if (r.match) {
+            <span class="badge">{{ i18n.t('hash.cmp.badge') }}</span>
+          }
+        </header>
+        @if (!r.available) {
+          <p class="na">{{ i18n.t('hash.na', { limit: limitText() }) }}</p>
+        } @else {
+          <div class="line">
+            <span class="kind">{{ i18n.t('hash.hex') }}</span>
+            <code class="mono val" [attr.data-testid]="'hex-' + r.algo">{{ r.hex }}</code>
+            <app-copy-button [text]="r.hex" [compact]="true" [disabled]="!r.hex" [ariaLabel]="i18n.t('hash.copy.hex', { algo: r.label })" />
+          </div>
+          <div class="line">
+            <span class="kind">{{ i18n.t('hash.b64') }}</span>
+            <code class="mono val" [attr.data-testid]="'b64-' + r.algo">{{ r.base64 }}</code>
+            <app-copy-button [text]="r.base64" [compact]="true" [disabled]="!r.base64" [ariaLabel]="i18n.t('hash.copy.b64', { algo: r.label })" />
+          </div>
+        }
+        @if (r.algo === 'md5') {
+          <p class="caution">{{ i18n.t('hash.insecure') }} {{ i18n.t('hash.md5note') }}</p>
+        } @else if (r.algo === 'sha1') {
+          <p class="caution">{{ i18n.t('hash.insecure') }}</p>
+        }
+      </article>
+    }
+  </section>
+
+  <section class="info">
+    <h2 class="eyebrow">{{ i18n.t('hash.how.title') }}</h2>
+    <p>{{ i18n.t('hash.how.desc') }}</p>
+  </section>
+</div>

@@ -94,4 +94,18 @@ export const en: Dict = {
   'seo.pdf.title': 'Merge, split and rotate PDF online — free and private | rrstudio Tools',
   'seo.pdf.desc':
     'Merge PDFs into one, split a PDF into several files, extract, delete, rotate and reorder pages online. All in your browser, nothing is uploaded: fine for confidential documents.',
+
+  'tool.pw.title': 'Password generator',
+  'tool.pw.desc':
+    'Random passwords and memorable passphrases, with entropy and an estimated time to guess them. Made in your browser, never stored.',
+  'seo.pw.title': 'Secure password generator online — free and private | rrstudio Tools',
+  'seo.pw.desc':
+    'Generate random passwords and passphrases with the browser\'s cryptography (crypto.getRandomValues): length, character sets, entropy in bits and estimated time to guess. Nothing is stored or sent.',
+
+  'tool.hash.title': 'Hash & checksum',
+  'tool.hash.desc':
+    'Compute MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of a text or a file (up to 2 GB) and compare them with a checksum. All in your browser.',
+  'seo.hash.title': 'SHA-256, SHA-1 and MD5 hash and checksum calculator online — free and private | rrstudio Tools',
+  'seo.hash.desc':
+    'Compute SHA-256, SHA-512, SHA-1 and MD5 of a text or a file and verify a checksum, with a progress bar for large files. All in your browser, nothing is uploaded.',
 };

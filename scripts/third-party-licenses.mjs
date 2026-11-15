@@ -60,6 +60,14 @@ ${sorted.map(row).join('\n')}
   \`node_modules/pdfjs-dist/standard_fonts/\`) are copied into the build and served from the same origin,
   never from a CDN. **pdf-lib** (MIT) creates the merged and split PDFs; \`pako\` is MIT AND Zlib.
 - **Apache ECharts** is a project of the Apache Software Foundation (Apache-2.0); see its NOTICE file.
+- **EFF Large Wordlist for Passphrases** (7776 words) by the Electronic Frontier Foundation, licensed
+  [CC BY 3.0 US](https://creativecommons.org/licenses/by/3.0/us/), used by the password generator
+  (\`public/wordlists/eff-large.txt\`, served from the same origin). Source:
+  https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases. Change: the dice-number column
+  was removed, leaving one word per line. / Lista di parole EFF (7776), licenza CC BY 3.0 US; modifica:
+  tolta la colonna dei numeri dei dadi.
+- **MD5 and SHA-256** (streaming, for very large files) in the hash tool are original TypeScript
+  implementations of the public algorithms (RFC 1321, FIPS 180-4): no third-party code.
 
 ## Development tools (not shipped / non distribuiti)
 

@@ -93,6 +93,20 @@ export const it = {
   'seo.pdf.title': 'Unisci, dividi e ruota PDF online — gratis e privato | rrstudio Tools',
   'seo.pdf.desc':
     'Unisci più PDF in uno, dividi un PDF in più file, estrai, elimina, ruota e riordina le pagine online. Tutto nel browser, nessun upload: adatto a documenti riservati.',
+
+  'tool.pw.title': 'Generatore di password',
+  'tool.pw.desc':
+    'Password casuali e passphrase facili da ricordare, con entropia e tempo stimato per indovinarle. Generate nel tuo browser, mai salvate.',
+  'seo.pw.title': 'Generatore di password sicure online — gratis e privato | rrstudio Tools',
+  'seo.pw.desc':
+    'Genera password casuali e passphrase con la crittografia del browser (crypto.getRandomValues): lunghezza, set di caratteri, entropia in bit e tempo stimato per indovinarle. Nulla viene salvato o inviato.',
+
+  'tool.hash.title': 'Hash e checksum',
+  'tool.hash.desc':
+    'Calcola MD5, SHA-1, SHA-256, SHA-384 e SHA-512 di un testo o di un file (anche da 2 GB) e confrontali con un checksum. Tutto nel browser.',
+  'seo.hash.title': 'Calcola hash e checksum SHA-256, SHA-1, MD5 online — gratis e privato | rrstudio Tools',
+  'seo.hash.desc':
+    'Calcola SHA-256, SHA-512, SHA-1 e MD5 di un testo o di un file e verifica un checksum, con barra di avanzamento anche per file grandi. Tutto nel browser, nessun upload.',
 };
 
 export type Dict = typeof it;

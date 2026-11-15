@@ -79,4 +79,23 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.pdf.title', descriptionKey: 'seo.pdf.desc' },
     loadComponent: () => import('./pdf-tools/pdf-tools.page').then((m) => m.PdfToolsPage),
   },
+  {
+    id: 'password-generator',
+    path: 'password-generator',
+    icon: 'lock',
+    titleKey: 'tool.pw.title',
+    descriptionKey: 'tool.pw.desc',
+    seo: { titleKey: 'seo.pw.title', descriptionKey: 'seo.pw.desc' },
+    loadComponent: () =>
+      import('./password-generator/password-generator.page').then((m) => m.PasswordGeneratorPage),
+  },
+  {
+    id: 'hash-generator',
+    path: 'hash-generator',
+    icon: 'hash',
+    titleKey: 'tool.hash.title',
+    descriptionKey: 'tool.hash.desc',
+    seo: { titleKey: 'seo.hash.title', descriptionKey: 'seo.hash.desc' },
+    loadComponent: () => import('./hash-generator/hash-generator.page').then((m) => m.HashGeneratorPage),
+  },
 ];
