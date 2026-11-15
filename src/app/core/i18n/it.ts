@@ -15,7 +15,6 @@ export const it = {
 
   'footer.coffee': 'Offrimi un caffè',
   'footer.premium': 'Dashboard premium',
-  'footer.demo': 'Demo',
   'footer.repo': 'Codice sorgente su GitHub',
   'footer.license': 'Licenza AGPL-3.0',
   'footer.noads': 'Nessuna pubblicità, nessun cookie, nessun tracciamento.',

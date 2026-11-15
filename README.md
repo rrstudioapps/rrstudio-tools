@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://tools.rr-dev.eu"><strong>Live demo → tools.rr-dev.eu</strong></a> ·
-  <a href="https://demo.rr-dev.eu">Dashboards demo</a> ·
+  <a href="https://demo.rr-dev.eu">Premium dashboards</a> ·
   <a href="https://ko-fi.com/rrstudioapps">Buy me a coffee</a>
 </p>
 
@@ -102,8 +102,7 @@ This is a summary, not legal advice: the [LICENSE](LICENSE) and [NOTICE](NOTICE)
 
 rrstudio Tools is free and has no ads. If it is useful to you:
 [buy me a coffee on Ko-fi](https://ko-fi.com/rrstudioapps), or take a look at the
-[premium dashboards](https://buy.polar.sh/polar_cl_qkpmJsVoK393Bp6lfOAEBDXz3r7wDIzUDs1wO2p31hb)
-([live demo](https://demo.rr-dev.eu)).
+[premium dashboards](https://demo.rr-dev.eu) (live demos, free download, pay what you want).
 
 ---
 

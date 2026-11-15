@@ -16,7 +16,6 @@ export const en: Dict = {
 
   'footer.coffee': 'Buy me a coffee',
   'footer.premium': 'Premium dashboard',
-  'footer.demo': 'Demo',
   'footer.repo': 'Source code on GitHub',
   'footer.license': 'AGPL-3.0 license',
   'footer.noads': 'No ads, no cookies, no tracking.',

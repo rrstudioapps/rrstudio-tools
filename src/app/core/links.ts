@@ -3,9 +3,8 @@
 
 /** Link esterni condivisi (footer, home). */
 export const KOFI_URL = 'https://ko-fi.com/rrstudioapps';
-export const PREMIUM_URL =
-  'https://buy.polar.sh/polar_cl_qkpmJsVoK393Bp6lfOAEBDXz3r7wDIzUDs1wO2p31hb';
-export const DEMO_URL = 'https://demo.rr-dev.eu';
+/** Catalogo delle dashboard rrstudio: schede, demo live e download su Polar. */
+export const PREMIUM_URL = 'https://demo.rr-dev.eu';
 export const REPO_URL = 'https://github.com/rrstudioapps/rrstudio-tools';
 export const LICENSE_URL = `${REPO_URL}/blob/main/LICENSE`;
 
