@@ -1,0 +1,263 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+
+// Stile "Carta": carta calda, inchiostro, linee da 1px, nessuna ombra.
+// Font incorporati nel progetto (OFL), solo subset latin: nessuna richiesta esterna.
+@font-face {
+  font-family: 'Inter Tight Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2')
+    format('woff2-variations');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2')
+    format('woff2');
+}
+
+// Colori solo in esadecimale: html2canvas (export PNG/PDF) non supporta color-mix/oklch.
+@mixin theme-light {
+  color-scheme: light;
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --ink: #1c1c1e;
+  --ink-2: #55555a;
+  --muted: #6b6b70;
+  --faint: #a3a29c; // solo testo decorativo grande (>= 24px)
+  --line: #e4e2dc;
+  --line-soft: #ecebe6;
+  --accent: #1c1c1e; // colore principale di default dei grafici
+  --drop-over: #efeee9; // sfondo dell'area di trascinamento in dragover
+}
+@mixin theme-dark {
+  color-scheme: dark;
+  --bg: #121211;
+  --surface: #1a1a19;
+  --ink: #f2f1ed;
+  --ink-2: #b5b4ae;
+  --muted: #9a9993;
+  --faint: #5f5e59;
+  --line: #2a2a28;
+  --line-soft: #222220;
+  --accent: #f2f1ed;
+  --drop-over: #1c1c1a;
+}
+
+:root {
+  @include theme-light;
+  // Design token: raggi, spaziature, tipografia, movimento
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 40px;
+  --space-7: 64px;
+  --gutter: 32px;
+  --container-max: 1120px;
+  --font: 'Inter Tight Variable', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --fs-xs: 11px;
+  --fs-sm: 13px;
+  --fs-md: 16px;
+  --fs-lg: 20px;
+  --fs-xl: 28px;
+  --fs-kpi: 40px;
+  --fs-item: 32px;
+  --fs-hero: clamp(44px, 9vw, 84px);
+  --fw-medium: 500;
+  --fw-bold: 600;
+  --lh: 1.5;
+  --chart-height: 320px;
+  --control-h: 40px;
+  --focus-ring: 2px solid var(--ink);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 200ms;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include theme-dark;
+  }
+}
+:root[data-theme='dark'] {
+  @include theme-dark;
+}
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--fs-md);
+  line-height: var(--lh);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+  margin: 0 0 var(--space-3);
+  letter-spacing: -0.03em;
+  font-weight: var(--fw-bold);
+}
+a {
+  color: var(--ink);
+  text-underline-offset: 3px;
+}
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+// Etichetta mono maiuscola (metadati, sezioni)
+.eyebrow {
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0;
+}
+.mono {
+  font-family: var(--mono);
+}
+
+// Controlli
+input[type='text'],
+input[type='search'],
+select {
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  min-width: 0;
+  transition: border-color var(--dur) var(--ease);
+  &:hover {
+    border-color: var(--muted);
+  }
+}
+select option {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-h);
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+  &:hover:not(:disabled) {
+    border-color: var(--ink);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  &.primary {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+    &:hover:not(:disabled) {
+      opacity: 0.88;
+    }
+  }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// Comparsa delle sezioni (solo senza preferenza di movimento ridotto)
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 500ms var(--ease) both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

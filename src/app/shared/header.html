@@ -1,0 +1,41 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<header class="bar">
+  <div class="container bar-inner">
+    <a class="brand" routerLink="/" [attr.aria-label]="'rrstudio Tools — ' + i18n.t('nav.home')">
+      <img src="rrstudio-logo.svg" alt="" width="28" height="28" />
+      <span class="name">rrstudio <span class="sub">Tools</span></span>
+    </a>
+
+    <nav class="nav" [attr.aria-label]="i18n.t('nav.main')">
+      <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{
+        i18n.t('nav.home')
+      }}</a>
+    </nav>
+
+    <div class="actions">
+      <div class="lang" role="group" [attr.aria-label]="i18n.t('nav.lang')">
+        @for (l of langs; track l) {
+          <button
+            type="button"
+            class="lang-btn"
+            [class.on]="i18n.lang() === l"
+            [attr.aria-pressed]="i18n.lang() === l"
+            [attr.lang]="l"
+            (click)="i18n.setLang(l)"
+          >
+            {{ l.toUpperCase() }}
+          </button>
+        }
+      </div>
+      <button
+        type="button"
+        class="icon-btn"
+        [attr.aria-label]="theme.isDark() ? i18n.t('nav.theme.toLight') : i18n.t('nav.theme.toDark')"
+        [attr.title]="theme.isDark() ? i18n.t('nav.theme.toLight') : i18n.t('nav.theme.toDark')"
+        (click)="theme.toggle()"
+      >
+        <app-icon [name]="theme.isDark() ? 'sun' : 'moon'" [stroke]="1.6" />
+      </button>
+    </div>
+  </div>
+</header>

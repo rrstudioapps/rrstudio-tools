@@ -1,0 +1,72 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container page">
+  <header class="intro">
+    <h1>{{ i18n.t('tool.csv.title') }}</h1>
+    @if (store.dataset() === null) {
+      <p class="lead">{{ i18n.t('csv.lead') }}</p>
+    }
+  </header>
+
+  <app-privacy-note />
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (store.dataset() === null) {
+    <app-upload-zone [busy]="loading()" (fileSelected)="onFile($event)" />
+    <p class="center">
+      <button type="button" class="btn" [disabled]="loading()" (click)="onSample()">
+        <app-icon name="chart" /> {{ i18n.t('csv.sample') }}
+      </button>
+    </p>
+
+    <section class="steps" [attr.aria-label]="i18n.t('csv.steps.title')">
+      <h2>{{ i18n.t('csv.steps.title') }}</h2>
+      <ol class="step-grid">
+        <li class="step">
+          <h3>{{ i18n.t('csv.step1.t') }}</h3>
+          <p>{{ i18n.t('csv.step1.d') }}</p>
+        </li>
+        <li class="step">
+          <h3>{{ i18n.t('csv.step2.t') }}</h3>
+          <p>{{ i18n.t('csv.step2.d') }}</p>
+        </li>
+        <li class="step">
+          <h3>{{ i18n.t('csv.step3.t') }}</h3>
+          <p>{{ i18n.t('csv.step3.d') }}</p>
+        </li>
+      </ol>
+    </section>
+  } @else {
+    <div class="toolbar">
+      <span class="info">{{ store.dataset()?.name }} · {{ info() }}</span>
+      <span class="spacer"></span>
+      <button type="button" class="btn" [disabled]="exporting()" (click)="exportHtml()">
+        <app-icon name="file" /> {{ i18n.t('csv.export.html') }}
+      </button>
+      <button type="button" class="btn" [disabled]="exporting()" (click)="exportPng()">
+        <app-icon name="image" /> {{ i18n.t('csv.export.png') }}
+      </button>
+      <button type="button" class="btn" [disabled]="exporting()" (click)="exportPdf()">
+        <app-icon name="download" /> {{ i18n.t('csv.export.pdf') }}
+      </button>
+      <button type="button" class="btn primary" (click)="newFile()">
+        <app-icon name="plus" /> {{ i18n.t('csv.new') }}
+      </button>
+    </div>
+    @if (exporting()) {
+      <p class="info" role="status">{{ i18n.t('csv.export.busy') }}</p>
+    }
+
+    <app-customize-panel />
+
+    <div class="capture" #capture>
+      <h2 class="dash-title">{{ store.title() }}</h2>
+      <app-kpi-cards />
+      <app-charts-panel (timeInit)="setTime($event)" (catInit)="setCat($event)" />
+    </div>
+
+    <app-data-table />
+  }
+</div>

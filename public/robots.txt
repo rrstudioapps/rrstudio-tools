@@ -1,0 +1,5 @@
+# © 2026 rrstudio — rrstudio Tools · AGPL-3.0-or-later
+User-agent: *
+Allow: /
+
+Sitemap: https://tools.rr-dev.eu/sitemap.xml

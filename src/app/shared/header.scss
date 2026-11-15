@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+:host {
+  display: block;
+}
+.bar {
+  border-bottom: 1px solid var(--line);
+}
+.bar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-height: 72px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: var(--fs-lg);
+  letter-spacing: -0.02em;
+  img {
+    border-radius: 50%;
+  }
+}
+.name {
+  font-weight: var(--fw-bold);
+}
+.sub {
+  font-weight: 400;
+  color: var(--muted);
+}
+.nav {
+  margin-left: auto;
+}
+.nav-link {
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+  &:hover,
+  &.active {
+    color: var(--ink);
+  }
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.lang {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 2px;
+}
+.lang-btn {
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--muted);
+  padding: 4px 12px;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+  &.on {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  &:not(.on):hover {
+    color: var(--ink);
+  }
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+  &:hover {
+    border-color: var(--ink);
+  }
+}
+@media (max-width: 640px) {
+  .bar-inner {
+    gap: var(--space-3);
+  }
+  .nav {
+    display: none;
+  }
+  .brand {
+    margin-right: auto;
+  }
+}

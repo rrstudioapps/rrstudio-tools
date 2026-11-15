@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-block: var(--space-6);
+}
+.intro h1 {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-2);
+}
+.lead {
+  color: var(--ink-2);
+  margin: 0;
+}
+.center {
+  text-align: center;
+  margin: 0;
+}
+.error {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+}
+.steps h2 {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: var(--fs-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.step-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  border-top: 1px solid var(--line);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.step {
+  padding: var(--space-5) var(--space-5) var(--space-5) 0;
+  h3 {
+    font-size: var(--fs-lg);
+  }
+  p {
+    margin: 0;
+    color: var(--ink-2);
+  }
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.spacer {
+  flex: 1;
+}
+.info {
+  color: var(--muted);
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+}
+// Area catturata da PNG/PDF: ha uno sfondo proprio
+.capture {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
+  background: var(--bg);
+}
+.dash-title {
+  margin: 0;
+  font-size: var(--fs-xl);
+  border-top: 1px solid var(--ink);
+  padding-top: var(--space-4);
+}

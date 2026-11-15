@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <title>rrstudio Tools</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#4f46e5" />
+    <link rel="icon" type="image/svg+xml" href="rrstudio-logo.svg" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" sizes="any" />
+    <script>
+      /* Applica il tema salvato (o quello di sistema) prima del primo render, per evitare il flash */
+      (function () {
+        try {
+          var t = localStorage.getItem('rrtools.theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

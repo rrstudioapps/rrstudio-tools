@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# © 2026 rrstudio — rrstudio Tools
+#
+# Stack di tools.rr-dev.eu per Portainer (Stacks > Add stack > Repository, compose path
+# deploy/docker-compose.yml). Nessuna porta sull'host: Nginx Proxy Manager raggiunge il
+# container per nome ("rrstudio-tools", porta 8080). Sito statico: nessun volume, nessun dato.
+
+services:
+  rrstudio-tools:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    # ricostruisce l'immagine a ogni deploy, altrimenti compose riusa quella vecchia
+    pull_policy: build
+    image: rrstudio-tools:latest
+    container_name: rrstudio-tools
+    restart: unless-stopped
+    networks:
+      - proxy
+    mem_limit: 32m
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+networks:
+  proxy:
+    name: nginx-proxy-manager_default
+    external: true

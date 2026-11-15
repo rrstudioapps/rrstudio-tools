@@ -1,0 +1,120 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.hero {
+  padding-top: 128px;
+  padding-bottom: 104px;
+  h1 {
+    font-size: var(--fs-hero);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    margin: var(--space-5) 0;
+    span {
+      display: block;
+    }
+  }
+}
+.faint {
+  color: var(--faint); // testo decorativo grande
+}
+.lead {
+  font-size: var(--fs-lg);
+  color: var(--ink-2);
+  max-width: 40ch;
+  margin: 0 0 var(--space-4);
+}
+.priv {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  font-weight: var(--fw-medium);
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.hint {
+  margin: var(--space-1) 0 0 18px;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  border-top: 1px solid var(--line);
+}
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  color: var(--ink);
+  text-decoration: none;
+  border-left: 1px solid var(--line);
+  &:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+  h3 {
+    font-size: var(--fs-item);
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  p {
+    margin: 0;
+    color: var(--ink-2);
+    flex: 1;
+  }
+}
+@media (max-width: 640px) {
+  .item {
+    border-left: 0;
+    padding-left: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero {
+    padding-top: 64px;
+    padding-bottom: 56px;
+  }
+}
+.num {
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.open {
+  font-weight: var(--fw-medium);
+}
+.arrow {
+  display: inline-block;
+  transition: transform var(--dur) var(--ease);
+}
+.link:hover .arrow,
+.link:focus-visible .arrow {
+  transform: translateX(4px);
+}
+.soon {
+  h3,
+  p,
+  .num {
+    color: var(--muted);
+  }
+  h3 {
+    color: var(--faint);
+  }
+}
+.chip {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.why {
+  margin-top: var(--space-6);
+  .eyebrow {
+    margin-bottom: var(--space-4);
+  }
+}

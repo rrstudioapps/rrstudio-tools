@@ -1,0 +1,29 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<footer class="foot">
+  <div class="container">
+    <div class="row">
+      <p class="legal">
+        © 2026 rrstudio ·
+        <a [href]="license" target="_blank" rel="noopener">{{ i18n.t('footer.license') }}</a>
+      </p>
+      <ul class="links">
+        <li>
+          <a [href]="kofi" target="_blank" rel="noopener">{{ i18n.t('footer.coffee') }}</a>
+        </li>
+        <li>
+          <a [href]="premium" target="_blank" rel="noopener">{{ i18n.t('footer.premium') }}</a>
+        </li>
+        <li>
+          <a [href]="demo" target="_blank" rel="noopener">{{ i18n.t('footer.demo') }}</a>
+        </li>
+        <li>
+          <a [href]="repo" target="_blank" rel="noopener">{{ i18n.t('footer.repo') }}</a>
+        </li>
+      </ul>
+    </div>
+    <p class="note">
+      <strong>{{ i18n.t('privacy.headline') }}.</strong> {{ i18n.t('privacy.short') }}
+      {{ i18n.t('footer.noads') }}
+    </p>
+  </div>
+</footer>

@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { I18nService, LANGS } from '../core/i18n/i18n.service';
+import { ThemeService } from '../core/theme/theme.service';
+import { Icon } from './icon';
+
+@Component({
+  selector: 'app-header',
+  imports: [RouterLink, RouterLinkActive, Icon],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './header.html',
+  styleUrl: './header.scss',
+})
+export class Header {
+  protected readonly i18n = inject(I18nService);
+  protected readonly theme = inject(ThemeService);
+  protected readonly langs = LANGS;
+}

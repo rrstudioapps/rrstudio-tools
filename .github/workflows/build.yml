@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# © 2026 rrstudio — rrstudio Tools
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Check prerendered pages
+        run: |
+          test -f dist/rrstudio-tools/browser/index.html
+          test -f dist/rrstudio-tools/browser/csv-dashboard/index.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrstudio-tools-static
+          path: dist/rrstudio-tools/browser
+          retention-days: 14
