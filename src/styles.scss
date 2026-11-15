@@ -181,6 +181,7 @@ select {
 // Controlli
 input[type='text'],
 input[type='search'],
+input[type='number'],
 select {
   height: var(--control-h);
   padding: 0 var(--space-3);

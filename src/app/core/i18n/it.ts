@@ -78,6 +78,14 @@ export const it = {
   'seo.json.title': 'JSON Formatter e Validator online — gratis e privato | rrstudio Tools',
   'seo.json.desc':
     'Formatta, minifica e valida JSON online: errori con riga e colonna, ordinamento delle chiavi ed evidenziazione della sintassi. Tutto nel browser, nessun upload.',
+
+  'tool.ic.title': 'Comprimi e converti immagini',
+  'tool.ic.desc':
+    'Riduci il peso di JPG, PNG e WebP, convertili in WebP o AVIF e ridimensionali, tante alla volta. Confronto prima e dopo, ZIP finale.',
+  'seo.ic.title':
+    'Comprimi e converti immagini online — gratis e privato | rrstudio Tools',
+  'seo.ic.desc':
+    'Comprimi foto e immagini, convertile in WebP, JPEG, PNG o AVIF e ridimensionale online: tante insieme, con confronto prima e dopo e ZIP. Tutto nel browser, nessun upload.',
 };
 
 export type Dict = typeof it;

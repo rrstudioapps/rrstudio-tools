@@ -1,0 +1,195 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.ic.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ic.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="exif-note" role="note"><app-icon name="shield" /> {{ i18n.t('ic.exif') }}</p>
+
+  <app-file-drop
+    [hint]="i18n.t('ic.drop', { max: maxFiles })"
+    [accept]="accept"
+    [multiple]="true"
+    (filesSelected)="onFiles($event)"
+  >
+    <section class="settings" [attr.aria-label]="i18n.t('ic.settings')">
+      <div class="field">
+        <label for="ic-format">{{ i18n.t('ic.format') }}</label>
+        <select id="ic-format" [value]="settings().format" (change)="setFormat($any($event.target).value)">
+          @for (f of formats(); track f.value) {
+            <option [value]="f.value" [selected]="f.value === settings().format">{{ f.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="ic-quality">{{ i18n.t('ic.quality') }}</label>
+        <div class="range">
+          <input
+            id="ic-quality"
+            type="range"
+            min="1"
+            max="100"
+            step="1"
+            [value]="settings().quality"
+            [disabled]="qualityDisabled()"
+            (input)="setQuality($any($event.target).value)"
+          />
+          <output for="ic-quality" class="mono">{{ qualityDisabled() ? '—' : settings().quality }}</output>
+        </div>
+        @if (qualityDisabled()) {
+          <span class="hint">{{ i18n.t('ic.quality.png') }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="ic-resize">{{ i18n.t('ic.resize') }}</label>
+        <div class="inline">
+          <select id="ic-resize" [value]="settings().resizeMode" (change)="setResizeMode($any($event.target).value)">
+            @for (m of resizeModes(); track m.value) {
+              <option [value]="m.value" [selected]="m.value === settings().resizeMode">{{ m.label }}</option>
+            }
+          </select>
+          @if (settings().resizeMode !== 'none') {
+            <input
+              type="number"
+              min="1"
+              [max]="settings().resizeMode === 'percent' ? 100 : 20000"
+              step="1"
+              inputmode="numeric"
+              class="num"
+              [attr.aria-label]="i18n.t('ic.resize.value')"
+              [value]="settings().resizeValue"
+              (input)="setResizeValue($any($event.target).value)"
+            />
+            <span class="unit mono">{{ settings().resizeMode === 'percent' ? '%' : 'px' }}</span>
+          }
+        </div>
+        <span class="hint">{{ i18n.t('ic.resize.hint') }}</span>
+      </div>
+
+      <div class="field">
+        <label for="ic-bg">{{ i18n.t('ic.bg') }}</label>
+        <div class="inline">
+          <input
+            id="ic-bg"
+            type="color"
+            class="color"
+            [value]="settings().background"
+            [disabled]="!backgroundUsed()"
+            (input)="setBackground($any($event.target).value)"
+          />
+          <span class="mono unit">{{ settings().background }}</span>
+        </div>
+        <span class="hint">{{ i18n.t('ic.bg.hint') }}</span>
+      </div>
+    </section>
+
+    <div class="tool-status" aria-live="polite" role="status">
+      @if (notice()) {
+        <p class="tool-error">{{ notice() }}</p>
+      }
+    </div>
+
+    @if (items().length > 0) {
+      <section class="results" [attr.aria-label]="i18n.t('ic.list')">
+        <div class="bar">
+          <p class="progress mono" role="status" aria-live="polite">{{ statusText() }}</p>
+          <span class="spacer"></span>
+          <button type="button" class="btn small primary" [disabled]="doneCount() === 0 || zipping()" (click)="downloadZip()">
+            <app-icon name="download" />
+            {{ zipping() ? i18n.t('ic.zip.busy') : i18n.t('ic.zip') }}
+          </button>
+          <button type="button" class="btn small" (click)="clearAll()">
+            <app-icon name="trash" /> {{ i18n.t('ic.clear') }}
+          </button>
+        </div>
+
+        @if (summary(); as s) {
+          <p class="summary">
+            <span class="eyebrow">{{ i18n.t('ic.summary') }}</span>
+            <strong class="mono">{{ size(s.before) }} → {{ size(s.after) }}</strong>
+            <span class="mono saving" [class.worse]="s.percent < 0">{{ savingTotal(s.percent) }}</span>
+          </p>
+        }
+
+        <ul class="list">
+          @for (item of items(); track item.id) {
+            <li class="row" [class.sel]="selected()?.id === item.id" [attr.data-status]="item.status">
+              <button
+                type="button"
+                class="pick"
+                [disabled]="item.status !== 'done'"
+                [attr.aria-pressed]="selected()?.id === item.id"
+                [attr.aria-label]="i18n.t('ic.compare.pick', { name: item.file.name })"
+                (click)="select(item)"
+              >
+                <span class="thumb">
+                  @if (item.thumbUrl) {
+                    <img [src]="item.thumbUrl" alt="" />
+                  } @else {
+                    <app-icon name="image" />
+                  }
+                </span>
+              </button>
+              <div class="info">
+                <span class="name" [title]="item.file.name">{{ item.file.name }}</span>
+                @if (item.status === 'done') {
+                  <span class="meta mono">
+                    {{ px(item.srcWidth, item.srcHeight) }}
+                    @if (item.srcWidth !== item.outWidth || item.srcHeight !== item.outHeight) {
+                      → {{ px(item.outWidth, item.outHeight) }}
+                    }
+                    px
+                  </span>
+                  <span class="meta mono">
+                    {{ size(item.file.size) }} → {{ size(item.outBytes) }}
+                    <strong class="saving" [class.worse]="item.outBytes > item.file.size">{{ saving(item) }}</strong>
+                    · {{ formatLabel(item.outMime) }}
+                  </span>
+                  @if (item.kept) {
+                    <span class="meta kept">{{ i18n.t('ic.kept') }}</span>
+                  }
+                } @else if (item.status === 'error') {
+                  <span class="meta kept">{{ i18n.t('ic.err.item') }}</span>
+                }
+              </div>
+              <span class="badge" [attr.data-status]="item.status">{{ statusLabel(item.status) }}</span>
+              <div class="actions">
+                <button
+                  type="button"
+                  class="btn small"
+                  [disabled]="item.status !== 'done'"
+                  [attr.aria-label]="i18n.t('ic.download.one', { name: item.outName })"
+                  (click)="download(item)"
+                >
+                  <app-icon name="download" /> <span class="lbl">{{ i18n.t('ic.download') }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn small"
+                  [attr.aria-label]="i18n.t('ic.remove.one', { name: item.file.name })"
+                  (click)="remove(item)"
+                >
+                  <app-icon name="trash" />
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+
+        @if (selected(); as sel) {
+          <section class="compare" [attr.aria-label]="i18n.t('ic.compare')">
+            <h2 class="eyebrow">{{ i18n.t('ic.compare') }} · {{ sel.file.name }}</h2>
+            @if (sel.resultUrl) {
+              <app-compare-slider [before]="sel.url" [after]="sel.resultUrl" [width]="sel.srcWidth" [height]="sel.srcHeight" />
+            }
+            <p class="hint">{{ i18n.t('ic.compare.hint') }}</p>
+          </section>
+        }
+      </section>
+    }
+  </app-file-drop>
+</div>

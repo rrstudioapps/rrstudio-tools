@@ -33,6 +33,7 @@
 | [**Base64 Encode/Decode**](https://tools.rr-dev.eu/base64) | Encode and decode text or files to Base64 with correct UTF-8, an URL-safe option and data URLs. Drop a file to get its Base64, or decode back to a downloadable file with an image preview. |
 | [**URL Encode/Decode**](https://tools.rr-dev.eu/url-encode) | Percent-encode and decode text, as a component or as a full URL, with optional "space as +". Shows a copyable table of the URL parts and decoded query parameters. |
 | [**JSON Formatter and Validator**](https://tools.rr-dev.eu/json-formatter) | Format (2 / 4 spaces or tab), minify and sort keys, with live validation: errors show line and column, plus size, key count and depth, and light syntax highlighting. |
+| [**Image compressor & converter**](https://tools.rr-dev.eu/image-compressor) | Compress and convert many images at once to JPEG, WebP, PNG or AVIF, with quality and resize options, a before/after slider and a ZIP download. Done in your browser; EXIF metadata (GPS included) is stripped. |
 
 More tools are coming, with the same rule: nothing leaves your browser.
 
@@ -62,6 +63,15 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Live encode/decode with correct UTF-8 (accents, emoji), URL-safe option, whitespace and padding tolerant decoding.
 - Files up to 25 MB by drag & drop, optionally as a data URL, with an image preview.
 - Decoding a data URL or binary Base64 offers "Download file" (MIME from the data URL or magic bytes: png, jpg, gif, webp, pdf, zip).
+
+### Image compressor & converter
+
+![Image compressor & converter](docs/screenshots/image-compressor.png)
+
+- Up to 50 images (JPG, PNG, WebP, AVIF, GIF first frame, BMP), 50 MB each, by drag & drop or file picker.
+- Output: original format, JPEG, WebP, PNG or AVIF (only the formats your browser can actually encode are offered); quality 1-100; resize by max width, max height or percentage (never enlarges); background colour for transparency in JPEG.
+- Decoding, resizing and encoding run in a Web Worker (`createImageBitmap` + `OffscreenCanvas`), with a main-thread fallback. EXIF orientation is respected and all metadata, GPS included, is removed.
+- Per-file before/after size and pixels, saving in %, a draggable (and keyboard-operable) before/after slider, single download and a ZIP of everything (fflate, MIT, loaded on demand). If a result is larger than the original in the same format, the original is kept.
 
 ### URL Encode/Decode
 
@@ -143,7 +153,9 @@ a server esterni, nessun cookie, nessun tracciamento o analytics.
   [CSV → Dashboard](https://tools.rr-dev.eu/csv-dashboard), che da un CSV o un Excel genera KPI,
   grafici e tabella, esportabili in HTML autonomo, PNG e PDF. Poi
   [Base64](https://tools.rr-dev.eu/base64), [URL Encode/Decode](https://tools.rr-dev.eu/url-encode) e
-  [JSON Formatter](https://tools.rr-dev.eu/json-formatter), tutti con elaborazione solo nel browser.
+  [JSON Formatter](https://tools.rr-dev.eu/json-formatter) e
+  [Comprimi e converti immagini](https://tools.rr-dev.eu/image-compressor) (JPEG, WebP, PNG, AVIF, con
+  confronto prima/dopo e ZIP), tutti con elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build
   statica (`dist/rrstudio-tools/browser`, pubblicabile su qualsiasi hosting statico).
 - **Licenza:** AGPL-3.0-or-later. L'uso è libero, anche commerciale. Chi distribuisce una versione

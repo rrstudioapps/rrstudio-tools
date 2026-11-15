@@ -60,4 +60,14 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.json.title', descriptionKey: 'seo.json.desc' },
     loadComponent: () => import('./json-formatter/json-formatter.page').then((m) => m.JsonFormatterPage),
   },
+  {
+    id: 'image-compressor',
+    path: 'image-compressor',
+    icon: 'image',
+    titleKey: 'tool.ic.title',
+    descriptionKey: 'tool.ic.desc',
+    seo: { titleKey: 'seo.ic.title', descriptionKey: 'seo.ic.desc' },
+    loadComponent: () =>
+      import('./image-compressor/image-compressor.page').then((m) => m.ImageCompressorPage),
+  },
 ];

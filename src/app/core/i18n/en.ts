@@ -79,4 +79,12 @@ export const en: Dict = {
   'seo.json.title': 'JSON Formatter and Validator online — free and private | rrstudio Tools',
   'seo.json.desc':
     'Format, minify and validate JSON online: errors with line and column, key sorting and syntax highlighting. Runs in your browser, nothing is uploaded.',
+
+  'tool.ic.title': 'Image compressor & converter',
+  'tool.ic.desc':
+    'Shrink JPG, PNG and WebP files, convert to WebP or AVIF and resize them, many at once. Before/after comparison and a ZIP download.',
+  'seo.ic.title':
+    'Image compressor and converter online — free and private | rrstudio Tools',
+  'seo.ic.desc':
+    'Compress photos and images, convert them to WebP, JPEG, PNG or AVIF and resize them online: in bulk, with a before/after comparison and ZIP. All in your browser, no upload.',
 };

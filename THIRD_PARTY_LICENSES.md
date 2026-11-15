@@ -23,6 +23,7 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
 | **@fontsource-variable/inter-tight** | 5.3.0 | OFL-1.1 | https://github.com/fontsource/font-files |
 | **@fontsource/jetbrains-mono** | 5.3.0 | OFL-1.1 | https://github.com/fontsource/font-files |
 | **echarts** | 6.1.0 | Apache-2.0 | https://github.com/apache/echarts |
+| **fflate** | 0.8.3 | MIT | https://github.com/101arrowz/fflate |
 | **html2canvas** | 1.4.1 | MIT | https://github.com/niklasvh/html2canvas |
 | **jspdf** | 4.2.1 | MIT | https://github.com/parallax/jsPDF |
 | **ngx-echarts** | 22.0.0 | MIT | https://github.com/xieziyu/ngx-echarts |
@@ -51,7 +52,6 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
 | domutils | 4.0.2 | BSD-2-Clause | git://github.com/fb55/domutils |
 | entities | 8.1.0 | BSD-2-Clause | https://github.com/fb55/entities |
 | fast-png | 6.4.0 | MIT | https://github.com/image-js/fast-png |
-| fflate | 0.8.3 | MIT | https://github.com/101arrowz/fflate |
 | htmlparser2 | 12.0.0 | MIT | git://github.com/fb55/htmlparser2 |
 | iobuffer | 5.4.0 | MIT | https://github.com/image-js/iobuffer |
 | nanoid | 3.3.20 | MIT | ai/nanoid |

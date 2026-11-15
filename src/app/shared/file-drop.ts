@@ -25,7 +25,7 @@ import { Icon } from './icon';
         <span class="hint">{{ hint() }}</span>
         <label class="btn small">
           {{ i18n.t('common.chooseFile') }}
-          <input class="visually-hidden" type="file" [attr.accept]="accept() || null" (change)="onPick($event)" />
+          <input class="visually-hidden" type="file" [attr.accept]="accept() || null" [multiple]="multiple()" (change)="onPick($event)" />
         </label>
       </div>
       <ng-content />
@@ -70,7 +70,12 @@ export class FileDrop {
   protected readonly i18n = inject(I18nService);
   readonly hint = input.required<string>();
   readonly accept = input('');
+  /** Con true si possono scegliere/trascinare più file. */
+  readonly multiple = input(false);
+  /** Primo file scelto (uso a file singolo). */
   readonly fileSelected = output<File>();
+  /** Tutti i file scelti (uso con `multiple`). */
+  readonly filesSelected = output<File[]>();
   protected readonly over = signal(false);
 
   protected onDragOver(e: DragEvent): void {
@@ -88,13 +93,18 @@ export class FileDrop {
     if (!e.dataTransfer?.files?.length) return;
     e.preventDefault();
     this.over.set(false);
-    this.fileSelected.emit(e.dataTransfer.files[0]);
+    this.emitFiles(Array.from(e.dataTransfer.files));
   }
 
   protected onPick(e: Event): void {
     const input = e.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (file) this.fileSelected.emit(file);
+    this.emitFiles(Array.from(input.files ?? []));
     input.value = ''; // permette di scegliere di nuovo lo stesso file
+  }
+
+  private emitFiles(files: File[]): void {
+    if (files.length === 0) return;
+    this.fileSelected.emit(files[0]);
+    this.filesSelected.emit(files);
   }
 }
