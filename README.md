@@ -30,6 +30,10 @@
 |---|---|
 | [**CSV → Dashboard**](https://tools.rr-dev.eu/csv-dashboard) | Drop a CSV or Excel file and get KPI cards, a time chart, a category chart and a filterable, sortable table. Customize columns, chart types, color and title, then export as a self-contained HTML file, PNG or PDF. |
 
+| [**Base64 Encode/Decode**](https://tools.rr-dev.eu/base64) | Encode and decode text or files to Base64 with correct UTF-8, an URL-safe option and data URLs. Drop a file to get its Base64, or decode back to a downloadable file with an image preview. |
+| [**URL Encode/Decode**](https://tools.rr-dev.eu/url-encode) | Percent-encode and decode text, as a component or as a full URL, with optional "space as +". Shows a copyable table of the URL parts and decoded query parameters. |
+| [**JSON Formatter and Validator**](https://tools.rr-dev.eu/json-formatter) | Format (2 / 4 spaces or tab), minify and sort keys, with live validation: errors show line and column, plus size, key count and depth, and light syntax highlighting. |
+
 More tools are coming, with the same rule: nothing leaves your browser.
 
 ### CSV → Dashboard
@@ -51,6 +55,29 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - "Try with sample data" with a demo sales CSV.
 - Italian and English UI, light and dark theme, responsive.
 
+### Base64 Encode/Decode
+
+![Base64 Encode/Decode](docs/screenshots/base64.png)
+
+- Live encode/decode with correct UTF-8 (accents, emoji), URL-safe option, whitespace and padding tolerant decoding.
+- Files up to 25 MB by drag & drop, optionally as a data URL, with an image preview.
+- Decoding a data URL or binary Base64 offers "Download file" (MIME from the data URL or magic bytes: png, jpg, gif, webp, pdf, zip).
+
+### URL Encode/Decode
+
+![URL Encode/Decode](docs/screenshots/url-encode.png)
+
+- `encodeURIComponent` (component) or `encodeURI` (full URL), with "space as +" for form-urlencoded data.
+- Clear errors on invalid `%` sequences; a table with protocol, host, path, hash and each decoded query parameter.
+
+### JSON Formatter and Validator
+
+![JSON Formatter and Validator](docs/screenshots/json-formatter.png)
+
+- Format, minify, sort keys recursively; copy, download as `.json` or load a `.json` file by drag & drop.
+- Line numbers with the error line marked; line and column are worked out for V8/Chromium, Firefox and Safari messages.
+- Hand-made syntax highlighting (no editor library, no `innerHTML`).
+
 ## Privacy
 
 - **Everything runs client-side.** There is no backend: files are read and processed by your browser and are never uploaded.
@@ -70,7 +97,7 @@ npm test                  # unit tests (Vitest)
 npm run build             # static build in dist/rrstudio-tools/browser
 ```
 
-The build is a set of static, prerendered files (`/index.html`, `/csv-dashboard/index.html`, JS, CSS, fonts):
+The build is a set of static, prerendered files (`/index.html`, `/csv-dashboard/index.html`, `/base64/index.html`, JS, CSS, fonts):
 upload `dist/rrstudio-tools/browser` to any static host. Configure the host to serve `<path>/index.html`
 for `<path>` (most do by default). A ready-made Docker image (nginx, non-root, strict CSP) is in
 [`Dockerfile`](Dockerfile) and [`deploy/`](deploy/).
@@ -112,9 +139,11 @@ rrstudio Tools is free and has no ads. If it is useful to you:
 nel browser. **I tuoi dati restano sul tuo computer:** nessun backend, nessun upload, nessuna chiamata
 a server esterni, nessun cookie, nessun tracciamento o analytics.
 
-- **Prova online:** [tools.rr-dev.eu](https://tools.rr-dev.eu). Primo strumento:
+- **Prova online:** [tools.rr-dev.eu](https://tools.rr-dev.eu). Strumenti:
   [CSV → Dashboard](https://tools.rr-dev.eu/csv-dashboard), che da un CSV o un Excel genera KPI,
-  grafici e tabella, esportabili in HTML autonomo, PNG e PDF.
+  grafici e tabella, esportabili in HTML autonomo, PNG e PDF. Poi
+  [Base64](https://tools.rr-dev.eu/base64), [URL Encode/Decode](https://tools.rr-dev.eu/url-encode) e
+  [JSON Formatter](https://tools.rr-dev.eu/json-formatter), tutti con elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build
   statica (`dist/rrstudio-tools/browser`, pubblicabile su qualsiasi hosting statico).
 - **Licenza:** AGPL-3.0-or-later. L'uso è libero, anche commerciale. Chi distribuisce una versione

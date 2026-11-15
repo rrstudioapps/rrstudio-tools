@@ -1,0 +1,105 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+// Altezza di riga e padding: devono coincidere con LINE_H e PAD_Y del componente.
+$line-h: 20px;
+$pad-y: 12px;
+$box-h: 380px;
+
+.editor {
+  position: relative;
+  height: $box-h;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--dur) var(--ease);
+  &:hover {
+    border-color: var(--muted);
+  }
+  &:focus-within {
+    border-color: var(--ink);
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+.band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--mark);
+  border-left: 2px solid var(--ink);
+  pointer-events: none;
+}
+.gutter {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--gw);
+  overflow: hidden;
+  border-right: 1px solid var(--line);
+  pointer-events: none;
+  pre {
+    margin: 0;
+    padding: $pad-y var(--space-2) $pad-y 0;
+    text-align: right;
+    font-family: var(--mono);
+    font-size: var(--fs-sm);
+    line-height: $line-h;
+    color: var(--muted);
+  }
+}
+.code {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: $pad-y var(--space-3) $pad-y calc(var(--gw) + var(--space-3));
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  line-height: $line-h;
+  white-space: pre;
+  overflow: auto;
+  resize: none;
+  outline: none;
+}
+.out {
+  margin: 0;
+  height: $box-h;
+  overflow: auto;
+  padding: $pad-y var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  line-height: $line-h;
+  tab-size: 4;
+  &:focus-visible {
+    border-radius: var(--radius-sm);
+  }
+  code {
+    font: inherit;
+  }
+}
+.ph {
+  color: var(--muted);
+}
+// Colori della sintassi dai token del tema: quasi monocromo
+.t-key {
+  color: var(--ink);
+  font-weight: var(--fw-medium);
+}
+.t-string {
+  color: var(--ink-2);
+}
+.t-number,
+.t-literal {
+  color: var(--syn-val);
+}
+.t-punct {
+  color: var(--muted);
+}

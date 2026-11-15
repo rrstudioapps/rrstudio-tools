@@ -1,0 +1,59 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.parts {
+  .eyebrow {
+    margin-bottom: var(--space-3);
+  }
+  .sub {
+    margin-top: var(--space-5);
+  }
+}
+.tbl {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  th,
+  td {
+    padding: var(--space-2) var(--space-3) var(--space-2) 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: var(--fs-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  tbody th {
+    width: 28%;
+    font-family: var(--mono);
+    font-weight: var(--fw-medium);
+  }
+  td {
+    font-family: var(--mono);
+  }
+  td.faint {
+    color: var(--muted);
+  }
+  th:last-child,
+  td.cp {
+    width: 84px;
+    padding-right: 0;
+    text-align: right;
+    white-space: nowrap;
+  }
+  td.cp {
+    display: table-cell;
+  }
+}
+.none {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+}

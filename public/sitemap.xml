@@ -3,4 +3,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://tools.rr-dev.eu/</loc></url>
   <url><loc>https://tools.rr-dev.eu/csv-dashboard</loc></url>
+  <url><loc>https://tools.rr-dev.eu/base64</loc></url>
+  <url><loc>https://tools.rr-dev.eu/url-encode</loc></url>
+  <url><loc>https://tools.rr-dev.eu/json-formatter</loc></url>
 </urlset>

@@ -1,0 +1,128 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.url.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('url.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('url.mode')" [options]="directions()" [(value)]="direction" />
+    <app-segmented [label]="i18n.t('url.scope')" [options]="scopes()" [(value)]="scope" />
+    <label class="check">
+      <input type="checkbox" [checked]="plus()" (change)="plus.set($any($event.target).checked)" />
+      {{ i18n.t('url.plus') }}
+    </label>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" [disabled]="!canSwap()" (click)="swap()">
+      <app-icon name="swap" /> {{ i18n.t('common.swap') }}
+    </button>
+    <button type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <div class="tool-panels">
+    <app-io-panel
+      [label]="direction() === 'encode' ? i18n.t('url.in.encode') : i18n.t('url.in.decode')"
+      inputId="url-in"
+      [meta]="inputMeta()"
+    >
+      <textarea
+        id="url-in"
+        class="io-textarea"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        [placeholder]="direction() === 'encode' ? i18n.t('url.ph.encode') : i18n.t('url.ph.decode')"
+        [value]="input()"
+        (input)="onInput($event)"
+      ></textarea>
+    </app-io-panel>
+
+    <app-io-panel
+      [label]="direction() === 'encode' ? i18n.t('url.out.encode') : i18n.t('url.out.decode')"
+      inputId="url-out"
+      [meta]="outputMeta()"
+    >
+      <span panel-actions>
+        <app-copy-button [text]="output()" [disabled]="output() === ''" />
+      </span>
+      <textarea id="url-out" class="io-textarea" readonly spellcheck="false" [value]="output()"></textarea>
+    </app-io-panel>
+  </div>
+
+  <div class="tool-status" aria-live="polite">
+    @if (errorMessage()) {
+      <p class="tool-error">{{ errorMessage() }}</p>
+    }
+  </div>
+
+  @if (parts(); as p) {
+    <section class="parts" aria-labelledby="url-parts-h">
+      <h2 id="url-parts-h" class="eyebrow">{{ i18n.t('url.parts') }}</h2>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th scope="col">{{ i18n.t('url.parts.part') }}</th>
+            <th scope="col">{{ i18n.t('url.parts.value') }}</th>
+            <th scope="col"><span class="visually-hidden">{{ i18n.t('common.copy') }}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of rows(); track r.name) {
+            <tr>
+              <th scope="row">{{ r.name }}</th>
+              <td [class.faint]="r.empty">{{ r.shown }}</td>
+              <td class="cp">
+                <app-copy-button
+                  [compact]="true"
+                  [text]="r.value"
+                  [disabled]="r.empty"
+                  [ariaLabel]="t('url.parts.copyPart', { name: r.name })"
+                />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <h2 class="eyebrow sub">{{ i18n.t('url.parts.params') }}</h2>
+      @if (p.params.length) {
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('url.parts.key') }}</th>
+              <th scope="col">{{ i18n.t('url.parts.value') }}</th>
+              <th scope="col"><span class="visually-hidden">{{ i18n.t('common.copy') }}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (kv of p.params; track $index) {
+              <tr>
+                <th scope="row">{{ kv.key }}</th>
+                <td [class.faint]="!kv.value">{{ kv.value || i18n.t('url.parts.empty') }}</td>
+                <td class="cp">
+                  <app-copy-button
+                    [compact]="true"
+                    [text]="kv.key"
+                    [ariaLabel]="t('url.parts.copyKey', { name: kv.key })"
+                  />
+                  <app-copy-button
+                    [compact]="true"
+                    [text]="kv.value"
+                    [disabled]="!kv.value"
+                    [ariaLabel]="t('url.parts.copyValue', { name: kv.key })"
+                  />
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="none">{{ i18n.t('url.parts.noParams') }}</p>
+      }
+    </section>
+  }
+</div>

@@ -79,6 +79,43 @@
     padding-bottom: 56px;
   }
 }
+// Griglia degli strumenti: 3 colonne su desktop, 2 su tablet, 1 su mobile; ogni riga ha la sua linea in alto
+.tools-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 0;
+  .item {
+    border-top: 1px solid var(--line);
+    border-bottom: 0;
+    border-left: 1px solid var(--line);
+    padding-left: var(--space-5);
+    &:nth-child(3n + 1) {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+}
+@media (max-width: 900px) {
+  .tools-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    .item:nth-child(n) {
+      border-left: 1px solid var(--line);
+      padding-left: var(--space-5);
+      &:nth-child(2n + 1) {
+        border-left: 0;
+        padding-left: 0;
+      }
+    }
+  }
+}
+@media (max-width: 640px) {
+  .tools-grid {
+    grid-template-columns: minmax(0, 1fr);
+    .item:nth-child(n) {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+}
 .num {
   font-family: var(--mono);
   font-size: var(--fs-sm);

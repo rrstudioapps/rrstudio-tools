@@ -33,4 +33,31 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadChildren: () =>
       import('./csv-dashboard/csv-dashboard.routes').then((m) => m.CSV_DASHBOARD_ROUTES),
   },
+  {
+    id: 'base64',
+    path: 'base64',
+    icon: 'code',
+    titleKey: 'tool.base64.title',
+    descriptionKey: 'tool.base64.desc',
+    seo: { titleKey: 'seo.base64.title', descriptionKey: 'seo.base64.desc' },
+    loadComponent: () => import('./base64/base64.page').then((m) => m.Base64Page),
+  },
+  {
+    id: 'url-encode',
+    path: 'url-encode',
+    icon: 'link',
+    titleKey: 'tool.url.title',
+    descriptionKey: 'tool.url.desc',
+    seo: { titleKey: 'seo.url.title', descriptionKey: 'seo.url.desc' },
+    loadComponent: () => import('./url-encode/url-encode.page').then((m) => m.UrlEncodePage),
+  },
+  {
+    id: 'json-formatter',
+    path: 'json-formatter',
+    icon: 'braces',
+    titleKey: 'tool.json.title',
+    descriptionKey: 'tool.json.desc',
+    seo: { titleKey: 'seo.json.title', descriptionKey: 'seo.json.desc' },
+    loadComponent: () => import('./json-formatter/json-formatter.page').then((m) => m.JsonFormatterPage),
+  },
 ];

@@ -45,10 +45,38 @@ export const en: Dict = {
   'tool.csv.desc':
     'Load a CSV or Excel file and get KPIs, charts and a table instantly. Export to HTML, PNG or PDF.',
 
+  'common.input': 'Input',
+  'common.output': 'Output',
+  'common.copy': 'Copy',
+  'common.copied': 'Copied',
+  'common.clear': 'Clear',
+  'common.swap': 'Swap',
+  'common.chooseFile': 'Choose a file',
+  'common.counter': '{chars} characters · {bytes} bytes',
+
+  'tool.base64.title': 'Base64 Encode/Decode',
+  'tool.base64.desc':
+    'Encode and decode text and files to Base64, with UTF-8, URL-safe and data URL support. Image preview included.',
+  'tool.url.title': 'URL Encode/Decode',
+  'tool.url.desc':
+    'Encode and decode URLs and query parameters with percent-encoding, and break a URL into its parts.',
+  'tool.json.title': 'JSON Formatter and Validator',
+  'tool.json.desc':
+    'Format, minify, sort and validate JSON, with errors pinpointed by line and column, plus statistics.',
+
   'seo.home.title': 'rrstudio Tools — Free and open source web tools',
   'seo.home.desc':
     'Free, open source and private web tools: your files stay on your computer. No sign-up.',
   'seo.csv.title': 'CSV → Dashboard, free and private online — rrstudio Tools',
   'seo.csv.desc':
     'Turn a CSV or Excel file into a dashboard with KPIs and charts, right in your browser. No uploads: your data stays on your computer.',
+  'seo.base64.title': 'Base64 Encode and Decode online — free and private | rrstudio Tools',
+  'seo.base64.desc':
+    'Encode and decode Base64 online, including files and images: proper UTF-8, URL-safe variant and data URLs. Runs in your browser, nothing is uploaded.',
+  'seo.url.title': 'URL Encode and Decode online — free and private | rrstudio Tools',
+  'seo.url.desc':
+    'Encode and decode URLs and query parameters (percent-encoding) in component or full-URL mode, with a table of the URL parts. Runs in your browser.',
+  'seo.json.title': 'JSON Formatter and Validator online — free and private | rrstudio Tools',
+  'seo.json.desc':
+    'Format, minify and validate JSON online: errors with line and column, key sorting and syntax highlighting. Runs in your browser, nothing is uploaded.',
 };

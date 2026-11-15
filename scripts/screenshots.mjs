@@ -31,7 +31,7 @@ try {
 }
 const errors = [];
 try {
-  async function shot(name, { width, dark, tool }) {
+  async function shot(name, { width, dark, path = '/', setup }) {
     const ctx = await browser.newContext({
       viewport: { width, height: 900 },
       colorScheme: dark ? 'dark' : 'light',
@@ -41,21 +41,49 @@ try {
     page.on('request', (r) => !r.url().startsWith(base) && errors.push('richiesta esterna: ' + r.url()));
     page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
     page.on('pageerror', (e) => errors.push(e.message));
-    await page.goto(base + (tool ? '/csv-dashboard/' : '/'));
+    await page.goto(base + path);
     await page.waitForTimeout(900); // animazione d'ingresso delle sezioni
-    if (tool) {
-      await page.getByRole('button', { name: /dati di esempio/i }).click();
-      await page.waitForSelector('app-kpi-cards .kpi');
-      await page.waitForTimeout(1200); // animazioni dei grafici
-    }
+    if (setup) await setup(page);
     await page.screenshot({ path: join(out, name), fullPage: true });
     await ctx.close();
   }
-  await shot('home-light.png', { width: 1280, dark: false, tool: false });
-  await shot('home-dark.png', { width: 1280, dark: true, tool: false });
-  await shot('dashboard-light.png', { width: 1280, dark: false, tool: true });
-  await shot('dashboard-dark.png', { width: 1280, dark: true, tool: true });
-  await shot('dashboard-mobile.png', { width: 390, dark: false, tool: true });
+  const csvSample = async (page) => {
+    await page.getByRole('button', { name: /dati di esempio/i }).click();
+    await page.waitForSelector('app-kpi-cards .kpi');
+    await page.waitForTimeout(1200); // animazioni dei grafici
+  };
+  const csv = { path: '/csv-dashboard/', setup: csvSample };
+  await shot('home-light.png', { width: 1280, dark: false });
+  await shot('home-dark.png', { width: 1280, dark: true });
+  await shot('dashboard-light.png', { width: 1280, dark: false, ...csv });
+  await shot('dashboard-dark.png', { width: 1280, dark: true, ...csv });
+  await shot('dashboard-mobile.png', { width: 390, dark: false, ...csv });
+  // Tool di testo: tema chiaro, con un input d'esempio già inserito
+  await shot('base64.png', {
+    width: 1280,
+    dark: false,
+    path: '/base64/',
+    setup: async (page) => {
+      await page.fill('#b64-in', 'Ciao àèì: Base64 senza uscire dal browser.');
+    },
+  });
+  await shot('url-encode.png', {
+    width: 1280,
+    dark: false,
+    path: '/url-encode/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Decodifica', exact: true }).click();
+      await page.fill('#url-in', 'https://example.com/cerca/caff%C3%A8?q=pizza+e+caff%C3%A8&lingua=it&tag=a%26b#risultati');
+    },
+  });
+  await shot('json-formatter.png', {
+    width: 1280,
+    dark: false,
+    path: '/json-formatter/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Prova con un esempio' }).click();
+    },
+  });
 } finally {
   await browser.close();
   server.kill();

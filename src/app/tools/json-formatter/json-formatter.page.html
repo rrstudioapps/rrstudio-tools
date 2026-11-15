@@ -1,0 +1,69 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.json.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('json.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('json.action')" [options]="actions()" [(value)]="action" />
+    <app-segmented [label]="i18n.t('json.indent')" [options]="indents()" [value]="indent()" (valueChange)="setIndent($event)" />
+    <label class="check">
+      <input type="checkbox" [checked]="sortKeys()" (change)="sortKeys.set($any($event.target).checked)" />
+      {{ i18n.t('json.sort') }}
+    </label>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()">
+      <app-icon name="braces" /> {{ i18n.t('json.sample') }}
+    </button>
+    <button type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <app-file-drop [hint]="i18n.t('json.drop')" accept=".json,application/json" (fileSelected)="onFile($event)">
+    <div class="tool-panels">
+      <app-io-panel [label]="i18n.t('json.in')" inputId="json-in" [meta]="inputMeta()">
+        <div class="editor" [style.--gw]="gutterWidth() + 2 + 'ch'">
+          @if (bandTop() !== null) {
+            <div class="band" [style.top.px]="bandTop()" [style.height.px]="lineHeight" aria-hidden="true"></div>
+          }
+          <div class="gutter" aria-hidden="true">
+            <pre [style.transform]="'translateY(' + -scrollTop() + 'px)'">{{ gutterText() }}</pre>
+          </div>
+          <textarea
+            id="json-in"
+            class="code"
+            wrap="off"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [placeholder]="i18n.t('json.ph')"
+            [attr.aria-invalid]="errorLine() !== null"
+            [value]="input()"
+            (input)="onInput($event)"
+            (scroll)="onScroll($event)"
+          ></textarea>
+        </div>
+      </app-io-panel>
+
+      <app-io-panel [label]="i18n.t('json.out')" inputId="json-out">
+        <span panel-actions>
+          <button type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('json.download') }}
+          </button>
+          <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        </span>
+        <pre id="json-out" class="out" tabindex="0" aria-labelledby="json-out-label"><code>@if (output() === '') {<span class="ph">{{ i18n.t('json.out.empty') }}</span>} @else if (tokens(); as toks) {@for (t of toks; track $index) {<span [class]="'t-' + t.type">{{ t.text }}</span>}} @else {<span>{{ output() }}</span>}</code></pre>
+      </app-io-panel>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" aria-live="polite">
+    @if (status(); as s) {
+      <p [class]="s.kind === 'ok' ? 'tool-ok' : 'tool-error'">{{ s.text }}</p>
+    }
+  </div>
+</div>

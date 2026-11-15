@@ -1,0 +1,93 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.base64.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('b64.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('b64.mode')" [options]="modes()" [value]="mode()" (valueChange)="setMode($event)" />
+    <label class="check">
+      <input type="checkbox" [checked]="urlSafe()" [disabled]="mode() === 'decode' || (asDataUrl() && file() !== null)" (change)="urlSafe.set($any($event.target).checked)" />
+      {{ i18n.t('b64.urlsafe') }}
+    </label>
+    @if (mode() === 'encode' && file()) {
+      <label class="check">
+        <input type="checkbox" [checked]="asDataUrl()" (change)="asDataUrl.set($any($event.target).checked)" />
+        {{ i18n.t('b64.dataurl') }}
+      </label>
+    }
+    <span class="spacer"></span>
+    <button type="button" class="btn small" [disabled]="!canSwap()" (click)="swap()">
+      <app-icon name="swap" /> {{ i18n.t('common.swap') }}
+    </button>
+    <button type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <app-file-drop [hint]="i18n.t('b64.drop')" (fileSelected)="onFile($event)">
+    <div class="tool-panels">
+      <app-io-panel
+        [label]="mode() === 'encode' ? i18n.t('b64.in.encode') : i18n.t('b64.in.decode')"
+        inputId="b64-in"
+        [meta]="inputMeta()"
+      >
+        @if (mode() === 'encode' && file(); as f) {
+          <div class="filecard" role="group" [attr.aria-label]="i18n.t('b64.file.group')">
+            <app-icon name="file" class="big" />
+            <span class="fname">{{ f.name }}</span>
+            <button type="button" class="btn small" (click)="removeFile()">
+              <app-icon name="trash" /> {{ i18n.t('b64.file.remove') }}
+            </button>
+          </div>
+        } @else {
+          <textarea
+            id="b64-in"
+            class="io-textarea"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [placeholder]="mode() === 'encode' ? i18n.t('b64.ph.encode') : i18n.t('b64.ph.decode')"
+            [value]="input()"
+            (input)="onInput($event)"
+          ></textarea>
+        }
+      </app-io-panel>
+
+      <app-io-panel
+        [label]="mode() === 'encode' ? i18n.t('b64.out.encode') : i18n.t('b64.out.decode')"
+        inputId="b64-out"
+        [meta]="outputMeta()"
+      >
+        <span panel-actions>
+          @if (download()) {
+            <button type="button" class="btn small" (click)="downloadFile()">
+              <app-icon name="download" /> {{ i18n.t('b64.download') }}
+            </button>
+          }
+          <app-copy-button [text]="fullOutput()" [disabled]="fullOutput() === ''" />
+        </span>
+        <textarea id="b64-out" class="io-textarea" readonly spellcheck="false" [value]="shownOutput()"></textarea>
+        @if (truncatedNote()) {
+          <p class="note">{{ truncatedNote() }}</p>
+        }
+      </app-io-panel>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" aria-live="polite">
+    @if (errorMessage()) {
+      <p class="tool-error">{{ errorMessage() }}</p>
+    }
+  </div>
+
+  @if (previewUrl(); as url) {
+    <section class="preview" [attr.aria-label]="i18n.t('b64.preview')">
+      <h2 class="eyebrow">{{ i18n.t('b64.preview') }}</h2>
+      <div class="frame"><img [src]="url" [alt]="i18n.t('b64.preview.alt')" /></div>
+    </section>
+  }
+</div>

@@ -44,12 +44,40 @@ export const it = {
   'tool.csv.desc':
     'Carica un file CSV o Excel e ottieni subito KPI, grafici e tabella. Esporta in HTML, PNG o PDF.',
 
+  'common.input': 'Input',
+  'common.output': 'Output',
+  'common.copy': 'Copia',
+  'common.copied': 'Copiato',
+  'common.clear': 'Cancella',
+  'common.swap': 'Inverti',
+  'common.chooseFile': 'Scegli un file',
+  'common.counter': '{chars} caratteri · {bytes} byte',
+
+  'tool.base64.title': 'Base64 Encode/Decode',
+  'tool.base64.desc':
+    'Codifica e decodifica testo e file in Base64, con UTF-8, URL-safe e data URL. Anteprima delle immagini.',
+  'tool.url.title': 'URL Encode/Decode',
+  'tool.url.desc':
+    'Codifica e decodifica URL e parametri con percent-encoding, e scomponi un URL nelle sue parti.',
+  'tool.json.title': 'JSON Formatter e Validator',
+  'tool.json.desc':
+    'Formatta, minifica, ordina e valida JSON, con errori indicati per riga e colonna e statistiche.',
+
   'seo.home.title': 'rrstudio Tools — Strumenti web gratuiti e open source',
   'seo.home.desc':
     'Strumenti web gratuiti, open source e privati: i tuoi file restano sul tuo computer. Nessuna registrazione.',
   'seo.csv.title': 'CSV → Dashboard online gratis e privato — rrstudio Tools',
   'seo.csv.desc':
     'Trasforma un file CSV o Excel in una dashboard con KPI e grafici, direttamente nel browser. Nessun upload: i dati restano sul tuo computer.',
+  'seo.base64.title': 'Base64 Encode e Decode online — gratis e privato | rrstudio Tools',
+  'seo.base64.desc':
+    'Codifica e decodifica Base64 online, anche di file e immagini: UTF-8 corretto, variante URL-safe e data URL. Tutto nel browser, nessun upload.',
+  'seo.url.title': 'URL Encode e Decode online — gratis e privato | rrstudio Tools',
+  'seo.url.desc':
+    'Codifica e decodifica URL e parametri (percent-encoding), con modalità componente o URL intero e tabella delle parti dell\'URL. Tutto nel browser.',
+  'seo.json.title': 'JSON Formatter e Validator online — gratis e privato | rrstudio Tools',
+  'seo.json.desc':
+    'Formatta, minifica e valida JSON online: errori con riga e colonna, ordinamento delle chiavi ed evidenziazione della sintassi. Tutto nel browser, nessun upload.',
 };
 
 export type Dict = typeof it;
