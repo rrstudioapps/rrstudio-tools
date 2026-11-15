@@ -70,4 +70,13 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () =>
       import('./image-compressor/image-compressor.page').then((m) => m.ImageCompressorPage),
   },
+  {
+    id: 'pdf-tools',
+    path: 'pdf-tools',
+    icon: 'layers',
+    titleKey: 'tool.pdf.title',
+    descriptionKey: 'tool.pdf.desc',
+    seo: { titleKey: 'seo.pdf.title', descriptionKey: 'seo.pdf.desc' },
+    loadComponent: () => import('./pdf-tools/pdf-tools.page').then((m) => m.PdfToolsPage),
+  },
 ];

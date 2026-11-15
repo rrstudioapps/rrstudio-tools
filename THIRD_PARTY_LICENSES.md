@@ -28,11 +28,18 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
 | **jspdf** | 4.2.1 | MIT | https://github.com/parallax/jsPDF |
 | **ngx-echarts** | 22.0.0 | MIT | https://github.com/xieziyu/ngx-echarts |
 | **papaparse** | 5.7.1 | MIT | https://github.com/mholt/PapaParse |
+| **pdf-lib** | 1.17.1 | MIT | https://github.com/Hopding/pdf-lib |
+| **pdfjs-dist** | 6.5.438 | Apache-2.0 | https://github.com/mozilla/pdf.js |
 | **rxjs** | 7.8.2 | Apache-2.0 | https://github.com/reactivex/rxjs |
 | **tslib** | 2.9.1 | 0BSD | https://github.com/Microsoft/tslib |
 | **tslib** | 2.3.0 | 0BSD | https://github.com/Microsoft/tslib |
+| **tslib** | 1.14.1 | 0BSD | https://github.com/Microsoft/tslib |
 | **xlsx** | 0.20.3 | Apache-2.0 | https://git.sheetjs.com/SheetJS/sheetjs |
 | @babel/runtime | 7.29.14 | MIT | https://github.com/babel/babel |
+| @napi-rs/canvas | 1.1.1 | MIT | https://github.com/Brooooooklyn/canvas |
+| @napi-rs/canvas-linux-arm64-gnu | 1.1.1 | MIT | https://github.com/Brooooooklyn/canvas |
+| @pdf-lib/standard-fonts | 1.0.0 | MIT | https://github.com/Hopding/standard-fonts |
+| @pdf-lib/upng | 1.0.1 | MIT | https://github.com/Hopding/upng |
 | @standard-schema/spec | 1.1.0 | MIT | https://github.com/standard-schema/standard-schema |
 | @types/pako | 2.0.4 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
 | @types/raf | 3.4.3 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
@@ -56,6 +63,7 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
 | iobuffer | 5.4.0 | MIT | https://github.com/image-js/iobuffer |
 | nanoid | 3.3.20 | MIT | ai/nanoid |
 | nth-check | 3.0.1 | BSD-2-Clause | https://github.com/fb55/nth-check |
+| pako | 1.0.11 | (MIT AND Zlib) | nodeca/pako |
 | pako | 2.2.0 | (MIT AND Zlib) | nodeca/pako |
 | performance-now | 2.1.0 | MIT | git://github.com/braveg1rl/performance-now |
 | picocolors | 1.1.1 | ISC | alexeyraspopov/picocolors |
@@ -80,6 +88,10 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
   contacts external servers.
 - **Inter Tight** and **JetBrains Mono** fonts (via Fontsource) are licensed under the SIL Open Font
   License 1.1 and are served from the same origin as the site.
+- **pdf.js** (`pdfjs-dist`, Apache-2.0, Mozilla) renders the page thumbnails of the PDF tools. Its worker script
+  and the standard font files (Foxit and Liberation fonts, with their own licenses in
+  `node_modules/pdfjs-dist/standard_fonts/`) are copied into the build and served from the same origin,
+  never from a CDN. **pdf-lib** (MIT) creates the merged and split PDFs; `pako` is MIT AND Zlib.
 - **Apache ECharts** is a project of the Apache Software Foundation (Apache-2.0); see its NOTICE file.
 
 ## Development tools (not shipped / non distribuiti)

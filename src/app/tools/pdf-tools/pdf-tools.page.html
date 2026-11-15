@@ -1,0 +1,243 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.pdf.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('pdf.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="conf-note" role="note"><app-icon name="lock" /> {{ i18n.t('pdf.confidential') }}</p>
+
+  <app-file-drop
+    [hint]="i18n.t('pdf.drop', { max: maxFiles })"
+    accept="application/pdf,.pdf"
+    [multiple]="true"
+    (filesSelected)="onFiles($event)"
+  >
+    <div class="visually-hidden" role="status" aria-live="polite">{{ announcement() }}</div>
+
+    <div class="tool-status" aria-live="polite" role="status">
+      @if (loading()) {
+        <p class="tool-ok">{{ i18n.t('pdf.loading') }}</p>
+      }
+      @for (n of notices(); track $index) {
+        <p class="tool-error">{{ n }}</p>
+      }
+      @if (progress()) {
+        <p class="tool-ok">{{ progress() }}</p>
+      }
+      @if (result()) {
+        <p class="tool-ok">{{ result() }}</p>
+      }
+    </div>
+
+    @if (pages().length > 0) {
+      <ul class="files" [attr.aria-label]="i18n.t('pdf.files')">
+        @for (s of sources(); track s.id) {
+          <li class="file" [attr.data-c]="s.color">
+            <span class="dot" aria-hidden="true"></span>
+            <span class="fname" [title]="s.name">{{ s.name }}</span>
+            <span class="fmeta mono">{{ i18n.t('pdf.file.meta', { n: s.pageCount }) }}</span>
+            <button
+              type="button"
+              class="x"
+              [attr.aria-label]="i18n.t('pdf.file.remove', { name: s.name })"
+              (click)="removeSource(s)"
+            >
+              <app-icon name="close" />
+            </button>
+          </li>
+        }
+      </ul>
+
+      <section class="actions" [attr.aria-label]="i18n.t('pdf.actions')">
+        <button
+          type="button"
+          class="btn small primary"
+          [disabled]="working()"
+          [attr.aria-label]="i18n.t('pdf.merge.aria')"
+          (click)="merge()"
+        >
+          <app-icon name="download" /> {{ i18n.t('pdf.merge') }}
+        </button>
+        <button
+          type="button"
+          class="btn small"
+          [disabled]="working() || selectedCount() === 0"
+          [attr.aria-label]="i18n.t('pdf.extract.aria', { n: selectedCount() })"
+          (click)="extract()"
+        >
+          <app-icon name="download" /> {{ i18n.t('pdf.extract', { n: selectedCount() }) }}
+        </button>
+        <button type="button" class="btn small" [attr.aria-label]="i18n.t('pdf.rotateAll.aria')" (click)="rotateAll()">
+          <app-icon name="rotateCw" /> {{ i18n.t('pdf.rotateAll') }}
+        </button>
+        <button type="button" class="btn small" (click)="toggleAll()">
+          {{ allSelected() ? i18n.t('pdf.selectNone') : i18n.t('pdf.selectAll') }}
+        </button>
+        <span class="spacer"></span>
+        <button type="button" class="btn small" (click)="reset()">
+          <app-icon name="trash" /> {{ i18n.t('pdf.reset') }}
+        </button>
+      </section>
+
+      <section class="split" [attr.aria-label]="i18n.t('pdf.split')">
+        <h2 class="eyebrow">{{ i18n.t('pdf.split') }}</h2>
+        <div class="split-row">
+          <app-segmented [label]="i18n.t('pdf.split.mode')" [options]="splitOptions()" [(value)]="splitMode" />
+          @if (splitMode() === 'every') {
+            <div class="field">
+              <label for="pdf-every">{{ i18n.t('pdf.split.everyLabel') }}</label>
+              <input
+                id="pdf-every"
+                type="number"
+                min="1"
+                step="1"
+                inputmode="numeric"
+                class="num"
+                [value]="splitEvery()"
+                [attr.aria-invalid]="splitError() ? 'true' : null"
+                [attr.aria-describedby]="splitError() ? 'pdf-split-err' : null"
+                (input)="setEvery($any($event.target).value)"
+              />
+            </div>
+          }
+          @if (splitMode() === 'ranges') {
+            <div class="field grow">
+              <label for="pdf-ranges">{{ i18n.t('pdf.split.rangesLabel') }}</label>
+              <input
+                id="pdf-ranges"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                class="mono"
+                [placeholder]="i18n.t('pdf.split.rangesPlaceholder')"
+                [value]="splitRanges()"
+                [attr.aria-invalid]="splitError() ? 'true' : null"
+                [attr.aria-describedby]="splitError() ? 'pdf-split-err pdf-ranges-hint' : 'pdf-ranges-hint'"
+                (input)="splitRanges.set($any($event.target).value)"
+              />
+            </div>
+          }
+          <button type="button" class="btn small primary go" [disabled]="!canSplit()" (click)="split()">
+            <app-icon name="download" /> {{ i18n.t('pdf.split.go') }}
+          </button>
+        </div>
+        @if (splitMode() === 'ranges') {
+          <p id="pdf-ranges-hint" class="hint">{{ i18n.t('pdf.split.rangesHint', { total: pages().length }) }}</p>
+        }
+        @if (splitError()) {
+          <p id="pdf-split-err" class="tool-error" role="alert">{{ splitError() }}</p>
+        } @else {
+          <p class="hint">{{ splitCount() }}</p>
+        }
+      </section>
+
+      <div class="pages-head">
+        <h2 class="eyebrow">{{ i18n.t('pdf.pages') }}</h2>
+        <p class="hint">
+          {{ i18n.t('pdf.summary', { pages: pages().length, files: sources().length, selected: selectedCount() }) }}
+        </p>
+      </div>
+      <p class="hint">{{ i18n.t('pdf.pages.hint') }}</p>
+
+      <ul class="grid">
+        @for (p of pages(); track p.uid; let i = $index) {
+          <li
+            class="card"
+            draggable="true"
+            [attr.data-uid]="p.uid"
+            [attr.data-c]="sourceColor(p)"
+            [class.sel]="p.selected"
+            [class.dragging]="dragUid() === p.uid"
+            [class.drop-before]="isDropBefore(p)"
+            [class.drop-after]="isDropAfter(p)"
+            (dragstart)="onDragStart($event, p)"
+            (dragover)="onDragOver($event, p)"
+            (drop)="onDrop($event, p)"
+            (dragend)="endDrag()"
+            (keydown)="onKey($event, p)"
+          >
+            <div class="thumb" appLazyVisible (appLazyVisible)="requestThumb(p.uid)">
+              @if (thumbUrl(p); as url) {
+                <img [src]="url" alt="" draggable="false" [attr.data-rot]="p.rotation" />
+              } @else if (thumbUrl(p) === '') {
+                <span class="ph" role="img" [attr.aria-label]="i18n.t('pdf.page.noThumb')"><app-icon name="file" /></span>
+              } @else {
+                <span class="ph pulse" aria-hidden="true"><app-icon name="file" /></span>
+              }
+            </div>
+            <div class="info">
+              <label class="pick">
+                <input
+                  type="checkbox"
+                  [checked]="p.selected"
+                  [attr.aria-label]="i18n.t('pdf.page.select', { n: i + 1, name: sourceName(p) })"
+                  (change)="toggle(p)"
+                />
+                <strong class="no mono">{{ i18n.t('pdf.page.label', { n: i + 1 }) }}</strong>
+              </label>
+              <span class="origin" [title]="sourceName(p)">
+                <span class="dot" aria-hidden="true"></span>
+                <span class="otext">{{ i18n.t('pdf.page.origin', { p: p.index + 1, name: sourceName(p) }) }}</span>
+              </span>
+            </div>
+            <div class="tools">
+              <button
+                type="button"
+                class="ib"
+                data-act="rotate"
+                [attr.aria-label]="i18n.t('pdf.page.rotateLeft', { n: i + 1 })"
+                [attr.title]="i18n.t('pdf.page.rotateLeft', { n: i + 1 })"
+                (click)="rotate(p, -90)"
+              >
+                <app-icon name="rotateCcw" />
+              </button>
+              <button
+                type="button"
+                class="ib"
+                [attr.aria-label]="i18n.t('pdf.page.rotateRight', { n: i + 1 })"
+                [attr.title]="i18n.t('pdf.page.rotateRight', { n: i + 1 })"
+                (click)="rotate(p, 90)"
+              >
+                <app-icon name="rotateCw" />
+              </button>
+              <button
+                type="button"
+                class="ib"
+                data-act="before"
+                [disabled]="i === 0"
+                [attr.aria-label]="i18n.t('pdf.page.moveBefore', { n: i + 1 })"
+                [attr.title]="i18n.t('pdf.page.moveBefore', { n: i + 1 })"
+                (click)="moveBy(p, -1, 'before')"
+              >
+                <app-icon name="left" />
+              </button>
+              <button
+                type="button"
+                class="ib"
+                data-act="after"
+                [disabled]="i === pages().length - 1"
+                [attr.aria-label]="i18n.t('pdf.page.moveAfter', { n: i + 1 })"
+                [attr.title]="i18n.t('pdf.page.moveAfter', { n: i + 1 })"
+                (click)="moveBy(p, 1, 'after')"
+              >
+                <app-icon name="right" />
+              </button>
+              <button
+                type="button"
+                class="ib"
+                data-act="delete"
+                [attr.aria-label]="i18n.t('pdf.page.delete', { n: i + 1 })"
+                [attr.title]="i18n.t('pdf.page.delete', { n: i + 1 })"
+                (click)="remove(p)"
+              >
+                <app-icon name="trash" />
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </app-file-drop>
+</div>

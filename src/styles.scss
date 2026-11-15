@@ -43,6 +43,15 @@
   --drop-over: #efeee9; // sfondo dell'area di trascinamento in dragover
   --mark: #ece9df; // riga evidenziata (errore JSON)
   --syn-val: #7a5a1e; // numeri, booleani, null (tinta sobria)
+  // colori discreti per distinguere i file d'origine (strumenti PDF)
+  --src-0: #b4532a;
+  --src-1: #2f6f9f;
+  --src-2: #5a7d2a;
+  --src-3: #8a4f9e;
+  --src-4: #a07a12;
+  --src-5: #2a7f7a;
+  --src-6: #a63d5a;
+  --src-7: #5a5f8a;
 }
 @mixin theme-dark {
   color-scheme: dark;
@@ -58,6 +67,14 @@
   --drop-over: #1c1c1a;
   --mark: #2c2a24;
   --syn-val: #d4b06a;
+  --src-0: #e08a5c;
+  --src-1: #6fb0e0;
+  --src-2: #9cc467;
+  --src-3: #c48ad8;
+  --src-4: #d9b44a;
+  --src-5: #5cc4be;
+  --src-6: #e07a98;
+  --src-7: #9a9fd0;
 }
 
 :root {

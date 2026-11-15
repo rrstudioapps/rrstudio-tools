@@ -87,4 +87,11 @@ export const en: Dict = {
     'Image compressor and converter online — free and private | rrstudio Tools',
   'seo.ic.desc':
     'Compress photos and images, convert them to WebP, JPEG, PNG or AVIF and resize them online: in bulk, with a before/after comparison and ZIP. All in your browser, no upload.',
+
+  'tool.pdf.title': 'PDF tools: merge, split, rotate',
+  'tool.pdf.desc':
+    'Merge several PDFs, extract or split pages, rotate and reorder them from a grid of thumbnails. Your files never leave your computer.',
+  'seo.pdf.title': 'Merge, split and rotate PDF online — free and private | rrstudio Tools',
+  'seo.pdf.desc':
+    'Merge PDFs into one, split a PDF into several files, extract, delete, rotate and reorder pages online. All in your browser, nothing is uploaded: fine for confidential documents.',
 };

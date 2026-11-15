@@ -6,6 +6,7 @@ import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
 const HOST = process.env.HOST ?? '127.0.0.1';
 const PORT = 4377;
@@ -21,6 +22,14 @@ const server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', HO
 await new Promise((r) => setTimeout(r, 1000));
 // il server va fermato anche se qualcosa fallisce più avanti
 process.on('exit', () => server.kill());
+
+// rete di sicurezza: se qualcosa si blocca lo script finisce comunque e ferma il server
+const watchdog = setTimeout(() => {
+  console.error('Timeout: screenshot interrotti dopo 5 minuti');
+  server.kill();
+  process.exit(1);
+}, 5 * 60 * 1000);
+watchdog.unref();
 
 let browser;
 try {
@@ -38,6 +47,7 @@ try {
       locale: 'it-IT',
     });
     const page = await ctx.newPage();
+    page.setDefaultTimeout(20000);
     page.on('request', (r) => !/^(blob:|data:)/.test(r.url()) && !r.url().startsWith(base) && errors.push('richiesta esterna: ' + r.url()));
     page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
     page.on('pageerror', (e) => errors.push(e.message));
@@ -144,6 +154,46 @@ try {
     await page.waitForTimeout(400);
   };
   await shot('image-compressor.png', { width: 1280, dark: false, path: '/image-compressor/', setup: sampleImages });
+  // PDF di esempio creati al volo con pdf-lib (nessun file scaricato): pagine di testo e colori diversi
+  const makePdf = async (title, label, palette, pages) => {
+    const doc = await PDFDocument.create();
+    doc.setTitle(title);
+    const font = await doc.embedFont(StandardFonts.HelveticaBold);
+    const body = await doc.embedFont(StandardFonts.Helvetica);
+    for (let n = 1; n <= pages; n++) {
+      const page = doc.addPage(n % 3 === 0 ? [842, 595] : [595, 842]);
+      const { width, height } = page.getSize();
+      const [r, g, b] = palette[(n - 1) % palette.length];
+      page.drawRectangle({ x: 0, y: height - 140, width, height: 140, color: rgb(r, g, b) });
+      page.drawText(label, { x: 40, y: height - 85, size: 36, font, color: rgb(1, 1, 1) });
+      page.drawText(`Pagina ${n}`, { x: 40, y: height - 200, size: 28, font, color: rgb(0.1, 0.1, 0.12) });
+      for (let k = 0; k < 14; k++) {
+        page.drawText('Testo di esempio per la miniatura: righe di prova del documento.', {
+          x: 40,
+          y: height - 250 - k * 22,
+          size: 12,
+          font: body,
+          color: rgb(0.35, 0.35, 0.38),
+        });
+      }
+      page.drawRectangle({ x: 40, y: 60, width: width - 80, height: 70, color: rgb(r, g, b), opacity: 0.25 });
+    }
+    return Buffer.from(await doc.save());
+  };
+  const samplePdfs = async (page) => {
+    const a = await makePdf('Contratto di esempio', 'Contratto', [[0.7, 0.33, 0.16], [0.75, 0.5, 0.1], [0.55, 0.3, 0.2]], 4);
+    const b = await makePdf('Allegati di esempio', 'Allegati', [[0.18, 0.43, 0.62], [0.2, 0.5, 0.45]], 3);
+    await page.setInputFiles('input[type=file]', [
+      { name: 'contratto.pdf', mimeType: 'application/pdf', buffer: a },
+      { name: 'allegati.pdf', mimeType: 'application/pdf', buffer: b },
+    ]);
+    await page.waitForFunction(() => document.querySelectorAll('.card .thumb img').length === 7, null, { timeout: 30000 });
+    await page.getByRole('button', { name: 'Ruota la pagina 2 a destra' }).click();
+    await page.getByRole('checkbox', { name: /Seleziona la pagina 5/ }).check();
+    await page.getByRole('checkbox', { name: /Seleziona la pagina 6/ }).check();
+    await page.waitForTimeout(500);
+  };
+  await shot('pdf-tools.png', { width: 1280, dark: false, path: '/pdf-tools/', setup: samplePdfs });
   await shot('json-formatter.png', {
     width: 1280,
     dark: false,
@@ -153,6 +203,7 @@ try {
     },
   });
 } finally {
+  clearTimeout(watchdog);
   await browser.close();
   server.kill();
 }

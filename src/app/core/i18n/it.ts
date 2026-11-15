@@ -86,6 +86,13 @@ export const it = {
     'Comprimi e converti immagini online — gratis e privato | rrstudio Tools',
   'seo.ic.desc':
     'Comprimi foto e immagini, convertile in WebP, JPEG, PNG o AVIF e ridimensionale online: tante insieme, con confronto prima e dopo e ZIP. Tutto nel browser, nessun upload.',
+
+  'tool.pdf.title': 'Strumenti PDF: unisci, dividi, ruota',
+  'tool.pdf.desc':
+    'Unisci più PDF, estrai o dividi le pagine, ruotale e riordinale da una griglia di miniature. I file non lasciano il tuo computer.',
+  'seo.pdf.title': 'Unisci, dividi e ruota PDF online — gratis e privato | rrstudio Tools',
+  'seo.pdf.desc':
+    'Unisci più PDF in uno, dividi un PDF in più file, estrai, elimina, ruota e riordina le pagine online. Tutto nel browser, nessun upload: adatto a documenti riservati.',
 };
 
 export type Dict = typeof it;

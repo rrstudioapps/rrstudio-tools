@@ -36,6 +36,12 @@ const ICONS = {
   braces:
     'M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1',
   link: 'M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7',
+  layers: 'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
+  rotateCw: 'M23 4v6h-6M20.49 15a9 9 0 1 1-2.12-9.36L23 10',
+  rotateCcw: 'M1 4v6h6M3.51 15a9 9 0 1 0 2.13-9.36L1 10',
+  left: 'M19 12H5M12 19l-7-7 7-7',
+  right: 'M5 12h14M12 5l7 7-7 7',
+  close: 'M18 6L6 18M6 6l12 12',
 } as const;
 
 export type IconName = keyof typeof ICONS;

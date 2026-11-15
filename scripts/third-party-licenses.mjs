@@ -55,6 +55,10 @@ ${sorted.map(row).join('\n')}
   contacts external servers.
 - **Inter Tight** and **JetBrains Mono** fonts (via Fontsource) are licensed under the SIL Open Font
   License 1.1 and are served from the same origin as the site.
+- **pdf.js** (\`pdfjs-dist\`, Apache-2.0, Mozilla) renders the page thumbnails of the PDF tools. Its worker script
+  and the standard font files (Foxit and Liberation fonts, with their own licenses in
+  \`node_modules/pdfjs-dist/standard_fonts/\`) are copied into the build and served from the same origin,
+  never from a CDN. **pdf-lib** (MIT) creates the merged and split PDFs; \`pako\` is MIT AND Zlib.
 - **Apache ECharts** is a project of the Apache Software Foundation (Apache-2.0); see its NOTICE file.
 
 ## Development tools (not shipped / non distribuiti)
