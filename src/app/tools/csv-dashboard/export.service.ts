@@ -43,9 +43,37 @@ export class ExportService {
     download(new Blob([html], { type: 'text/html;charset=utf-8' }), safeFileName(title, 'html'));
   }
 
-  private async capture(el: HTMLElement, background: string): Promise<HTMLCanvasElement> {
+  /**
+   * Cattura la dashboard con html2canvas e la mette su una tela più grande con un margine.
+   * html2canvas disegna lettera per lettera il testo con letter-spacing diverso da zero e i
+   * numeri grandi escono con spazi strani: nella copia clonata il letter-spacing torna normale.
+   */
+  private async capture(el: HTMLElement, background: string, scale = 2, padding = 40): Promise<HTMLCanvasElement> {
     const html2canvas = (await import('html2canvas')).default;
-    return html2canvas(el, { scale: 2, backgroundColor: background, logging: false });
+    el.setAttribute('data-export-root', '');
+    try {
+      const shot = await html2canvas(el, {
+        scale,
+        backgroundColor: background,
+        logging: false,
+        onclone: (doc) => {
+          doc.querySelectorAll<HTMLElement>('[data-export-root], [data-export-root] *').forEach((n) => {
+            n.style.letterSpacing = 'normal';
+          });
+        },
+      });
+      const pad = padding * scale;
+      const out = document.createElement('canvas');
+      out.width = shot.width + pad * 2;
+      out.height = shot.height + pad * 2;
+      const ctx = out.getContext('2d')!;
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, out.width, out.height);
+      ctx.drawImage(shot, pad, pad);
+      return out;
+    } finally {
+      el.removeAttribute('data-export-root');
+    }
   }
 
   async exportPng(el: HTMLElement, title: string, background: string): Promise<void> {
@@ -57,9 +85,10 @@ export class ExportService {
 
   /** PDF A4 orizzontale: l'immagine della dashboard è spezzata su più pagine se serve. */
   async exportPdf(el: HTMLElement, title: string, dateLabel: string, background: string): Promise<void> {
-    const canvas = await this.capture(el, background);
+    // per il PDF basta scala 1.5 e JPEG: la qualità resta buona e il file passa da ~7 MB a meno di 1 MB
+    const canvas = await this.capture(el, background, 1.5, 24);
     const { jsPDF } = await import('jspdf');
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4', compress: true });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
     const margin = 10;
@@ -80,7 +109,7 @@ export class ExportService {
       slice.width = canvas.width;
       slice.height = slicePx;
       slice.getContext('2d')!.drawImage(canvas, 0, offsetPx, canvas.width, slicePx, 0, 0, canvas.width, slicePx);
-      pdf.addImage(slice.toDataURL('image/png'), 'PNG', margin, y, imgW, slicePx * mmPerPx);
+      pdf.addImage(slice.toDataURL('image/jpeg', 0.9), 'JPEG', margin, y, imgW, slicePx * mmPerPx);
       offsetPx += slicePx;
       if (offsetPx < canvas.height) {
         pdf.addPage();
