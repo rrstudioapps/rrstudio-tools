@@ -26,6 +26,22 @@ export const it = {
   'home.subtitle':
     'Piccoli strumenti che funzionano direttamente nel browser. Nessuna registrazione, nessun upload.',
   'home.tools': 'Strumenti',
+  'home.filters.label': 'Filtra per categoria',
+  'home.filter.all': 'Tutti',
+  'home.search.label': 'Cerca uno strumento',
+  'home.search.ph': 'Cerca: hash, pdf, iban…',
+  'home.results': '{n} strumenti',
+  'home.results.one': '1 strumento',
+  'home.empty': 'Nessuno strumento corrisponde alla tua ricerca.',
+  'home.reset': 'Azzera filtri',
+  'cat.data.title': 'Dati e documenti',
+  'cat.data.desc': 'Tabelle, JSON, PDF e immagini: apri, ripulisci e converti i tuoi file.',
+  'cat.dev.title': 'Sviluppatori',
+  'cat.dev.desc': 'Codifica, decodifica e calcola: piccoli attrezzi da banco.',
+  'cat.security.title': 'Sicurezza',
+  'cat.security.desc': 'Password robuste, create nel tuo browser.',
+  'cat.italy.title': 'Italia: fisco e banche',
+  'cat.italy.desc': 'Codice fiscale, IBAN e partita IVA: calcolo e verifica.',
   'home.open': 'Apri lo strumento',
   'home.soon.badge': 'In arrivo',
   'home.soon.title': 'Nuovi strumenti in arrivo',
@@ -78,6 +94,12 @@ export const it = {
   'seo.json.title': 'JSON Formatter e Validator online — gratis e privato | rrstudio Tools',
   'seo.json.desc':
     'Formatta, minifica e valida JSON online: errori con riga e colonna, ordinamento delle chiavi ed evidenziazione della sintassi. Tutto nel browser, nessun upload.',
+  'tool.jv.title': 'JSON Viewer ed Editor',
+  'tool.jv.desc':
+    'Esplora un JSON come albero, cerca tra chiavi e valori, copia il percorso e modifica i nodi con annulla e ripeti. Anche file da decine di MB.',
+  'seo.jv.title': 'JSON Viewer ed Editor online ad albero — gratis e privato | rrstudio Tools',
+  'seo.jv.desc':
+    'Visualizza e modifica JSON come albero espandibile: ricerca, percorso JavaScript e JSON Pointer, modifica di chiavi e valori, annulla e ripeti. Regge file grandi. Tutto nel browser, nessun upload.',
 
   'tool.ic.title': 'Comprimi e converti immagini',
   'tool.ic.desc':

@@ -44,8 +44,8 @@ const it = {
   'cf.place.noEsteri':
     'L\'elenco degli Stati esteri non è ancora incluso in questa versione: scegli «Inserisco il codice» e scrivi il codice Z dello Stato.',
   'cf.place.selected': 'Luogo scelto: {name}, codice {code}.',
-  'cf.place.source': 'Elenco dei comuni: ISTAT, licenza CC BY 4.0, aggiornato al {date}.',
-  'cf.place.sourceStatic': 'Elenco dei comuni: ISTAT, licenza CC BY 4.0.',
+  'cf.place.source': 'Comuni attuali e soppressi: ISTAT; Stati esteri: ANPR (Ministero dell\'Interno). Licenza CC BY 4.0, aggiornato al {date}.',
+  'cf.place.sourceStatic': 'Comuni attuali e soppressi: ISTAT; Stati esteri: ANPR (Ministero dell\'Interno). Licenza CC BY 4.0.',
   'cf.place.sourceLink': 'ISTAT: codici dei comuni',
 
   'cf.missing': 'Compila tutti i campi per calcolare il codice. Mancano: {fields}.',
@@ -136,7 +136,7 @@ const it = {
   'cf.how.body':
     'Il codice è fatto di 16 caratteri: 3 dal cognome, 3 dal nome, anno (2 cifre), lettera del mese, giorno (più 40 per le donne), codice catastale del luogo di nascita e un carattere di controllo. Le regole sono quelle del DM 23 dicembre 1976 e delle circolari dell\'Agenzia delle Entrate. Nessun servizio viene contattato: l\'elenco dei luoghi è un file di questo sito, caricato solo quando serve.',
   'cf.credits':
-    'Dati dei luoghi: ISTAT (Istituto nazionale di statistica), «Codici dei comuni, delle province e delle regioni», licenza Creative Commons Attribuzione 4.0 (CC BY 4.0), rielaborati in formato compatto.',
+    'Dati dei luoghi: ISTAT (Istituto nazionale di statistica), «Codici dei comuni, delle province e delle regioni» e report SITUAS dei comuni soppressi; Stati esteri dalla tabella ANPR del Ministero dell\'Interno. Licenza Creative Commons Attribuzione 4.0 (CC BY 4.0), dati rielaborati in formato compatto.',
   'cf.credits.link': 'Fonte e licenza',
 };
 
@@ -182,8 +182,8 @@ const en: typeof it = {
   'cf.place.noEsteri':
     'The list of foreign countries is not included in this version yet: choose "I will enter the code" and type the country\'s Z code.',
   'cf.place.selected': 'Place chosen: {name}, code {code}.',
-  'cf.place.source': 'List of municipalities: ISTAT, licence CC BY 4.0, updated on {date}.',
-  'cf.place.sourceStatic': 'List of municipalities: ISTAT, licence CC BY 4.0.',
+  'cf.place.source': 'Current and suppressed municipalities: ISTAT; foreign states: ANPR (Italian Ministry of the Interior). Licence CC BY 4.0, updated on {date}.',
+  'cf.place.sourceStatic': 'Current and suppressed municipalities: ISTAT; foreign states: ANPR (Italian Ministry of the Interior). Licence CC BY 4.0.',
   'cf.place.sourceLink': 'ISTAT: municipality codes',
 
   'cf.missing': 'Fill in all the fields to calculate the code. Missing: {fields}.',
@@ -274,7 +274,7 @@ const en: typeof it = {
   'cf.how.body':
     'The code has 16 characters: 3 from the surname, 3 from the first name, year (2 digits), month letter, day (plus 40 for women), the cadastral code of the place of birth and a check character. The rules are those of the Ministerial Decree of 23 December 1976 and the Revenue Agency circulars. No service is contacted: the list of places is a file of this site, loaded only when needed.',
   'cf.credits':
-    'Place data: ISTAT (the Italian National Institute of Statistics), "Codici dei comuni, delle province e delle regioni", licence Creative Commons Attribution 4.0 (CC BY 4.0), reworked into a compact format.',
+    'Place data: ISTAT (the Italian National Institute of Statistics), "Codici dei comuni, delle province e delle regioni" and the SITUAS report of suppressed municipalities; foreign states from the ANPR table of the Italian Ministry of the Interior. Licence Creative Commons Attribution 4.0 (CC BY 4.0), reworked into a compact format.',
   'cf.credits.link': 'Source and licence',
 };
 

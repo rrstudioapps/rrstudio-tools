@@ -10,25 +10,69 @@
   <p class="hint">{{ i18n.t('privacy.short') }}</p>
 </section>
 
-<section class="container" aria-labelledby="tools-h">
-  <h2 id="tools-h" class="visually-hidden">{{ i18n.t('home.tools') }}</h2>
-  <div class="grid tools-grid">
-    @for (tool of tools; track tool.id; let i = $index) {
-      <a class="item link" [routerLink]="'/' + tool.path">
-        <span class="num">{{ '0' + (i + 1) }}</span>
-        <h3>{{ i18n.t(tool.titleKey) }}</h3>
-        <p>{{ i18n.t(tool.descriptionKey) }}</p>
-        <span class="open">{{ i18n.t('home.open') }} <span class="arrow" aria-hidden="true">→</span></span>
-      </a>
-    }
-    <div class="item soon" aria-disabled="true">
-      <span class="num">{{ '0' + (tools.length + 1) }}</span>
-      <h3>{{ i18n.t('home.soon.title') }}</h3>
-      <p>{{ i18n.t('home.soon.desc') }}</p>
-      <span class="chip">{{ i18n.t('home.soon.badge') }}</span>
+<section class="container filters" [attr.aria-label]="i18n.t('home.filters.label')">
+  <div class="filters-row">
+    <div class="pills" role="group" [attr.aria-label]="i18n.t('home.filters.label')">
+      @for (p of pills(); track p.id ?? 'all') {
+        <button type="button" class="pill" [attr.aria-pressed]="category() === p.id" (click)="select(p.id)">
+          {{ p.label }} <span class="n">{{ p.count }}</span>
+        </button>
+      }
+    </div>
+    <div class="search">
+      <label class="visually-hidden" for="tool-q">{{ i18n.t('home.search.label') }}</label>
+      <input
+        id="tool-q"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        [placeholder]="i18n.t('home.search.ph')"
+        [value]="query()"
+        (input)="onSearch($event)"
+      />
     </div>
   </div>
+  <p class="results" role="status" aria-live="polite">{{ resultText() }}</p>
 </section>
+
+@for (g of sections(); track g.category.id) {
+  <section class="container cat" [id]="g.category.slug" [attr.aria-labelledby]="g.category.slug + '-h'">
+    <div class="cat-head">
+      <h2 class="eyebrow cat-title" [id]="g.category.slug + '-h'">
+        {{ title(g.category) }} <span class="cat-count">{{ g.tools.length }}</span>
+      </h2>
+      <p class="cat-desc">{{ i18n.t(g.category.descriptionKey) }}</p>
+    </div>
+    <div class="grid tools-grid">
+      @for (tool of g.tools; track tool.id) {
+        <a class="item link" [routerLink]="'/' + tool.path">
+          <span class="num">{{ numbers.get(tool.id)! < 10 ? '0' + numbers.get(tool.id) : numbers.get(tool.id) }}</span>
+          <h3>{{ i18n.t(tool.titleKey) }}</h3>
+          <p>{{ i18n.t(tool.descriptionKey) }}</p>
+          <span class="open">{{ i18n.t('home.open') }} <span class="arrow" aria-hidden="true">→</span></span>
+        </a>
+      }
+    </div>
+  </section>
+}
+
+@if (sections().length === 0) {
+  <section class="container empty">
+    <p>{{ i18n.t('home.empty') }}</p>
+    <button type="button" class="btn" (click)="reset()">{{ i18n.t('home.reset') }}</button>
+  </section>
+} @else if (!filtering()) {
+  <section class="container cat soon-wrap" aria-label="{{ i18n.t('home.soon.badge') }}">
+    <div class="grid tools-grid">
+      <div class="item soon" aria-disabled="true">
+        <span class="num">{{ total + 1 < 10 ? '0' + (total + 1) : total + 1 }}</span>
+        <h3>{{ i18n.t('home.soon.title') }}</h3>
+        <p>{{ i18n.t('home.soon.desc') }}</p>
+        <span class="chip">{{ i18n.t('home.soon.badge') }}</span>
+      </div>
+    </div>
+  </section>
+}
 
 <section class="container why" aria-labelledby="why-h">
   <h2 id="why-h" class="eyebrow">{{ i18n.t('home.why.title') }}</h2>

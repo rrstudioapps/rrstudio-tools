@@ -26,16 +26,44 @@
 
 ## Tools
 
+The home page groups the tools by category, with filter pills (shareable as `?categoria=sviluppatori`) and a search box.
+
+### Data & documents
+
+Tables, JSON, PDF and images.
+
 | Tool | What it does |
 |---|---|
 | [**CSV → Dashboard**](https://tools.rr-dev.eu/csv-dashboard) | Drop a CSV or Excel file and get KPI cards, a time chart, a category chart and a filterable, sortable table. Customize columns, chart types, color and title, then export as a self-contained HTML file, PNG or PDF. |
+| [**JSON Viewer & Editor**](https://tools.rr-dev.eu/json-viewer) | Explore JSON as a lazy, paginated tree (files up to 50 MB), search keys and values, copy the JavaScript path or JSON Pointer of a node, edit values and keys inline, add, delete, duplicate, move and retype nodes, with undo/redo and a formatted Text view. |
+| [**JSON Formatter and Validator**](https://tools.rr-dev.eu/json-formatter) | Format (2 / 4 spaces or tab), minify and sort keys, with live validation: errors show line and column, plus size, key count and depth, and light syntax highlighting. |
+| [**PDF tools: merge, split, rotate**](https://tools.rr-dev.eu/pdf-tools) | Merge several PDFs, extract or split pages (every page, every N pages or by ranges like `1-3, 5, 8-10`), rotate, delete and reorder pages from a grid of thumbnails. Your PDFs are never uploaded: fine for confidential documents. |
+| [**Image compressor & converter**](https://tools.rr-dev.eu/image-compressor) | Compress and convert many images at once to JPEG, WebP, PNG or AVIF, with quality and resize options, a before/after slider and a ZIP download. Done in your browser; EXIF metadata (GPS included) is stripped. |
+
+### Developers
+
+Encode, decode and compute.
+
+| Tool | What it does |
+|---|---|
 | [**Base64 Encode/Decode**](https://tools.rr-dev.eu/base64) | Encode and decode text or files to Base64 with correct UTF-8, an URL-safe option and data URLs. Drop a file to get its Base64, or decode back to a downloadable file with an image preview. |
 | [**URL Encode/Decode**](https://tools.rr-dev.eu/url-encode) | Percent-encode and decode text, as a component or as a full URL, with optional "space as +". Shows a copyable table of the URL parts and decoded query parameters. |
-| [**JSON Formatter and Validator**](https://tools.rr-dev.eu/json-formatter) | Format (2 / 4 spaces or tab), minify and sort keys, with live validation: errors show line and column, plus size, key count and depth, and light syntax highlighting. |
-| [**Image compressor & converter**](https://tools.rr-dev.eu/image-compressor) | Compress and convert many images at once to JPEG, WebP, PNG or AVIF, with quality and resize options, a before/after slider and a ZIP download. Done in your browser; EXIF metadata (GPS included) is stripped. |
-| [**PDF tools: merge, split, rotate**](https://tools.rr-dev.eu/pdf-tools) | Merge several PDFs, extract or split pages (every page, every N pages or by ranges like `1-3, 5, 8-10`), rotate, delete and reorder pages from a grid of thumbnails. Your PDFs are never uploaded: fine for confidential documents. |
-| [**Password generator**](https://tools.rr-dev.eu/password-generator) | Random passwords (4-128 characters, choose the character sets, exclude ambiguous ones) and passphrases (3-12 words from the EFF large wordlist), with honest entropy in bits, a strength bar and the estimated time to guess. Nothing is stored. |
 | [**Hash & checksum**](https://tools.rr-dev.eu/hash-generator) | MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of a text (live) or a file up to 2 GB, in hex and Base64, with a progress bar, cancel and a "compare with a checksum" field. |
+
+### Security
+
+Strong passwords.
+
+| Tool | What it does |
+|---|---|
+| [**Password generator**](https://tools.rr-dev.eu/password-generator) | Random passwords (4-128 characters, choose the character sets, exclude ambiguous ones) and passphrases (3-12 words from the EFF large wordlist), with honest entropy in bits, a strength bar and the estimated time to guess. Nothing is stored. |
+
+### Italy: tax & banking
+
+Codice fiscale, IBAN and VAT number.
+
+| Tool | What it does |
+|---|---|
 | [**Italian tax code (codice fiscale)**](https://tools.rr-dev.eu/codice-fiscale) | Calculate the codice fiscale (official DM 23/12/1976 rules, Italian municipality with type-ahead search, foreign country or manual code) and check and decode a code: structure, check character, sex, birth date (century ambiguity) and place, omocodia included. |
 | [**IBAN & Italian VAT validator**](https://tools.rr-dev.eu/iban-partita-iva) | One field that recognises an IBAN or a partita IVA, plus separate tabs and a bulk check (one value per line, CSV export). IBAN: mod-97, length and format per country, Italian CIN/ABI/CAB. VAT: check digit and office code. |
 
@@ -110,6 +138,14 @@ More tools are coming, with the same rule: nothing leaves your browser.
 
 - `encodeURIComponent` (component) or `encodeURI` (full URL), with "space as +" for form-urlencoded data.
 - Clear errors on invalid `%` sequences; a table with protocol, host, path, hash and each decoded query parameter.
+
+### JSON Viewer & Editor
+
+![JSON Viewer & Editor](docs/screenshots/json-viewer.png)
+
+- Tree view with lazy rendering and 100-children pages, so files up to 50 MB open without freezing the page; ARIA tree keyboard navigation.
+- Search by key or value with next/previous, path as `$.users[0].name` and as JSON Pointer `/users/0/name`.
+- Inline editing with type validation, key rename, add, delete, duplicate, move, change type; undo/redo (Ctrl/Cmd+Z); Tree and Text views.
 
 ### JSON Formatter and Validator
 
@@ -202,7 +238,7 @@ a server esterni, nessun cookie, nessun tracciamento o analytics.
   [CSV → Dashboard](https://tools.rr-dev.eu/csv-dashboard), che da un CSV o un Excel genera KPI,
   grafici e tabella, esportabili in HTML autonomo, PNG e PDF. Poi
   [Base64](https://tools.rr-dev.eu/base64), [URL Encode/Decode](https://tools.rr-dev.eu/url-encode) e
-  [JSON Formatter](https://tools.rr-dev.eu/json-formatter) e
+  [JSON Formatter](https://tools.rr-dev.eu/json-formatter), [JSON Viewer ed Editor](https://tools.rr-dev.eu/json-viewer) (albero, ricerca, modifica con annulla/ripeti) e
   [Comprimi e converti immagini](https://tools.rr-dev.eu/image-compressor) (JPEG, WebP, PNG, AVIF, con
   confronto prima/dopo e ZIP) e [Strumenti PDF](https://tools.rr-dev.eu/pdf-tools) (unisci, dividi, ruota),
   [Generatore di password](https://tools.rr-dev.eu/password-generator) (password e passphrase, con

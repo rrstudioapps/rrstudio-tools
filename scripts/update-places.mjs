@@ -128,9 +128,13 @@ const { list, offices } = await comuni();
 const updated = new Date().toISOString().slice(0, 10);
 const data = {
   updated,
-  source: 'ISTAT, https://www.istat.it, licenza CC BY 4.0',
+  source: 'Comuni attuali e soppressi: ISTAT (CSV dei comuni e report SITUAS 128), CC BY 4.0. Stati esteri: ANPR, Ministero dell\'Interno (tab_Stati_Esteri), CC BY 4.0',
   comuni: list,
-  soppressi: args.soppressi ? fromFile(args.soppressi, 'soppressi') : (old.soppressi ?? []),
+  // un comune soppresso da poco può essere ancora nel CSV dei comuni attuali: lo stesso codice
+  // catastale comparirebbe due volte nei suggerimenti, quindi vale la voce dei comuni attuali
+  soppressi: (args.soppressi ? fromFile(args.soppressi, 'soppressi') : (old.soppressi ?? [])).filter(
+    (s) => !list.some((c) => c[1] === s[1]),
+  ),
   esteri: args.esteri ? fromFile(args.esteri, 'esteri') : (old.esteri ?? []),
 };
 writeFileSync(OUT, JSON.stringify(data));

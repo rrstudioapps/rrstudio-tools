@@ -72,6 +72,7 @@ try {
   const csv = { path: '/csv-dashboard/', setup: csvSample };
   await shot('home-light.png', { width: 1280, dark: false });
   await shot('home-dark.png', { width: 1280, dark: true });
+  await shot('home-mobile.png', { width: 390, dark: false });
   await shot('dashboard-light.png', { width: 1280, dark: false, ...csv });
   await shot('dashboard-dark.png', { width: 1280, dark: true, ...csv });
   await shot('dashboard-mobile.png', { width: 390, dark: false, ...csv });
@@ -207,6 +208,18 @@ try {
     path: '/json-formatter/',
     setup: async (page) => {
       await page.getByRole('button', { name: 'Prova con un esempio' }).click();
+    },
+  });
+  // JSON Viewer: esempio caricato (albero aperto al livello 3) e un nodo selezionato, con percorso nel pannello
+  await shot('json-viewer.png', {
+    width: 1280,
+    dark: false,
+    path: '/json-viewer/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Prova con un esempio' }).click();
+      await page.waitForSelector('.tree .row');
+      await page.locator('.tree .row', { hasText: 'Mario Rossi' }).first().click();
+      await page.waitForTimeout(300);
     },
   });
   await shot('password-generator.png', {

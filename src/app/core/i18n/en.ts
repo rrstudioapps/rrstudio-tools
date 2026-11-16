@@ -27,6 +27,22 @@ export const en: Dict = {
   'home.subtitle':
     'Small tools that run right in your browser. No sign-up, no uploads.',
   'home.tools': 'Tools',
+  'home.filters.label': 'Filter by category',
+  'home.filter.all': 'All',
+  'home.search.label': 'Search tools',
+  'home.search.ph': 'Search: hash, pdf, iban…',
+  'home.results': '{n} tools',
+  'home.results.one': '1 tool',
+  'home.empty': 'No tool matches your search.',
+  'home.reset': 'Clear filters',
+  'cat.data.title': 'Data & documents',
+  'cat.data.desc': 'Tables, JSON, PDF and images: open, clean up and convert your files.',
+  'cat.dev.title': 'Developers',
+  'cat.dev.desc': 'Encode, decode and compute: small workbench tools.',
+  'cat.security.title': 'Security',
+  'cat.security.desc': 'Strong passwords, created in your browser.',
+  'cat.italy.title': 'Italy: tax & banking',
+  'cat.italy.desc': 'Codice fiscale, IBAN and VAT number: calculate and verify.',
   'home.open': 'Open the tool',
   'home.soon.badge': 'Coming soon',
   'home.soon.title': 'More tools coming soon',
@@ -79,6 +95,12 @@ export const en: Dict = {
   'seo.json.title': 'JSON Formatter and Validator online — free and private | rrstudio Tools',
   'seo.json.desc':
     'Format, minify and validate JSON online: errors with line and column, key sorting and syntax highlighting. Runs in your browser, nothing is uploaded.',
+  'tool.jv.title': 'JSON viewer & editor',
+  'tool.jv.desc':
+    'Explore JSON as a tree, search keys and values, copy the path and edit nodes with undo and redo. Handles files of tens of MB.',
+  'seo.jv.title': 'JSON viewer and editor online, tree view — free and private | rrstudio Tools',
+  'seo.jv.desc':
+    'View and edit JSON as an expandable tree: search, JavaScript path and JSON Pointer, edit keys and values, undo and redo. Handles large files. Everything runs in your browser, nothing is uploaded.',
 
   'tool.ic.title': 'Image compressor & converter',
   'tool.ic.desc':

@@ -46,6 +46,9 @@ const ICONS = {
   idcard: 'M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM6 10a2 2 0 1 0 4 0a2 2 0 1 0-4 0M5.5 16a3 2 0 0 1 5 0M14 10h5M14 14h4',
   bank: 'M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18M2 10h20',
   refresh: 'M23 4v6h-6M1 20v-6h6M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15',
+  tree: 'M4 3h6v5H4zM14 10h6v5h-6zM14 17h6v4h-6zM7 8v10h7M7 12.5h7',
+  search: 'M11 3a8 8 0 1 0 0 16a8 8 0 1 0 0-16zM21 21l-4.35-4.35',
+  pencil: 'M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z',
 } as const;
 
 export type IconName = keyof typeof ICONS;
