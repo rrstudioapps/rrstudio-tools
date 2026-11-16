@@ -7,21 +7,35 @@ function toRoute(tool: ToolDefinition): Route {
   const seo = { titleKey: tool.seo.titleKey, descriptionKey: tool.seo.descriptionKey };
   return {
     path: tool.path,
-    data: { seo },
+    data: { seo, ...tool.routeData },
     ...(tool.loadChildren
       ? { loadChildren: tool.loadChildren }
       : { loadComponent: tool.loadComponent }),
   };
 }
 
-/** Route generate dal registry dei tool, più la home. */
+const HOME: Route = {
+  path: '',
+  pathMatch: 'full',
+  loadComponent: () => import('./pages/home').then((m) => m.Home),
+  data: { seo: { titleKey: 'seo.home.title', descriptionKey: 'seo.home.desc' } },
+};
+
+/**
+ * Route generate dal registry dei tool, più la home. La radice è italiana; la versione inglese
+ * sta sotto /en/ con gli stessi slug, tranne gli strumenti `italyOnly` (solo in italiano).
+ */
 export const routes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    loadComponent: () => import('./pages/home').then((m) => m.Home),
-    data: { seo: { titleKey: 'seo.home.title', descriptionKey: 'seo.home.desc' } },
-  },
+  HOME,
   ...TOOLS.map(toRoute),
+  {
+    path: 'en',
+    children: [
+      HOME,
+      ...TOOLS.filter((t) => !t.italyOnly).map(toRoute),
+      // /en/<sconosciuto> → home inglese
+      { path: '**', redirectTo: '/en' },
+    ],
+  },
   { path: '**', redirectTo: '' },
 ];

@@ -256,6 +256,14 @@
     color: var(--ink-2);
   }
 }
+.italy-row {
+  margin-block: var(--space-6);
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  a {
+    color: var(--ink-2);
+  }
+}
 @media (max-width: 640px) {
   .search {
     flex-basis: 100%;

@@ -36,17 +36,17 @@
 </section>
 
 @for (g of sections(); track g.category.id) {
-  <section class="container cat" [id]="g.category.slug" [attr.aria-labelledby]="g.category.slug + '-h'">
+  <section class="container cat" [id]="anchor(g.category)" [attr.aria-labelledby]="anchor(g.category) + '-h'">
     <div class="cat-head">
-      <h2 class="eyebrow cat-title" [id]="g.category.slug + '-h'">
+      <h2 class="eyebrow cat-title" [id]="anchor(g.category) + '-h'">
         {{ title(g.category) }} <span class="cat-count">{{ g.tools.length }}</span>
       </h2>
       <p class="cat-desc">{{ i18n.t(g.category.descriptionKey) }}</p>
     </div>
     <div class="grid tools-grid">
       @for (tool of g.tools; track tool.id) {
-        <a class="item link" [routerLink]="'/' + tool.path">
-          <span class="num">{{ numbers.get(tool.id)! < 10 ? '0' + numbers.get(tool.id) : numbers.get(tool.id) }}</span>
+        <a class="item link" [routerLink]="i18n.link(tool.path)">
+          <span class="num">{{ numbers().get(tool.id)! < 10 ? '0' + numbers().get(tool.id) : numbers().get(tool.id) }}</span>
           <h3>{{ i18n.t(tool.titleKey) }}</h3>
           <p>{{ i18n.t(tool.descriptionKey) }}</p>
           <span class="open">{{ i18n.t('home.open') }} <span class="arrow" aria-hidden="true">→</span></span>
@@ -65,7 +65,7 @@
   <section class="container cat soon-wrap" aria-label="{{ i18n.t('home.soon.badge') }}">
     <div class="grid tools-grid">
       <div class="item soon" aria-disabled="true">
-        <span class="num">{{ total + 1 < 10 ? '0' + (total + 1) : total + 1 }}</span>
+        <span class="num">{{ total() + 1 < 10 ? '0' + (total() + 1) : total() + 1 }}</span>
         <h3>{{ i18n.t('home.soon.title') }}</h3>
         <p>{{ i18n.t('home.soon.desc') }}</p>
         <span class="chip">{{ i18n.t('home.soon.badge') }}</span>
@@ -94,3 +94,13 @@
     </div>
   </div>
 </section>
+
+@if (english()) {
+  <p class="container italy-row">
+    {{ i18n.t('home.italy.lead') }}
+    @for (t of italyTools; track t.id) {
+      <a [routerLink]="'/' + t.path" lang="it" hreflang="it">{{ i18n.t('home.italy.' + t.id) }}</a
+      >{{ $last ? '' : ', ' }}
+    }
+  </p>
+}

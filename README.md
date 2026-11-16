@@ -24,9 +24,15 @@
 
 ![rrstudio Tools home](docs/screenshots/home-light.png)
 
+## Languages and URLs
+
+The language of a page is decided by its URL, not by the browser or a saved preference. The root is Italian (`/`, `/pdf-tools`); the English versions live under `/en/` with the same slugs (`/en/`, `/en/pdf-tools`). Every page is prerendered in its own language, with `<html lang>`, title, description, Open Graph tags, `canonical` and `hreflang` links (`it`, `en`, and `x-default` pointing to English). `public/sitemap.xml` lists all of them with `xhtml:link` alternates.
+
+Tools that only make sense in Italy (codice fiscale, IBAN & partita IVA, e-invoice) are flagged `italyOnly` in the registry: they have no `/en/` page, the EN switch is disabled on them, and the English home links to them in a discreet line. An unknown `/en/...` address goes to `/en/`. Visitors whose browser is not in Italian get a small, dismissible hint on Italian pages that have an English version; there is no automatic redirect.
+
 ## Tools
 
-The home page groups the tools by category, with filter pills (shareable as `?categoria=sviluppatori`) and a search box.
+The home page groups the tools by category, with filter pills (shareable as `?categoria=sviluppatori`, or `?category=developers` on the English home) and a search box.
 
 ### Data & documents
 
@@ -39,6 +45,8 @@ Tables, JSON, PDF and images.
 | [**JSON Formatter and Validator**](https://tools.rr-dev.eu/json-formatter) | Format (2 / 4 spaces or tab), minify and sort keys, with live validation: errors show line and column, plus size, key count and depth, and light syntax highlighting. |
 | [**PDF tools: merge, split, rotate**](https://tools.rr-dev.eu/pdf-tools) | Merge several PDFs, extract or split pages (every page, every N pages or by ranges like `1-3, 5, 8-10`), rotate, delete and reorder pages from a grid of thumbnails. Your PDFs are never uploaded: fine for confidential documents. |
 | [**Image compressor & converter**](https://tools.rr-dev.eu/image-compressor) | Compress and convert many images at once to JPEG, WebP, PNG or AVIF, with quality and resize options, a before/after slider and a ZIP download. Done in your browser; EXIF metadata (GPS included) is stripped. |
+| [**Images to PDF**](https://tools.rr-dev.eu/images-to-pdf) | Combine JPG, PNG and WebP images into one PDF: reorder the thumbnails (drag & drop or keyboard), choose A4, Letter or fit-to-image pages, orientation, margins, 1, 2 or 4 images per page and the quality. EXIF orientation is respected. |
+| [**PDF to images**](https://tools.rr-dev.eu/pdf-to-images) | Turn PDF pages (all, or a range like `1-3, 5`) into PNG or JPEG at 72, 150 or 300 dpi, with previews and single or ZIP download. |
 
 ### Developers
 
@@ -52,20 +60,22 @@ Encode, decode and compute.
 
 ### Security
 
-Strong passwords.
+Strong passwords and photo metadata.
 
 | Tool | What it does |
 |---|---|
 | [**Password generator**](https://tools.rr-dev.eu/password-generator) | Random passwords (4-128 characters, choose the character sets, exclude ambiguous ones) and passphrases (3-12 words from the EFF large wordlist), with honest entropy in bits, a strength bar and the estimated time to guess. Nothing is stored. |
+| [**EXIF viewer & remover**](https://tools.rr-dev.eu/exif-viewer) | See the EXIF, GPS, XMP and IPTC metadata of JPEG, PNG and WebP photos, with warnings for GPS, serial numbers and owner names, and remove it with no recompression (pixels stay identical). Before/after field counts, single or ZIP download. |
 
 ### Italy: tax & banking
 
-Codice fiscale, IBAN and VAT number.
+Codice fiscale, IBAN, VAT number and electronic invoices.
 
 | Tool | What it does |
 |---|---|
 | [**Italian tax code (codice fiscale)**](https://tools.rr-dev.eu/codice-fiscale) | Calculate the codice fiscale (official DM 23/12/1976 rules, Italian municipality with type-ahead search, foreign country or manual code) and check and decode a code: structure, check character, sex, birth date (century ambiguity) and place, omocodia included. |
 | [**IBAN & Italian VAT validator**](https://tools.rr-dev.eu/iban-partita-iva) | One field that recognises an IBAN or a partita IVA, plus separate tabs and a bulk check (one value per line, CSV export). IBAN: mod-97, length and format per country, Italian CIN/ABI/CAB. VAT: check digit and office code. |
+| [**Italian e-invoice viewer (FatturaPA XML/P7M)**](https://tools.rr-dev.eu/fattura-elettronica) | Open an electronic invoice as XML, signed .p7m (DER or Base64) or a ZIP of invoices and read it laid out: parties, lines, VAT summary, totals, payment, attachments. Print or save as PDF. The signature is not verified. |
 
 More tools are coming, with the same rule: nothing leaves your browser.
 
@@ -113,6 +123,31 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Per page: rotate left/right, delete, select. Reorder by drag & drop (native HTML5) or with the move buttons / Alt + arrow keys, with screen-reader announcements.
 - Actions: merge everything in the current order and rotation, extract the selected pages, rotate all, or split (every page, every N pages, or by ranges such as `1-3, 5, 8-10`, validated with clear errors). Several output files come as a ZIP (fflate).
 - Output PDFs are built with pdf-lib (MIT); Producer/Creator are "rrstudio Tools" and the title of the first file is kept. Thumbnails are drawn lazily, one at a time, with pdf.js (Apache-2.0); its worker and standard fonts are served from the same origin (no CDN, no `unsafe-eval`).
+
+### Images to PDF
+
+![Images to PDF](docs/screenshots/images-to-pdf.png)
+
+- Route `/images-to-pdf`. Up to 100 images (JPG, PNG, WebP, 50 MB each) as thumbnails that can be reordered by drag & drop, with buttons or with Alt + arrow keys (screen-reader announcements). HEIC is not supported by browsers: a clear message explains how to export a JPG.
+- Page: A4, Letter or "fit to image" (the page has the image's proportions at 150 dpi), orientation automatic/portrait/landscape, margins none/5/10/20 mm, 1, 2 or 4 images per page.
+- Quality 100 keeps JPG and PNG files byte for byte (lossless); lower values re-encode them as JPEG. EXIF orientation is respected. The PDF is built with pdf-lib (MIT); pages are laid out by a pure, unit-tested function.
+- The mode switch moves to `/pdf-to-images` (same page component, mode preset by the route).
+
+### PDF to images
+
+![PDF to images](docs/screenshots/pdf-to-images.png)
+
+- Route `/pdf-to-images`. One PDF (100 MB; password-protected files are refused with a clear message), pages all or by range (same parser as the PDF tools, with clear errors), PNG or JPEG, 72, 150 or 300 dpi, up to 50 pages per run.
+- Pages are drawn with pdf.js (Apache-2.0), whose worker comes from the same origin; very large pages are scaled down to 50 megapixels. Previews, single download or a ZIP (fflate).
+
+### EXIF viewer & remover
+
+![EXIF viewer & remover](docs/screenshots/exif-viewer.png)
+
+- JPEG, PNG and WebP (HEIC is reported as unsupported). A purpose-written, bounds-checked parser reads EXIF/TIFF (JPEG APP1, PNG `eXIf`, WebP `EXIF`), XMP and IPTC, PNG text chunks and the embedded thumbnail, grouped as camera, date and time, shooting settings, software, author and copyright.
+- Warnings for GPS, serial numbers and owner or author names. GPS shows coordinates, altitude and accuracy plus a plain text link "Open on OpenStreetMap": no map or external request is made unless you click it.
+- Removal does not recompress: JPEG drops the APP1 (EXIF/XMP), APP13 (IPTC) and comment segments; PNG drops `eXIf`, `tEXt`, `zTXt`, `iTXt` and `tIME`; WebP drops the `EXIF` and `XMP ` chunks and updates the VP8X header and the RIFF size. For photos with an EXIF orientation other than 1 you choose between keeping a minimal EXIF with only the orientation, or rotating the pixels (which recompresses). Tests check that the cleaned file has no metadata left and that the image data is byte for byte identical.
+- Before/after field counts and bytes saved; single download or ZIP.
 
 ### Password generator
 
@@ -164,6 +199,15 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Check and decode: length, structure, check character, sex, birth date (most plausible century plus the alternative) and place; omocodia (letters LMNPQRSTUV in place of digits) is supported in both directions and the seven omocodia variants are listed.
 - The result is the "theoretical" code: the real one is assigned by the Agenzia delle Entrate. Nothing is sent or stored.
 - Place data: ISTAT "Codici dei comuni, delle province e delle regioni", CC BY 4.0, saved in `public/data/luoghi.json` (about 220 kB, 74 kB gzipped, loaded only when needed) by `node scripts/update-places.mjs`. Abolished municipalities and foreign countries (Z codes) have to be exported from ISTAT's SITUAS portal and passed with `--soppressi` and `--esteri` (see the script header); until then the Z code can be typed by hand.
+
+### Italian e-invoice viewer (FatturaPA XML/P7M)
+
+![Italian e-invoice viewer](docs/screenshots/fattura-elettronica.png)
+
+- Route `/fattura-elettronica`. Opens `.xml`, `.p7m` (CAdES, DER or Base64) and `.zip` files with several invoices. For `.p7m` a small ASN.1/DER reader (definite and indefinite lengths, fragmented OCTET STRINGs) extracts the XML from the CMS SignedData. **The signature is not verified**, and the page says so.
+- Formats FPR12 (private parties), FPA12 (public bodies) and FSM10 (simplified), namespaces with or without prefix, several bodies per file. XML is read with `DOMParser` (no external stylesheets).
+- Shows parties, general data (document type TD01-TD29, number, date, currency, reason, withholding, stamp duty, social security fund), references (orders, contracts, DDT), lines (quantity, price, discounts, VAT rate, nature N1-N7), VAT summary, totals and payment (terms, method MP01-MP23, due dates, IBAN). Code tables in Italian and English follow the public FatturaPA technical specifications, version 1.9.
+- Attachments (Base64) are listed with name, format and size and can be downloaded. Print / save as PDF uses a dedicated print style with only the invoice; the XML extracted from a `.p7m` can be downloaded; the key details can be copied.
 
 ### IBAN & Italian VAT validator
 
@@ -244,7 +288,10 @@ a server esterni, nessun cookie, nessun tracciamento o analytics.
   [Generatore di password](https://tools.rr-dev.eu/password-generator) (password e passphrase, con
   entropia) e [Hash e checksum](https://tools.rr-dev.eu/hash-generator) (MD5, SHA-1, SHA-256, SHA-384,
   SHA-512 di testi e file), [Codice fiscale](https://tools.rr-dev.eu/codice-fiscale) (calcolo, verifica,
-  omocodia) e [Verifica IBAN e partita IVA](https://tools.rr-dev.eu/iban-partita-iva), tutti con
+  omocodia), [Verifica IBAN e partita IVA](https://tools.rr-dev.eu/iban-partita-iva),
+  [Visualizzatore fattura elettronica](https://tools.rr-dev.eu/fattura-elettronica) (XML e P7M),
+  [Da immagini a PDF](https://tools.rr-dev.eu/images-to-pdf) e [Da PDF a immagini](https://tools.rr-dev.eu/pdf-to-images),
+  [Metadati foto EXIF](https://tools.rr-dev.eu/exif-viewer) (visualizza e rimuovi senza ricomprimere), tutti con
   elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build
   statica (`dist/rrstudio-tools/browser`, pubblicabile su qualsiasi hosting statico).

@@ -4,17 +4,23 @@
     <div class="row">
       <p class="legal">
         © 2026 rrstudio ·
-        <a [href]="license" target="_blank" rel="noopener">{{ i18n.t('footer.license') }}</a>
+        <a [href]="license" target="_blank" rel="noopener">{{ i18n.t('footer.license') }}</a> ·
+        <a [href]="repo" target="_blank" rel="noopener">{{ i18n.t('footer.source') }}</a>
       </p>
       <ul class="links">
+        <li class="family">rrstudio:</li>
+        <li><strong aria-current="page">{{ i18n.t('footer.tools') }}</strong></li>
+        <li>
+          <a [href]="premium" target="_blank" rel="noopener">{{ i18n.t('footer.dashboards') }}</a>
+        </li>
+        <li>
+          <a [href]="apps" target="_blank" rel="noopener">{{ i18n.t('footer.apps') }}</a>
+        </li>
+        <li>
+          <a [href]="github" target="_blank" rel="noopener">{{ i18n.t('footer.github') }}</a>
+        </li>
         <li>
           <a [href]="kofi" target="_blank" rel="noopener">{{ i18n.t('footer.coffee') }}</a>
-        </li>
-        <li>
-          <a [href]="premium" target="_blank" rel="noopener">{{ i18n.t('footer.premium') }}</a>
-        </li>
-        <li>
-          <a [href]="repo" target="_blank" rel="noopener">{{ i18n.t('footer.repo') }}</a>
         </li>
       </ul>
     </div>

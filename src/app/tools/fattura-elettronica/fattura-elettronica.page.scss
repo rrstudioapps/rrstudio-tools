@@ -1,0 +1,279 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+:host {
+  display: block;
+}
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.conf-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-4);
+  .spacer {
+    flex: 1;
+  }
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  max-width: 100%;
+  label {
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  select {
+    max-width: 100%;
+  }
+}
+.mono {
+  font-family: var(--mono);
+}
+.sub {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.blk {
+  display: block;
+}
+
+// La fattura come un foglio: bordo sottile, margini ampi
+.invoice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.inv-head h2 {
+  font-size: var(--fs-lg);
+  margin: var(--space-1) 0 0;
+  overflow-wrap: anywhere;
+}
+.sig {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.parties {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.party {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow-wrap: anywhere;
+}
+.pname {
+  margin: var(--space-2) 0;
+  font-weight: var(--fw-bold);
+}
+.pline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+  margin: 0 0 2px;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.block {
+  min-width: 0;
+  h3 {
+    margin-bottom: var(--space-2);
+  }
+}
+.kv {
+  display: grid;
+  grid-template-columns: minmax(110px, 190px) minmax(0, 1fr);
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  font-size: var(--fs-sm);
+  dt {
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  &.pay {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--line-soft);
+  }
+}
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+table.lines {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  th,
+  td {
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  th {
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .r {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .num-col {
+    width: 1%;
+    white-space: nowrap;
+  }
+  .desc {
+    overflow-wrap: anywhere;
+  }
+  .strong {
+    font-weight: var(--fw-bold);
+  }
+}
+.totals {
+  display: flex;
+  justify-content: flex-end;
+}
+.tot {
+  grid-template-columns: auto auto;
+  justify-content: end;
+  text-align: right;
+  dt,
+  dd {
+    padding-block: 2px;
+  }
+  .grand {
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--ink);
+    font-size: var(--fs-md);
+    color: var(--ink);
+    font-weight: var(--fw-bold);
+  }
+}
+.atts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+  }
+  .aname {
+    flex: 1 1 160px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-weight: var(--fw-medium);
+  }
+  .ameta {
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+}
+.small-print {
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .invoice {
+    padding: var(--space-3);
+  }
+  .parties {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .kv {
+    grid-template-columns: minmax(0, 1fr);
+    dt {
+      margin-top: var(--space-2);
+    }
+  }
+  .tot {
+    grid-template-columns: auto auto;
+    dt {
+      margin-top: 0;
+    }
+  }
+}
+
+// Stampa: solo la fattura, su carta bianca (il resto della pagina è nascosto da styles.scss)
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .invoice {
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    gap: 14pt;
+    background: #fff;
+    color: #000;
+    font-size: 10pt;
+  }
+  .party,
+  .table-wrap {
+    border-color: #999;
+    overflow: visible;
+  }
+  table.lines {
+    min-width: 0;
+    th,
+    td {
+      border-bottom-color: #ccc;
+      padding: 3pt 4pt;
+    }
+  }
+  tr,
+  .party,
+  .totals,
+  .block {
+    break-inside: avoid;
+  }
+  .tot .grand {
+    border-top-color: #000;
+  }
+}

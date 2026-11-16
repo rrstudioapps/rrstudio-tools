@@ -14,17 +14,19 @@ export type ToolCategoryId = 'data' | 'dev' | 'security' | 'italy';
 /** Categoria mostrata in home. L'ordine dell'array CATEGORIES è quello delle sezioni. */
 export interface ToolCategory {
   id: ToolCategoryId;
-  /** Parte dell'URL (?categoria=slug o #slug) e id dell'ancora della sezione. */
+  /** Parte dell'URL italiana (?categoria=slug o #slug) e id dell'ancora della sezione. */
   slug: string;
+  /** Lo stesso in inglese (?category=slug o #slug nelle pagine /en/). */
+  slugEn: string;
   titleKey: DictKey;
   descriptionKey: DictKey;
 }
 
 export const CATEGORIES: readonly ToolCategory[] = [
-  { id: 'data', slug: 'dati', titleKey: 'cat.data.title', descriptionKey: 'cat.data.desc' },
-  { id: 'dev', slug: 'sviluppatori', titleKey: 'cat.dev.title', descriptionKey: 'cat.dev.desc' },
-  { id: 'security', slug: 'sicurezza', titleKey: 'cat.security.title', descriptionKey: 'cat.security.desc' },
-  { id: 'italy', slug: 'italia', titleKey: 'cat.italy.title', descriptionKey: 'cat.italy.desc' },
+  { id: 'data', slug: 'dati', slugEn: 'data', titleKey: 'cat.data.title', descriptionKey: 'cat.data.desc' },
+  { id: 'dev', slug: 'sviluppatori', slugEn: 'developers', titleKey: 'cat.dev.title', descriptionKey: 'cat.dev.desc' },
+  { id: 'security', slug: 'sicurezza', slugEn: 'security', titleKey: 'cat.security.title', descriptionKey: 'cat.security.desc' },
+  { id: 'italy', slug: 'italia', slugEn: 'italy', titleKey: 'cat.italy.title', descriptionKey: 'cat.italy.desc' },
 ];
 
 export interface ToolDefinition {
@@ -32,6 +34,8 @@ export interface ToolDefinition {
   /** Percorso della route (senza slash iniziale). */
   path: string;
   icon: IconName;
+  /** Solo per l'Italia: nessuna versione inglese (/en/…), resta solo la pagina italiana. */
+  italyOnly?: boolean;
   /** Un tool sta in una sola categoria. */
   category: ToolCategoryId;
   /** Parole chiave extra per la ricerca in home (non mostrate). */
@@ -39,6 +43,8 @@ export interface ToolDefinition {
   titleKey: DictKey;
   descriptionKey: DictKey;
   seo: { titleKey: DictKey; descriptionKey: DictKey };
+  /** Dati di route extra (es. la modalità preimpostata di un componente condiviso da più route). */
+  routeData?: Record<string, unknown>;
   /** Caricamento lazy: o un singolo componente o un file di route. */
   loadComponent?: () => Promise<Type<unknown>>;
   loadChildren?: () => Promise<Routes>;
@@ -128,6 +134,50 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-tools/pdf-tools.page').then((m) => m.PdfToolsPage),
   },
   {
+    id: 'images-to-pdf',
+    path: 'images-to-pdf',
+    icon: 'image',
+    category: 'data',
+    keywords: {
+      it: 'immagini in pdf jpg png webp foto unisci converti pagina a4 letter margini',
+      en: 'images to pdf jpg png webp photos combine convert page a4 letter margins',
+    },
+    routeData: { mode: 'images-to-pdf' },
+    titleKey: 'tool.i2p.title',
+    descriptionKey: 'tool.i2p.desc',
+    seo: { titleKey: 'seo.i2p.title', descriptionKey: 'seo.i2p.desc' },
+    loadComponent: () => import('./images-pdf/images-pdf.page').then((m) => m.ImagesPdfPage),
+  },
+  {
+    id: 'pdf-to-images',
+    path: 'pdf-to-images',
+    icon: 'file',
+    category: 'data',
+    keywords: {
+      it: 'pdf in immagini png jpeg jpg converti pagine dpi risoluzione esporta zip',
+      en: 'pdf to images png jpeg jpg convert pages dpi resolution export zip',
+    },
+    routeData: { mode: 'pdf-to-images' },
+    titleKey: 'tool.p2i.title',
+    descriptionKey: 'tool.p2i.desc',
+    seo: { titleKey: 'seo.p2i.title', descriptionKey: 'seo.p2i.desc' },
+    loadComponent: () => import('./images-pdf/images-pdf.page').then((m) => m.ImagesPdfPage),
+  },
+  {
+    id: 'exif-viewer',
+    path: 'exif-viewer',
+    icon: 'eyeOff',
+    category: 'security',
+    keywords: {
+      it: 'exif metadati foto gps posizione privacy rimuovi pulisci xmp iptc jpeg png webp fotocamera',
+      en: 'exif metadata photo gps location privacy remove strip clean xmp iptc jpeg png webp camera',
+    },
+    titleKey: 'tool.exif.title',
+    descriptionKey: 'tool.exif.desc',
+    seo: { titleKey: 'seo.exif.title', descriptionKey: 'seo.exif.desc' },
+    loadComponent: () => import('./exif-viewer/exif-viewer.page').then((m) => m.ExifViewerPage),
+  },
+  {
     id: 'password-generator',
     path: 'password-generator',
     icon: 'lock',
@@ -152,6 +202,7 @@ export const TOOLS: readonly ToolDefinition[] = [
   },
   {
     id: 'codice-fiscale',
+    italyOnly: true,
     path: 'codice-fiscale',
     icon: 'idcard',
     category: 'italy',
@@ -163,6 +214,7 @@ export const TOOLS: readonly ToolDefinition[] = [
   },
   {
     id: 'iban-partita-iva',
+    italyOnly: true,
     path: 'iban-partita-iva',
     icon: 'bank',
     category: 'italy',
@@ -171,5 +223,21 @@ export const TOOLS: readonly ToolDefinition[] = [
     descriptionKey: 'tool.iban.desc',
     seo: { titleKey: 'seo.iban.title', descriptionKey: 'seo.iban.desc' },
     loadComponent: () => import('./iban-partita-iva/iban-partita-iva.page').then((m) => m.IbanPartitaIvaPage),
+  },
+  {
+    id: 'fattura-elettronica',
+    italyOnly: true,
+    path: 'fattura-elettronica',
+    icon: 'file',
+    category: 'italy',
+    keywords: {
+      it: 'fattura elettronica xml p7m fatturapa sdi visualizza leggi stampa zip allegati tracciato',
+      en: 'italian e-invoice electronic invoice fatturapa xml p7m sdi viewer read print zip attachments',
+    },
+    titleKey: 'tool.fe.title',
+    descriptionKey: 'tool.fe.desc',
+    seo: { titleKey: 'seo.fe.title', descriptionKey: 'seo.fe.desc' },
+    loadComponent: () =>
+      import('./fattura-elettronica/fattura-elettronica.page').then((m) => m.FatturaElettronicaPage),
   },
 ];

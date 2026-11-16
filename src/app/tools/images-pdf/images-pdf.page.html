@@ -1,0 +1,276 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ toPdf ? i18n.t('tool.i2p.title') : i18n.t('tool.p2i.title') }}</h1>
+    <p class="tool-lead">{{ toPdf ? i18n.t('ip.lead.toPdf') : i18n.t('ip.lead.toImages') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="conf-note" role="note"><app-icon name="lock" /> {{ i18n.t('ip.confidential') }}</p>
+
+  <div class="mode">
+    <span class="eyebrow" id="ip-mode-label">{{ i18n.t('ip.mode') }}</span>
+    <app-segmented [label]="i18n.t('ip.mode')" [options]="modeOptions()" [value]="mode" (valueChange)="goMode($event)" />
+  </div>
+
+  @if (toPdf) {
+    <app-file-drop
+      [hint]="i18n.t('ip.drop.images', { max: maxImages })"
+      accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+      [multiple]="true"
+      (filesSelected)="onImages($event)"
+    >
+      <div class="visually-hidden" role="status" aria-live="polite">{{ announcement() }}</div>
+      <div class="tool-status" aria-live="polite" role="status">
+        @for (n of notices(); track $index) {
+          <p class="tool-error">{{ n }}</p>
+        }
+        @if (progress()) {
+          <p class="tool-ok">{{ progress() }}</p>
+        }
+        @if (result()) {
+          <p class="tool-ok">{{ result() }}</p>
+        }
+      </div>
+
+      @if (items().length > 0) {
+        <section class="opts" [attr.aria-label]="i18n.t('ip.options')">
+          <h2 class="eyebrow">{{ i18n.t('ip.options') }}</h2>
+          <div class="opt-row">
+            <div class="field">
+              <span class="lbl">{{ i18n.t('ip.format') }}</span>
+              <app-segmented [label]="i18n.t('ip.format')" [options]="formatOptions()" [(value)]="format" />
+            </div>
+            <div class="field">
+              <span class="lbl">{{ i18n.t('ip.orientation') }}</span>
+              <app-segmented
+                [label]="i18n.t('ip.orientation')"
+                [options]="orientationOptions()"
+                [(value)]="orientation"
+              />
+            </div>
+          </div>
+          <div class="opt-row">
+            <div class="field">
+              <label class="lbl" for="ip-margin">{{ i18n.t('ip.margin') }}</label>
+              <select id="ip-margin" [value]="margin()" (change)="setMargin($any($event.target).value)">
+                @for (m of margins; track m) {
+                  <option [value]="m" [selected]="m === margin()">{{ i18n.t('ip.margin.' + m) }}</option>
+                }
+              </select>
+            </div>
+            <div class="field">
+              <span class="lbl">{{ i18n.t('ip.perPage') }}</span>
+              <app-segmented
+                [label]="i18n.t('ip.perPage')"
+                [options]="perPageOptions"
+                [value]="format() === 'fit' ? '1' : perPageValue()"
+                (valueChange)="setPerPage($event)"
+              />
+              @if (format() === 'fit') {
+                <span class="hint">{{ i18n.t('ip.perPage.fitNote') }}</span>
+              }
+            </div>
+            <div class="field grow">
+              <label class="lbl" for="ip-quality">{{ i18n.t('ip.quality') }}: <output for="ip-quality">{{ quality() }}</output></label>
+              <input
+                id="ip-quality"
+                type="range"
+                min="30"
+                max="100"
+                step="5"
+                [value]="quality()"
+                aria-describedby="ip-quality-hint"
+                (input)="setQuality($any($event.target).value)"
+              />
+              <span id="ip-quality-hint" class="hint">{{ i18n.t('ip.quality.hint') }}</span>
+            </div>
+          </div>
+          <p class="hint">{{ i18n.t('ip.orientationNote') }}</p>
+        </section>
+
+        <section class="actions" [attr.aria-label]="i18n.t('ip.create')">
+          <button type="button" class="btn small primary" [disabled]="busy()" (click)="createPdf()">
+            <app-icon name="download" /> {{ i18n.t('ip.create') }}
+          </button>
+          <span class="mono sum">{{ summary() }}</span>
+          <span class="spacer"></span>
+          <button type="button" class="btn small" (click)="clearItems()">
+            <app-icon name="trash" /> {{ i18n.t('ip.clear') }}
+          </button>
+        </section>
+
+        <div class="pages-head">
+          <h2 class="eyebrow">{{ i18n.t('ip.images') }}</h2>
+        </div>
+        <p class="hint">{{ i18n.t('ip.images.hint') }}</p>
+
+        <ul class="grid">
+          @for (it of items(); track it.uid; let i = $index) {
+            <li
+              class="card"
+              draggable="true"
+              [attr.data-uid]="it.uid"
+              [class.dragging]="dragUid() === it.uid"
+              [class.drop-before]="isDropBefore(it)"
+              [class.drop-after]="isDropAfter(it)"
+              (dragstart)="onDragStart($event, it)"
+              (dragover)="onDragOver($event, it)"
+              (drop)="onDrop($event, it)"
+              (dragend)="endDrag()"
+              (keydown)="onKey($event, it)"
+            >
+              <div class="thumb"><img [src]="it.thumb" alt="" draggable="false" /></div>
+              <div class="info">
+                <strong class="no mono">{{ i18n.t('ip.item.label', { n: i + 1 }) }}</strong>
+                <span class="fname" [title]="it.name">{{ it.name }}</span>
+                <span class="meta mono">{{ i18n.t('ip.item.dims', { w: it.width, h: it.height }) }}</span>
+              </div>
+              <div class="tools">
+                <button
+                  type="button"
+                  class="ib"
+                  data-act="before"
+                  [disabled]="i === 0"
+                  [attr.aria-label]="i18n.t('ip.item.moveBefore', { n: i + 1 })"
+                  [attr.title]="i18n.t('ip.item.moveBefore', { n: i + 1 })"
+                  (click)="moveBy(it, -1, 'before')"
+                >
+                  <app-icon name="left" />
+                </button>
+                <button
+                  type="button"
+                  class="ib"
+                  data-act="after"
+                  [disabled]="i === items().length - 1"
+                  [attr.aria-label]="i18n.t('ip.item.moveAfter', { n: i + 1 })"
+                  [attr.title]="i18n.t('ip.item.moveAfter', { n: i + 1 })"
+                  (click)="moveBy(it, 1, 'after')"
+                >
+                  <app-icon name="right" />
+                </button>
+                <button
+                  type="button"
+                  class="ib"
+                  data-act="remove"
+                  [attr.aria-label]="i18n.t('ip.item.remove', { n: i + 1, name: it.name })"
+                  [attr.title]="i18n.t('ip.item.remove', { n: i + 1, name: it.name })"
+                  (click)="removeItem(it)"
+                >
+                  <app-icon name="trash" />
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </app-file-drop>
+  } @else {
+    <app-file-drop
+      [hint]="i18n.t('ip.drop.pdf')"
+      accept="application/pdf,.pdf"
+      (fileSelected)="onPdf($event)"
+    >
+      <div class="visually-hidden" role="status" aria-live="polite">{{ announcement() }}</div>
+      <div class="tool-status" aria-live="polite" role="status">
+        @for (n of notices(); track $index) {
+          <p class="tool-error">{{ n }}</p>
+        }
+        @if (progress()) {
+          <p class="tool-ok">{{ progress() }}</p>
+        }
+        @if (result()) {
+          <p class="tool-ok">{{ result() }}</p>
+        }
+      </div>
+
+      @if (pdf(); as src) {
+        <p class="file-line">
+          <app-icon name="file" /> <span class="fname-big">{{ pdfLabel() }}</span>
+          <button type="button" class="btn small" (click)="closePdf()"><app-icon name="trash" /> {{ i18n.t('ip.clear') }}</button>
+        </p>
+
+        <section class="opts" [attr.aria-label]="i18n.t('ip.pages')">
+          <h2 class="eyebrow">{{ i18n.t('ip.pages') }}</h2>
+          <div class="opt-row">
+            <app-segmented [label]="i18n.t('ip.pages')" [options]="pageModeOptions()" [(value)]="pageMode" />
+            @if (pageMode() === 'range') {
+              <div class="field grow">
+                <label class="lbl" for="ip-range">{{ i18n.t('ip.pages.rangeLabel') }}</label>
+                <input
+                  id="ip-range"
+                  type="text"
+                  autocomplete="off"
+                  spellcheck="false"
+                  class="mono"
+                  [placeholder]="i18n.t('ip.pages.rangePh')"
+                  [value]="rangeText()"
+                  [attr.aria-invalid]="selection().error ? 'true' : null"
+                  [attr.aria-describedby]="selection().error ? 'ip-range-err ip-range-hint' : 'ip-range-hint'"
+                  (input)="rangeText.set($any($event.target).value)"
+                />
+              </div>
+            }
+          </div>
+          @if (pageMode() === 'range') {
+            <p id="ip-range-hint" class="hint">{{ i18n.t('ip.pages.rangeHint', { total: src.pageCount }) }}</p>
+          }
+          @if (selection().error) {
+            <p id="ip-range-err" class="tool-error" role="alert">{{ selection().error }}</p>
+          } @else if (tooMany()) {
+            <p class="tool-error" role="alert">{{ tooMany() }}</p>
+          } @else {
+            <p class="hint">{{ selectionCount() }}</p>
+          }
+          <div class="opt-row">
+            <div class="field">
+              <span class="lbl">{{ i18n.t('ip.imgFormat') }}</span>
+              <app-segmented [label]="i18n.t('ip.imgFormat')" [options]="outFormatOptions" [(value)]="outFormat" />
+            </div>
+            <div class="field">
+              <label class="lbl" for="ip-dpi">{{ i18n.t('ip.dpi') }}</label>
+              <select id="ip-dpi" [value]="dpi()" (change)="setDpi($any($event.target).value)">
+                @for (d of dpis; track d) {
+                  <option [value]="d" [selected]="d === dpi()">{{ i18n.t('ip.dpi.' + d) }}</option>
+                }
+              </select>
+            </div>
+            <button type="button" class="btn small primary go" [disabled]="!canConvert()" (click)="convert()">
+              <app-icon name="image" /> {{ i18n.t('ip.convert') }}
+            </button>
+          </div>
+        </section>
+
+        @if (results().length > 0) {
+          <div class="pages-head">
+            <h2 class="eyebrow">{{ i18n.t('ip.results') }}</h2>
+            @if (results().length > 1) {
+              <button type="button" class="btn small primary" [disabled]="busy()" (click)="downloadZip()">
+                <app-icon name="download" /> {{ i18n.t('ip.zip') }}
+              </button>
+            }
+          </div>
+          <ul class="grid" data-testid="ip-results">
+            @for (r of results(); track r.page) {
+              <li class="card plain">
+                <div class="thumb"><img [src]="r.thumb" [alt]="i18n.t('ip.result.alt', { n: r.page })" draggable="false" /></div>
+                <div class="info">
+                  <span class="fname" [title]="r.name">{{ r.name }}</span>
+                  <span class="meta mono">{{ formatSize(r.size) }}</span>
+                </div>
+                <button
+                  type="button"
+                  class="btn small"
+                  [attr.aria-label]="i18n.t('ip.result.download.aria', { name: r.name })"
+                  (click)="downloadResult(r)"
+                >
+                  <app-icon name="download" /> {{ i18n.t('ip.result.download') }}
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      }
+    </app-file-drop>
+  }
+</div>

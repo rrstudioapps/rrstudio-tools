@@ -15,9 +15,12 @@ export const en: Dict = {
   'privacy.short': 'Files are processed in your browser and are never uploaded.',
 
   'footer.coffee': 'Buy me a coffee',
-  'footer.premium': 'Premium dashboard',
-  'footer.repo': 'Source code on GitHub',
+  'footer.tools': 'Tools',
+  'footer.dashboards': 'Dashboards',
+  'footer.apps': 'Apps',
+  'footer.github': 'GitHub',
   'footer.license': 'AGPL-3.0 license',
+  'footer.source': 'Source code',
   'footer.noads': 'No ads, no cookies, no tracking.',
 
   'home.eyebrow': 'FREE TOOLS · OPEN SOURCE',
@@ -40,9 +43,13 @@ export const en: Dict = {
   'cat.dev.title': 'Developers',
   'cat.dev.desc': 'Encode, decode and compute: small workbench tools.',
   'cat.security.title': 'Security',
-  'cat.security.desc': 'Strong passwords, created in your browser.',
+  'cat.security.desc': 'Strong passwords and photo metadata: your privacy, handled in the browser.',
   'cat.italy.title': 'Italy: tax & banking',
-  'cat.italy.desc': 'Codice fiscale, IBAN and VAT number: calculate and verify.',
+  'cat.italy.desc': 'Codice fiscale, IBAN, VAT number and e-invoices: calculate, verify and read.',
+  'home.italy.lead': 'Tools for Italy (in Italian):',
+  'home.italy.codice-fiscale': 'codice fiscale',
+  'home.italy.iban-partita-iva': 'IBAN & partita IVA',
+  'home.italy.fattura-elettronica': 'fattura elettronica',
   'home.open': 'Open the tool',
   'home.soon.badge': 'Coming soon',
   'home.soon.title': 'More tools coming soon',
@@ -144,4 +151,32 @@ export const en: Dict = {
   'seo.iban.title': 'IBAN and Italian VAT number (partita IVA) validator online — free and private | rrstudio Tools',
   'seo.iban.desc':
     'Check whether an IBAN is valid (mod-97 check digits, length per country, Italian CIN, ABI, CAB) and whether an Italian VAT number is correct. Validate many values at once and export a CSV. Nothing is sent or stored.',
+
+  'tool.fe.title': 'Italian e-invoice viewer (FatturaPA XML/P7M)',
+  'tool.fe.desc':
+    'Open an Italian electronic invoice in XML, a signed .p7m file or a ZIP of invoices and read it laid out: parties, lines, VAT, totals, payment and attachments. Print or save as PDF.',
+  'seo.fe.title': 'Italian e-invoice (FatturaPA) XML and P7M viewer online — free and private | rrstudio Tools',
+  'seo.fe.desc':
+    'Read an Italian electronic invoice (FatturaPA XML, signed .p7m, ZIP) with nothing to install: supplier and customer, lines, VAT summary, totals, due dates, IBAN and downloadable attachments. Print to PDF. All in your browser, no upload.',
+
+  'tool.i2p.title': 'Images to PDF',
+  'tool.i2p.desc':
+    'Combine JPG, PNG and WebP images into one PDF: reorder the thumbnails, pick page size, orientation, margins, images per page and quality.',
+  'seo.i2p.title': 'Images to PDF online (JPG, PNG, WebP) — free and private | rrstudio Tools',
+  'seo.i2p.desc':
+    'Convert several JPG, PNG or WebP images into a single PDF: any order, A4, Letter or fit-to-image pages, margins, 1, 2 or 4 images per page. All in your browser, no upload.',
+
+  'tool.p2i.title': 'PDF to images',
+  'tool.p2i.desc':
+    'Turn PDF pages into PNG or JPEG images at 72, 150 or 300 dpi: choose the pages, preview them and download one by one or as a ZIP.',
+  'seo.p2i.title': 'PDF to PNG or JPG images online — free and private | rrstudio Tools',
+  'seo.p2i.desc':
+    'Convert PDF pages to PNG or JPEG images, all of them or just a range, at 72, 150 or 300 dpi, with previews and a ZIP download. All in your browser, no upload.',
+
+  'tool.exif.title': 'EXIF viewer & remover: photo metadata',
+  'tool.exif.desc':
+    'See what your photos reveal (GPS location, phone model, date, serial number) and remove the metadata without recompressing the image.',
+  'seo.exif.title': 'View and remove photo EXIF metadata online — free and private | rrstudio Tools',
+  'seo.exif.desc':
+    'Read the EXIF, GPS, XMP and IPTC metadata of JPEG, PNG and WebP files and strip it with no quality loss: no recompression, warnings about sensitive information. All in your browser, no upload.',
 };

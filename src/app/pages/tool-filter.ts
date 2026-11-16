@@ -55,19 +55,20 @@ export function filterTools(
   );
 }
 
-/** Da slug (?categoria=) a id categoria; null se sconosciuto. */
+/** Da slug (?categoria= in italiano, ?category= in inglese; qui si accettano entrambi) a id categoria; null se sconosciuto. */
 export function categoryFromSlug(slug: string | null | undefined): ToolCategoryId | null {
   if (!slug) return null;
   const s = slug.trim().toLowerCase();
-  return CATEGORIES.find((c) => c.slug === s)?.id ?? null;
+  return CATEGORIES.find((c) => c.slug === s || c.slugEn === s)?.id ?? null;
 }
 
-/** Categoria scelta da un URL: prima ?categoria=, poi il fragment. */
+/** Categoria scelta da un URL: prima ?categoria= o ?category=, poi il fragment. */
 export function categoryFromUrl(url: string): ToolCategoryId | null {
   const hashAt = url.indexOf('#');
   const hash = hashAt === -1 ? '' : url.slice(hashAt + 1);
   const beforeHash = hashAt === -1 ? url : url.slice(0, hashAt);
   const q = beforeHash.indexOf('?');
-  const fromQuery = q === -1 ? null : new URLSearchParams(beforeHash.slice(q + 1)).get('categoria');
+  const params = q === -1 ? null : new URLSearchParams(beforeHash.slice(q + 1));
+  const fromQuery = params?.get('categoria') ?? params?.get('category') ?? null;
   return categoryFromSlug(fromQuery) ?? categoryFromSlug(hash);
 }

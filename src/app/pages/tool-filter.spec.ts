@@ -34,7 +34,7 @@ describe('filterTools', () => {
   });
   it('filtra per categoria', () => {
     const r = filterTools(TOOLS, 'italy', '', texts);
-    expect(r.map((t) => t.id).sort()).toEqual(['codice-fiscale', 'iban-partita-iva']);
+    expect(r.map((t) => t.id).sort()).toEqual(['codice-fiscale', 'fattura-elettronica', 'iban-partita-iva']);
   });
   it('cerca nelle parole chiave', () => {
     expect(filterTools(TOOLS, null, 'sha256', texts).map((t) => t.id)).toEqual(['hash-generator']);
@@ -81,5 +81,15 @@ describe('categoryFromSlug / categoryFromUrl', () => {
     expect(categoryFromUrl('/?categoria=dati#italia')).toBe('data');
     expect(categoryFromUrl('/?x=1')).toBeNull();
     expect(categoryFromUrl('/')).toBeNull();
+  });
+});
+
+describe('categorie in inglese', () => {
+  it('?category= e gli slug inglesi sono accettati come quelli italiani', () => {
+    expect(categoryFromUrl('/en?category=developers')).toBe('dev');
+    expect(categoryFromUrl('/en?category=data')).toBe('data');
+    expect(categoryFromUrl('/en#security')).toBe('security');
+    expect(categoryFromUrl('/?categoria=sviluppatori')).toBe('dev');
+    expect(categoryFromUrl('/en?category=nope')).toBeNull();
   });
 });

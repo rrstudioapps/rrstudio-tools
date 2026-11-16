@@ -21,6 +21,10 @@
   margin: 0;
   padding: 0;
 }
+strong {
+  color: var(--ink);
+  font-weight: 600;
+}
 a {
   color: var(--ink-2);
   text-decoration: none;

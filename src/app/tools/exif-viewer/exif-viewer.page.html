@@ -1,0 +1,184 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.exif.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ex.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="conf-note" role="note"><app-icon name="lock" /> {{ i18n.t('ex.confidential') }}</p>
+
+  <app-file-drop
+    [hint]="i18n.t('ex.drop', { max: maxFiles })"
+    accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif"
+    [multiple]="true"
+    (filesSelected)="onFiles($event)"
+  >
+    <div class="visually-hidden" role="status" aria-live="polite">{{ announcement() }}</div>
+    <div class="tool-status" aria-live="polite" role="status">
+      @if (status()) {
+        <p class="tool-ok">{{ status() }}</p>
+      }
+      @for (n of notices(); track $index) {
+        <p class="tool-error">{{ n }}</p>
+      }
+    </div>
+
+    @if (photos().length > 0) {
+      <section class="opts" [attr.aria-label]="i18n.t('ex.clean')">
+        <h2 class="eyebrow">{{ i18n.t('ex.clean') }}</h2>
+        <p class="hint ok-line"><app-icon name="check" /> {{ i18n.t('ex.clean.noRecompress') }}</p>
+        @if (hasRotated()) {
+          <fieldset class="orient">
+            <legend>{{ i18n.t('ex.clean.orient') }}</legend>
+            <label class="radio">
+              <input type="radio" name="exif-orient" value="keep" [checked]="orientMode() === 'keep'" (change)="setOrientMode('keep')" />
+              <span>{{ i18n.t('ex.clean.orient.keep') }}</span>
+            </label>
+            <label class="radio">
+              <input type="radio" name="exif-orient" value="rotate" [checked]="orientMode() === 'rotate'" (change)="setOrientMode('rotate')" />
+              <span>{{ i18n.t('ex.clean.orient.rotate') }}</span>
+            </label>
+          </fieldset>
+        }
+        <div class="actions">
+          <button type="button" class="btn small primary" [disabled]="busy() || !anyDirty()" (click)="cleanAll()">
+            <app-icon name="eyeOff" /> {{ i18n.t('ex.clean.all') }}
+          </button>
+          @if (anyCleaned() > 0) {
+            <button type="button" class="btn small" [disabled]="busy()" (click)="downloadZip()">
+              <app-icon name="download" /> {{ i18n.t('ex.zip') }}
+            </button>
+          }
+          <span class="spacer"></span>
+          <button type="button" class="btn small" (click)="reset()"><app-icon name="trash" /> {{ i18n.t('ex.reset') }}</button>
+        </div>
+      </section>
+
+      <ul class="photos" [attr.aria-label]="i18n.t('ex.files')">
+        @for (p of photos(); track p.uid) {
+          <li class="photo" [attr.data-testid]="'exif-photo'">
+            <header class="p-head">
+              @if (p.preview) {
+                <img class="prev" [src]="p.preview" [alt]="i18n.t('ex.preview.alt', { name: p.name })" />
+              }
+              <div class="p-title">
+                <h2 class="p-name" [title]="p.name">{{ p.name }}</h2>
+                <p class="p-meta mono">{{ p.meta.format.toUpperCase() }} · {{ size(p.size) }} · {{ fieldsText(p.fields) }}</p>
+              </div>
+              <button
+                type="button"
+                class="x"
+                [attr.aria-label]="i18n.t('ex.remove', { name: p.name })"
+                [attr.title]="i18n.t('ex.remove', { name: p.name })"
+                (click)="removePhoto(p)"
+              >
+                <app-icon name="close" />
+              </button>
+            </header>
+
+            @if (p.sensitive.length > 0) {
+              <div class="warn" role="note" data-testid="exif-warn">
+                <strong><app-icon name="shield" /> {{ i18n.t('ex.warn.title') }}</strong>
+                <ul>
+                  @for (f of p.sensitive; track f) {
+                    <li>{{ sensitiveText(f) }}</li>
+                  }
+                </ul>
+              </div>
+            }
+
+            @if (p.gps; as g) {
+              <section class="gps" [attr.aria-label]="i18n.t('ex.gps')">
+                <h3 class="eyebrow">{{ i18n.t('ex.gps') }}</h3>
+                <dl class="kv">
+                  <dt>{{ i18n.t('ex.gps.coords') }}</dt>
+                  <dd class="mono" data-testid="exif-coords">{{ coords(g) }}</dd>
+                  @if (altitude(g)) {
+                    <dt>{{ i18n.t('ex.gps.altitude') }}</dt>
+                    <dd>{{ altitude(g) }}</dd>
+                  }
+                  @if (accuracy(g)) {
+                    <dt>{{ i18n.t('ex.gps.precision') }}</dt>
+                    <dd>{{ accuracy(g) }}</dd>
+                  }
+                </dl>
+                <p class="hint">
+                  <a
+                    [href]="osm(g)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    [attr.aria-label]="i18n.t('ex.gps.open.aria', { name: p.name })"
+                    >{{ i18n.t('ex.gps.open') }}</a
+                  >
+                  · {{ i18n.t('ex.gps.note') }}
+                </p>
+              </section>
+            }
+
+            @for (grp of groups(p); track grp.id) {
+              <section class="grp" [attr.aria-label]="grp.title">
+                <h3 class="eyebrow">{{ grp.title }}</h3>
+                <dl class="kv">
+                  @for (r of grp.rows; track $index) {
+                    <dt>{{ r.label }}</dt>
+                    <dd>
+                      {{ r.value }}
+                      @if (r.sensitive) {
+                        <span class="tag">{{ i18n.t('ex.sensitive') }}</span>
+                      }
+                    </dd>
+                  }
+                </dl>
+              </section>
+            }
+
+            @if (p.other > 0) {
+              <p class="hint">{{ i18n.t('ex.other', { n: p.other }) }}</p>
+            }
+
+            @if (p.thumb) {
+              <section class="grp" [attr.aria-label]="i18n.t('ex.thumb')">
+                <h3 class="eyebrow">{{ i18n.t('ex.thumb') }}</h3>
+                <img class="emb" [src]="p.thumb" [alt]="i18n.t('ex.thumb.alt', { name: p.name })" />
+                <p class="hint">{{ i18n.t('ex.thumb.note') }}</p>
+              </section>
+            }
+
+            @if (p.fields === 0 && !p.thumb) {
+              <p class="tool-ok" data-testid="exif-none">{{ i18n.t('ex.noMeta') }}</p>
+            }
+
+            <footer class="p-foot">
+              @if (p.cleaned; as c) {
+                <div class="res" role="status" data-testid="exif-result">
+                  <strong>{{ i18n.t('ex.result') }}</strong>
+                  <span class="mono">{{ i18n.t('ex.result.before', { n: p.fields, size: size(p.size) }) }}</span>
+                  <span class="mono">{{ i18n.t('ex.result.after', { n: c.fieldsAfter, size: size(c.bytes.length) }) }}</span>
+                  <span class="mono">{{ saved(p) }}</span>
+                  @if (c.how === 'kept') {
+                    <span class="hint">{{ i18n.t('ex.result.kept') }}</span>
+                  } @else if (c.how === 'rotated') {
+                    <span class="hint">{{ i18n.t('ex.result.recompressed') }}</span>
+                  }
+                </div>
+                <button
+                  type="button"
+                  class="btn small primary"
+                  [attr.aria-label]="i18n.t('ex.download.aria', { name: p.name })"
+                  (click)="download(p)"
+                >
+                  <app-icon name="download" /> {{ i18n.t('ex.download') }}
+                </button>
+              } @else {
+                <button type="button" class="btn small primary" [disabled]="busy()" (click)="cleanPhoto(p)">
+                  <app-icon name="eyeOff" /> {{ i18n.t('ex.clean.one') }}
+                </button>
+              }
+            </footer>
+          </li>
+        }
+      </ul>
+    }
+  </app-file-drop>
+</div>

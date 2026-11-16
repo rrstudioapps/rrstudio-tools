@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { I18nService } from '../core/i18n/i18n.service';
-import { CATEGORIES, TOOLS, ToolCategory, ToolCategoryId } from '../tools/tools.registry';
+import { CATEGORIES, TOOLS, ToolCategory, ToolCategoryId, ToolDefinition } from '../tools/tools.registry';
 import { categoryFromUrl, filterTools, groupByCategory } from './tool-filter';
 
 interface Pill {
@@ -25,10 +25,20 @@ export class Home {
   private readonly location = inject(Location);
   private readonly route = inject(ActivatedRoute);
 
+  /** In /en/ niente strumenti italyOnly né la loro categoria: restano in una riga discreta in fondo. */
+  protected readonly english = computed(() => this.i18n.lang() === 'en');
+  protected readonly italyTools: readonly ToolDefinition[] = TOOLS.filter((t) => t.italyOnly);
+  private readonly shownTools = computed(() => (this.english() ? TOOLS.filter((t) => !t.italyOnly) : TOOLS));
+  private readonly shownCategories = computed(() =>
+    this.english() ? CATEGORIES.filter((c) => TOOLS.some((t) => !t.italyOnly && t.category === c.id)) : CATEGORIES,
+  );
+
   /** Ordine di visualizzazione = ordine delle categorie: dà anche la numerazione 01, 02… */
-  protected readonly ordered = groupByCategory(TOOLS).flatMap((g) => g.tools);
-  protected readonly total = this.ordered.length;
-  protected readonly numbers = new Map(this.ordered.map((t, i) => [t.id, i + 1]));
+  protected readonly ordered = computed(() =>
+    groupByCategory(this.shownTools(), this.shownCategories()).flatMap((g) => g.tools),
+  );
+  protected readonly total = computed(() => this.ordered().length);
+  protected readonly numbers = computed(() => new Map(this.ordered().map((t, i) => [t.id, i + 1])));
 
   /** Il filtro si applica solo nel browser, dopo l'idratazione: il prerender mostra tutto (SEO). */
   private readonly ready = signal(false);
@@ -38,7 +48,7 @@ export class Home {
 
   private readonly matches = computed(() => {
     const q = this.ready() ? this.query() : '';
-    return filterTools(this.ordered, null, q, (t) => ({
+    return filterTools(this.ordered(), null, q, (t) => ({
       title: this.i18n.t(t.titleKey),
       description: this.i18n.t(t.descriptionKey),
     }));
@@ -48,7 +58,7 @@ export class Home {
     const m = this.matches();
     return [
       { id: null, label: this.i18n.t('home.filter.all'), count: m.length },
-      ...CATEGORIES.map((c) => ({
+      ...this.shownCategories().map((c) => ({
         id: c.id,
         label: this.i18n.t(c.titleKey),
         count: m.filter((t) => t.category === c.id).length,
@@ -58,7 +68,10 @@ export class Home {
 
   protected readonly sections = computed(() => {
     const cat = this.category();
-    return groupByCategory(this.matches().filter((t) => cat === null || t.category === cat));
+    return groupByCategory(
+      this.matches().filter((t) => cat === null || t.category === cat),
+      this.shownCategories(),
+    );
   });
 
   protected readonly resultCount = computed(() => this.sections().reduce((n, g) => n + g.tools.length, 0));
@@ -75,9 +88,8 @@ export class Home {
     afterNextRender(() => {
       // stato iniziale: dall'URL con cui si è arrivati
       const snap = this.route.snapshot;
-      const slugUrl =
-        '/?' + (snap.queryParamMap.get('categoria') ? 'categoria=' + snap.queryParamMap.get('categoria') : '') +
-        (snap.fragment ? '#' + snap.fragment : '');
+      const param = snap.queryParamMap.get('categoria') ?? snap.queryParamMap.get('category');
+      const slugUrl = '/?' + (param ? 'categoria=' + param : '') + (snap.fragment ? '#' + snap.fragment : '');
       this.urlCategory.set(categoryFromUrl(slugUrl));
       this.ready.set(true);
     });
@@ -91,8 +103,10 @@ export class Home {
     this.urlCategory.set(id);
     // location.go aggiunge una voce alla cronologia senza far scattare la navigazione del router
     // (che riporterebbe la pagina in cima a ogni clic sui filtri)
-    const slug = CATEGORIES.find((c) => c.id === id)?.slug;
-    this.location.go('/', slug ? `categoria=${slug}` : '');
+    const cat = CATEGORIES.find((c) => c.id === id);
+    // ?categoria=slug nelle pagine italiane, ?category=slug in quelle inglesi
+    const query = !cat ? '' : this.english() ? `category=${cat.slugEn}` : `categoria=${cat.slug}`;
+    this.location.go(this.i18n.link(''), query);
   }
 
   protected onSearch(e: Event): void {
@@ -102,6 +116,10 @@ export class Home {
   protected reset(): void {
     this.query.set('');
     this.select(null);
+  }
+
+  protected anchor(c: ToolCategory): string {
+    return this.english() ? c.slugEn : c.slug;
   }
 
   protected title(c: ToolCategory): string {

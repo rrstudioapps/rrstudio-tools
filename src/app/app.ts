@@ -7,13 +7,15 @@ import { SeoService } from './core/seo/seo.service';
 import { ThemeService } from './core/theme/theme.service';
 import { Footer } from './shared/footer';
 import { Header } from './shared/header';
+import { LangHint } from './shared/lang-hint';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Footer],
+  imports: [RouterOutlet, Header, Footer, LangHint],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a class="skip" href="#main">{{ i18n.t('nav.skip') }}</a>
+    <app-lang-hint />
     <app-header />
     <main id="main" tabindex="-1">
       <router-outlet />
@@ -51,9 +53,8 @@ export class App {
 
   constructor() {
     inject(SeoService); // avvia l'ascolto della navigazione per title/meta
-    // Preferenze (lingua, tema) lette solo nel browser, dopo l'idratazione
+    // Il tema salvato si legge solo nel browser, dopo l'idratazione (la lingua la decide l'URL)
     afterNextRender(() => {
-      this.i18n.initFromBrowser();
       this.theme.initFromBrowser();
     });
   }

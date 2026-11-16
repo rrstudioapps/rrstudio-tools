@@ -4,7 +4,8 @@ import { DOCUMENT } from '@angular/common';
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { I18nService } from '../i18n/i18n.service';
+import { I18nService, Lang } from '../i18n/i18n.service';
+import { Alternate, hreflangLinks, publicUrl } from '../i18n/lang-routing';
 import { SITE_URL } from '../links';
 
 /** Dati SEO di una route (chiavi i18n), da mettere in `data.seo`. */
@@ -21,22 +22,19 @@ export class SeoService {
   private readonly doc = inject(DOCUMENT);
   private readonly i18n = inject(I18nService);
 
-  private readonly current = signal<{ seo: SeoData; path: string } | null>(null);
+  private readonly current = signal<SeoData | null>(null);
 
   constructor() {
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
         const seo = this.findSeo(this.router.routerState.snapshot.root);
-        if (seo) {
-          const path = e.urlAfterRedirects.split(/[?#]/)[0].replace(/^\/+|\/+$/g, '');
-          this.current.set({ seo, path });
-        }
+        if (seo) this.current.set(seo);
       }
     });
     // Si riapplica anche al cambio lingua
     effect(() => {
       const c = this.current();
-      if (c) this.apply(c.seo, c.path, this.i18n.lang());
+      if (c) this.apply(c, this.i18n.slug(), this.i18n.lang());
     });
   }
 
@@ -46,10 +44,10 @@ export class SeoService {
     return found;
   }
 
-  private apply(seo: SeoData, path: string, lang: string): void {
+  private apply(seo: SeoData, slug: string, lang: Lang): void {
     const title = this.i18n.t(seo.titleKey);
     const description = this.i18n.t(seo.descriptionKey);
-    const url = path ? `${SITE_URL}/${path}` : `${SITE_URL}/`;
+    const url = publicUrl(slug, lang);
     this.title.setTitle(title);
     const tags: [string, string, 'name' | 'property'][] = [
       ['description', description, 'name'],
@@ -58,7 +56,7 @@ export class SeoService {
       ['og:type', 'website', 'property'],
       ['og:url', url, 'property'],
       ['og:image', `${SITE_URL}/og-image.png`, 'property'],
-      ['og:locale', lang === 'it' ? 'it_IT' : 'en_GB', 'property'],
+      ['og:locale', lang === 'it' ? 'it_IT' : 'en_US', 'property'],
       ['twitter:card', 'summary_large_image', 'name'],
       ['twitter:title', title, 'name'],
       ['twitter:description', description, 'name'],
@@ -68,6 +66,7 @@ export class SeoService {
       this.meta.updateTag({ [attr]: key, content }, `${attr}='${key}'`);
     }
     this.setCanonical(url);
+    this.setAlternates(hreflangLinks(slug));
   }
 
   private setCanonical(url: string): void {
@@ -78,5 +77,17 @@ export class SeoService {
       this.doc.head.appendChild(link);
     }
     link.setAttribute('href', url);
+  }
+
+  /** Sostituisce i link hreflang con quelli della pagina corrente. */
+  private setAlternates(alts: Alternate[]): void {
+    this.doc.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((l) => l.remove());
+    for (const a of alts) {
+      const link = this.doc.createElement('link');
+      link.setAttribute('rel', 'alternate');
+      link.setAttribute('hreflang', a.hreflang);
+      link.setAttribute('href', a.href);
+      this.doc.head.appendChild(link);
+    }
   }
 }

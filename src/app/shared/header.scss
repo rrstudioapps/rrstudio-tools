@@ -63,14 +63,20 @@
   font-family: var(--mono);
   font-size: var(--fs-xs);
   cursor: pointer;
+  text-decoration: none;
   transition:
     background-color var(--dur) var(--ease),
     color var(--dur) var(--ease);
   &.on {
+    cursor: default;
     background: var(--ink);
     color: var(--bg);
   }
-  &:not(.on):hover {
+  &.off {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+  &:not(.on):not(.off):hover {
     color: var(--ink);
   }
 }

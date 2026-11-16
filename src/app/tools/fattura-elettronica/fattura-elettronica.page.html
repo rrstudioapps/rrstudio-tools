@@ -1,0 +1,397 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro no-print">
+    <h1>{{ i18n.t('tool.fe.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('fe.lead') }}</p>
+  </header>
+
+  <div class="no-print notes">
+    <app-privacy-note />
+    <p class="conf-note" role="note"><app-icon name="lock" /> {{ i18n.t('fe.confidential') }}</p>
+    <p class="conf-note" role="note"><app-icon name="shield" /> {{ i18n.t('fe.signatureNote') }}</p>
+  </div>
+
+  <app-file-drop
+    class="no-print"
+    [hint]="i18n.t('fe.drop')"
+    accept=".xml,.p7m,.zip,text/xml,application/xml,application/pkcs7-mime,application/zip"
+    [multiple]="true"
+    (filesSelected)="onFiles($event)"
+  >
+    <div class="tool-status" aria-live="polite" role="status">
+      @if (loading()) {
+        <p class="tool-ok">{{ i18n.t('fe.loading') }}</p>
+      } @else if (status()) {
+        <p class="tool-ok">{{ status() }}</p>
+      }
+    </div>
+    @if (notices().length > 0) {
+      <div class="tool-status" role="alert">
+        @for (n of notices(); track $index) {
+          <p class="tool-error">{{ n }}</p>
+        }
+      </div>
+    }
+  </app-file-drop>
+
+  @if (current(); as c) {
+    <section class="toolbar no-print" [attr.aria-label]="i18n.t('fe.actions')">
+      @if (items().length > 1) {
+        <div class="field">
+          <label for="fe-file">{{ i18n.t('fe.file') }}</label>
+          <select id="fe-file" [value]="selFile()" (change)="pickFile($any($event.target).value)">
+            @for (it of items(); track $index; let i = $index) {
+              <option [value]="i" [selected]="i === selFile()">{{ it.name }}</option>
+            }
+          </select>
+        </div>
+      }
+      @if (c.item.fattura.bodies.length > 1) {
+        <div class="field">
+          <label for="fe-body">{{ i18n.t('fe.invoice') }}</label>
+          <select id="fe-body" [value]="selBody()" (change)="pickBody($any($event.target).value)">
+            @for (b of c.item.fattura.bodies; track $index; let i = $index) {
+              <option [value]="i" [selected]="i === c.index">{{ bodyLabel(b, i, c.item.fattura.bodies.length) }}</option>
+            }
+          </select>
+        </div>
+      }
+      <button type="button" class="btn small primary" (click)="print()">
+        <app-icon name="file" /> {{ i18n.t('fe.print') }}
+      </button>
+      <button type="button" class="btn small" (click)="downloadXml()">
+        <app-icon name="download" /> {{ c.item.from === 'p7m' ? i18n.t('fe.downloadXml.p7m') : i18n.t('fe.downloadXml') }}
+      </button>
+      <app-copy-button [text]="summary()" [label]="i18n.t('fe.copySummary')" />
+      <span class="spacer"></span>
+      <button type="button" class="btn small" (click)="reset()">
+        <app-icon name="trash" /> {{ i18n.t('fe.reset') }}
+      </button>
+    </section>
+
+    <article class="invoice" [attr.aria-label]="docTitle(c.body)" data-testid="fe-invoice">
+      <header class="inv-head">
+        <p class="eyebrow">{{ formatName(c.item.fattura.formato) }}</p>
+        <h2>{{ docTitle(c.body) }}</h2>
+        @if (c.item.from === 'p7m') {
+          <p class="sig"><app-icon name="shield" /> {{ i18n.t('fe.fromP7m') }}</p>
+        }
+      </header>
+
+      <div class="parties">
+        <section class="party" [attr.aria-label]="i18n.t('fe.supplier')">
+          <h3 class="eyebrow">{{ i18n.t('fe.supplier') }}</h3>
+          <p class="pname">{{ name(c.item.fattura.header.cedente) }}</p>
+          <ng-container *ngTemplateOutlet="partyBody; context: { p: c.item.fattura.header.cedente }" />
+        </section>
+        <section class="party" [attr.aria-label]="i18n.t('fe.customer')">
+          <h3 class="eyebrow">{{ i18n.t('fe.customer') }}</h3>
+          <p class="pname">{{ name(c.item.fattura.header.cessionario) }}</p>
+          <ng-container *ngTemplateOutlet="partyBody; context: { p: c.item.fattura.header.cessionario }" />
+        </section>
+        @if (c.item.fattura.header.rappresentante; as r) {
+          <section class="party" [attr.aria-label]="i18n.t('fe.representative')">
+            <h3 class="eyebrow">{{ i18n.t('fe.representative') }}</h3>
+            <p class="pname">{{ name(r) }}</p>
+            <ng-container *ngTemplateOutlet="partyBody; context: { p: r }" />
+          </section>
+        }
+        @if (c.item.fattura.header.terzo; as t) {
+          <section class="party" [attr.aria-label]="i18n.t('fe.third')">
+            <h3 class="eyebrow">{{ i18n.t('fe.third') }}</h3>
+            <p class="pname">{{ name(t) }}</p>
+            <ng-container *ngTemplateOutlet="partyBody; context: { p: t }" />
+          </section>
+        }
+      </div>
+
+      <section class="block" [attr.aria-label]="i18n.t('fe.general')">
+        <h3 class="eyebrow">{{ i18n.t('fe.general') }}</h3>
+        <dl class="kv">
+          <dt>{{ i18n.t('fe.docType') }}</dt>
+          <dd>{{ code(TD, c.body.tipoDocumento) }}</dd>
+          <dt>{{ i18n.t('fe.number') }}</dt>
+          <dd class="mono">{{ c.body.numero }}</dd>
+          <dt>{{ i18n.t('fe.date') }}</dt>
+          <dd>{{ date(c.body.data) }}</dd>
+          <dt>{{ i18n.t('fe.currency') }}</dt>
+          <dd>{{ c.body.divisa }}</dd>
+          @for (s of c.body.causali; track $index) {
+            <dt>{{ i18n.t('fe.reason') }}</dt>
+            <dd>{{ s }}</dd>
+          }
+          @for (r of c.body.ritenute; track $index) {
+            <dt>{{ i18n.t('fe.withholding') }}</dt>
+            <dd>
+              {{ i18n.t('fe.withholding.line', { type: code(RT, r.tipo), amount: money(r.importo, c.body), rate: pct(r.aliquota), reason: r.causale }) }}
+            </dd>
+          }
+          @if (c.body.bolloVirtuale || c.body.bolloImporto) {
+            <dt>{{ i18n.t('fe.stamp') }}</dt>
+            <dd>{{ i18n.t('fe.stamp.line', { flag: yes(c.body.bolloVirtuale), amount: money(c.body.bolloImporto, c.body) }) }}</dd>
+          }
+          @for (k of c.body.casse; track $index) {
+            <dt>{{ i18n.t('fe.fund') }}</dt>
+            <dd>
+              {{ i18n.t('fe.fund.line', { type: code(TC, k.tipo), amount: money(k.importo, c.body), rate: pct(k.aliquota), base: money(k.imponibile, c.body), vat: pct(k.aliquotaIva) }) }}
+            </dd>
+          }
+          @for (s of c.body.sconti; track $index) {
+            <dt>{{ i18n.t('fe.adjustments') }}</dt>
+            <dd>{{ code(SCO, s.tipo) }} {{ s.percentuale ? pct(s.percentuale) : '' }} {{ s.importo ? money(s.importo, c.body) : '' }}</dd>
+          }
+          @if (c.body.arrotondamento) {
+            <dt>{{ i18n.t('fe.rounding') }}</dt>
+            <dd>{{ money(c.body.arrotondamento, c.body) }}</dd>
+          }
+        </dl>
+      </section>
+
+      @if (refKinds(c.body); as refs) {
+        @if (refs.length > 0) {
+          <section class="block" [attr.aria-label]="i18n.t('fe.refs')">
+            <h3 class="eyebrow">{{ i18n.t('fe.refs') }}</h3>
+            <dl class="kv">
+              @for (k of refs; track k.label) {
+                @for (d of k.docs; track $index) {
+                  <dt>{{ k.label }}</dt>
+                  <dd><span class="mono">{{ d.id }}</span>@if (d.text) { · {{ d.text }} }</dd>
+                }
+              }
+            </dl>
+          </section>
+        }
+      }
+
+      <section class="block" [attr.aria-label]="i18n.t('fe.lines')">
+        <h3 class="eyebrow">{{ i18n.t('fe.lines') }}</h3>
+        <div class="table-wrap" tabindex="0" role="region" [attr.aria-label]="i18n.t('fe.lines.scroll')">
+          <table class="lines">
+            <thead>
+              <tr>
+                <th scope="col" class="num-col">{{ i18n.t('fe.col.no') }}</th>
+                <th scope="col">{{ i18n.t('fe.col.desc') }}</th>
+                <th scope="col" class="r">{{ i18n.t('fe.col.qty') }}</th>
+                <th scope="col" class="r">{{ i18n.t('fe.col.unitPrice') }}</th>
+                <th scope="col" class="r">{{ i18n.t('fe.col.discount') }}</th>
+                <th scope="col" class="r">{{ i18n.t('fe.col.vat') }}</th>
+                <th scope="col" class="r">{{ i18n.t('fe.col.total') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of c.body.righe; track $index) {
+                <tr>
+                  <td class="mono num-col">{{ r.numero }}</td>
+                  <td class="desc">
+                    {{ r.descrizione }}
+                    @if (r.dataInizio || r.dataFine) {
+                      <span class="sub">{{ i18n.t('fe.period', { from: date(r.dataInizio), to: date(r.dataFine) }) }}</span>
+                    }
+                    @for (k of r.codici; track $index) {
+                      <span class="sub">{{ i18n.t('fe.code', { type: k.tipo, value: k.valore }) }}</span>
+                    }
+                    @for (a of r.altriDati; track $index) {
+                      <span class="sub">{{ a.tipo }}: {{ a.testo }} {{ a.numero }} {{ a.data }}</span>
+                    }
+                  </td>
+                  <td class="r mono">{{ r.quantita ? qty(r.quantita) + (r.unitaMisura ? ' ' + r.unitaMisura : '') : '' }}</td>
+                  <td class="r mono">{{ r.prezzoUnitario ? money(r.prezzoUnitario, c.body) : '' }}</td>
+                  <td class="r mono">
+                    @for (s of r.sconti; track $index) {
+                      <span class="blk">{{ discount(s) }}</span>
+                    }
+                  </td>
+                  <td class="r mono">
+                    {{ r.aliquotaIva ? pct(r.aliquotaIva) : '' }}
+                    @if (r.natura) {
+                      <span class="sub" [title]="code(NAT, r.natura)">{{ code(NAT, r.natura) }}</span>
+                    }
+                  </td>
+                  <td class="r mono strong">{{ money(r.prezzoTotale, c.body) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      @if (c.body.riepilogo.length > 0) {
+        <section class="block" [attr.aria-label]="i18n.t('fe.vatSummary')">
+          <h3 class="eyebrow">{{ i18n.t('fe.vatSummary') }}</h3>
+          <div class="table-wrap" tabindex="0" role="region" [attr.aria-label]="i18n.t('fe.vatSummary.scroll')">
+            <table class="lines">
+              <thead>
+                <tr>
+                  <th scope="col">{{ i18n.t('fe.col.rate') }}</th>
+                  <th scope="col">{{ i18n.t('fe.col.nature') }}</th>
+                  <th scope="col" class="r">{{ i18n.t('fe.col.taxable') }}</th>
+                  <th scope="col" class="r">{{ i18n.t('fe.col.tax') }}</th>
+                  <th scope="col">{{ i18n.t('fe.col.due') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (r of c.body.riepilogo; track $index) {
+                  <tr>
+                    <td class="mono">{{ r.aliquota ? pct(r.aliquota) : '' }}</td>
+                    <td class="desc">
+                      {{ code(NAT, r.natura) }}
+                      @if (r.riferimentoNormativo) {
+                        <span class="sub">{{ r.riferimentoNormativo }}</span>
+                      }
+                    </td>
+                    <td class="r mono">{{ r.imponibile ? money(r.imponibile, c.body) : '' }}</td>
+                    <td class="r mono">{{ r.imposta ? money(r.imposta, c.body) : '' }}</td>
+                    <td>{{ code(ESI, r.esigibilita) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+
+      @if (totals(); as t) {
+        <section class="block totals" [attr.aria-label]="i18n.t('fe.totals')">
+          <dl class="kv tot">
+            <dt>{{ i18n.t('fe.taxable') }}</dt>
+            <dd class="mono">{{ money(t.imponibile, c.body) }}</dd>
+            <dt>{{ i18n.t('fe.vat') }}</dt>
+            <dd class="mono">{{ money(t.imposta, c.body) }}</dd>
+            <dt class="grand">{{ t.calcolato ? i18n.t('fe.total.computed') : i18n.t('fe.total') }}</dt>
+            <dd class="mono grand" data-testid="fe-total">{{ money(t.totale, c.body) }}</dd>
+          </dl>
+        </section>
+      }
+
+      @if (c.body.pagamenti.length > 0) {
+        <section class="block" [attr.aria-label]="i18n.t('fe.payment')">
+          <h3 class="eyebrow">{{ i18n.t('fe.payment') }}</h3>
+          @for (p of c.body.pagamenti; track $index) {
+            <dl class="kv">
+              @if (p.condizioni) {
+                <dt>{{ i18n.t('fe.payment.terms') }}</dt>
+                <dd>{{ code(TP, p.condizioni) }}</dd>
+              }
+            </dl>
+            @for (d of p.dettagli; track $index) {
+              <dl class="kv pay">
+                @if (d.modalita) {
+                  <dt>{{ i18n.t('fe.payment.method') }}</dt>
+                  <dd>{{ code(MP, d.modalita) }}</dd>
+                }
+                @if (d.dataScadenza) {
+                  <dt>{{ i18n.t('fe.dueDate') }}</dt>
+                  <dd>{{ date(d.dataScadenza) }}</dd>
+                } @else if (d.giorniTermine) {
+                  <dt>{{ i18n.t('fe.dueDate') }}</dt>
+                  <dd>{{ i18n.t('fe.payment.days', { n: d.giorniTermine, date: date(d.dataRiferimento) }) }}</dd>
+                }
+                @if (d.importo) {
+                  <dt>{{ i18n.t('fe.amount') }}</dt>
+                  <dd class="mono">{{ money(d.importo, c.body) }}</dd>
+                }
+                @if (d.beneficiario) {
+                  <dt>{{ i18n.t('fe.payee') }}</dt>
+                  <dd>{{ d.beneficiario }}</dd>
+                }
+                @if (d.istituto) {
+                  <dt>{{ i18n.t('fe.bank') }}</dt>
+                  <dd>{{ d.istituto }}</dd>
+                }
+                @if (d.iban) {
+                  <dt>IBAN</dt>
+                  <dd class="mono">{{ iban(d.iban) }}</dd>
+                }
+                @if (d.bic) {
+                  <dt>BIC</dt>
+                  <dd class="mono">{{ d.bic }}</dd>
+                }
+                @if (d.codicePagamento) {
+                  <dt>{{ i18n.t('fe.payment') }}</dt>
+                  <dd class="mono">{{ d.codicePagamento }}</dd>
+                }
+              </dl>
+            }
+          }
+        </section>
+      }
+
+      @if (c.body.allegati.length > 0) {
+        <section class="block no-print" [attr.aria-label]="i18n.t('fe.attachments')">
+          <h3 class="eyebrow">{{ i18n.t('fe.attachments') }}</h3>
+          <ul class="atts">
+            @for (a of c.body.allegati; track $index; let i = $index) {
+              <li>
+                <span class="aname">{{ a.nome || i18n.t('fe.att.unnamed') }}</span>
+                @if (a.descrizione) {
+                  <span class="sub">{{ a.descrizione }}</span>
+                }
+                <span class="mono ameta">{{ a.formato }} · {{ size(a.bytes) }}</span>
+                <button
+                  type="button"
+                  class="btn small"
+                  [attr.aria-label]="i18n.t('fe.att.download.aria', { name: a.nome || i18n.t('fe.att.unnamed') })"
+                  (click)="downloadAttachment(a, i + 1)"
+                >
+                  <app-icon name="download" /> {{ i18n.t('fe.att.download') }}
+                </button>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <section class="block small-print" [attr.aria-label]="i18n.t('fe.transmission')">
+        <h3 class="eyebrow">{{ i18n.t('fe.transmission') }}</h3>
+        <dl class="kv">
+          @if (c.item.fattura.header.trasmissione.idCodice) {
+            <dt>{{ i18n.t('fe.tr.sender') }}</dt>
+            <dd class="mono">{{ c.item.fattura.header.trasmissione.idPaese }}{{ c.item.fattura.header.trasmissione.idCodice }}</dd>
+          }
+          @if (c.item.fattura.header.trasmissione.progressivo) {
+            <dt>{{ i18n.t('fe.tr.progressive') }}</dt>
+            <dd class="mono">{{ c.item.fattura.header.trasmissione.progressivo }}</dd>
+          }
+          @if (c.item.fattura.header.trasmissione.codiceDestinatario) {
+            <dt>{{ i18n.t('fe.tr.recipientCode') }}</dt>
+            <dd class="mono">{{ c.item.fattura.header.trasmissione.codiceDestinatario }}</dd>
+          }
+          @if (c.item.fattura.header.trasmissione.pecDestinatario) {
+            <dt>{{ i18n.t('fe.tr.pec') }}</dt>
+            <dd>{{ c.item.fattura.header.trasmissione.pecDestinatario }}</dd>
+          }
+          @if (c.item.fattura.header.soggettoEmittente) {
+            <dt>{{ i18n.t('fe.tr.issuer') }}</dt>
+            <dd>{{ code(EMIT, c.item.fattura.header.soggettoEmittente) }}</dd>
+          }
+        </dl>
+      </section>
+    </article>
+  }
+</div>
+
+<ng-template #partyBody let-p="p">
+  <p class="pline">
+    @if (vatId(p)) {
+      <span>{{ i18n.t('fe.vatId') }} <span class="mono">{{ vatId(p) }}</span></span>
+    }
+    @if (p.codiceFiscale && p.codiceFiscale !== p.partitaIva) {
+      <span>{{ i18n.t('fe.taxCode') }} <span class="mono">{{ p.codiceFiscale }}</span></span>
+    }
+    @if (p.codiceEori) {
+      <span>{{ i18n.t('fe.eori') }} <span class="mono">{{ p.codiceEori }}</span></span>
+    }
+  </p>
+  @for (l of addr(p); track $index) {
+    <p class="pline">{{ l }}</p>
+  }
+  @if (p.regimeFiscale) {
+    <p class="pline sub">{{ i18n.t('fe.regime') }}: {{ code(RF, p.regimeFiscale) }}</p>
+  }
+  @if (p.rea) {
+    <p class="pline sub">{{ i18n.t('fe.rea') }}: {{ p.rea }}</p>
+  }
+  @if (p.telefono || p.email) {
+    <p class="pline sub">{{ p.telefono }} {{ p.email }}</p>
+  }
+</ng-template>

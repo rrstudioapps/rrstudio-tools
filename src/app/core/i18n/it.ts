@@ -14,9 +14,12 @@ export const it = {
   'privacy.short': 'I file vengono elaborati nel browser e non vengono mai caricati.',
 
   'footer.coffee': 'Offrimi un caffè',
-  'footer.premium': 'Dashboard premium',
-  'footer.repo': 'Codice sorgente su GitHub',
+  'footer.tools': 'Tools',
+  'footer.dashboards': 'Dashboard',
+  'footer.apps': 'App',
+  'footer.github': 'GitHub',
   'footer.license': 'Licenza AGPL-3.0',
+  'footer.source': 'Codice sorgente',
   'footer.noads': 'Nessuna pubblicità, nessun cookie, nessun tracciamento.',
 
   'home.eyebrow': 'STRUMENTI GRATUITI · OPEN SOURCE',
@@ -39,9 +42,13 @@ export const it = {
   'cat.dev.title': 'Sviluppatori',
   'cat.dev.desc': 'Codifica, decodifica e calcola: piccoli attrezzi da banco.',
   'cat.security.title': 'Sicurezza',
-  'cat.security.desc': 'Password robuste, create nel tuo browser.',
+  'cat.security.desc': 'Password robuste e metadati delle foto: la tua privacy, gestita nel browser.',
   'cat.italy.title': 'Italia: fisco e banche',
-  'cat.italy.desc': 'Codice fiscale, IBAN e partita IVA: calcolo e verifica.',
+  'cat.italy.desc': 'Codice fiscale, IBAN, partita IVA e fattura elettronica: calcolo, verifica e lettura.',
+  'home.italy.lead': "Strumenti per l'Italia (in italiano):",
+  'home.italy.codice-fiscale': 'codice fiscale',
+  'home.italy.iban-partita-iva': 'IBAN e partita IVA',
+  'home.italy.fattura-elettronica': 'fattura elettronica',
   'home.open': 'Apri lo strumento',
   'home.soon.badge': 'In arrivo',
   'home.soon.title': 'Nuovi strumenti in arrivo',
@@ -143,6 +150,34 @@ export const it = {
   'seo.iban.title': 'Verifica IBAN e partita IVA online — controllo gratuito e privato | rrstudio Tools',
   'seo.iban.desc':
     'Controlla se un IBAN è valido (cifre di controllo mod-97, lunghezza per paese, CIN, ABI, CAB) e se una partita IVA italiana è corretta. Verifica anche più valori insieme ed esporta il CSV. Nulla viene inviato o salvato.',
+
+  'tool.fe.title': 'Visualizzatore fattura elettronica (XML e P7M)',
+  'tool.fe.desc':
+    'Apri una fattura elettronica XML, un file firmato .p7m o uno ZIP di fatture e leggila impaginata: parti, righe, IVA, totali, pagamento e allegati. Stampa o salva in PDF.',
+  'seo.fe.title': 'Visualizzatore fattura elettronica XML e P7M online — gratis e privato | rrstudio Tools',
+  'seo.fe.desc':
+    'Leggi una fattura elettronica italiana (FatturaPA XML, .p7m firmato, ZIP) senza installare nulla: cedente e cessionario, righe, riepilogo IVA, totali, scadenze, IBAN e allegati scaricabili. Stampa in PDF. Tutto nel browser, nessun upload.',
+
+  'tool.i2p.title': 'Da immagini a PDF',
+  'tool.i2p.desc':
+    'Unisci JPG, PNG e WebP in un solo PDF: riordina le miniature, scegli formato pagina, orientamento, margini, immagini per pagina e qualità.',
+  'seo.i2p.title': 'Da immagini a PDF online (JPG, PNG, WebP) — gratis e privato | rrstudio Tools',
+  'seo.i2p.desc':
+    'Converti più immagini JPG, PNG o WebP in un unico PDF: ordine a piacere, pagina A4, Letter o adatta all\'immagine, margini, 1, 2 o 4 immagini per pagina. Tutto nel browser, nessun upload.',
+
+  'tool.p2i.title': 'Da PDF a immagini',
+  'tool.p2i.desc':
+    'Trasforma le pagine di un PDF in immagini PNG o JPEG a 72, 150 o 300 dpi: scegli le pagine, guarda le anteprime e scarica una per una o in ZIP.',
+  'seo.p2i.title': 'Da PDF a immagini PNG o JPG online — gratis e privato | rrstudio Tools',
+  'seo.p2i.desc':
+    'Converti le pagine di un PDF in immagini PNG o JPEG, tutte o solo un intervallo, a 72, 150 o 300 dpi, con anteprime e download in ZIP. Tutto nel browser, nessun upload.',
+
+  'tool.exif.title': 'Metadati foto (EXIF): visualizza e rimuovi',
+  'tool.exif.desc':
+    'Scopri cosa rivelano le tue foto (posizione GPS, modello del telefono, data, numero di serie) e rimuovi i metadati senza ricomprimere l\'immagine.',
+  'seo.exif.title': 'Visualizza e rimuovi i metadati EXIF delle foto online — gratis e privato | rrstudio Tools',
+  'seo.exif.desc':
+    'Leggi i metadati EXIF, GPS, XMP e IPTC di JPEG, PNG e WebP e rimuovili senza perdere qualità: nessuna ricompressione, avvisi sulle informazioni sensibili. Tutto nel browser, nessun upload.',
 };
 
 export type Dict = typeof it;

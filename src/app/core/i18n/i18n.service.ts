@@ -1,55 +1,53 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, PlatformLocation } from '@angular/common';
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { RoutesRecognized, Router } from '@angular/router';
 import { en } from './en';
 import { it } from './it';
+import { Lang, LANGS, alternatePath, langFromPath, routePath, slugFromPath } from './lang-routing';
 
-export type Lang = 'it' | 'en';
-export const LANGS: readonly Lang[] = ['it', 'en'];
+export { LANGS };
+export type { Lang };
 export type Dictionary = Record<string, string>;
 /** Dizionari aggiuntivi di un singolo tool (stesse chiavi in entrambe le lingue). */
 export type ToolDictionaries = Record<Lang, Dictionary>;
 
-const STORAGE_KEY = 'rrtools.lang';
-
+/**
+ * La lingua la decide l'URL (radice = italiano, /en/… = inglese), anche durante il prerender:
+ * nessuna preferenza salvata e nessuna lingua del browser cambiano una pagina.
+ */
 @Injectable({ providedIn: 'root' })
 export class I18nService {
   private readonly doc = inject(DOCUMENT);
-  readonly lang = signal<Lang>('it');
+  private readonly router = inject(Router);
+  private readonly initialPath = inject(PlatformLocation).pathname;
+  readonly lang = signal<Lang>(langFromPath(this.initialPath));
+  /** Slug della pagina corrente senza prefisso di lingua ('' = home). */
+  readonly slug = signal<string>(slugFromPath(this.initialPath));
   /** Locale BCP 47 per Intl. */
   readonly locale = computed(() => (this.lang() === 'it' ? 'it-IT' : 'en-GB'));
+  /** La stessa pagina nell'altra lingua (null: strumento solo italiano). */
+  readonly otherLang = computed<Lang>(() => (this.lang() === 'it' ? 'en' : 'it'));
+  readonly otherPath = computed(() => alternatePath(routePath(this.slug(), this.lang()), this.otherLang()));
   private readonly extra = signal<ToolDictionaries[]>([]);
 
   constructor() {
     effect(() => {
       this.doc.documentElement.lang = this.lang();
     });
+    // prima dell'attivazione dei componenti, dopo i redirect (/en/sconosciuto → /en)
+    this.router.events.subscribe((e) => {
+      if (e instanceof RoutesRecognized) {
+        this.lang.set(langFromPath(e.urlAfterRedirects));
+        this.slug.set(slugFromPath(e.urlAfterRedirects));
+      }
+    });
   }
 
-  /** Da chiamare solo nel browser: lingua salvata oppure quella del browser. */
-  initFromBrowser(): void {
-    let saved: string | null = null;
-    try {
-      saved = localStorage.getItem(STORAGE_KEY);
-    } catch {
-      /* localStorage non disponibile: si usa la lingua del browser */
-    }
-    if (saved === 'it' || saved === 'en') {
-      this.lang.set(saved);
-      return;
-    }
-    const nav = (typeof navigator !== 'undefined' ? navigator.language : 'it') || 'it';
-    this.lang.set(nav.toLowerCase().startsWith('it') ? 'it' : 'en');
-  }
-
-  setLang(lang: Lang): void {
-    this.lang.set(lang);
-    try {
-      localStorage.setItem(STORAGE_KEY, lang);
-    } catch {
-      /* preferenza non salvata */
-    }
+  /** Percorso (per routerLink) di una pagina nella lingua corrente: link('') = home, link('pdf-tools'). */
+  link(slug: string): string {
+    return routePath(slug, this.lang());
   }
 
   /** Registra i dizionari di un tool (idempotente). */

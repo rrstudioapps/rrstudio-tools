@@ -1,16 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://tools.rr-dev.eu/</loc></url>
-  <url><loc>https://tools.rr-dev.eu/csv-dashboard</loc></url>
-  <url><loc>https://tools.rr-dev.eu/base64</loc></url>
-  <url><loc>https://tools.rr-dev.eu/url-encode</loc></url>
-  <url><loc>https://tools.rr-dev.eu/json-formatter</loc></url>
-  <url><loc>https://tools.rr-dev.eu/json-viewer</loc></url>
-  <url><loc>https://tools.rr-dev.eu/image-compressor</loc></url>
-  <url><loc>https://tools.rr-dev.eu/pdf-tools</loc></url>
-  <url><loc>https://tools.rr-dev.eu/password-generator</loc></url>
-  <url><loc>https://tools.rr-dev.eu/hash-generator</loc></url>
-  <url><loc>https://tools.rr-dev.eu/codice-fiscale</loc></url>
-  <url><loc>https://tools.rr-dev.eu/iban-partita-iva</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://tools.rr-dev.eu/</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/csv-dashboard</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csv-dashboard"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/csv-dashboard</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csv-dashboard"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/base64</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/base64"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/base64"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/base64"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/base64</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/base64"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/base64"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/base64"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/url-encode</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/url-encode"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/url-encode"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/url-encode"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/url-encode</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/url-encode"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/url-encode"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/url-encode"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/json-formatter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-formatter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-formatter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-formatter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/json-formatter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-formatter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-formatter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-formatter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/json-viewer</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-viewer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-viewer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-viewer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/json-viewer</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-viewer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-viewer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-viewer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/image-compressor</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-compressor"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-compressor"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-compressor"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/image-compressor</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-compressor"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-compressor"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-compressor"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/pdf-tools</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-tools"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-tools"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-tools"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/pdf-tools</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-tools"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-tools"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-tools"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/images-to-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/images-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/images-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/images-to-pdf"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/images-to-pdf</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/images-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/images-to-pdf"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/images-to-pdf"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/pdf-to-images</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-to-images"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-to-images"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-to-images"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/pdf-to-images</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-to-images"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-to-images"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-to-images"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/exif-viewer</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/exif-viewer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/exif-viewer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/exif-viewer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/exif-viewer</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/exif-viewer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/exif-viewer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/exif-viewer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/password-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/password-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/password-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/password-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/password-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/password-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/password-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/password-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/hash-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/hash-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/hash-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/hash-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/hash-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/hash-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/hash-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/hash-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/codice-fiscale</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/codice-fiscale"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/iban-partita-iva</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/iban-partita-iva"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/fattura-elettronica</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/fattura-elettronica"/>
+  </url>
 </urlset>

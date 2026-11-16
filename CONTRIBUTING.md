@@ -20,9 +20,19 @@ Thanks for your interest in rrstudio Tools! / Grazie per l'interesse verso rrstu
 ## Adding a tool / Aggiungere uno strumento
 
 1. Create `src/app/tools/<id>/` with its component(s), lazy routes and i18n dictionaries.
+   The route (URL slug) is in **English** for general-purpose tools (`/pdf-tools`, `/exif-viewer`) and in
+   **Italian** for tools that only make sense in Italy (`/codice-fiscale`, `/fattura-elettronica`). /
+   L'indirizzo è in inglese per gli strumenti generici e in italiano per quelli solo italiani.
 2. Add an entry to `src/app/tools/tools.registry.ts` (route, home card, SEO data).
-3. Add the page to `public/sitemap.xml`.
-4. Run `npm run typecheck`, `npm test` and `npm run build`.
+3. **English version:** the language comes from the URL, so a general-purpose tool automatically gets
+   `/en/<slug>` (same slug) from the registry, plus its hreflang links; just write the `seo.*` and `tool.*`
+   texts in both dictionaries. A tool that only makes sense in Italy gets `italyOnly: true` in the registry:
+   it has no `/en/` page and appears in the "Tools for Italy" line of the English home (add its
+   `home.italy.<id>` label in both dictionaries). / La versione inglese (`/en/<slug>`) è automatica dal
+   registry; per gli strumenti solo italiani usa `italyOnly: true`.
+4. Internal links go through `i18n.link('<slug>')`, never a hard-coded `'/slug'`, so they stay in the current language.
+5. Regenerate the sitemap with `UPDATE_SITEMAP=1 npm test` (the test fails if `public/sitemap.xml` is out of date).
+6. Run `npm run typecheck`, `npm test` and `npm run build`.
 
 ## Development / Sviluppo
 
