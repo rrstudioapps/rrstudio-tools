@@ -229,6 +229,32 @@ try {
       await page.waitForSelector('article.match');
     },
   });
+  // Dati inventati: Mario Rossi, nato a Roma il 01/01/1980
+  await shot('codice-fiscale.png', {
+    width: 1280,
+    dark: false,
+    path: '/codice-fiscale/',
+    setup: async (page) => {
+      await page.fill('#cf-surname', 'Rossi');
+      await page.fill('#cf-name', 'Mario');
+      await page.getByLabel('Maschio').check();
+      await page.fill('#cf-date', '1980-01-01');
+      await page.getByRole('combobox').focus();
+      await page.keyboard.type('Roma', { delay: 80 });
+      await page.waitForTimeout(300);
+      await page.keyboard.press('Enter');
+      await page.waitForSelector('[data-testid=cf-code]');
+    },
+  });
+  await shot('iban-partita-iva.png', {
+    width: 1280,
+    dark: false,
+    path: '/iban-partita-iva/',
+    setup: async (page) => {
+      await page.fill('#ibv-input', 'IT60 X054 2811 1010 0000 0123 456');
+      await page.waitForSelector('[data-testid=ibv-it]');
+    },
+  });
 } finally {
   clearTimeout(watchdog);
   await browser.close();

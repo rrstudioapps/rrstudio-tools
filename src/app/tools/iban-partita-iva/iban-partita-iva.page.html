@@ -1,0 +1,227 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.iban.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ibv.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="personal" data-testid="ibv-personal"><app-icon name="shield" /> {{ i18n.t('ibv.privacy.personal') }}</p>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('ibv.tabs')" [options]="tabs()" [(value)]="tab" />
+  </div>
+
+  @if (tab() !== 'bulk') {
+    <section class="panel">
+      <div class="field-group">
+        <label class="lbl" for="ibv-input">{{ fieldLabel() }}</label>
+        <input
+          id="ibv-input"
+          type="text"
+          class="mono"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          [placeholder]="placeholder()"
+          [value]="value()"
+          (input)="value.set($any($event.target).value)"
+        />
+      </div>
+      <div class="actions">
+        @if (tab() !== 'vat') {
+          <button type="button" class="btn small" (click)="useExample('iban')">{{ i18n.t('ibv.example.iban') }}</button>
+        }
+        @if (tab() !== 'iban') {
+          <button type="button" class="btn small" (click)="useExample('vat')">{{ i18n.t('ibv.example.vat') }}</button>
+        }
+        <button type="button" class="btn small" (click)="value.set('')"><app-icon name="trash" /> {{ i18n.t('ibv.clear') }}</button>
+      </div>
+    </section>
+
+    <section class="result" aria-labelledby="ibv-result-title" aria-live="polite" aria-atomic="false">
+      <h2 class="eyebrow" id="ibv-result-title">{{ i18n.t('ibv.results') }}</h2>
+      @if (single(); as r) {
+        @if (tab() === 'auto') {
+          <p class="hint" data-testid="ibv-detected">{{ i18n.t('ibv.detected', { kind: i18n.t('ibv.kind.' + r.kind) }) }}</p>
+        }
+        @switch (r.kind) {
+          @case ('unknown') {
+            <p class="tool-error" data-testid="ibv-unknown">{{ i18n.t('ibv.unknown') }}</p>
+          }
+          @case ('taxcode') {
+            <p class="tool-error" data-testid="ibv-taxcode">
+              {{ i18n.t('ibv.taxcode') }} <a routerLink="/codice-fiscale">{{ i18n.t('ibv.taxcode.link') }}</a>.
+            </p>
+          }
+          @default {
+            <p class="verdict" [class.ok]="r.valid" data-testid="ibv-verdict">
+              <app-icon [name]="r.valid ? 'check' : 'close'" />
+              <strong>{{ r.valid ? i18n.t('ibv.valid') : i18n.t('ibv.invalid') }}</strong>
+              @if (r.normalized) {
+                <code class="mono" data-testid="ibv-normalized">{{ r.normalized }}</code>
+                <app-copy-button [text]="r.normalized" [compact]="true" [ariaLabel]="i18n.t(r.kind === 'iban' ? 'ibv.iban.copy' : 'ibv.vat.copy')" />
+              }
+            </p>
+            @if (r.valid) {
+              <p class="hint">{{ i18n.t(r.kind === 'iban' ? 'ibv.validNote.iban' : 'ibv.validNote.vat') }}</p>
+            } @else {
+              <div class="problems" data-testid="ibv-problems">
+                <h3 class="eyebrow">{{ i18n.t('ibv.problems') }}</h3>
+                <ul>
+                  @for (t of singleIssues(); track t) {
+                    <li>{{ t }}</li>
+                  }
+                </ul>
+                @if (mod97Failed()) {
+                  <p class="noguess" data-testid="ibv-noguess">{{ i18n.t('ibv.noGuess') }}</p>
+                }
+              </div>
+            }
+
+            @if (r.iban; as a) {
+              @if (a.country && a.expectedLength) {
+                <dl class="decoded">
+                  <dt>{{ i18n.t('ibv.iban.country') }}</dt>
+                  <dd>{{ countryName() }} ({{ a.country }})</dd>
+                  <dt>{{ i18n.t('ibv.iban.sepa') }}</dt>
+                  <dd>{{ a.sepa ? i18n.t('ibv.iban.sepa.yes') : i18n.t('ibv.iban.sepa.no') }}</dd>
+                  <dt>{{ i18n.t('ibv.iban.length') }}</dt>
+                  <dd>{{ i18n.t('ibv.iban.lengthValue', { len: a.length, expected: a.expectedLength }) }}</dd>
+                  @if (a.mod97Ok !== undefined && a.checkDigits) {
+                    <dt>{{ i18n.t('ibv.iban.check') }}</dt>
+                    <dd class="mono">{{ i18n.t(a.mod97Ok ? 'ibv.iban.checkOk' : 'ibv.iban.checkBad', { digits: a.checkDigits }) }}</dd>
+                  }
+                </dl>
+              }
+              @if (a.it; as it) {
+                <h3 class="eyebrow">{{ i18n.t('ibv.it.title') }}</h3>
+                <dl class="decoded" data-testid="ibv-it">
+                  <dt>{{ i18n.t('ibv.it.cin') }}</dt>
+                  <dd class="mono">{{ it.cin === it.expectedCin ? i18n.t('ibv.it.cinOk', { cin: it.cin }) : i18n.t('ibv.it.cinBad', { cin: it.cin, expected: it.expectedCin }) }}</dd>
+                  <dt>{{ i18n.t('ibv.it.abi') }}</dt>
+                  <dd class="mono">{{ it.abi }}</dd>
+                  <dt>{{ i18n.t('ibv.it.cab') }}</dt>
+                  <dd class="mono">{{ it.cab }}</dd>
+                  <dt>{{ i18n.t('ibv.it.account') }}</dt>
+                  <dd class="mono">{{ it.account }}</dd>
+                </dl>
+              }
+            }
+
+            @if (r.vat; as v) {
+              @if (v.progressive) {
+                <dl class="decoded" data-testid="ibv-vat">
+                  <dt>{{ i18n.t('ibv.vat.progressive') }}</dt>
+                  <dd class="mono">{{ v.progressive }}</dd>
+                  <dt>{{ i18n.t('ibv.vat.office') }}</dt>
+                  <dd class="mono">{{ v.office }}</dd>
+                  @if (v.valid) {
+                    <dt>{{ i18n.t('ibv.vat.province') }}</dt>
+                    <dd data-testid="ibv-province">
+                      @if (v.province; as p) {
+                        {{ p.name }} ({{ p.sigla }})
+                      } @else {
+                        {{ i18n.t('ibv.vat.provinceUnknown', { office: v.office ?? '' }) }}
+                      }
+                    </dd>
+                  }
+                  <dt>{{ i18n.t('ibv.vat.check') }}</dt>
+                  <dd class="mono">{{ v.digits[10] }}@if (v.issues.includes('check')) { → {{ v.expectedCheck }} }</dd>
+                </dl>
+                @if (v.province) {
+                  <p class="hint">{{ i18n.t('ibv.vat.provinceNote') }}</p>
+                }
+              }
+              @if (v.hadPrefix) {
+                <p class="hint">{{ i18n.t('ibv.vat.prefix') }}</p>
+              }
+              <p class="hint">
+                {{ i18n.t('ibv.vat.verify') }}
+                <a href="https://ec.europa.eu/taxation_customs/vies/" target="_blank" rel="noopener noreferrer">{{ i18n.t('ibv.vat.vies') }}</a>
+              </p>
+            }
+          }
+        }
+      } @else {
+        <p class="empty">{{ i18n.t('ibv.empty') }}</p>
+      }
+    </section>
+  } @else {
+    <section class="panel">
+      <div class="field-group">
+        <label class="lbl" for="ibv-bulk">{{ i18n.t('ibv.bulk.label') }}</label>
+        <textarea
+          id="ibv-bulk"
+          class="io-textarea"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('ibv.bulk.ph')"
+          [value]="bulkText()"
+          (input)="bulkText.set($any($event.target).value)"
+        ></textarea>
+      </div>
+      <div class="bulk-controls">
+        <div class="field-group">
+          <label class="lbl" for="ibv-bulk-kind">{{ i18n.t('ibv.bulk.kind') }}</label>
+          <select id="ibv-bulk-kind" [value]="bulkKind()" (change)="bulkKind.set($any($event.target).value)">
+            @for (o of kindOptions(); track o.value) {
+              <option [value]="o.value" [selected]="bulkKind() === o.value">{{ o.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="lbl" for="ibv-bulk-sep">{{ i18n.t('ibv.bulk.sep') }}</label>
+          <select id="ibv-bulk-sep" (change)="setSep($any($event.target).value)">
+            <option value=";" [selected]="sep() === ';'">{{ i18n.t('ibv.bulk.sep.semi') }}</option>
+            <option value="," [selected]="sep() === ','">{{ i18n.t('ibv.bulk.sep.comma') }}</option>
+          </select>
+        </div>
+        <button type="button" class="btn" (click)="exportCsv()" [disabled]="!bulkRows().length" data-testid="ibv-export">
+          <app-icon name="download" /> {{ i18n.t('ibv.bulk.export') }}
+        </button>
+        <button type="button" class="btn small" (click)="bulkText.set('')"><app-icon name="trash" /> {{ i18n.t('ibv.clear') }}</button>
+      </div>
+    </section>
+
+    <section class="result" aria-labelledby="ibv-bulk-title" aria-live="polite" aria-atomic="false">
+      <h2 class="eyebrow" id="ibv-bulk-title">{{ i18n.t('ibv.results') }}</h2>
+      <p class="hint" data-testid="ibv-bulk-summary">{{ bulkSummary() }}</p>
+      @if (bulk().truncated) {
+        <p class="tool-error">{{ i18n.t('ibv.bulk.truncated', { max: maxLines }) }}</p>
+      }
+      @if (bulkRows().length) {
+        <div class="table-wrap">
+          <table class="bulk" [attr.aria-label]="i18n.t('ibv.bulk.table')" data-testid="ibv-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ i18n.t('ibv.bulk.col.line') }}</th>
+                <th scope="col">{{ i18n.t('ibv.bulk.col.value') }}</th>
+                <th scope="col">{{ i18n.t('ibv.bulk.col.type') }}</th>
+                <th scope="col">{{ i18n.t('ibv.bulk.col.result') }}</th>
+                <th scope="col">{{ i18n.t('ibv.bulk.col.reason') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of bulkRows(); track row.r.line) {
+                <tr [class.bad]="!row.r.valid">
+                  <td [attr.data-label]="i18n.t('ibv.bulk.col.line')">{{ row.r.line }}</td>
+                  <td class="mono val" [attr.data-label]="i18n.t('ibv.bulk.col.value')">{{ row.r.input }}</td>
+                  <td [attr.data-label]="i18n.t('ibv.bulk.col.type')">{{ row.kind }}</td>
+                  <td [attr.data-label]="i18n.t('ibv.bulk.col.result')"><span class="badge" [class.ok]="row.r.valid">{{ row.r.valid ? i18n.t('ibv.valid') : i18n.t('ibv.invalid') }}</span></td>
+                  <td class="reason" [attr.data-label]="i18n.t('ibv.bulk.col.reason')">{{ row.reason }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+
+  <section class="info">
+    <h2 class="eyebrow">{{ i18n.t('ibv.how.title') }}</h2>
+    <p>{{ i18n.t('ibv.how.body') }}</p>
+  </section>
+</div>

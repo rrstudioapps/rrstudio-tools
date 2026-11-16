@@ -107,6 +107,20 @@ export const it = {
   'seo.hash.title': 'Calcola hash e checksum SHA-256, SHA-1, MD5 online — gratis e privato | rrstudio Tools',
   'seo.hash.desc':
     'Calcola SHA-256, SHA-512, SHA-1 e MD5 di un testo o di un file e verifica un checksum, con barra di avanzamento anche per file grandi. Tutto nel browser, nessun upload.',
+
+  'tool.cf.title': 'Calcolo e verifica codice fiscale',
+  'tool.cf.desc':
+    'Calcola il codice fiscale da nome, cognome, sesso, data e luogo di nascita, oppure verifica e decodifica un codice (omocodia inclusa). Nessun dato personale lascia il tuo computer.',
+  'seo.cf.title': 'Calcolo e verifica codice fiscale online — gratis e privato | rrstudio Tools',
+  'seo.cf.desc':
+    'Calcola il codice fiscale da nome, cognome, data e luogo di nascita (comune o Stato estero) e verifica un codice: struttura, carattere di controllo, omocodia, sesso, data e luogo di nascita. Tutto nel browser: nessun dato personale inviato o salvato.',
+
+  'tool.iban.title': 'Verifica IBAN e partita IVA',
+  'tool.iban.desc':
+    'Controlla un IBAN (mod-97, lunghezza per paese, CIN, ABI e CAB) o una partita IVA italiana, anche per elenchi con esportazione CSV. Nessun dato lascia il tuo computer.',
+  'seo.iban.title': 'Verifica IBAN e partita IVA online — controllo gratuito e privato | rrstudio Tools',
+  'seo.iban.desc':
+    'Controlla se un IBAN è valido (cifre di controllo mod-97, lunghezza per paese, CIN, ABI, CAB) e se una partita IVA italiana è corretta. Verifica anche più valori insieme ed esporta il CSV. Nulla viene inviato o salvato.',
 };
 
 export type Dict = typeof it;

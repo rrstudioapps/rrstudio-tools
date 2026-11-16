@@ -108,4 +108,18 @@ export const en: Dict = {
   'seo.hash.title': 'SHA-256, SHA-1 and MD5 hash and checksum calculator online — free and private | rrstudio Tools',
   'seo.hash.desc':
     'Compute SHA-256, SHA-512, SHA-1 and MD5 of a text or a file and verify a checksum, with a progress bar for large files. All in your browser, nothing is uploaded.',
+
+  'tool.cf.title': 'Italian tax code (codice fiscale) calculator',
+  'tool.cf.desc':
+    'Calculate the Italian codice fiscale from name, surname, sex, date and place of birth, or check and decode a code (including omocodia). No personal data leaves your computer.',
+  'seo.cf.title': 'Italian tax code (codice fiscale) calculator and validator online — free and private | rrstudio Tools',
+  'seo.cf.desc':
+    'Calculate the codice fiscale from name, surname, date and place of birth (Italian municipality or foreign country) and validate a code: structure, check character, omocodia, sex, date and place of birth. All in your browser: no personal data is sent or stored.',
+
+  'tool.iban.title': 'IBAN & Italian VAT number validator',
+  'tool.iban.desc':
+    'Check an IBAN (mod-97, length per country, Italian CIN, ABI and CAB) or an Italian VAT number (partita IVA), also in bulk with CSV export. No data leaves your computer.',
+  'seo.iban.title': 'IBAN and Italian VAT number (partita IVA) validator online — free and private | rrstudio Tools',
+  'seo.iban.desc':
+    'Check whether an IBAN is valid (mod-97 check digits, length per country, Italian CIN, ABI, CAB) and whether an Italian VAT number is correct. Validate many values at once and export a CSV. Nothing is sent or stored.',
 };

@@ -36,6 +36,8 @@
 | [**PDF tools: merge, split, rotate**](https://tools.rr-dev.eu/pdf-tools) | Merge several PDFs, extract or split pages (every page, every N pages or by ranges like `1-3, 5, 8-10`), rotate, delete and reorder pages from a grid of thumbnails. Your PDFs are never uploaded: fine for confidential documents. |
 | [**Password generator**](https://tools.rr-dev.eu/password-generator) | Random passwords (4-128 characters, choose the character sets, exclude ambiguous ones) and passphrases (3-12 words from the EFF large wordlist), with honest entropy in bits, a strength bar and the estimated time to guess. Nothing is stored. |
 | [**Hash & checksum**](https://tools.rr-dev.eu/hash-generator) | MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of a text (live) or a file up to 2 GB, in hex and Base64, with a progress bar, cancel and a "compare with a checksum" field. |
+| [**Italian tax code (codice fiscale)**](https://tools.rr-dev.eu/codice-fiscale) | Calculate the codice fiscale (official DM 23/12/1976 rules, Italian municipality with type-ahead search, foreign country or manual code) and check and decode a code: structure, check character, sex, birth date (century ambiguity) and place, omocodia included. |
+| [**IBAN & Italian VAT validator**](https://tools.rr-dev.eu/iban-partita-iva) | One field that recognises an IBAN or a partita IVA, plus separate tabs and a bulk check (one value per line, CSV export). IBAN: mod-97, length and format per country, Italian CIN/ABI/CAB. VAT: check digit and office code. |
 
 More tools are coming, with the same rule: nothing leaves your browser.
 
@@ -117,6 +119,24 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Line numbers with the error line marked; line and column are worked out for V8/Chromium, Firefox and Safari messages.
 - Hand-made syntax highlighting (no editor library, no `innerHTML`).
 
+### Italian tax code (codice fiscale)
+
+![Italian tax code](docs/screenshots/codice-fiscale.png)
+
+- Calculation with the official rules (surname and name consonants, the 1st/3rd/4th consonant rule for names, month letters, day + 40 for women, cadastral code, check character); accents, apostrophes, spaces and compound surnames are handled.
+- Birth place: municipality with a type-ahead combobox (ARIA pattern), or the cadastral/Z code typed by hand.
+- Check and decode: length, structure, check character, sex, birth date (most plausible century plus the alternative) and place; omocodia (letters LMNPQRSTUV in place of digits) is supported in both directions and the seven omocodia variants are listed.
+- The result is the "theoretical" code: the real one is assigned by the Agenzia delle Entrate. Nothing is sent or stored.
+- Place data: ISTAT "Codici dei comuni, delle province e delle regioni", CC BY 4.0, saved in `public/data/luoghi.json` (about 220 kB, 74 kB gzipped, loaded only when needed) by `node scripts/update-places.mjs`. Abolished municipalities and foreign countries (Z codes) have to be exported from ISTAT's SITUAS portal and passed with `--soppressi` and `--esteri` (see the script header); until then the Z code can be typed by hand.
+
+### IBAN & Italian VAT validator
+
+![IBAN and VAT validator](docs/screenshots/iban-partita-iva.png)
+
+- IBAN: normalisation, mod-97 (ISO 13616), length and BBAN format per country (about 77 countries, SWIFT registry), SEPA flag, grouping by four; Italian IBANs are split into CIN, ABI, CAB and account number and the CIN is verified. The tool never guesses a "corrected" IBAN.
+- Partita IVA: 11 digits, check digit, office code (digits 8-10) with the province for the historical codes 001-099; the IT prefix is accepted. A valid format does not mean the number is active (links to VIES and the Agenzia delle Entrate, no calls from the site).
+- Bulk check: one value per line, results table and CSV export (formulas are neutralised).
+
 ## Privacy
 
 - **Everything runs client-side.** There is no backend: files are read and processed by your browser and are never uploaded.
@@ -187,7 +207,9 @@ a server esterni, nessun cookie, nessun tracciamento o analytics.
   confronto prima/dopo e ZIP) e [Strumenti PDF](https://tools.rr-dev.eu/pdf-tools) (unisci, dividi, ruota),
   [Generatore di password](https://tools.rr-dev.eu/password-generator) (password e passphrase, con
   entropia) e [Hash e checksum](https://tools.rr-dev.eu/hash-generator) (MD5, SHA-1, SHA-256, SHA-384,
-  SHA-512 di testi e file), tutti con elaborazione solo nel browser.
+  SHA-512 di testi e file), [Codice fiscale](https://tools.rr-dev.eu/codice-fiscale) (calcolo, verifica,
+  omocodia) e [Verifica IBAN e partita IVA](https://tools.rr-dev.eu/iban-partita-iva), tutti con
+  elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build
   statica (`dist/rrstudio-tools/browser`, pubblicabile su qualsiasi hosting statico).
 - **Licenza:** AGPL-3.0-or-later. L'uso è libero, anche commerciale. Chi distribuisce una versione

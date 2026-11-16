@@ -98,4 +98,22 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.hash.title', descriptionKey: 'seo.hash.desc' },
     loadComponent: () => import('./hash-generator/hash-generator.page').then((m) => m.HashGeneratorPage),
   },
+  {
+    id: 'codice-fiscale',
+    path: 'codice-fiscale',
+    icon: 'idcard',
+    titleKey: 'tool.cf.title',
+    descriptionKey: 'tool.cf.desc',
+    seo: { titleKey: 'seo.cf.title', descriptionKey: 'seo.cf.desc' },
+    loadComponent: () => import('./codice-fiscale/codice-fiscale.page').then((m) => m.CodiceFiscalePage),
+  },
+  {
+    id: 'iban-partita-iva',
+    path: 'iban-partita-iva',
+    icon: 'bank',
+    titleKey: 'tool.iban.title',
+    descriptionKey: 'tool.iban.desc',
+    seo: { titleKey: 'seo.iban.title', descriptionKey: 'seo.iban.desc' },
+    loadComponent: () => import('./iban-partita-iva/iban-partita-iva.page').then((m) => m.IbanPartitaIvaPage),
+  },
 ];

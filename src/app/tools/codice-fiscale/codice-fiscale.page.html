@@ -1,0 +1,255 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.cf.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('cf.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="personal" data-testid="cf-personal"><app-icon name="shield" /> {{ i18n.t('cf.privacy.personal') }}</p>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('cf.mode')" [options]="modes()" [(value)]="mode" />
+  </div>
+
+  @if (mode() === 'compute') {
+    <section class="panel" aria-labelledby="cf-calc-title">
+      <h2 class="eyebrow" id="cf-calc-title">{{ i18n.t('cf.calc.title') }}</h2>
+      <div class="grid">
+        <div class="field-group">
+          <label class="lbl" for="cf-surname">{{ i18n.t('cf.surname') }}</label>
+          <input id="cf-surname" type="text" autocomplete="off" spellcheck="false" [placeholder]="i18n.t('cf.surname.ph')" [value]="surname()" (input)="surname.set($any($event.target).value)" />
+        </div>
+        <div class="field-group">
+          <label class="lbl" for="cf-name">{{ i18n.t('cf.name') }}</label>
+          <input id="cf-name" type="text" autocomplete="off" spellcheck="false" [placeholder]="i18n.t('cf.name.ph')" [value]="name()" (input)="name.set($any($event.target).value)" />
+        </div>
+        <fieldset class="field-group radios">
+          <legend class="lbl">{{ i18n.t('cf.sex') }}</legend>
+          <div class="radio-row">
+            <label class="check"><input type="radio" name="cf-sex" value="M" [checked]="sex() === 'M'" (change)="sex.set('M')" /> {{ i18n.t('cf.sex.m') }}</label>
+            <label class="check"><input type="radio" name="cf-sex" value="F" [checked]="sex() === 'F'" (change)="sex.set('F')" /> {{ i18n.t('cf.sex.f') }}</label>
+          </div>
+        </fieldset>
+        <div class="field-group">
+          <label class="lbl" for="cf-date">{{ i18n.t('cf.date') }}</label>
+          <input id="cf-date" type="date" min="1800-01-01" [max]="maxDate" [value]="date()" (input)="date.set($any($event.target).value)" [attr.aria-invalid]="dateError() ? 'true' : null" />
+        </div>
+      </div>
+      <p class="hint">{{ i18n.t('cf.names.hint') }}</p>
+
+      <fieldset class="field-group radios">
+        <legend class="lbl">{{ i18n.t('cf.placeKind') }}</legend>
+        <div class="radio-row">
+          @for (k of placeKinds(); track k.value) {
+            <label class="check">
+              <input type="radio" name="cf-placekind" [value]="k.value" [checked]="placeKind() === k.value" (change)="setPlaceKind(k.value)" />
+              {{ k.label }}
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      @switch (placeKind()) {
+        @case ('comune') {
+          <app-place-combobox
+            [label]="i18n.t('cf.place.comune')"
+            [placeholder]="i18n.t('cf.place.comune.ph')"
+            [index]="index()"
+            [kinds]="comuneKinds"
+            (wanted)="ensurePlaces()"
+            (picked)="place.set($event)"
+          />
+        }
+        @case ('estero') {
+          <app-place-combobox
+            [label]="i18n.t('cf.place.estero')"
+            [placeholder]="i18n.t('cf.place.estero.ph')"
+            [index]="index()"
+            [kinds]="esteroKinds"
+            (wanted)="ensurePlaces()"
+            (picked)="place.set($event)"
+          />
+          @if (index() && !hasEsteri()) {
+            <p class="hint" data-testid="cf-no-esteri">{{ i18n.t('cf.place.noEsteri') }}</p>
+          }
+        }
+        @case ('codice') {
+          <div class="field-group">
+            <label class="lbl" for="cf-code">{{ i18n.t('cf.place.code') }}</label>
+            <input id="cf-code" class="mono narrow" type="text" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" [placeholder]="i18n.t('cf.place.code.ph')" [value]="manualCode()" (input)="manualCode.set($any($event.target).value)" aria-describedby="cf-code-hint" [attr.aria-invalid]="manualInvalid() ? 'true' : null" />
+            <p class="hint" id="cf-code-hint">{{ i18n.t('cf.place.code.hint') }}</p>
+          </div>
+        }
+      }
+      <div class="status" aria-live="polite">
+        @if (chosenText()) {
+          <p class="hint" data-testid="cf-chosen">{{ chosenText() }}</p>
+        }
+        @if (placesError() && placeKind() !== 'codice') {
+          <p class="tool-error">
+            {{ i18n.t('cf.place.error') }}
+            <button type="button" class="btn small" (click)="ensurePlaces()">{{ i18n.t('cf.place.retry') }}</button>
+          </p>
+        }
+      </div>
+      <div class="actions">
+        <button type="button" class="btn small" (click)="clearCompute()"><app-icon name="trash" /> {{ i18n.t('cf.clear') }}</button>
+      </div>
+    </section>
+
+    <section class="result" aria-labelledby="cf-result-title" aria-live="polite" aria-atomic="true">
+      <h2 class="eyebrow" id="cf-result-title">{{ i18n.t('cf.result.title') }}</h2>
+      @if (calc(); as r) {
+        <div class="code-row">
+          <code class="code mono" data-testid="cf-code">{{ r.code }}</code>
+          <app-copy-button [text]="r.code" [ariaLabel]="i18n.t('cf.result.copy')" />
+        </div>
+        <div class="table-wrap">
+          <table class="parts" [attr.aria-label]="i18n.t('cf.parts.title')">
+            <thead>
+              <tr>
+                <th scope="col">{{ i18n.t('cf.parts.part') }}</th>
+                <th scope="col">{{ i18n.t('cf.parts.chars') }}</th>
+                <th scope="col">{{ i18n.t('cf.parts.from') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of parts(); track row.key) {
+                <tr>
+                  <th scope="row">{{ row.label }}</th>
+                  <td class="mono">{{ row.chars }}</td>
+                  <td>{{ row.from }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else if (dateError()) {
+        <p class="tool-error">{{ i18n.t('cf.err.date') }}</p>
+      } @else {
+        <p class="empty" data-testid="cf-missing">{{ missingText() }}</p>
+      }
+    </section>
+
+    <section class="note-box" role="note">
+      <h2 class="eyebrow">{{ i18n.t('cf.theory.title') }}</h2>
+      <p>{{ i18n.t('cf.theory.body') }}</p>
+    </section>
+
+    @if (variants().length) {
+      <details class="homo">
+        <summary>{{ i18n.t('cf.homo.title') }}</summary>
+        <p>{{ i18n.t('cf.homo.body') }}</p>
+        <ul class="variants">
+          @for (v of variants(); track v; let i = $index) {
+            <li>
+              <span class="lvl">{{ i18n.t('cf.homo.level', { n: i + 1 }) }}</span>
+              <code class="mono" [attr.data-testid]="'cf-homo-' + (i + 1)">{{ v }}</code>
+              <app-copy-button [text]="v" [compact]="true" [ariaLabel]="i18n.t('cf.result.copy') + ' (' + i18n.t('cf.homo.level', { n: i + 1 }) + ')'" />
+            </li>
+          }
+        </ul>
+      </details>
+    }
+  } @else {
+    <section class="panel" aria-labelledby="cf-verify-title">
+      <h2 class="eyebrow" id="cf-verify-title">{{ i18n.t('cf.verify.title') }}</h2>
+      <div class="field-group">
+        <label class="lbl" for="cf-verify">{{ i18n.t('cf.verify.label') }}</label>
+        <input id="cf-verify" class="mono" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" [placeholder]="i18n.t('cf.verify.ph')" [value]="verifyInput()" (input)="onVerifyInput($any($event.target).value)" />
+      </div>
+    </section>
+
+    <section class="result" aria-labelledby="cf-vresult-title" aria-live="polite" aria-atomic="false">
+      <h2 class="eyebrow" id="cf-vresult-title">{{ i18n.t('cf.verify.contents') }}</h2>
+      @if (analysis(); as a) {
+        @if (a.issues[0] === 'empty') {
+          <p class="empty">{{ i18n.t('cf.verify.empty') }}</p>
+        } @else {
+          <p class="verdict" [class.ok]="a.valid" data-testid="cf-verdict">
+            <app-icon [name]="a.valid ? 'check' : 'close'" />
+            <strong>{{ a.valid ? i18n.t('cf.verify.valid') : i18n.t('cf.verify.invalid') }}</strong>
+            <code class="mono">{{ a.code }}</code>
+          </p>
+          @if (a.valid) {
+            <p class="hint">{{ i18n.t('cf.verify.validNote') }}</p>
+          } @else {
+            <div class="problems" data-testid="cf-problems">
+              <h3 class="eyebrow">{{ i18n.t('cf.verify.problems') }}</h3>
+              <ul>
+                @for (t of issueTexts(); track t) {
+                  <li>{{ t }}</li>
+                }
+              </ul>
+            </div>
+          }
+          @if (a.sex || a.birth || a.placeCode) {
+            <dl class="decoded">
+              @if (a.sex) {
+                <dt>{{ i18n.t('cf.verify.sex') }}</dt>
+                <dd data-testid="cf-sex">{{ a.sex === 'F' ? i18n.t('cf.sex.f') : i18n.t('cf.sex.m') }}</dd>
+              }
+              @if (a.birth; as b) {
+                <dt>{{ i18n.t('cf.verify.birth') }}</dt>
+                <dd>
+                  <span data-testid="cf-birth">{{ formatBirth(b) }}</span>
+                  @if (a.birthAlt; as alt) {
+                    <span class="sub" data-testid="cf-birth-alt">{{ i18n.t('cf.verify.birthAlt', { century: century(alt), date: formatBirth(alt) }) }}</span>
+                    <span class="sub">{{ i18n.t('cf.verify.birthPlausible') }}</span>
+                  }
+                </dd>
+              }
+              @if (a.placeCode) {
+                <dt>{{ i18n.t('cf.verify.place') }}</dt>
+                <dd>
+                  @for (line of placeLines(); track line) {
+                    <span data-testid="cf-place">{{ line }}</span>
+                  }
+                </dd>
+              }
+              @if (a.expectedCheck && a.issues.includes('check')) {
+                <dt>{{ i18n.t('cf.verify.check') }}</dt>
+                <dd>{{ i18n.t('cf.verify.checkExpected', { got: a.code[15], expected: a.expectedCheck }) }}</dd>
+              }
+              @if (a.code.length === 16) {
+                <dt>{{ i18n.t('cf.verify.homo') }}</dt>
+                <dd data-testid="cf-homo">
+                  @if (a.omocodiaLevel) {
+                    <span>{{ omocodiaLevelText() }}</span>
+                    @if (a.baseCode) {
+                      <span class="sub">{{ i18n.t('cf.verify.homoBase', { code: a.baseCode }) }}</span>
+                    }
+                    @if (a.omocodiaNonStandard) {
+                      <span class="sub">{{ i18n.t('cf.verify.homoNonStd') }}</span>
+                    }
+                  } @else {
+                    <span>{{ i18n.t('cf.verify.homoNo') }}</span>
+                  }
+                </dd>
+              }
+            </dl>
+            <p class="hint">{{ i18n.t('cf.verify.homoNote') }}</p>
+          }
+        }
+      }
+    </section>
+
+    <section class="note-box" role="note">
+      <h2 class="eyebrow">{{ i18n.t('cf.theory.title') }}</h2>
+      <p>{{ i18n.t('cf.theory.body') }}</p>
+    </section>
+  }
+
+  <section class="info">
+    <h2 class="eyebrow">{{ i18n.t('cf.how.title') }}</h2>
+    <p>{{ i18n.t('cf.how.body') }}</p>
+    <p class="credits" data-testid="cf-credits">
+      {{ i18n.t('cf.credits') }}
+      @if (placesUpdated()) {
+        {{ i18n.t('cf.place.source', { date: placesUpdated() }) }}
+      }
+      <a href="https://www.istat.it/classificazione/codici-dei-comuni-delle-province-e-delle-regioni/" target="_blank" rel="noopener noreferrer">{{ i18n.t('cf.credits.link') }}</a>
+    </p>
+  </section>
+</div>
