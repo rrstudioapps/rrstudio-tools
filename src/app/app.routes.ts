@@ -21,6 +21,12 @@ const HOME: Route = {
   data: { seo: { titleKey: 'seo.home.title', descriptionKey: 'seo.home.desc' } },
 };
 
+const PRIVACY: Route = {
+  path: 'privacy',
+  loadComponent: () => import('./pages/privacy').then((m) => m.Privacy),
+  data: { seo: { titleKey: 'seo.privacy.title', descriptionKey: 'seo.privacy.desc' } },
+};
+
 /**
  * Route generate dal registry dei tool, più la home. La radice è italiana; la versione inglese
  * sta sotto /en/ con gli stessi slug, tranne gli strumenti `italyOnly` (solo in italiano).
@@ -28,11 +34,13 @@ const HOME: Route = {
 export const routes: Routes = [
   HOME,
   ...TOOLS.map(toRoute),
+  PRIVACY,
   {
     path: 'en',
     children: [
       HOME,
       ...TOOLS.filter((t) => !t.italyOnly).map(toRoute),
+      PRIVACY,
       // /en/<sconosciuto> → home inglese
       { path: '**', redirectTo: '/en' },
     ],

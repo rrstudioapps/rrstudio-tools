@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { I18nService } from '../core/i18n/i18n.service';
 import { APPS_URL, GITHUB_PROFILE_URL, KOFI_URL, LICENSE_URL, PREMIUM_URL, REPO_URL } from '../core/links';
 
 @Component({
   selector: 'app-footer',
-  
+  imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './footer.html',
   styleUrl: './footer.scss',

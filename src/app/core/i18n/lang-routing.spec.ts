@@ -13,6 +13,7 @@ import {
   publicUrl,
   routePath,
   slugFromPath,
+  STATIC_PAGES,
 } from './lang-routing';
 
 describe('URL ↔ lingua', () => {
@@ -55,6 +56,7 @@ describe('URL ↔ lingua', () => {
     }
     expect(hasLang('', 'en')).toBe(true);
     expect(hasLang('inesistente', 'en')).toBe(false);
+    expect(hasLang('privacy', 'en')).toBe(true);
   });
   it('gli strumenti italyOnly sono esattamente quelli della categoria Italia', () => {
     const italy = TOOLS.filter((t) => t.category === 'italy').map((t) => t.id).sort();
@@ -89,11 +91,13 @@ describe('sitemap', () => {
   it('ha tutte le URL italiane e quelle inglesi dei soli strumenti generici', () => {
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     const generic = TOOLS.filter((t) => !t.italyOnly).length;
-    expect(locs.length).toBe(allSlugs().length + 1 + generic);
+    expect(locs.length).toBe(allSlugs().length + 1 + generic + STATIC_PAGES.length);
     expect(new Set(locs).size).toBe(locs.length);
     expect(locs).toContain('https://tools.rr-dev.eu/en/');
     expect(locs).toContain('https://tools.rr-dev.eu/en/pdf-tools');
     expect(locs).toContain('https://tools.rr-dev.eu/codice-fiscale');
+    expect(locs).toContain('https://tools.rr-dev.eu/privacy');
+    expect(locs).toContain('https://tools.rr-dev.eu/en/privacy');
     expect(locs).not.toContain('https://tools.rr-dev.eu/en/codice-fiscale');
   });
   it('dichiara il namespace xhtml e ogni url ha i suoi link alternate', () => {

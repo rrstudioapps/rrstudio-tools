@@ -5,7 +5,7 @@ import { Injectable, effect, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { I18nService, Lang } from '../i18n/i18n.service';
-import { Alternate, hasLang, hreflangLinks, publicUrl } from '../i18n/lang-routing';
+import { Alternate, hasOgImage, hreflangLinks, publicUrl } from '../i18n/lang-routing';
 import { SITE_URL } from '../links';
 
 /** Dati SEO di una route (chiavi i18n), da mettere in `data.seo`. */
@@ -49,7 +49,7 @@ export class SeoService {
     const description = this.i18n.t(seo.descriptionKey);
     const url = publicUrl(slug, lang);
     // Immagine social della pagina corrente (scripts/og-images.mjs); la home e le pagine senza immagine usano quella generica
-    const image = slug !== '' && hasLang(slug, lang) ? `${SITE_URL}/og/${lang}/${slug}.png` : `${SITE_URL}/og-image.png`;
+    const image = hasOgImage(slug, lang) ? `${SITE_URL}/og/${lang}/${slug}.png` : `${SITE_URL}/og-image.png`;
     this.title.setTitle(title);
     const tags: [string, string, 'name' | 'property'][] = [
       ['description', description, 'name'],

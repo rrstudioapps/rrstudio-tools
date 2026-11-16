@@ -20,6 +20,7 @@ export const it = {
   'footer.github': 'GitHub',
   'footer.license': 'Licenza AGPL-3.0',
   'footer.source': 'Codice sorgente',
+  'footer.privacy': 'Privacy',
   'footer.noads': 'Nessuna pubblicità, nessun cookie, nessun tracciamento.',
 
   'home.eyebrow': 'STRUMENTI GRATUITI · OPEN SOURCE',
@@ -264,6 +265,10 @@ export const it = {
   'seo.cc.title': 'Verifica contrasto colori WCAG online | rrstudio Tools',
   'seo.cc.desc':
     'Calcola il contrasto tra testo e sfondo e controlla AA e AAA per testo normale, grande ed elementi grafici. Accetta HEX, rgb, hsl e suggerisce un colore valido.',
+
+  'seo.privacy.title': 'Informativa sulla privacy | rrstudio Tools',
+  'seo.privacy.desc':
+    'Come rrstudio Tools tratta i dati: gli strumenti lavorano nel browser, nessun cookie né tracciamento, solo log tecnici del server con rotazione automatica.',
 };
 
 export type Dict = typeof it;

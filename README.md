@@ -325,7 +325,9 @@ More tools are coming, with the same rule: nothing leaves your browser.
 
 - **Everything runs client-side.** There is no backend: files are read and processed by your browser and are never uploaded.
 - **No external requests.** No CDNs, web fonts or third-party scripts: everything is served from the same origin, and the Content Security Policy blocks connections to other servers.
-- **No cookies, no tracking, no analytics.** Only your language and theme preferences are saved, in your browser's `localStorage`.
+- **No cookies, no tracking, no analytics.** Only your theme, the dismissal of the "available in English" bar and, if you use the Markdown editor, its draft are saved in your browser's `localStorage`; they are never sent anywhere.
+- **Technical server logs.** Like any website, the server that delivers the pages logs IP address, date and time, requested path, user agent and referrer; they are used for security and troubleshooting (never for profiling; at most an occasional aggregate look, without keeping IP addresses) and are rotated automatically after about 5 weeks. The server is hosted by Hetzner in Finland (EU). Files and text you enter in the tools never reach the server.
+- Full notice (Italian and English): [`/privacy`](https://tools.rr-dev.eu/privacy) and [`/en/privacy`](https://tools.rr-dev.eu/en/privacy).
 
 ## Getting started
 

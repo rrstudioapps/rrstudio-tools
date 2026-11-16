@@ -21,6 +21,7 @@ export const en: Dict = {
   'footer.github': 'GitHub',
   'footer.license': 'AGPL-3.0 license',
   'footer.source': 'Source code',
+  'footer.privacy': 'Privacy',
   'footer.noads': 'No ads, no cookies, no tracking.',
 
   'home.eyebrow': 'FREE TOOLS · OPEN SOURCE',
@@ -265,4 +266,8 @@ export const en: Dict = {
   'seo.cc.title': 'WCAG color contrast checker (AA, AAA) | rrstudio Tools',
   'seo.cc.desc':
     'Calculate the contrast ratio between text and background and check AA and AAA for normal and large text and graphics. Accepts HEX, rgb, hsl and suggests a fix.',
+
+  'seo.privacy.title': 'Privacy notice | rrstudio Tools',
+  'seo.privacy.desc':
+    'How rrstudio Tools handles data: the tools run in your browser, no cookies or tracking, only technical server logs with automatic rotation.',
 };

@@ -1,0 +1,178 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+@if (i18n.lang() === 'it') {
+  <article class="container privacy rise">
+    <p class="eyebrow">Privacy</p>
+    <h1>Informativa sulla privacy</h1>
+    <p class="updated">Ultimo aggiornamento: 16 novembre 2026</p>
+
+    <h2>Titolare del trattamento</h2>
+    <p>
+      Roberto Russo (rrstudio). Per qualsiasi domanda o richiesta sui tuoi dati scrivi a
+      <a [href]="'mailto:' + email">{{ email }}</a>.
+    </p>
+
+    <h2>In breve</h2>
+    <ul>
+      <li>
+        Gli strumenti funzionano interamente nel tuo browser: i file e i testi che inserisci non vengono mai inviati
+        né salvati sul server.
+      </li>
+      <li>
+        Nessun cookie, nessun tracciamento, nessun analytics, nessuna pubblicità. Nessuna risorsa viene caricata da
+        server di terzi: font e script sono serviti da questo stesso sito.
+      </li>
+      <li>
+        La Content Security Policy impedisce alla pagina di contattare altri server. Chiunque può verificarlo con gli
+        strumenti per sviluppatori del browser (scheda Rete).
+      </li>
+    </ul>
+
+    <h2>Cosa resta nel tuo browser</h2>
+    <p>
+      Alcune preferenze sono salvate in <code>localStorage</code>, solo sul tuo dispositivo, e non vengono mai
+      inviate a nessuno:
+    </p>
+    <ul>
+      <li><code>rrtools.theme</code>: il tema chiaro o scuro che hai scelto;</li>
+      <li><code>rrtools.hint.en</code>: la chiusura della barra «available in English»;</li>
+      <li>
+        <code>rrstudio.markdown-editor.draft</code>: la bozza dell'editor Markdown, solo se lo usi.
+      </li>
+    </ul>
+    <p>
+      Per cancellarli usa il pulsante «Cancella bozza» (per la bozza) oppure cancella i dati del sito dalle
+      impostazioni del browser.
+    </p>
+
+    <h2>Log tecnici del server</h2>
+    <p>
+      Come ogni sito web, il server che pubblica le pagine registra per ogni richiesta l'indirizzo IP, la data e
+      l'ora, la pagina o il file richiesto, il browser e il sistema (user agent) e la pagina di provenienza
+      (referrer). Questi dati servono per la sicurezza e per risolvere problemi tecnici. Non sono usati per
+      profilazione né per statistiche continuative, non sono incrociati con altri dati né ceduti a terzi, e sono
+      cancellati con una rotazione automatica dopo circa 5 settimane. Possono essere consultati occasionalmente in
+      forma aggregata (per esempio quante pagine sono state aperte in un giorno), senza conservare gli indirizzi IP,
+      per capire se il sito funziona e viene usato.
+    </p>
+    <p>
+      Base giuridica: legittimo interesse alla sicurezza e al buon funzionamento del servizio (art. 6, par. 1, lett. f
+      del GDPR). Il server è ospitato da Hetzner Online GmbH (Germania) in un data center in Finlandia, quindi
+      nell'Unione europea; il fornitore mette a disposizione l'infrastruttura e non usa questi dati per altri scopi.
+      I file che usi negli strumenti non arrivano mai al server.
+    </p>
+
+    <h2>Link esterni</h2>
+    <p>
+      Il sito rimanda ad altri servizi: <a [href]="kofi" target="_blank" rel="noopener">Ko-fi</a>,
+      <a [href]="github" target="_blank" rel="noopener">GitHub</a>,
+      <a [href]="demo" target="_blank" rel="noopener">demo.rr-dev.eu</a>,
+      <a [href]="apps" target="_blank" rel="noopener">apps.rr-dev.eu</a>, OpenStreetMap (dal visualizzatore EXIF) e
+      VIES (dalla verifica della partita IVA). Si aprono solo se ci clicchi e da quel momento valgono le loro
+      informative.
+    </p>
+
+    <h2>I tuoi diritti</h2>
+    <p>
+      Puoi chiedere l'accesso, la rettifica, la cancellazione, la limitazione del trattamento e opporti ad esso
+      (artt. 15-21 del GDPR) scrivendo a <a [href]="'mailto:' + email">{{ email }}</a>. Hai anche diritto di proporre
+      reclamo al Garante per la protezione dei dati personali:
+      <a [href]="garante" target="_blank" rel="noopener">https://www.garanteprivacy.it</a>.
+    </p>
+    <p>
+      Nota onesta: poiché i log non contengono il nome di nessuno, per una richiesta sui log serve indicare
+      l'indirizzo IP e il giorno della visita.
+    </p>
+
+    <h2>Modifiche</h2>
+    <p>
+      Eventuali cambiamenti saranno pubblicati su questa pagina con la nuova data. Il codice del sito è pubblico
+      (<a [href]="repo" target="_blank" rel="noopener">repository</a>) e quindi verificabile.
+    </p>
+  </article>
+} @else {
+  <article class="container privacy rise">
+    <p class="eyebrow">Privacy</p>
+    <h1>Privacy notice</h1>
+    <p class="updated">Last updated: 16 November 2026</p>
+
+    <h2>Data controller</h2>
+    <p>
+      Roberto Russo (rrstudio). For any question or request about your data write to
+      <a [href]="'mailto:' + email">{{ email }}</a>.
+    </p>
+
+    <h2>In short</h2>
+    <ul>
+      <li>
+        The tools run entirely in your browser: the files and texts you enter are never sent to or stored on the
+        server.
+      </li>
+      <li>
+        No cookies, no tracking, no analytics, no ads. Nothing is loaded from third-party servers: fonts and scripts
+        are served by this same site.
+      </li>
+      <li>
+        The Content Security Policy prevents the page from contacting other servers. Anyone can check this with the
+        browser's developer tools (Network tab).
+      </li>
+    </ul>
+
+    <h2>What stays in your browser</h2>
+    <p>
+      A few preferences are saved in <code>localStorage</code>, on your device only, and are never sent to anyone:
+    </p>
+    <ul>
+      <li><code>rrtools.theme</code>: the light or dark theme you chose;</li>
+      <li><code>rrtools.hint.en</code>: whether you closed the "available in English" bar;</li>
+      <li>
+        <code>rrstudio.markdown-editor.draft</code>: the Markdown editor draft, only if you use it.
+      </li>
+    </ul>
+    <p>
+      To remove them use the "Clear draft" button (for the draft) or clear the site data from your browser settings.
+    </p>
+
+    <h2>Technical server logs</h2>
+    <p>
+      Like any website, the server that delivers the pages records, for each request, the IP address, date and time,
+      the page or file requested, the browser and system (user agent) and the referring page (referrer). These data are
+      used for security and to fix technical problems. They are not used for profiling or for ongoing statistics,
+      they are not combined with other data or passed to third parties, and they are deleted by an automatic rotation
+      after about 5 weeks. They may occasionally be looked at in aggregate form (for example how many pages were
+      opened in a day), without keeping IP addresses, to understand whether the site works and is being used.
+    </p>
+    <p>
+      Legal basis: legitimate interest in the security and proper functioning of the service (Article 6(1)(f) GDPR).
+      The server is hosted by Hetzner Online GmbH (Germany) in a data center in Finland, within the European Union;
+      the provider only supplies the infrastructure and does not use these data for other purposes. The files you
+      use in the tools never reach the server.
+    </p>
+
+    <h2>External links</h2>
+    <p>
+      The site links to other services: <a [href]="kofi" target="_blank" rel="noopener">Ko-fi</a>,
+      <a [href]="github" target="_blank" rel="noopener">GitHub</a>,
+      <a [href]="demo" target="_blank" rel="noopener">demo.rr-dev.eu</a>,
+      <a [href]="apps" target="_blank" rel="noopener">apps.rr-dev.eu</a>, OpenStreetMap (from the EXIF viewer) and
+      VIES (from the VAT number check). They open only if you click them, and from then on their own notices apply.
+    </p>
+
+    <h2>Your rights</h2>
+    <p>
+      You can ask for access, rectification, erasure, restriction of processing and object to it (Articles 15-21
+      GDPR) by writing to <a [href]="'mailto:' + email">{{ email }}</a>. You also have the right to lodge a complaint
+      with the Italian data protection authority (Garante per la protezione dei dati personali):
+      <a [href]="garante" target="_blank" rel="noopener">https://www.garanteprivacy.it</a>.
+    </p>
+    <p>
+      An honest note: since the logs do not contain anyone's name, a request about the logs needs the IP address and
+      the day of the visit.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      Any change will be published on this page with the new date. The site's code is public
+      (<a [href]="repo" target="_blank" rel="noopener">repository</a>) and therefore verifiable.
+    </p>
+  </article>
+}

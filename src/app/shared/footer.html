@@ -5,7 +5,8 @@
       <p class="legal">
         © 2026 rrstudio ·
         <a [href]="license" target="_blank" rel="noopener">{{ i18n.t('footer.license') }}</a> ·
-        <a [href]="repo" target="_blank" rel="noopener">{{ i18n.t('footer.source') }}</a>
+        <a [href]="repo" target="_blank" rel="noopener">{{ i18n.t('footer.source') }}</a> ·
+        <a [routerLink]="i18n.link('privacy')">{{ i18n.t('footer.privacy') }}</a>
       </p>
       <ul class="links">
         <li class="family">rrstudio:</li>

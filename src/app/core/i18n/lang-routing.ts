@@ -12,6 +12,9 @@ export type Lang = 'it' | 'en';
 export const LANGS: readonly Lang[] = ['it', 'en'];
 export const EN_PREFIX = 'en';
 
+/** Pagine informative statiche (non sono strumenti): esistono in entrambe le lingue, senza voce nel registry. */
+export const STATIC_PAGES: readonly string[] = ['privacy'];
+
 export interface Alternate {
   hreflang: string;
   href: string;
@@ -47,10 +50,15 @@ export function publicUrl(slug: string, lang: Lang): string {
 
 /** Vero se la pagina esiste nella lingua data (la home sempre, uno strumento italyOnly solo in italiano). */
 export function hasLang(slug: string, lang: Lang): boolean {
-  if (slug === '') return true;
+  if (slug === '' || STATIC_PAGES.includes(slug)) return true;
   const tool = TOOLS.find((t) => t.path === slug);
   if (!tool) return false;
   return lang === 'it' || !tool.italyOnly;
+}
+
+/** Vero se esiste un'immagine social dedicata (home e pagine statiche usano quella generica). */
+export function hasOgImage(slug: string, lang: Lang): boolean {
+  return slug !== '' && !STATIC_PAGES.includes(slug) && hasLang(slug, lang);
 }
 
 /** Percorso della stessa pagina nell'altra lingua, o null se non esiste (strumento solo italiano). */
@@ -69,7 +77,7 @@ export function hreflangLinks(slug: string): Alternate[] {
 
 /** Slug di tutte le pagine italiane (home inclusa), nell'ordine del registry. */
 export function allSlugs(): string[] {
-  return ['', ...TOOLS.map((t) => t.path)];
+  return ['', ...TOOLS.map((t) => t.path), ...STATIC_PAGES];
 }
 
 /** Sitemap completa: ogni URL italiana e inglese, con i link xhtml:link alternate. */
