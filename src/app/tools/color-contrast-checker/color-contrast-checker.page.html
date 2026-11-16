@@ -1,0 +1,161 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.cc.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('cc.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="pickers" [attr.aria-label]="i18n.t('cc.ratio')">
+    @for (side of sides; track side) {
+      <div class="picker">
+        <label class="eyebrow" [attr.for]="'cc-' + side">{{ name(side) }}</label>
+        <div class="field">
+          <input
+            type="color"
+            class="swatch"
+            [attr.aria-label]="i18n.t('cc.picker', { name: name(side) })"
+            [value]="pickerValue(side)"
+            (input)="setPicker(side, $any($event.target).value)"
+          />
+          <input
+            type="text"
+            class="mono value"
+            [id]="'cc-' + side"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [attr.data-testid]="'cc-' + side"
+            [attr.aria-invalid]="valid(side) ? null : 'true'"
+            [attr.aria-describedby]="valid(side) ? 'cc-hint' : 'cc-hint cc-err-' + side"
+            [value]="text(side)"
+            (input)="setText(side, $any($event.target).value)"
+          />
+        </div>
+        <div role="status" aria-live="polite" class="tool-status">
+          @if (!valid(side)) {
+            <p class="tool-error" [id]="'cc-err-' + side" [attr.data-testid]="'cc-err-' + side">{{ i18n.t('cc.err') }}</p>
+          }
+        </div>
+      </div>
+      @if (side === 'fg') {
+        <button type="button" class="btn small swap" (click)="swap()" data-testid="cc-swap">
+          <app-icon name="swap" /> {{ i18n.t('cc.swap') }}
+        </button>
+      }
+    }
+  </section>
+  <p class="hint" id="cc-hint">{{ i18n.t('cc.hint') }}</p>
+
+  @if (result(); as r) {
+    <section class="result" aria-labelledby="cc-ratio-label">
+      <div class="ratio-box">
+        <h2 class="eyebrow" id="cc-ratio-label">{{ i18n.t('cc.ratio') }}</h2>
+        <p class="ratio mono" aria-live="polite" data-testid="cc-ratio">{{ i18n.t('cc.ratio.value', { ratio: ratioText() }) }}</p>
+        @if (hasAlpha()) {
+          <p class="hint">{{ i18n.t('cc.alpha.note') }}</p>
+        }
+      </div>
+
+      <div class="checks-wrap">
+        <h2 class="eyebrow">{{ i18n.t('cc.checks') }}</h2>
+        <ul class="checks" data-testid="cc-checks">
+          @for (n of checkNames; track n) {
+            <li [attr.data-check]="n" [attr.data-pass]="r.checks[n]">
+              <span class="check-name">{{ checkLabel(n) }}<span class="need"> · {{ need(n) }}</span></span>
+              <strong class="verdict" [class.ok]="r.checks[n]">
+                <app-icon [name]="r.checks[n] ? 'check' : 'close'" /> {{ i18n.t(r.checks[n] ? 'cc.pass' : 'cc.fail') }}
+              </strong>
+            </li>
+          }
+        </ul>
+        <p class="hint">{{ i18n.t('cc.check.note') }}</p>
+      </div>
+    </section>
+
+    <section class="preview-wrap" aria-labelledby="cc-preview-label">
+      <h2 class="eyebrow" id="cc-preview-label">{{ i18n.t('cc.preview') }}</h2>
+      <div class="preview" [style.background]="previewBg()" [style.color]="previewFg()" data-testid="cc-preview">
+        <p class="p-normal">{{ i18n.t('cc.preview.normal') }}</p>
+        <p class="p-large">{{ i18n.t('cc.preview.large') }}</p>
+        <div class="btns">
+          <span class="demo filled" [style.background]="previewFg()" [style.color]="previewBg()">{{ i18n.t('cc.preview.btn1') }}</span>
+          <span class="demo outline" [style.borderColor]="previewFg()">{{ i18n.t('cc.preview.btn2') }}</span>
+        </div>
+      </div>
+    </section>
+  } @else {
+    <p class="hint">{{ i18n.t('cc.preview.fallback') }}</p>
+  }
+
+  <section class="conv" aria-labelledby="cc-conv-label">
+    <h2 class="eyebrow" id="cc-conv-label">{{ i18n.t('cc.conv') }}</h2>
+    <div class="conv-grid">
+      @for (side of sides; track side) {
+        @if (valid(side)) {
+          <div class="conv-card" [attr.data-testid]="'cc-conv-' + side">
+            <p class="conv-title">{{ name(side) }}</p>
+            <dl class="conv-list">
+              @for (c of conversions(side); track c.key) {
+                <div class="crow">
+                  <dt class="eyebrow">{{ c.label }}</dt>
+                  <dd class="mono" [attr.data-testid]="'cc-' + side + '-' + c.key">{{ c.value }}</dd>
+                  <dd class="act"><app-copy-button [text]="c.value" [compact]="true" [ariaLabel]="copyConv(c.label, side)" /></dd>
+                </div>
+              }
+            </dl>
+          </div>
+        }
+      }
+    </div>
+  </section>
+
+  @if (suggestions(); as list) {
+    <section class="sugg" aria-labelledby="cc-sugg-label">
+      <h2 class="eyebrow" id="cc-sugg-label">{{ i18n.t('cc.sugg') }}</h2>
+      <p class="desc">{{ i18n.t('cc.sugg.lead') }}</p>
+      <div class="tool-toolbar">
+        <span class="eyebrow">{{ i18n.t('cc.sugg.side') }}</span>
+        <app-segmented [label]="i18n.t('cc.sugg.side')" [options]="sideOptions()" [(value)]="editSide" />
+      </div>
+      <div class="sugg-grid">
+        @for (v of list; track v.key) {
+          <article class="sugg-card" [attr.data-testid]="'cc-sugg-' + v.key">
+            <h3 class="eyebrow">{{ v.label }}</h3>
+            @if (v.s.already) {
+              <p class="note">{{ i18n.t('cc.sugg.already') }}</p>
+            } @else if (!v.s.color) {
+              <p class="note" data-testid="cc-sugg-none">{{ i18n.t('cc.sugg.none') }}</p>
+            } @else {
+              @if (suggestionPreview(v); as p) {
+                <div class="sample" [style.background]="p.background" [style.color]="p.color">{{ i18n.t('cc.sugg.sample') }}</div>
+              }
+              <div class="sugg-line">
+                <code class="mono" [attr.data-testid]="'cc-sugg-hex-' + v.key">{{ v.hex }}</code>
+                <app-copy-button [text]="v.hex" [compact]="true" [ariaLabel]="i18n.t('cc.sugg.copy', { hex: v.hex })" />
+              </div>
+              <p class="note">{{ v.text }}</p>
+              <button type="button" class="btn small" [attr.data-testid]="'cc-apply-' + v.key" (click)="apply(v)">{{ i18n.t('cc.sugg.apply') }}</button>
+            }
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cc.info.wcag.title') }}</h2>
+      <p>{{ i18n.t('cc.info.wcag.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cc.info.limit.title') }}</h2>
+      <p>{{ i18n.t('cc.info.limit.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cc.info.priv.title') }}</h2>
+      <p>{{ i18n.t('cc.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

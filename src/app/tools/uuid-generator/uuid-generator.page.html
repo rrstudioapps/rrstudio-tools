@@ -1,0 +1,140 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.uuid.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('uuid.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="options" [attr.aria-label]="i18n.t('uuid.type')">
+    <div class="row">
+      <app-segmented [label]="i18n.t('uuid.type')" [options]="kinds()" [(value)]="kind" />
+      <label class="lbl" for="uuid-count">{{ i18n.t('uuid.count') }}</label>
+      <input
+        id="uuid-count"
+        type="number"
+        class="num"
+        inputmode="numeric"
+        [min]="minCount"
+        [max]="maxCount"
+        [value]="count()"
+        (change)="setCount($any($event.target).value); $any($event.target).value = count()"
+      />
+    </div>
+    <div class="row">
+      <label class="check"><input type="checkbox" [checked]="upper()" (change)="upper.set($any($event.target).checked)" /> {{ i18n.t('uuid.upper') }}</label>
+      <label class="check"><input type="checkbox" [checked]="hyphens()" [disabled]="kind() === 'ulid'" (change)="hyphens.set($any($event.target).checked)" /> {{ i18n.t('uuid.hyphens') }}</label>
+      <label class="check"><input type="checkbox" [checked]="braces()" [disabled]="kind() === 'ulid'" (change)="braces.set($any($event.target).checked)" /> {{ i18n.t('uuid.braces') }}</label>
+      @if (kind() === 'ulid') {
+        <span class="hint">{{ i18n.t('uuid.ulidNote') }}</span>
+      }
+    </div>
+  </section>
+
+  <div class="tool-toolbar">
+    <button type="button" class="btn primary" (click)="generate()">
+      <app-icon name="refresh" /> {{ i18n.t('uuid.generate') }}
+    </button>
+    <app-copy-button [text]="text()" [label]="i18n.t('uuid.copyAll')" [disabled]="!text()" />
+    <button type="button" class="btn small" [disabled]="!text()" (click)="download()">
+      <app-icon name="download" /> {{ i18n.t('uuid.download') }}
+    </button>
+    <span class="hint">{{ i18n.t('uuid.shortcut') }}</span>
+  </div>
+
+  <app-io-panel [label]="i18n.t('uuid.out')" inputId="uuid-out" [meta]="meta()">
+    <textarea
+      id="uuid-out"
+      class="io-textarea ids"
+      readonly
+      spellcheck="false"
+      rows="8"
+      wrap="off"
+      data-testid="uuid-out"
+      [value]="text()"
+    ></textarea>
+  </app-io-panel>
+
+  <section class="checker" aria-labelledby="uuid-check-title">
+    <h2 class="eyebrow" id="uuid-check-title">{{ i18n.t('uuid.check.title') }}</h2>
+    <p class="desc">{{ i18n.t('uuid.check.desc') }}</p>
+    <div class="row">
+      <label class="visually-hidden" for="uuid-check">{{ i18n.t('uuid.check.in') }}</label>
+      <input
+        id="uuid-check"
+        type="text"
+        class="check-in mono"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        [placeholder]="i18n.t('uuid.check.ph')"
+        [attr.aria-invalid]="errorText() ? 'true' : null"
+        [attr.aria-describedby]="errorText() ? 'uuid-check-err' : null"
+        [value]="checkInput()"
+        (input)="onCheck($event)"
+      />
+      <button type="button" class="btn small" [disabled]="!text()" (click)="checkFirst()">{{ i18n.t('uuid.check.use') }}</button>
+    </div>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (errorText()) {
+        <p class="tool-error" id="uuid-check-err" data-testid="uuid-check-error">{{ errorText() }}</p>
+      }
+    </div>
+    @if (inspection(); as r) {
+      @if (r.ok) {
+        <dl class="facts" data-testid="uuid-result">
+          <div>
+            <dt class="eyebrow">{{ i18n.t('uuid.res.kind') }}</dt>
+            <dd class="mono">{{ i18n.t('uuid.res.kind.' + r.kind) }} · {{ i18n.t('uuid.res.valid') }}</dd>
+          </div>
+          @if (r.kind === 'uuid') {
+            <div>
+              <dt class="eyebrow">{{ i18n.t('uuid.res.version') }}</dt>
+              <dd class="mono" data-testid="uuid-version">{{ versionText() }}</dd>
+            </div>
+            <div>
+              <dt class="eyebrow">{{ i18n.t('uuid.res.variant') }}</dt>
+              <dd class="mono" data-testid="uuid-variant">{{ i18n.t('uuid.var.' + r.variant) }}</dd>
+            </div>
+            @if (r.nil) {
+              <div><dd class="mono">{{ i18n.t('uuid.res.nil') }}</dd></div>
+            }
+            @if (r.max) {
+              <div><dd class="mono">{{ i18n.t('uuid.res.max') }}</dd></div>
+            }
+          }
+          <div>
+            <dt class="eyebrow">{{ i18n.t('uuid.res.canonical') }}</dt>
+            <dd class="mono wrap">{{ r.canonical }}</dd>
+          </div>
+          @if (dateInfo(); as d) {
+            <div class="wide" data-testid="uuid-date">
+              <dt class="eyebrow">{{ i18n.t('uuid.res.date') }}</dt>
+              <dd class="mono">{{ d.iso }}</dd>
+              <dd class="sub">{{ i18n.t('uuid.res.date.utc') }}: {{ d.utc }}</dd>
+              <dd class="sub">{{ i18n.t('uuid.res.date.local') }}: {{ d.local }}</dd>
+            </div>
+          } @else {
+            <div class="wide"><dd class="sub">{{ i18n.t('uuid.res.nodate') }}</dd></div>
+          }
+        </dl>
+      }
+    }
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('uuid.info.v7.title') }}</h2>
+      <p>{{ i18n.t('uuid.info.v7.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('uuid.info.random.title') }}</h2>
+      <p>{{ i18n.t('uuid.info.random.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('uuid.info.priv.title') }}</h2>
+      <p>{{ i18n.t('uuid.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

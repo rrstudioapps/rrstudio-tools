@@ -1,0 +1,203 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.ts.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ts.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <div class="field">
+      <label class="eyebrow" for="ts-tz">{{ i18n.t('ts.tz') }}</label>
+      <select id="ts-tz" [value]="tz()" (change)="setTz($any($event.target).value)" data-testid="ts-tz">
+        @for (z of zones; track z) {
+          <option [value]="z" [selected]="z === tz()">{{ z }}</option>
+        }
+      </select>
+    </div>
+    <div class="field">
+      <label class="eyebrow" for="ts-unit">{{ i18n.t('ts.unit') }}</label>
+      <select id="ts-unit" [value]="unit()" (change)="setUnit($any($event.target).value)">
+        <option value="auto" [selected]="unit() === 'auto'">{{ i18n.t('ts.unit.auto') }}</option>
+        @for (u of units; track u) {
+          <option [value]="u" [selected]="unit() === u">{{ unitLabel(u) }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <section class="now" aria-labelledby="ts-now-label">
+    <h2 class="eyebrow" id="ts-now-label">{{ i18n.t('ts.now') }}</h2>
+    @if (ready()) {
+      <dl class="cards" data-testid="ts-now">
+        <div class="card">
+          <dt class="eyebrow">{{ i18n.t('ts.now.seconds') }}</dt>
+          <dd class="mono big" data-testid="ts-now-s">{{ nowSeconds() }}</dd>
+          <dd class="act"><app-copy-button [text]="nowSeconds()" [compact]="true" [ariaLabel]="copyLabel(i18n.t('ts.now.seconds'))" /></dd>
+        </div>
+        <div class="card">
+          <dt class="eyebrow">{{ i18n.t('ts.now.millis') }}</dt>
+          <dd class="mono big">{{ nowMillis() }}</dd>
+          <dd class="act"><app-copy-button [text]="nowMillis()" [compact]="true" [ariaLabel]="copyLabel(i18n.t('ts.now.millis'))" /></dd>
+        </div>
+        <div class="card">
+          <dt class="eyebrow">{{ i18n.t('ts.now.iso') }}</dt>
+          <dd class="mono big">{{ nowIso() }}</dd>
+          <dd class="act"><app-copy-button [text]="nowIso()" [compact]="true" [ariaLabel]="copyLabel(i18n.t('ts.now.iso'))" /></dd>
+        </div>
+      </dl>
+    } @else {
+      <p class="placeholder" aria-hidden="true">&nbsp;</p>
+    }
+  </section>
+
+  <section class="block" aria-labelledby="ts-todate-label">
+    <h2 class="eyebrow" id="ts-todate-label">{{ i18n.t('ts.toDate') }}</h2>
+    <div class="line">
+      <label class="visually-hidden" for="ts-in">{{ i18n.t('ts.toDate.in') }}</label>
+      <input
+        id="ts-in"
+        type="text"
+        class="grow mono"
+        inputmode="decimal"
+        spellcheck="false"
+        autocomplete="off"
+        [placeholder]="i18n.t('ts.toDate.ph')"
+        [attr.aria-invalid]="tsError() ? 'true' : null"
+        [attr.aria-describedby]="tsError() ? 'ts-in-err' : null"
+        [value]="tsInput()"
+        (input)="onInput(tsInput, $event)"
+      />
+      <button type="button" class="btn small" (click)="useNowAsTimestamp()">{{ i18n.t('ts.useNow') }}</button>
+    </div>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (tsError()) {
+        <p class="tool-error" id="ts-in-err" data-testid="ts-error">{{ tsError() }}</p>
+      }
+    </div>
+    @if (dateRows().length) {
+      <p class="tool-ok" data-testid="ts-unit-note">{{ unitNote() }}</p>
+      <dl class="results" data-testid="ts-date-rows">
+        @for (r of dateRows(); track r.key) {
+          <div class="res">
+            <dt class="eyebrow">{{ r.label }}</dt>
+            <dd class="mono" [attr.data-testid]="'ts-' + r.key">{{ r.value }}</dd>
+            <dd class="act"><app-copy-button [text]="r.value" [compact]="true" [ariaLabel]="copyLabel(r.label)" /></dd>
+          </div>
+        }
+      </dl>
+    }
+  </section>
+
+  <section class="block" aria-labelledby="ts-tots-label">
+    <h2 class="eyebrow" id="ts-tots-label">{{ i18n.t('ts.toTs') }}</h2>
+    <div class="line">
+      <label class="visually-hidden" for="ts-date">{{ i18n.t('ts.toTs.in') }}</label>
+      <input
+        id="ts-date"
+        type="text"
+        class="grow mono"
+        spellcheck="false"
+        autocomplete="off"
+        [placeholder]="i18n.t('ts.toTs.ph')"
+        [attr.aria-invalid]="dateError() ? 'true' : null"
+        [attr.aria-describedby]="dateError() ? 'ts-date-err' : 'ts-date-hint'"
+        [value]="dateInput()"
+        (input)="onInput(dateInput, $event)"
+      />
+      <button type="button" class="btn small" (click)="useNowAsDate()">{{ i18n.t('ts.useNow') }}</button>
+    </div>
+    <p class="hint" id="ts-date-hint">{{ i18n.t('ts.toTs.hint') }}</p>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (dateError()) {
+        <p class="tool-error" id="ts-date-err" data-testid="ts-date-error">{{ dateError() }}</p>
+      } @else if (dateWarning()) {
+        <p class="tool-error" data-testid="ts-date-warning">{{ dateWarning() }}</p>
+      }
+    </div>
+    @if (tsRows().length) {
+      <dl class="results" data-testid="ts-ts-rows">
+        <div class="res">
+          <dt class="eyebrow">{{ i18n.t('ts.fmt.iso') }}</dt>
+          <dd class="mono" data-testid="ts-date-iso">{{ dateIso() }}</dd>
+          <dd class="act"><app-copy-button [text]="dateIso()" [compact]="true" [ariaLabel]="copyLabel(i18n.t('ts.fmt.iso'))" /></dd>
+        </div>
+        @for (r of tsRows(); track r.key) {
+          <div class="res">
+            <dt class="eyebrow">{{ r.label }}</dt>
+            <dd class="mono" [attr.data-testid]="'ts-out-' + r.key">{{ r.value }}</dd>
+            <dd class="act"><app-copy-button [text]="r.value" [compact]="true" [ariaLabel]="copyLabel(r.label)" /></dd>
+          </div>
+        }
+      </dl>
+    }
+  </section>
+
+  <section class="block" aria-labelledby="ts-batch-label">
+    <h2 class="eyebrow" id="ts-batch-label">{{ i18n.t('ts.batch') }}</h2>
+    <div class="tool-toolbar">
+      <button type="button" class="btn small" (click)="loadBatchSample()">{{ i18n.t('ts.batch.sample') }}</button>
+      <span class="spacer"></span>
+      <app-copy-button [text]="batchText()" [label]="i18n.t('ts.batch.copy')" [disabled]="!batchText()" />
+      <button type="button" class="btn small" [disabled]="!batchInput()" (click)="batchInput.set('')">
+        <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+      </button>
+    </div>
+    <app-io-panel [label]="i18n.t('ts.batch.in')" inputId="ts-batch-in" [meta]="batchCount()">
+      <textarea
+        id="ts-batch-in"
+        class="io-textarea batch-in"
+        spellcheck="false"
+        autocomplete="off"
+        [placeholder]="i18n.t('ts.batch.ph')"
+        [value]="batchInput()"
+        (input)="onInput(batchInput, $event)"
+      ></textarea>
+    </app-io-panel>
+    @if (batchTruncated()) {
+      <p class="tool-error">{{ i18n.t('ts.batch.more', { n: maxBatch }) }}</p>
+    }
+    @if (batchRows().length) {
+      <div class="table-wrap" tabindex="0" role="region" [attr.aria-label]="i18n.t('ts.batch')">
+        <table class="rows" data-testid="ts-batch-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('ts.batch.col.line') }}</th>
+              <th scope="col">{{ i18n.t('ts.batch.col.in') }}</th>
+              <th scope="col">{{ i18n.t('ts.batch.col.unit') }}</th>
+              <th scope="col">{{ i18n.t('ts.batch.col.date') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of batchRows(); track r.line) {
+              <tr [class.bad]="r.error">
+                <td class="mono">{{ r.line }}</td>
+                <td class="mono">{{ r.input }}</td>
+                <td>{{ r.unit }}</td>
+                <td class="mono">{{ r.error || r.date }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="hint">{{ i18n.t('ts.batch.empty') }}</p>
+    }
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ts.info.units.title') }}</h2>
+      <p>{{ i18n.t('ts.info.units.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ts.info.dst.title') }}</h2>
+      <p>{{ i18n.t('ts.info.dst.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ts.info.priv.title') }}</h2>
+      <p>{{ i18n.t('ts.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

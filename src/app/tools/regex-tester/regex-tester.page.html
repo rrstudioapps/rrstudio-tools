@@ -1,0 +1,160 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.rx.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('rx.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="pattern-box" [attr.aria-label]="i18n.t('rx.pattern')">
+    <div class="p-head">
+      <label class="eyebrow" for="rx-pattern">{{ i18n.t('rx.pattern') }}</label>
+      <span class="p-actions">
+        <select id="rx-examples" class="small-select" [attr.aria-label]="i18n.t('rx.examples')" (change)="loadExample($event)">
+          <option value="">{{ i18n.t('rx.examples.pick') }}</option>
+          @for (ex of examples; track ex.id) {
+            <option [value]="ex.id">{{ i18n.t('rx.example.' + ex.id) }}</option>
+          }
+        </select>
+        <app-copy-button [text]="'/' + pattern() + '/' + flags()" [disabled]="pattern() === ''" [label]="i18n.t('rx.copy.pattern')" />
+        <button type="button" class="btn small" [disabled]="pattern() === '' && text() === ''" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('rx.clear') }}</button>
+      </span>
+    </div>
+    <div class="p-row">
+      <span class="slash" aria-hidden="true">/</span>
+      <input
+        id="rx-pattern"
+        class="p-input"
+        type="text"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        [placeholder]="i18n.t('rx.pattern.ph')"
+        [value]="pattern()"
+        [attr.aria-invalid]="syntaxError() ? true : null"
+        [attr.aria-describedby]="syntaxError() ? 'rx-error' : null"
+        (input)="onPattern($event)"
+      />
+      <span class="slash" aria-hidden="true">/</span>
+      <span class="flags-view" aria-hidden="true">{{ flags() }}</span>
+    </div>
+    <div class="flags" role="group" [attr.aria-label]="i18n.t('rx.flags')">
+      @for (f of allFlags; track f) {
+        <button type="button" class="flag" [class.on]="hasFlag(f)" [attr.aria-pressed]="hasFlag(f)" [attr.title]="i18n.t('rx.flag.' + f)" [attr.aria-label]="i18n.t('rx.flag.' + f)" (click)="toggleFlag(f)">{{ f }}</button>
+      }
+    </div>
+  </section>
+
+  <div class="tool-status" aria-live="polite">
+    @if (syntaxError()) {
+      <p id="rx-error" class="tool-error" role="alert" data-testid="rx-error">{{ i18n.t('rx.error', { msg: syntaxError() }) }}</p>
+    }
+    @if (status() === 'timeout') {
+      <p class="tool-warn-box" role="alert" data-testid="rx-timeout">{{ timeoutText() }}</p>
+    }
+    @if (status() === 'noworker') {
+      <p class="tool-error" role="alert">{{ i18n.t('rx.noworker') }}</p>
+    }
+  </div>
+
+  <div class="tool-panels">
+    <app-io-panel [label]="i18n.t('rx.text')" inputId="rx-text">
+      <textarea id="rx-text" class="io-textarea" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('rx.text.ph')" [value]="text()" (input)="onText($event)"></textarea>
+    </app-io-panel>
+
+    <section class="hl" [attr.aria-label]="i18n.t('rx.highlight')">
+      <div class="hl-head">
+        <h2 class="eyebrow">{{ i18n.t('rx.highlight') }}</h2>
+        <span class="count" data-testid="rx-count" aria-live="polite">{{ status() === 'busy' ? i18n.t('rx.running') : countText() }}</span>
+      </div>
+      <pre class="hl-text" data-testid="rx-highlight">@for (p of pieces(); track $index) {@if (p.match === null) {<span>{{ p.text }}</span>} @else {<mark [class.alt]="p.match % 2 === 1">{{ p.text }}</mark>}}</pre>
+      @if (truncated()) {
+        <p class="hint">{{ i18n.t('rx.truncated', { n: matches().length }) }}</p>
+      }
+    </section>
+  </div>
+
+  <section class="block" [attr.aria-label]="i18n.t('rx.matches')">
+    <h2 class="eyebrow">{{ i18n.t('rx.matches') }}</h2>
+    @if (matches().length) {
+      <div class="table-wrap">
+        <table class="mt" data-testid="rx-matches">
+          <thead>
+            <tr>
+              <th scope="col" class="num">{{ i18n.t('rx.col.n') }}</th>
+              <th scope="col">{{ i18n.t('rx.col.pos') }}</th>
+              <th scope="col">{{ i18n.t('rx.col.match') }}</th>
+              @if (hasGroups()) {
+                <th scope="col">{{ i18n.t('rx.col.groups') }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (m of matches(); track $index) {
+              <tr>
+                <td class="num">{{ $index + 1 }}</td>
+                <td class="mono">{{ where(m) }}</td>
+                <td class="mono wrap">{{ shown(m.text) }}</td>
+                @if (hasGroups()) {
+                  <td>
+                    @if (m.groups.length === 0) {
+                      {{ i18n.t('rx.groups.no') }}
+                    } @else {
+                      <ul class="groups">
+                        @for (g of m.groups; track g.index) {
+                          <li>
+                            <span class="g-name">{{ g.name ? g.name : '$' + g.index }}</span>
+                            @if (g.text === null) {
+                              <em>{{ i18n.t('rx.group.none') }}</em>
+                            } @else {
+                              <code>{{ shown(g.text) }}</code>
+                              @if (g.start !== null) {
+                                <span class="g-pos">[{{ g.start }}–{{ g.end }}]</span>
+                              }
+                            }
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="hint">{{ countText() || i18n.t('rx.count.none') }}</p>
+    }
+  </section>
+
+  <section class="block" [attr.aria-label]="i18n.t('rx.replace')">
+    <h2 class="eyebrow">{{ i18n.t('rx.replace') }}</h2>
+    <div class="field">
+      <label for="rx-repl">{{ i18n.t('rx.replace.in') }}</label>
+      <input id="rx-repl" type="text" class="mono-input" spellcheck="false" autocomplete="off" [placeholder]="i18n.t('rx.replace.ph')" [value]="replacement()" (input)="onReplacement($event)" />
+    </div>
+    <p class="hint">{{ i18n.t('rx.replace.hint') }}</p>
+    <app-io-panel [label]="i18n.t('rx.replace.out')" inputId="rx-out">
+      <span panel-actions><app-copy-button [text]="replaced()" [label]="i18n.t('rx.copy.result')" [disabled]="!replaced()" /></span>
+      <textarea id="rx-out" class="io-textarea short" readonly data-testid="rx-replaced" [value]="replaced()"></textarea>
+    </app-io-panel>
+  </section>
+
+  <section class="block" [attr.aria-label]="i18n.t('rx.explain')">
+    <h2 class="eyebrow">{{ i18n.t('rx.explain') }}</h2>
+    @if (explanation().length) {
+      <ul class="explain" data-testid="rx-explain">
+        @for (x of explanation(); track $index) {
+          <li [style.padding-left.rem]="0.75 + x.depth * 1.25">
+            <code class="tok">{{ x.token }}</code>
+            <span>{{ x.text }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="hint">{{ i18n.t('rx.explain.empty') }}</p>
+    }
+  </section>
+</div>

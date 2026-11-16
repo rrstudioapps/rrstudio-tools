@@ -31,8 +31,13 @@ Thanks for your interest in rrstudio Tools! / Grazie per l'interesse verso rrstu
    `home.italy.<id>` label in both dictionaries). / La versione inglese (`/en/<slug>`) è automatica dal
    registry; per gli strumenti solo italiani usa `italyOnly: true`.
 4. Internal links go through `i18n.link('<slug>')`, never a hard-coded `'/slug'`, so they stay in the current language.
-5. Regenerate the sitemap with `UPDATE_SITEMAP=1 npm test` (the test fails if `public/sitemap.xml` is out of date).
-6. Run `npm run typecheck`, `npm test` and `npm run build`.
+5. **Social image:** run `npm run og-images` (needs the Playwright Chromium; `CHROMIUM_PATH` if it is not found).
+   It reads the tool name and description from the dictionaries and the registry and writes
+   `public/og/it/<slug>.png` and `public/og/en/<slug>.png` (1200×630, "Carta" style; `italyOnly` tools get only `it`).
+   The SEO service points `og:image` and `twitter:image` to them; commit the new files.
+   / Immagine social: `npm run og-images` genera `public/og/<lingua>/<slug>.png`, poi committa i file.
+6. Regenerate the sitemap with `UPDATE_SITEMAP=1 npm test` (the test fails if `public/sitemap.xml` is out of date).
+7. Run `npm run typecheck`, `npm test` and `npm run build`.
 
 ## Development / Sviluppo
 

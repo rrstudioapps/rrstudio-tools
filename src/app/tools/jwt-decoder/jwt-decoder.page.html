@@ -1,0 +1,184 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.jwt.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('jwt.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-warn" role="note" data-testid="jwt-warn">
+    <strong>{{ i18n.t('jwt.warn.title') }}</strong>
+    <span>{{ i18n.t('jwt.warn.body') }}</span>
+  </div>
+
+  <div class="tool-toolbar">
+    <button type="button" class="btn small" (click)="loadSample()">{{ i18n.t('jwt.sample') }}</button>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" [disabled]="!input()" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <app-io-panel [label]="i18n.t('jwt.in')" inputId="jwt-in" [meta]="meta()">
+    <textarea
+      id="jwt-in"
+      class="io-textarea token-in"
+      spellcheck="false"
+      autocomplete="off"
+      autocapitalize="off"
+      [placeholder]="i18n.t('jwt.in.ph')"
+      [attr.aria-describedby]="error() ? 'jwt-error' : null"
+      [attr.aria-invalid]="error() ? 'true' : null"
+      [value]="input()"
+      (input)="onInput($event)"
+    ></textarea>
+  </app-io-panel>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (error()) {
+      <p class="tool-error" id="jwt-error" data-testid="jwt-error">{{ error() }}</p>
+    }
+  </div>
+
+  @if (!input().trim()) {
+    <p class="empty">{{ i18n.t('jwt.empty') }}</p>
+  }
+
+  @if (jws(); as t) {
+    <section class="summary" [attr.aria-label]="i18n.t('jwt.summary')" data-testid="jwt-summary">
+      <div class="status" [attr.data-status]="status()">
+        <span class="eyebrow">{{ i18n.t('jwt.status.label') }}</span>
+        <strong class="badge" data-testid="jwt-status">{{ statusText() }}</strong>
+        <span class="note">{{ i18n.t('jwt.status.note') }}</span>
+      </div>
+      <dl class="facts">
+        <div>
+          <dt class="eyebrow">{{ i18n.t('jwt.alg') }}</dt>
+          <dd class="mono" data-testid="jwt-alg">{{ t.alg ?? '—' }}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow">{{ i18n.t('jwt.typ') }}</dt>
+          <dd class="mono">{{ t.typ ?? '—' }}</dd>
+        </div>
+        @if (t.kid) {
+          <div>
+            <dt class="eyebrow">{{ i18n.t('jwt.kid') }}</dt>
+            <dd class="mono">{{ t.kid }}</dd>
+          </div>
+        }
+        <div>
+          <dt class="eyebrow">{{ i18n.t('jwt.sig') }}</dt>
+          <dd class="mono">{{ sigText() }}</dd>
+        </div>
+      </dl>
+      @if (t.unsecured) {
+        <p class="tool-error">{{ i18n.t('jwt.none.warn') }}</p>
+      }
+    </section>
+
+    <div class="tool-panels">
+      <section class="pane" aria-labelledby="jwt-header-label">
+        <div class="pane-head">
+          <h2 class="eyebrow" id="jwt-header-label">{{ i18n.t('jwt.header') }}</h2>
+          <app-copy-button [text]="t.headerText" [ariaLabel]="i18n.t('jwt.copy.header')" />
+        </div>
+        <pre class="out" tabindex="0" [attr.aria-labelledby]="'jwt-header-label'" data-testid="jwt-header"><code>@for (k of headerTokens(); track $index) {<span [class]="'t-' + k.type">{{ k.text }}</span>}</code></pre>
+      </section>
+      <section class="pane" aria-labelledby="jwt-payload-label">
+        <div class="pane-head">
+          <h2 class="eyebrow" id="jwt-payload-label">{{ i18n.t('jwt.payload') }}</h2>
+          <app-copy-button [text]="t.payloadText" [ariaLabel]="i18n.t('jwt.copy.payload')" />
+        </div>
+        <pre class="out" tabindex="0" [attr.aria-labelledby]="'jwt-payload-label'" data-testid="jwt-payload"><code>@for (k of payloadTokens(); track $index) {<span [class]="'t-' + k.type">{{ k.text }}</span>}</code></pre>
+      </section>
+    </div>
+
+    @if (dateRows().length) {
+      <section aria-labelledby="jwt-dates-label">
+        <h2 class="eyebrow" id="jwt-dates-label">{{ i18n.t('jwt.dates') }}</h2>
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="jwt-dates-label">
+          <table class="dates" data-testid="jwt-dates">
+            <thead>
+              <tr>
+                <th scope="col">{{ i18n.t('jwt.dates.claim') }}</th>
+                <th scope="col">{{ i18n.t('jwt.dates.local', { tz: timeZone() }) }}</th>
+                <th scope="col">{{ i18n.t('jwt.dates.utc') }}</th>
+                <th scope="col">{{ i18n.t('jwt.dates.rel') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (d of dateRows(); track d.claim) {
+                <tr>
+                  <th scope="row">{{ claimLabel(d.claim) }}</th>
+                  <td data-label="local">{{ d.local }}</td>
+                  <td data-label="utc">{{ d.utc }}<br /><span class="iso mono">{{ d.iso }}</span></td>
+                  <td data-label="rel"><strong>{{ d.relative }}</strong></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+    @for (b of badDates(); track b) {
+      <p class="tool-error">{{ b }}</p>
+    }
+  }
+
+  @if (jwe(); as j) {
+    <section class="jwe" data-testid="jwt-jwe">
+      <h2 class="jwe-title">{{ i18n.t('jwt.jwe.title') }}</h2>
+      <p>{{ i18n.t('jwt.jwe.body') }}</p>
+      <dl class="facts">
+        <div>
+          <dt class="eyebrow">{{ i18n.t('jwt.jwe.alg') }}</dt>
+          <dd class="mono">{{ j.alg ?? '—' }}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow">{{ i18n.t('jwt.jwe.enc') }}</dt>
+          <dd class="mono">{{ j.enc ?? '—' }}</dd>
+        </div>
+        @if (j.kid) {
+          <div>
+            <dt class="eyebrow">{{ i18n.t('jwt.kid') }}</dt>
+            <dd class="mono">{{ j.kid }}</dd>
+          </div>
+        }
+      </dl>
+      @if (j.headerText) {
+        <div class="pane">
+          <div class="pane-head">
+            <h3 class="eyebrow" id="jwe-header-label">{{ i18n.t('jwt.header') }}</h3>
+            <app-copy-button [text]="j.headerText" [ariaLabel]="i18n.t('jwt.copy.header')" />
+          </div>
+          <pre class="out" tabindex="0" aria-labelledby="jwe-header-label"><code>@for (k of jweHeaderTokens(); track $index) {<span [class]="'t-' + k.type">{{ k.text }}</span>}</code></pre>
+        </div>
+      }
+      <h3 class="eyebrow">{{ i18n.t('jwt.jwe.parts') }}</h3>
+      <ol class="parts">
+        @for (i of jweParts; track i) {
+          <li>
+            <span>{{ i18n.t('jwt.jwe.part.' + i) }}</span>
+            <span class="mono">{{ jweLength(i) }}</span>
+          </li>
+        }
+      </ol>
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('jwt.info.what.title') }}</h2>
+      <p>{{ i18n.t('jwt.info.what.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('jwt.info.dates.title') }}</h2>
+      <p>{{ i18n.t('jwt.info.dates.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('jwt.info.priv.title') }}</h2>
+      <p>{{ i18n.t('jwt.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

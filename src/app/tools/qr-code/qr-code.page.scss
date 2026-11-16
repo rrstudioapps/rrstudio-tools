@@ -1,0 +1,213 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.qr-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .qr-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.chip {
+  height: 32px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  transition:
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+  &.on {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+  &:not(.on):hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+}
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  > label,
+  .label {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+  input[type='text'],
+  input[type='number'],
+  select {
+    width: 100%;
+  }
+  input[aria-invalid='true'] {
+    border-color: var(--ink);
+    border-style: dashed;
+  }
+}
+.row2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+@media (max-width: 480px) {
+  .row2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.io-textarea.small {
+  min-height: 96px;
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  min-width: 0;
+  legend {
+    padding-inline: var(--space-2);
+  }
+}
+.colors {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+.color {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  input[type='color'] {
+    width: 40px;
+    height: var(--control-h);
+    padding: 2px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    cursor: pointer;
+  }
+}
+.logo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  label.btn:focus-within {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+.logo-name {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.range-label {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+input[type='range'] {
+  width: 100%;
+  accent-color: var(--ink);
+}
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  position: sticky;
+  top: var(--space-4);
+}
+@media (max-width: 860px) {
+  .result {
+    position: static;
+  }
+}
+.frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-sizing: border-box;
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+.empty {
+  margin: 0;
+  padding: var(--space-4);
+  text-align: center;
+  color: #55555a; // sta su uno sfondo bianco fisso, in entrambi i temi
+  font-size: var(--fs-sm);
+}
+.info {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  min-height: 1.5em;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.warnings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  &:empty {
+    display: none;
+  }
+}
+.static-note {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}

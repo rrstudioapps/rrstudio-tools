@@ -1,0 +1,107 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page md-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.md.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('md.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar md-bar">
+    <div class="md-format" role="toolbar" [attr.aria-label]="i18n.t('md.toolbar')">
+      @for (a of actions; track a.id) {
+        <button
+          type="button"
+          class="btn small md-fmt"
+          [attr.data-fmt]="a.id"
+          [attr.aria-label]="i18n.t(a.key) + (a.shortcut ? ' (' + a.shortcut + ')' : '')"
+          [attr.title]="i18n.t(a.key) + (a.shortcut ? ' (' + a.shortcut + ')' : '')"
+          (click)="format(a.id)"
+        >
+          @switch (a.id) {
+            @case ('bold') {
+              <strong class="glyph">B</strong>
+            }
+            @case ('italic') {
+              <em class="glyph">I</em>
+            }
+            @case ('heading') {
+              <span class="glyph">H</span>
+            }
+            @case ('list') {
+              <span class="glyph">•&#8239;≡</span>
+            }
+            @default {
+              <app-icon [name]="a.icon" />
+            }
+          }
+          <span class="md-fmt-label">{{ i18n.t(a.key) }}</span>
+        </button>
+      }
+    </div>
+    <span class="spacer"></span>
+    <label class="btn small">
+      <app-icon name="upload" /> {{ i18n.t('md.open') }}
+      <input class="visually-hidden" type="file" id="md-file" accept=".md,.markdown,.txt,text/markdown,text/plain" [attr.aria-label]="i18n.t('md.open')" (change)="onFile($event)" />
+    </label>
+    <button type="button" class="btn small" (click)="loadSample()">{{ i18n.t('md.sample') }}</button>
+  </div>
+
+  <div class="tool-status" aria-live="polite">
+    @if (fileError()) {
+      <p class="tool-error">{{ i18n.t('md.open.err') }}</p>
+    }
+  </div>
+
+  <div class="tool-panels md-panels">
+    <div class="md-pane md-editor">
+      <div class="md-pane-head">
+        <label class="eyebrow" for="md-in">{{ i18n.t('md.input') }}</label>
+      </div>
+      <textarea
+        #editor
+        id="md-in"
+        class="io-textarea md-textarea"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        [placeholder]="i18n.t('md.input.ph')"
+        [value]="text()"
+        (input)="onInput($event)"
+        (keydown)="onKeydown($event)"
+      ></textarea>
+      <p class="md-meta" data-testid="md-stats">{{ stats() }}</p>
+    </div>
+
+    <div class="md-pane md-preview-pane">
+      <div class="md-pane-head">
+        <h2 class="eyebrow" id="md-preview-label">{{ i18n.t('md.preview') }}</h2>
+      </div>
+      <div class="md-preview" data-testid="md-preview" role="region" aria-labelledby="md-preview-label" tabindex="0" [innerHTML]="preview()" (click)="onPreviewClick($event)"></div>
+      @if (isEmpty()) {
+        <p class="md-meta md-empty">{{ i18n.t('md.preview.empty') }}</p>
+      }
+      <p class="md-meta md-safe">{{ i18n.t('md.safe') }}</p>
+    </div>
+  </div>
+
+  <section class="md-export" [attr.aria-label]="i18n.t('md.export')">
+    <h2 class="eyebrow">{{ i18n.t('md.export') }}</h2>
+    <div class="md-export-row">
+      <button type="button" class="btn small" [disabled]="isEmpty()" (click)="exportMd()"><app-icon name="download" /> {{ i18n.t('md.export.md') }}</button>
+      <button type="button" class="btn small" [disabled]="isEmpty()" (click)="exportHtml()"><app-icon name="download" /> {{ i18n.t('md.export.html') }}</button>
+      <button type="button" class="btn small" [disabled]="isEmpty()" (click)="exportPdf()"><app-icon name="file" /> {{ i18n.t('md.export.pdf') }}</button>
+    </div>
+    <p class="md-meta">{{ i18n.t('md.export.hint') }}</p>
+  </section>
+
+  <section class="md-draft" aria-live="polite">
+    <div class="md-draft-row">
+      <span class="md-meta" data-testid="md-draft-state">{{
+        draftState() === 'saved' ? i18n.t('md.draft.saved') : draftState() === 'off' ? i18n.t('md.draft.off') : i18n.t('md.draft.none')
+      }}</span>
+      <button type="button" class="btn small" (click)="clearDraft()"><app-icon name="trash" /> {{ i18n.t('md.draft.clear') }}</button>
+    </div>
+    <p class="md-meta">{{ i18n.t('md.draft.note') }}</p>
+  </section>
+</div>

@@ -34,7 +34,7 @@ describe('filterTools', () => {
   });
   it('filtra per categoria', () => {
     const r = filterTools(TOOLS, 'italy', '', texts);
-    expect(r.map((t) => t.id).sort()).toEqual(['codice-fiscale', 'fattura-elettronica', 'iban-partita-iva']);
+    expect(r.map((t) => t.id).sort()).toEqual(['calcolo-giorni-lavorativi', 'calcolo-iva', 'codice-fiscale', 'fattura-elettronica', 'iban-partita-iva']);
   });
   it('cerca nelle parole chiave', () => {
     expect(filterTools(TOOLS, null, 'sha256', texts).map((t) => t.id)).toEqual(['hash-generator']);
@@ -50,8 +50,9 @@ describe('filterTools', () => {
     expect(filterTools(TOOLS, null, 'json zzzz', texts)).toEqual([]);
   });
   it('combina categoria e ricerca', () => {
-    expect(filterTools(TOOLS, 'dev', 'json', texts)).toEqual([]);
-    expect(filterTools(TOOLS, 'data', 'json', texts).length).toBe(2);
+    // tra gli strumenti per sviluppatori solo il decodificatore JWT parla di JSON ("JSON Web Token")
+    expect(filterTools(TOOLS, 'dev', 'json', texts).map((t) => t.id)).toEqual(['jwt-decoder']);
+    expect(filterTools(TOOLS, 'data', 'json', texts).length).toBe(3);
   });
   it('nessun risultato per una ricerca assurda', () => {
     expect(filterTools(TOOLS, null, 'qwertyuiop', texts)).toEqual([]);

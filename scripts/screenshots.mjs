@@ -395,6 +395,126 @@ try {
       await page.waitForSelector('[data-testid=exif-result]');
     },
   });
+  // ---- Generatore di QR code, calcolo IVA, confronto testi, convertitore CSV/JSON/Excel (dati inventati) ----
+  await shot('qr-code-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/qr-code-generator/',
+    setup: async (page) => {
+      await page.fill('#qr-url', 'https://example.com/ciao');
+      await page.waitForSelector('[data-testid=qr-preview]');
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('calcolo-iva.png', {
+    width: 1280,
+    dark: false,
+    path: '/calcolo-iva/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Notula / fattura', exact: true }).click();
+      await page.fill('#iva-amount', '1.000,00');
+      await page.getByLabel('Rivalsa INPS 4%').check();
+      await page.selectOption('#iva-cassa', '400');
+      await page.waitForSelector('[data-testid=iva-table]');
+    },
+  });
+  await shot('text-diff.png', {
+    width: 1280,
+    dark: false,
+    path: '/text-diff/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Carica un esempio' }).click();
+      await page.waitForSelector('table.diff');
+    },
+  });
+  // ---- Markdown, contatore, regex, giorni lavorativi (dati inventati) ----
+  await shot('markdown-editor.png', {
+    width: 1280,
+    dark: false,
+    path: '/markdown-editor/',
+    setup: async (page) => {
+      await page.waitForSelector('[data-testid=md-preview] h1');
+    },
+  });
+  await shot('word-counter.png', {
+    width: 1280,
+    dark: false,
+    path: '/word-counter/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Carica un esempio' }).click();
+      await page.waitForSelector('[data-testid=wc-freq]');
+    },
+  });
+  await shot('regex-tester.png', {
+    width: 1280,
+    dark: false,
+    path: '/regex-tester/',
+    setup: async (page) => {
+      await page.selectOption('#rx-examples', 'date');
+      await page.waitForSelector('[data-testid=rx-matches]');
+    },
+  });
+  await shot('calcolo-giorni-lavorativi.png', {
+    width: 1280,
+    dark: false,
+    path: '/calcolo-giorni-lavorativi/',
+    setup: async (page) => {
+      await page.fill('#wd-start', '2026-04-01');
+      await page.fill('#wd-end', '2026-04-30');
+      await page.waitForSelector('[data-testid=wd-result]');
+    },
+  });
+  await shot('csv-json-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/csv-json-converter/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Carica un esempio' }).click();
+      await page.waitForSelector('[data-testid=cj-preview]');
+    },
+  });
+  // ---- Strumenti per sviluppatori: JWT, UUID, timestamp, contrasto (dati inventati) ----
+  await shot('jwt-decoder.png', {
+    width: 1280,
+    dark: false,
+    path: '/jwt-decoder/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Carica un esempio' }).click();
+      await page.waitForSelector('[data-testid=jwt-dates]');
+    },
+  });
+  await shot('uuid-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/uuid-generator/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'UUID v7' }).click();
+      await page.fill('#uuid-count', '8');
+      await page.locator('#uuid-count').dispatchEvent('change');
+      await page.fill('#uuid-check', '0190a1b2-c3d4-7e5f-8a6b-7c8d9e0f1a2b');
+      await page.waitForSelector('[data-testid=uuid-date]');
+    },
+  });
+  await shot('timestamp-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/timestamp-converter/',
+    setup: async (page) => {
+      await page.selectOption('#ts-tz', 'Europe/Rome');
+      await page.fill('#ts-in', '1700000000');
+      await page.fill('#ts-date', '2026-03-29 02:30:00');
+      await page.getByRole('button', { name: 'Carica un esempio' }).click();
+      await page.waitForSelector('[data-testid=ts-batch-table]');
+    },
+  });
+  await shot('color-contrast-checker.png', {
+    width: 1280,
+    dark: false,
+    path: '/color-contrast-checker/',
+    setup: async (page) => {
+      await page.waitForSelector('[data-testid=cc-ratio]');
+    },
+  });
 } finally {
   clearTimeout(watchdog);
   await browser.close();

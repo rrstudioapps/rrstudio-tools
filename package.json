@@ -9,6 +9,7 @@
     "test": "ng test --no-watch",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit",
     "screenshots": "node scripts/screenshots.mjs",
+    "og-images": "node scripts/og-images.mjs",
     "licenses": "node scripts/third-party-licenses.mjs"
   },
   "private": true,

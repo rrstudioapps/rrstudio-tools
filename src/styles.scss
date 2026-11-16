@@ -3,12 +3,13 @@
 
 // Stile "Carta": carta calda, inchiostro, linee da 1px, nessuna ombra.
 // Font incorporati nel progetto (OFL), solo subset latin: nessuna richiesta esterna.
+// I file sono copiati in /fonts dagli asset di angular.json (indirizzo fisso, così index.html li precarica).
 @font-face {
   font-family: 'Inter Tight Variable';
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url('../node_modules/@fontsource-variable/inter-tight/files/inter-tight-latin-wght-normal.woff2')
+  src: url('/fonts/inter-tight-latin-wght-normal.woff2')
     format('woff2-variations');
 }
 @font-face {
@@ -16,7 +17,7 @@
   font-style: normal;
   font-display: swap;
   font-weight: 400;
-  src: url('../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2')
+  src: url('/fonts/jetbrains-mono-latin-400-normal.woff2')
     format('woff2');
 }
 @font-face {
@@ -24,7 +25,7 @@
   font-style: normal;
   font-display: swap;
   font-weight: 500;
-  src: url('../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2')
+  src: url('/fonts/jetbrains-mono-latin-500-normal.woff2')
     format('woff2');
 }
 
@@ -36,7 +37,7 @@
   --ink: #1c1c1e;
   --ink-2: #55555a;
   --muted: #6b6b70;
-  --faint: #a3a29c; // solo testo decorativo grande (>= 24px)
+  --faint: #8a8983; // solo testo decorativo grande (>= 24px)
   --line: #e4e2dc;
   --line-soft: #ecebe6;
   --accent: #1c1c1e; // colore principale di default dei grafici
@@ -60,7 +61,7 @@
   --ink: #f2f1ed;
   --ink-2: #b5b4ae;
   --muted: #9a9993;
-  --faint: #5f5e59;
+  --faint: #7a7973;
   --line: #2a2a28;
   --line-soft: #222220;
   --accent: #f2f1ed;
@@ -354,6 +355,37 @@ select option {
   font-family: var(--mono);
   font-size: var(--fs-sm);
   color: var(--ink-2);
+}
+// Avviso in evidenza (bordo pieno) e sezione informativa a tre colonne, condivisi dai tool
+.tool-warn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--ink);
+  border-left-width: 4px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+  strong {
+    color: var(--ink);
+  }
+}
+.tool-info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+  p {
+    margin: var(--space-2) 0 0;
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+}
+@media (max-width: 760px) {
+  .tool-info {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .io-textarea {
   display: block;

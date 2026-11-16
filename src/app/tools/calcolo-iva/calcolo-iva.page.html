@@ -1,0 +1,148 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.iva.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('iva.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <p class="disclaimer" role="note">{{ i18n.t('iva.disclaimer') }}</p>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('iva.mode')" [options]="modes()" [value]="mode()" (valueChange)="mode.set($event)" />
+  </div>
+
+  <div class="iva-layout">
+    <div class="controls">
+      <div class="field">
+        <label for="iva-amount">{{ i18n.t('iva.amount.' + mode()) }}</label>
+        <input
+          id="iva-amount"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          [placeholder]="i18n.t('iva.amount.ph')"
+          [value]="amountText()"
+          [attr.aria-invalid]="amountError()"
+          [attr.aria-describedby]="amountError() ? 'iva-amount-err' : null"
+          (input)="onAmount($event)"
+        />
+        @if (amountError()) {
+          <p id="iva-amount-err" class="tool-error">{{ i18n.t('iva.amount.err') }}</p>
+        }
+      </div>
+
+      @if (!(isInvoiceLike() && forfettario())) {
+        <div class="field">
+          <span class="label" id="iva-vat-label">{{ i18n.t('iva.vat') }}</span>
+          <app-segmented [label]="i18n.t('iva.vat')" [options]="vatRateOptions()" [value]="'' + vatBp()" (valueChange)="vatBp.set(+$event)" />
+        </div>
+      }
+
+      @if (showNature()) {
+        <div class="field">
+          <label for="iva-nature">{{ i18n.t('iva.nature') }}</label>
+          <select id="iva-nature" [value]="nature()" (change)="onNature($event)">
+            @for (n of natures; track n) {
+              <option [value]="n">{{ i18n.t('iva.nat.' + n) }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      @if (isInvoiceLike()) {
+        <fieldset class="options">
+          <legend class="eyebrow">{{ i18n.t('iva.opts') }}</legend>
+          <label class="check">
+            <input type="checkbox" [checked]="forfettario()" (change)="forfettario.set($any($event.target).checked)" />
+            {{ i18n.t('iva.forfettario') }}
+          </label>
+          <label class="check">
+            <input type="checkbox" [checked]="rivalsa()" (change)="rivalsa.set($any($event.target).checked)" />
+            {{ i18n.t('iva.rivalsa') }}
+          </label>
+          <div class="row2">
+            <div class="field">
+              <label for="iva-cassa">{{ i18n.t('iva.cassa') }}</label>
+              <select id="iva-cassa" [value]="cassa()" (change)="onCassa($event)">
+                <option value="none">{{ i18n.t('iva.cassa.none') }}</option>
+                <option value="200">2%</option>
+                <option value="400">4%</option>
+                <option value="500">5%</option>
+                <option value="custom">{{ i18n.t('iva.cassa.custom') }}</option>
+              </select>
+            </div>
+            @if (cassa() === 'custom') {
+              <div class="field">
+                <label for="iva-cassa-pct">{{ i18n.t('iva.cassa.pct') }}</label>
+                <input id="iva-cassa-pct" type="text" inputmode="decimal" autocomplete="off" [value]="cassaCustom()" [attr.aria-invalid]="cassaError()" (input)="cassaCustom.set($any($event.target).value)" />
+              </div>
+            }
+          </div>
+          @if (cassaError()) {
+            <p class="tool-error">{{ i18n.t('iva.cassa.err') }}</p>
+          }
+          @if (cassa() !== 'none') {
+            <label class="check">
+              <input type="checkbox" [checked]="cassaVat()" (change)="cassaVat.set($any($event.target).checked)" />
+              {{ i18n.t('iva.cassa.vat') }}
+            </label>
+          }
+          @if (!forfettario()) {
+            <div class="field">
+              <label for="iva-rit">{{ i18n.t('iva.ritenuta') }}</label>
+              <select id="iva-rit" [value]="ritenuta()" (change)="onRitenuta($event)">
+                <option value="compenso">{{ i18n.t('iva.ritenuta.compenso') }}</option>
+                <option value="cassa">{{ i18n.t('iva.ritenuta.cassa') }}</option>
+                <option value="none">{{ i18n.t('iva.ritenuta.none') }}</option>
+              </select>
+            </div>
+          }
+          <label class="check">
+            <input type="checkbox" [checked]="bolloCharged()" (change)="bolloCharged.set($any($event.target).checked)" />
+            {{ i18n.t('iva.bollo') }}
+          </label>
+        </fieldset>
+      }
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('iva.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('iva.summary') }}</h2>
+      @if (hasResult()) {
+        @if (reverseHeadline(); as h) {
+          <div class="headline" data-testid="iva-headline">
+            <span class="hl-label">{{ h.label }}</span>
+            <span class="hl-value">{{ h.value }}</span>
+            <span class="hl-note">{{ h.note }}</span>
+          </div>
+        }
+        <table class="sum" data-testid="iva-table">
+          <tbody>
+            @for (r of rows(); track $index) {
+              <tr [class.strong]="r.strong">
+                <th scope="row">{{ r.label }}</th>
+                <td>{{ r.value }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        @if (notes().length) {
+          <div class="notes">
+            <h3 class="eyebrow">{{ i18n.t('iva.notes') }}</h3>
+            <ul>
+              @for (n of notes(); track n) {
+                <li>{{ n }}</li>
+              }
+            </ul>
+          </div>
+        }
+        <div class="actions">
+          <app-copy-button [text]="summaryText()" />
+        </div>
+      } @else {
+        <p class="empty">{{ i18n.t('iva.empty') }}</p>
+      }
+    </section>
+  </div>
+</div>

@@ -1,0 +1,166 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+// Tinte delle differenze: rosso/arancio (rimosso) e verde (aggiunto) dei token --src-*, sempre accompagnate da segno e sottolineature.
+$del: color-mix(in srgb, var(--src-0) 14%, transparent);
+$del-strong: color-mix(in srgb, var(--src-0) 34%, transparent);
+$ins: color-mix(in srgb, var(--src-2) 14%, transparent);
+$ins-strong: color-mix(in srgb, var(--src-2) 34%, transparent);
+
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.io-textarea {
+  min-height: 220px;
+}
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.result-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-height: 32px;
+  .spacer {
+    flex: 1;
+  }
+}
+.muted {
+  color: var(--muted);
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.diff {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  line-height: 20px;
+  .c-no {
+    width: 48px;
+  }
+  td {
+    padding: 0 var(--space-2);
+    vertical-align: top;
+  }
+  .no {
+    text-align: right;
+    color: var(--muted);
+    user-select: none;
+    border-right: 1px solid var(--line-soft);
+    padding-right: var(--space-2);
+  }
+  .tx {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .sign {
+    display: inline-block;
+    width: 1.2em;
+    color: var(--muted);
+    user-select: none;
+  }
+  tr.cur {
+    outline: 2px solid var(--ink);
+    outline-offset: -2px;
+  }
+}
+.diff.side .tx:nth-child(2) {
+  border-right: 1px solid var(--line);
+}
+// riga uguale / cancellata / aggiunta / modificata
+.diff.side tr.del td:nth-child(-n + 2) {
+  background: $del;
+}
+.diff.side tr.ins td:nth-child(n + 3) {
+  background: $ins;
+}
+.diff.side tr.mod td:nth-child(-n + 2) {
+  background: $del;
+}
+.diff.side tr.mod td:nth-child(n + 3) {
+  background: $ins;
+}
+.diff.inline tr.del td {
+  background: $del;
+}
+.diff.inline tr.ins td {
+  background: $ins;
+}
+mark.chg {
+  color: inherit;
+  &.del {
+    background: $del-strong;
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  &.ins {
+    background: $ins-strong;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+}
+.fold td {
+  padding: var(--space-1) var(--space-3);
+  background: var(--surface);
+  border-block: 1px solid var(--line-soft);
+  text-align: center;
+}
+.linklike {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--fs-xs);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  &:hover {
+    color: var(--ink);
+  }
+}
+.more {
+  align-self: flex-start;
+}
+@media (max-width: 760px) {
+  .diff .c-no {
+    width: 34px;
+  }
+  .diff {
+    font-size: var(--fs-xs);
+  }
+}

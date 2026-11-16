@@ -26,6 +26,78 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/qr-code-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/qr-code-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/qr-code-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/qr-code-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/qr-code-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/qr-code-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/qr-code-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/qr-code-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/text-diff</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/text-diff"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/text-diff"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-diff"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/text-diff</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/text-diff"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/text-diff"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-diff"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/markdown-editor</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/markdown-editor"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/markdown-editor"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/markdown-editor"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/markdown-editor</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/markdown-editor"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/markdown-editor"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/markdown-editor"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/word-counter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/word-counter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/word-counter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/word-counter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/word-counter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/word-counter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/word-counter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/word-counter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/regex-tester</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/regex-tester"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/regex-tester"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/regex-tester"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/regex-tester</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/regex-tester"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/regex-tester"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/regex-tester"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/csv-json-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csv-json-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csv-json-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-json-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/csv-json-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csv-json-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csv-json-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-json-converter"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/base64</loc>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/base64"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/base64"/>
@@ -158,6 +230,54 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/hash-generator"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/jwt-decoder</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/jwt-decoder"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/jwt-decoder"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/jwt-decoder"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/jwt-decoder</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/jwt-decoder"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/jwt-decoder"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/jwt-decoder"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/uuid-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/uuid-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/uuid-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/uuid-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/uuid-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/uuid-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/uuid-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/uuid-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/timestamp-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timestamp-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timestamp-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timestamp-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/timestamp-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timestamp-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timestamp-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timestamp-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/color-contrast-checker</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/color-contrast-checker"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/color-contrast-checker"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/color-contrast-checker"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/color-contrast-checker</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/color-contrast-checker"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/color-contrast-checker"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/color-contrast-checker"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/codice-fiscale</loc>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/codice-fiscale"/>
   </url>
@@ -168,5 +288,13 @@
   <url>
     <loc>https://tools.rr-dev.eu/fattura-elettronica</loc>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/fattura-elettronica"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/calcolo-iva</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/calcolo-iva"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/calcolo-giorni-lavorativi</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/calcolo-giorni-lavorativi"/>
   </url>
 </urlset>

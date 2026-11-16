@@ -1,0 +1,108 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.wc.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('wc.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <div class="conv" role="group" [attr.aria-label]="i18n.t('wc.convert')">
+      @for (c of conversions; track c) {
+        <button type="button" class="btn small" [disabled]="empty()" (click)="apply(c)">{{ i18n.t('wc.conv.' + c) }}</button>
+      }
+    </div>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()">{{ i18n.t('wc.sample') }}</button>
+    <button type="button" class="btn small" [disabled]="!canUndo()" (click)="undo()"><app-icon name="rotateCcw" /> {{ i18n.t('wc.undo') }}</button>
+    <button type="button" class="btn small" [disabled]="empty()" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('wc.clear') }}</button>
+  </div>
+
+  <div class="layout">
+    <app-io-panel [label]="i18n.t('wc.input')" inputId="wc-in">
+      <span panel-actions><app-copy-button [text]="text()" [disabled]="empty()" /></span>
+      <textarea
+        id="wc-in"
+        class="io-textarea"
+        spellcheck="false"
+        autocomplete="off"
+        [placeholder]="i18n.t('wc.input.ph')"
+        [value]="text()"
+        (input)="onInput($event)"
+      ></textarea>
+    </app-io-panel>
+
+    <section class="side" [attr.aria-label]="i18n.t('wc.stats')">
+      <div class="head">
+        <h2 class="eyebrow">{{ i18n.t('wc.stats') }}</h2>
+        <app-copy-button [text]="summary()" [label]="i18n.t('wc.copyStats')" [disabled]="empty()" />
+      </div>
+      <dl class="stats" data-testid="wc-stats" aria-live="polite">
+        @for (r of rows(); track r.id) {
+          <div class="stat" [attr.data-stat]="r.id">
+            <dt>{{ r.label }}</dt>
+            <dd>{{ r.value }}</dd>
+          </div>
+        }
+      </dl>
+      <p class="hint">{{ i18n.t('wc.stat.note') }}</p>
+    </section>
+  </div>
+
+  <section class="block" [attr.aria-label]="i18n.t('wc.limits')">
+    <h2 class="eyebrow">{{ i18n.t('wc.limits') }}</h2>
+    <ul class="limits" data-testid="wc-limits">
+      @for (l of limitRows(); track l.id) {
+        <li [class.over]="l.over" [attr.data-limit]="l.id">
+          <span class="l-name">{{ l.label }}</span>
+          <span class="l-num">{{ l.used }} / {{ l.limit }}</span>
+          <span class="meter" aria-hidden="true"><span [style.width.%]="l.fraction * 100"></span></span>
+          <span class="l-state">{{ l.over ? '⚠ ' : '' }}{{ l.text }}</span>
+        </li>
+      }
+    </ul>
+    <div class="custom">
+      <label for="wc-custom">{{ i18n.t('wc.limit.custom') }}</label>
+      <input id="wc-custom" type="text" inputmode="numeric" autocomplete="off" [placeholder]="i18n.t('wc.limit.custom.ph')" [value]="customLimit()" (input)="onCustom($event)" />
+    </div>
+    <p class="hint">{{ i18n.t('wc.limit.note') }}</p>
+  </section>
+
+  <section class="block" [attr.aria-label]="i18n.t('wc.freq')">
+    <div class="head">
+      <h2 class="eyebrow">{{ i18n.t('wc.freq') }}</h2>
+      <app-segmented [label]="i18n.t('wc.freq.lang')" [options]="stopOptions()" [value]="stop()" (valueChange)="stop.set($event)" />
+    </div>
+    @if (detectedLabel()) {
+      <p class="hint">{{ detectedLabel() }}</p>
+    }
+    @if (frequent().items.length === 0) {
+      <p class="hint">{{ i18n.t('wc.freq.empty') }}</p>
+    } @else {
+      <div class="table-wrap">
+        <table class="freq" data-testid="wc-freq">
+          <caption class="visually-hidden">{{ i18n.t('wc.freq.caption') }}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('wc.freq.word') }}</th>
+              <th scope="col" class="num">{{ i18n.t('wc.freq.count') }}</th>
+              <th scope="col" class="num">{{ i18n.t('wc.freq.percent') }}</th>
+              <th scope="col" class="bar-col"><span class="visually-hidden">%</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (w of frequent().items; track w.word) {
+              <tr>
+                <th scope="row">{{ w.word }}</th>
+                <td class="num">{{ w.count }}</td>
+                <td class="num">{{ w.percent }}</td>
+                <td class="bar-col"><span class="meter" aria-hidden="true"><span [style.width.%]="w.width"></span></span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>

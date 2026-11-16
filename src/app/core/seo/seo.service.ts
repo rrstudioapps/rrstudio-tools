@@ -5,7 +5,7 @@ import { Injectable, effect, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { I18nService, Lang } from '../i18n/i18n.service';
-import { Alternate, hreflangLinks, publicUrl } from '../i18n/lang-routing';
+import { Alternate, hasLang, hreflangLinks, publicUrl } from '../i18n/lang-routing';
 import { SITE_URL } from '../links';
 
 /** Dati SEO di una route (chiavi i18n), da mettere in `data.seo`. */
@@ -48,6 +48,8 @@ export class SeoService {
     const title = this.i18n.t(seo.titleKey);
     const description = this.i18n.t(seo.descriptionKey);
     const url = publicUrl(slug, lang);
+    // Immagine social della pagina corrente (scripts/og-images.mjs); la home e le pagine senza immagine usano quella generica
+    const image = slug !== '' && hasLang(slug, lang) ? `${SITE_URL}/og/${lang}/${slug}.png` : `${SITE_URL}/og-image.png`;
     this.title.setTitle(title);
     const tags: [string, string, 'name' | 'property'][] = [
       ['description', description, 'name'],
@@ -55,12 +57,16 @@ export class SeoService {
       ['og:description', description, 'property'],
       ['og:type', 'website', 'property'],
       ['og:url', url, 'property'],
-      ['og:image', `${SITE_URL}/og-image.png`, 'property'],
+      ['og:image', image, 'property'],
+      ['og:image:width', '1200', 'property'],
+      ['og:image:height', '630', 'property'],
+      ['og:image:alt', title, 'property'],
       ['og:locale', lang === 'it' ? 'it_IT' : 'en_US', 'property'],
       ['twitter:card', 'summary_large_image', 'name'],
       ['twitter:title', title, 'name'],
       ['twitter:description', description, 'name'],
-      ['twitter:image', `${SITE_URL}/og-image.png`, 'name'],
+      ['twitter:image', image, 'name'],
+      ['twitter:image:alt', title, 'name'],
     ];
     for (const [key, content, attr] of tags) {
       this.meta.updateTag({ [attr]: key, content }, `${attr}='${key}'`);

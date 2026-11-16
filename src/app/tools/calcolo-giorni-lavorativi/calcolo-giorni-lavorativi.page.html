@@ -1,0 +1,142 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.wd.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('wd.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <p class="disclaimer" role="note">{{ i18n.t('wd.disclaimer') }}</p>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('wd.mode')" [options]="modes()" [value]="mode()" (valueChange)="mode.set($event)" />
+  </div>
+
+  <div class="layout">
+    <div class="controls">
+      <div class="row2">
+        <div class="field">
+          <label for="wd-start">{{ i18n.t('wd.start') }}</label>
+          <div class="date-row">
+            <input id="wd-start" type="date" min="1583-01-01" max="9999-12-31" [value]="startText()" (input)="onDate('start', $event)" />
+            <button type="button" class="btn small" (click)="setToday('start')">{{ i18n.t('wd.today') }}</button>
+          </div>
+        </div>
+
+        @if (mode() === 'between') {
+          <div class="field">
+            <label for="wd-end">{{ i18n.t('wd.end') }}</label>
+            <div class="date-row">
+              <input id="wd-end" type="date" min="1583-01-01" max="9999-12-31" [value]="endText()" (input)="onDate('end', $event)" />
+              <button type="button" class="btn small" (click)="setToday('end')">{{ i18n.t('wd.today') }}</button>
+            </div>
+          </div>
+        } @else {
+          <div class="field">
+            <label for="wd-days">{{ i18n.t('wd.days') }}</label>
+            <input
+              id="wd-days"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              [placeholder]="i18n.t('wd.days.ph')"
+              [value]="daysText()"
+              [attr.aria-invalid]="error() && daysText() !== '' ? true : null"
+              (input)="onDays($event)"
+            />
+          </div>
+        }
+      </div>
+
+      @if (mode() === 'between') {
+        <label class="check"><input type="checkbox" [checked]="includeEnd()" (change)="includeEnd.set($any($event.target).checked)" /> {{ i18n.t('wd.includeEnd') }}</label>
+      } @else {
+        <div class="field">
+          <span class="label">{{ i18n.t('wd.dir') }}</span>
+          <app-segmented [label]="i18n.t('wd.dir')" [options]="dirs()" [value]="dir()" (valueChange)="dir.set($event)" />
+        </div>
+      }
+
+      <fieldset class="options">
+        <legend class="eyebrow">{{ i18n.t('wd.opts') }}</legend>
+        <label class="check"><input type="checkbox" [checked]="excludeSat()" (change)="excludeSat.set($any($event.target).checked)" /> {{ i18n.t('wd.sat') }}</label>
+        <label class="check"><input type="checkbox" [checked]="excludeSun()" (change)="excludeSun.set($any($event.target).checked)" /> {{ i18n.t('wd.sun') }}</label>
+        <label class="check"><input type="checkbox" [checked]="national()" (change)="national.set($any($event.target).checked)" /> {{ i18n.t('wd.national') }}</label>
+        <div class="field">
+          <label for="wd-patron">{{ i18n.t('wd.patron') }}</label>
+          <select id="wd-patron" [value]="patron()" (change)="onPatron($event)">
+            <option value="">{{ i18n.t('wd.patron.none') }}</option>
+            @for (p of patrons; track p.id) {
+              <option [value]="p.id" [selected]="patron() === p.id">{{ patronLabel(p) }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="wd-custom">{{ i18n.t('wd.custom') }}</label>
+          <div class="date-row">
+            <input id="wd-custom" type="date" min="1583-01-01" max="9999-12-31" [value]="custom()" (input)="onDate('custom', $event)" />
+            @if (custom()) {
+              <button type="button" class="btn small" (click)="custom.set('')">{{ i18n.t('wd.custom.clear') }}</button>
+            }
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('wd.result')" aria-live="polite">
+      <div class="head">
+        <h2 class="eyebrow">{{ i18n.t('wd.result') }}</h2>
+        <app-copy-button [text]="summary()" [label]="i18n.t('wd.copy')" [disabled]="!hasResult()" />
+      </div>
+
+      @if (error()) {
+        <p class="tool-error" role="alert">{{ error() }}</p>
+      } @else if (rangeError()) {
+        <p class="tool-error" role="alert">{{ rangeError() }}</p>
+      }
+
+      @if (hasResult()) {
+        <dl class="summary" data-testid="wd-result">
+          @for (r of rows(); track r.id) {
+            <div class="row" [class.strong]="r.strong" [attr.data-row]="r.id">
+              <dt>{{ r.label }}</dt>
+              <dd>{{ r.value }}</dd>
+            </div>
+          }
+        </dl>
+        @for (n of notes(); track n) {
+          <p class="hint">{{ n }}</p>
+        }
+
+        <h3 class="eyebrow">{{ mode() === 'between' ? i18n.t('wd.holidays') : i18n.t('wd.r.skipped') }}</h3>
+        @if (holidayRows().length) {
+          <div class="table-wrap">
+            <table class="hol" data-testid="wd-holidays">
+              <thead>
+                <tr>
+                  <th scope="col">{{ i18n.t('wd.col.date') }}</th>
+                  <th scope="col">{{ i18n.t('wd.col.name') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (h of holidayRows(); track h.iso) {
+                  <tr>
+                    <td>{{ h.date }}</td>
+                    <td>{{ h.name }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <p class="hint">{{ i18n.t('wd.holidays.none') }}</p>
+        }
+      }
+      @if (easterNote()) {
+        <p class="hint">{{ easterNote() }}</p>
+      }
+      <p class="hint">{{ i18n.t('wd.source') }}</p>
+    </section>
+  </div>
+</div>

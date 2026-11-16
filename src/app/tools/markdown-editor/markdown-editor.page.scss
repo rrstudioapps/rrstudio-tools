@@ -1,0 +1,299 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+// Senza incapsulamento: tutto è dentro `app-markdown-editor`, così non esce dalla pagina.
+app-markdown-editor {
+  .md-bar {
+    align-items: center;
+  }
+  .md-format {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .md-fmt {
+    .glyph {
+      font-family: var(--mono);
+      min-width: 1.2em;
+      text-align: center;
+    }
+  }
+  // su schermi stretti restano solo i simboli
+  @media (max-width: 760px) {
+    .md-fmt-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .md-fmt {
+      min-width: 40px;
+      min-height: 40px;
+      justify-content: center;
+    }
+  }
+  .md-panels {
+    align-items: start;
+  }
+  .md-pane {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+  .md-pane-head {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+  }
+  .md-textarea {
+    min-height: 460px;
+    height: 460px;
+    resize: vertical;
+    tab-size: 4;
+  }
+  .md-preview {
+    min-height: 460px;
+    height: 460px;
+    overflow: auto;
+    padding: var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    &:focus-visible {
+      border-color: var(--ink);
+    }
+  }
+  .md-meta {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  .md-export,
+  .md-draft {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .md-export-row,
+  .md-draft-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  // ---- contenuto dell'anteprima ----
+  .md-preview {
+    line-height: 1.65;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.25;
+      margin: 1.4em 0 0.5em;
+    }
+    > :first-child {
+      margin-top: 0;
+    }
+    h1 {
+      font-size: var(--fs-xl);
+    }
+    h2 {
+      font-size: var(--fs-lg);
+      padding-bottom: 0.25em;
+      border-bottom: 1px solid var(--line);
+    }
+    h3 {
+      font-size: 17px;
+    }
+    h4,
+    h5,
+    h6 {
+      font-size: var(--fs-md, 16px);
+    }
+    p,
+    ul,
+    ol,
+    blockquote,
+    pre,
+    table {
+      margin: 0 0 1em;
+    }
+    ul,
+    ol {
+      padding-left: 1.6em;
+    }
+    li > ul,
+    li > ol {
+      margin: 0.25em 0 0;
+    }
+    a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    code {
+      font-family: var(--mono);
+      font-size: 0.9em;
+      background: var(--bg);
+      border: 1px solid var(--line-soft);
+      padding: 0.05em 0.35em;
+      border-radius: 4px;
+    }
+    pre {
+      position: relative;
+      background: var(--bg);
+      border: 1px solid var(--line-soft);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      code {
+        background: none;
+        border: 0;
+        padding: 0;
+        font-size: var(--fs-sm);
+      }
+      &[data-lang]::before {
+        content: attr(data-lang);
+        display: block;
+        margin-bottom: var(--space-2);
+        font-family: var(--mono);
+        font-size: var(--fs-xs);
+        color: var(--muted);
+      }
+    }
+    blockquote {
+      margin-left: 0;
+      padding: 0 var(--space-4);
+      border-left: 3px solid var(--ink);
+      color: var(--ink-2);
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 1.6em 0;
+    }
+    table {
+      border-collapse: collapse;
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 0.35em 0.7em;
+      text-align: left;
+    }
+    th {
+      background: var(--bg);
+    }
+    .al-c {
+      text-align: center;
+    }
+    .al-r {
+      text-align: right;
+    }
+    .md-task {
+      margin-right: 0.45em;
+      accent-color: var(--ink);
+    }
+    .md-task-item {
+      list-style: none;
+      margin-left: -1.4em;
+    }
+    .md-ext-img,
+    .md-img-off {
+      display: inline-block;
+      max-width: 100%;
+      padding: 0.2em 0.6em;
+      border: 1px dashed var(--muted);
+      border-radius: var(--radius-sm);
+      font-family: var(--mono);
+      font-size: var(--fs-xs);
+      color: var(--ink-2);
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+    .md-ext-img:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .md-textarea,
+    .md-preview {
+      min-height: 320px;
+      height: 320px;
+    }
+  }
+}
+
+// ---- Stampa (PDF dal browser): via tutto tranne l'anteprima, su fondo bianco ----
+@media print {
+  body:has(app-markdown-editor) {
+    --bg: #fff;
+    --surface: #fff;
+    --ink: #000;
+    --ink-2: #222;
+    --muted: #444;
+    --line: #999;
+    --line-soft: #ccc;
+    background: #fff;
+    :is(app-header, app-footer, .skip) {
+      display: none !important;
+    }
+    app-markdown-editor {
+      :is(.tool-intro, app-privacy-note, .md-bar, .tool-status, .md-editor, .md-export, .md-draft, .md-pane-head, .md-meta) {
+        display: none !important;
+      }
+      .container {
+        max-width: none;
+        padding: 0;
+      }
+      .tool-page {
+        padding-block: 0;
+      }
+      .tool-panels {
+        display: block;
+      }
+      .md-preview {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        border: 0;
+        padding: 0;
+        background: #fff;
+        color: #000;
+        font-size: 11pt;
+        a {
+          color: #000;
+        }
+        pre {
+          white-space: pre-wrap;
+        }
+        table {
+          display: table;
+        }
+        :is(h1, h2, h3) {
+          break-after: avoid;
+        }
+        :is(table, pre, blockquote, img) {
+          break-inside: avoid;
+        }
+      }
+    }
+  }
+}

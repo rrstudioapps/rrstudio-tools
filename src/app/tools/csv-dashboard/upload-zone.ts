@@ -30,16 +30,17 @@ import { ACCEPT_ATTR } from './file-parser.service';
       <p class="muted">{{ i18n.t('csv.drop.or') }}</p>
       <span class="btn primary">{{ i18n.t('csv.drop.choose') }}</span>
       <p class="muted formats">{{ i18n.t('csv.drop.formats') }}</p>
-      <input
-        #picker
-        class="visually-hidden"
-        type="file"
-        tabindex="-1"
-        [accept]="accept"
-        (click)="$event.stopPropagation()"
-        (change)="onPick($event)"
-      />
     </div>
+    <!-- fuori dal role="button": un controllo dentro un altro è un errore di accessibilità -->
+    <input
+      #picker
+      class="visually-hidden"
+      type="file"
+      tabindex="-1"
+      [attr.aria-label]="i18n.t('csv.drop.choose')"
+      [accept]="accept"
+      (change)="onPick($event)"
+    />
   `,
   styles: `
     .drop {
