@@ -325,8 +325,8 @@ More tools are coming, with the same rule: nothing leaves your browser.
 
 - **Everything runs client-side.** There is no backend: files are read and processed by your browser and are never uploaded.
 - **No external requests.** No CDNs, web fonts or third-party scripts: everything is served from the same origin, and the Content Security Policy blocks connections to other servers.
-- **No cookies, no tracking, no analytics.** Only your theme, the dismissal of the "available in English" bar and, if you use the Markdown editor, its draft are saved in your browser's `localStorage`; they are never sent anywhere.
-- **Technical server logs.** Like any website, the server that delivers the pages logs IP address, date and time, requested path, user agent and referrer; they are used for security and troubleshooting (never for profiling; at most an occasional aggregate look, without keeping IP addresses) and are deleted automatically after 30 days at most. The server is hosted by Hetzner in Finland (EU). Files and text you enter in the tools never reach the server.
+- **No cookies, no tracking, no analytics scripts.** Only your theme, the dismissal of the "available in English" bar and, if you use the Markdown editor, its draft are saved in your browser's `localStorage`; they are never sent anywhere.
+- **Technical server logs.** Like any website, the server that delivers the pages logs IP address, date and time, requested path, user agent and referrer; they are used for security and troubleshooting (never for profiling); every day only aggregate totals are derived from them (page views per page, number of visitors counted and immediately forgotten, referring domains, phone or computer), with no IP addresses, user agents or identifiers and are deleted automatically after 30 days at most. The server is hosted by Hetzner in Finland (EU). Files and text you enter in the tools never reach the server.
 - Full notice (Italian and English): [`/privacy`](https://tools.rr-dev.eu/privacy) and [`/en/privacy`](https://tools.rr-dev.eu/en/privacy).
 
 ## Getting started
@@ -382,7 +382,7 @@ rrstudio Tools is free and has no ads. If it is useful to you:
 
 **rrstudio Tools** è una raccolta di strumenti web gratuiti e open source che funzionano interamente
 nel browser. **I tuoi dati restano sul tuo computer:** nessun backend, nessun upload, nessuna chiamata
-a server esterni, nessun cookie, nessun tracciamento o analytics.
+a server esterni, nessun cookie, nessun tracciamento né script di analytics.
 
 - **Prova online:** [tools.rr-dev.eu](https://tools.rr-dev.eu). Strumenti:
   [CSV → Dashboard](https://tools.rr-dev.eu/csv-dashboard), che da un CSV o un Excel genera KPI,

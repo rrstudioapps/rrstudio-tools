@@ -62,7 +62,7 @@ export const it = {
     'Tutto viene calcolato nel tuo browser: i tuoi file non lasciano mai il tuo computer.',
   'home.why.2.title': 'Nessun cookie né tracciamento',
   'home.why.2.desc':
-    'Nessun analytics, nessun font o script esterno. Salviamo solo lingua e tema, in locale.',
+    'Nessuno script di analytics, nessun font o script esterno. Nel browser restano solo il tema e poche preferenze, in locale.',
   'home.why.3.title': 'Open source AGPL',
   'home.why.3.desc': 'Il codice è pubblico: puoi verificarlo, usarlo e migliorarlo.',
 

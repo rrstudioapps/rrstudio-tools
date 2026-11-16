@@ -63,7 +63,7 @@ export const en: Dict = {
     'Everything is computed in your browser: your files never leave your computer.',
   'home.why.2.title': 'No cookies, no tracking',
   'home.why.2.desc':
-    'No analytics, no external fonts or scripts. We only store language and theme, locally.',
+    'No analytics scripts, no external fonts or scripts. Only your theme and a few preferences stay in your browser.',
   'home.why.3.title': 'Open source AGPL',
   'home.why.3.desc': 'The code is public: you can inspect it, use it and improve it.',
 
