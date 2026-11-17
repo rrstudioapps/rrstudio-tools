@@ -57,6 +57,7 @@
             <app-icon name="download" /> {{ i18n.t('json.download') }}
           </button>
           <app-copy-button [text]="output()" [disabled]="output() === ''" />
+          <app-send-to from="json-formatter" kind="json" [text]="output()" [disabled]="output() === ''" />
         </span>
         <pre id="json-out" class="out" tabindex="0" aria-labelledby="json-out-label"><code>@if (output() === '') {<span class="ph">{{ i18n.t('json.out.empty') }}</span>} @else if (tokens(); as toks) {@for (t of toks; track $index) {<span [class]="'t-' + t.type">{{ t.text }}</span>}} @else {<span>{{ output() }}</span>}</code></pre>
       </app-io-panel>

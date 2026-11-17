@@ -50,6 +50,7 @@
     >
       <span panel-actions>
         <app-copy-button [text]="output()" [disabled]="output() === ''" />
+          <app-send-to from="url-encode" [text]="output()" [disabled]="output() === ''" />
       </span>
       <textarea id="url-out" class="io-textarea" readonly spellcheck="false" [value]="output()"></textarea>
     </app-io-panel>

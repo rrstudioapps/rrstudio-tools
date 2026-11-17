@@ -24,6 +24,8 @@ import { ENTITIES_DICTIONARIES } from './html-entities.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './html-entities.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Mode = 'html' | 'js' | 'json' | 'url';
 type Dir = 'encode' | 'decode';
@@ -43,7 +45,7 @@ interface Outcome {
 
 @Component({
   selector: 'app-html-entities',
-  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './html-entities.page.html',
   styleUrl: './html-entities.page.scss',
@@ -148,6 +150,8 @@ export class HtmlEntitiesPage {
 
   constructor() {
     this.i18n.register(ENTITIES_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('html-entities');
+    if (rx?.text !== undefined) this.input.set(rx.text);
   }
 
   private describe(e: UnescapeError, text: string): string {

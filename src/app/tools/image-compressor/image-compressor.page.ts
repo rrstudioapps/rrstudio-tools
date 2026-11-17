@@ -1,17 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  PLATFORM_ID,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, afterNextRender, computed, effect, inject, signal, untracked } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { FileDrop } from '../../shared/file-drop';
 import { Icon } from '../../shared/icon';
@@ -39,6 +29,8 @@ import {
 import { IMAGE_COMPRESSOR_DICTIONARIES } from './image-compressor.i18n';
 import { detectEncodableFormats } from './image-processor';
 import { ProcessorClient } from './processor-client';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Status = 'queued' | 'processing' | 'done' | 'error';
 
@@ -69,7 +61,7 @@ const DEBOUNCE_MS = 300;
 
 @Component({
   selector: 'app-image-compressor',
-  imports: [Icon, PrivacyNote, FileDrop, CompareSlider],
+  imports: [Icon, PrivacyNote, FileDrop, CompareSlider, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './image-compressor.page.html',
   styleUrl: './image-compressor.page.scss',
@@ -146,6 +138,9 @@ export class ImageCompressorPage {
 
   constructor() {
     this.i18n.register(IMAGE_COMPRESSOR_DICTIONARIES);
+    // immagini ricevute da un altro strumento: stessa strada del file-drop
+    const rx = inject(ToolHandoff).take('image-compressor');
+    if (rx?.files?.length) afterNextRender(() => this.onFiles(rx.files!));
     const destroyRef = inject(DestroyRef);
     destroyRef.onDestroy(() => {
       this.client.dispose();
@@ -319,6 +314,12 @@ export class ImageCompressorPage {
   }
 
   // ---- download ----
+  /** I risultati pronti come file, per "Invia a…". */
+  protected readonly doneFiles = (): File[] =>
+    this.items()
+      .filter((i) => i.status === 'done' && i.blob)
+      .map((i) => new File([i.blob!], i.outName, { type: i.outMime }));
+
   protected download(item: Item): void {
     if (!item.resultUrl) return;
     this.saveUrl(item.resultUrl, item.outName);

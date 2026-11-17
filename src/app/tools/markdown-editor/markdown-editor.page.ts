@@ -29,6 +29,7 @@ import { sanitizeDom } from './markdown-sanitize';
 import { ShareLink } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './markdown-editor.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 const DRAFT_KEY = 'rrstudio.markdown-editor.draft';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -109,6 +110,8 @@ export class MarkdownEditorPage {
 
   constructor() {
     this.i18n.register(MD_DICTIONARIES);
+    // testo ricevuto da un altro strumento: ha la precedenza sulla bozza e non viene salvato come bozza
+    const received = inject(ToolHandoff).take('markdown-editor')?.text;
 
     effect((onCleanup) => {
       const t = this.text();
@@ -124,8 +127,13 @@ export class MarkdownEditorPage {
     // poi ogni modifica si salva con un breve ritardo
     afterNextRender(() => {
       const saved = this.readDraft();
-      this.text.set(saved ?? this.i18n.t('md.sample.text'));
-      if (saved !== null) this.draftState.set('saved');
+      if (received !== undefined) {
+        this.linkedText = received;
+        this.text.set(received);
+      } else {
+        this.text.set(saved ?? this.i18n.t('md.sample.text'));
+        if (saved !== null) this.draftState.set('saved');
+      }
       this.restored = true;
     });
     effect((onCleanup) => {

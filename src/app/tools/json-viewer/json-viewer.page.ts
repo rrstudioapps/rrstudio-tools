@@ -26,6 +26,7 @@ import { JSON_VIEWER_DICTIONARIES } from './json-viewer.i18n';
 import { ShareLink } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './json-viewer.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type View = 'tree' | 'text';
 type EditMode = 'value' | 'key';
@@ -310,6 +311,8 @@ export class JsonViewerPage {
 
   constructor() {
     this.i18n.register(JSON_VIEWER_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('json-viewer');
+    if (rx?.text !== undefined) void this.onFile(new File([rx.text], 'received.json', { type: 'application/json' }));
     const destroy = inject(DestroyRef);
     destroy.onDestroy(() => {
       clearTimeout(this.searchTimer);

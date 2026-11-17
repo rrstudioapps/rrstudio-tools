@@ -1,0 +1,118 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.hint {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.code {
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  min-height: 0;
+  overflow-wrap: anywhere;
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  h2 {
+    margin: 0;
+  }
+}
+.panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  h2 {
+    flex: 1;
+  }
+}
+.parts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  dt {
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+    font-size: var(--fs-sm);
+    overflow-wrap: anywhere;
+  }
+}
+.segments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+    overflow-wrap: anywhere;
+  }
+  .raw {
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+}
+.table-wrap {
+  overflow-x: auto;
+}
+.params {
+  width: 100%;
+  border-collapse: collapse;
+  th {
+    padding: var(--space-1) var(--space-2);
+    text-align: left;
+    font-weight: normal;
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  td {
+    padding: var(--space-1) var(--space-2);
+    vertical-align: middle;
+  }
+  td:not(.acts) {
+    width: 42%;
+  }
+  input {
+    width: 100%;
+    min-width: 8ch;
+    font-size: var(--fs-sm);
+  }
+  .is-tracking input:first-of-type {
+    border-style: dashed;
+  }
+}
+.badge {
+  display: inline-block;
+  margin-top: var(--space-1);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
+}
+.acts {
+  white-space: nowrap;
+  text-align: right;
+}

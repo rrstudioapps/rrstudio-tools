@@ -15,6 +15,8 @@ import { offsetOf } from '../yaml-json-converter/convert';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './xml-formatter.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Mode = 'format' | 'minify' | 'json';
 type IndentChoice = '2' | '4' | 'tab';
@@ -25,7 +27,7 @@ const SAMPLE =
 
 @Component({
   selector: 'app-xml-formatter',
-  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './xml-formatter.page.html',
   styleUrl: './xml-formatter.page.scss',
@@ -111,6 +113,8 @@ export class XmlFormatterPage {
 
   constructor() {
     this.i18n.register(XML_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('xml-formatter');
+    if (rx?.text !== undefined) this.input.set(rx.text);
   }
 
   private meta(text: string): string {

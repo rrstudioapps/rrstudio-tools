@@ -1,0 +1,103 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+import type { ToolDictionaries } from '../../core/i18n/i18n.service';
+
+const it = {
+  'icv.lead':
+    'Converti una o più immagini in PNG, JPG, WebP o AVIF direttamente nel browser, con qualità regolabile, ridimensionamento opzionale e rispetto dell\'orientamento delle foto. Scarichi un file alla volta o tutti insieme in uno ZIP.',
+  'icv.exif': 'I metadati EXIF (posizione GPS compresa) non vengono copiati nei file convertiti.',
+  'icv.drop': 'Trascina qui le immagini (JPG, PNG, WebP, AVIF, GIF o BMP, fino a {max}) oppure scegli i file.',
+  'icv.settings': 'Impostazioni di conversione',
+  'icv.format': 'Converti in',
+  'icv.unsupported': 'Il tuo browser non sa creare file {formats}: questi formati sono disattivati.',
+  'icv.quality': 'Qualità',
+  'icv.quality.png': 'Il PNG è senza perdita: la qualità non si applica.',
+  'icv.resize': 'Ridimensiona',
+  'icv.resize.none': 'Dimensioni originali',
+  'icv.resize.width': 'Larghezza massima',
+  'icv.resize.height': 'Altezza massima',
+  'icv.resize.percent': 'Percentuale',
+  'icv.resize.value': 'Valore del ridimensionamento',
+  'icv.resize.hint': 'Le proporzioni restano quelle originali e le immagini non vengono mai ingrandite.',
+  'icv.bg': 'Sfondo per la trasparenza',
+  'icv.bg.hint': 'Il JPG non ha trasparenza: le parti trasparenti prendono questo colore.',
+  'icv.list': 'Immagini convertite',
+  'icv.status.progress': 'Elaborate {done} su {total}…',
+  'icv.status.complete': '{count} immagini pronte',
+  'icv.summary': 'Totale',
+  'icv.zip': 'Scarica tutti (.zip)',
+  'icv.zip.busy': 'Creo lo ZIP…',
+  'icv.clear': 'Svuota l\'elenco',
+  'icv.download': 'Scarica',
+  'icv.download.one': 'Scarica {name}',
+  'icv.remove.one': 'Rimuovi {name}',
+  'icv.st.queued': 'In coda',
+  'icv.st.processing': 'In corso',
+  'icv.st.done': 'Pronta',
+  'icv.st.error': 'Errore',
+  'icv.err.type': '{n} file ignorati: non sono immagini supportate.',
+  'icv.err.size': '{n} file ignorati: superano i 50 MB.',
+  'icv.err.count': '{n} file ignorati: il massimo è {max} per volta.',
+  'icv.err.item': 'Non riesco a convertire questa immagine: il formato non è leggibile dal browser o il file è danneggiato.',
+  'icv.err.zip': 'Impossibile creare lo ZIP.',
+  'icv.info.fmt.title': 'Quale formato scegliere',
+  'icv.info.fmt.desc':
+    'JPG per le foto, compatibile con tutto. WebP e AVIF pesano di solito meno a parità di qualità. PNG è senza perdita ed è adatto a grafica, screenshot e trasparenze.',
+  'icv.info.exif.title': 'Orientamento e metadati',
+  'icv.info.exif.desc':
+    'Le foto scattate in verticale vengono raddrizzate prima della conversione. Il file di uscita non contiene più EXIF. Le GIF animate danno solo il primo fotogramma.',
+  'icv.info.priv.title': 'Dove vanno i dati',
+  'icv.info.priv.desc':
+    'Le immagini restano in questa pagina: non vengono caricate. Il link di condivisione contiene solo le opzioni (formato, qualità, ridimensionamento), mai le immagini.',
+};
+
+const en: typeof it = {
+  'icv.lead':
+    'Convert one or more images to PNG, JPG, WebP or AVIF right in your browser, with adjustable quality, optional resizing and photo orientation respected. Download one at a time or all together in a ZIP.',
+  'icv.exif': 'EXIF metadata (GPS position included) is not copied into the converted files.',
+  'icv.drop': 'Drop images here (JPG, PNG, WebP, AVIF, GIF or BMP, up to {max}) or choose files.',
+  'icv.settings': 'Conversion settings',
+  'icv.format': 'Convert to',
+  'icv.unsupported': 'Your browser cannot create {formats} files: these formats are turned off.',
+  'icv.quality': 'Quality',
+  'icv.quality.png': 'PNG is lossless: quality does not apply.',
+  'icv.resize': 'Resize',
+  'icv.resize.none': 'Original size',
+  'icv.resize.width': 'Maximum width',
+  'icv.resize.height': 'Maximum height',
+  'icv.resize.percent': 'Percentage',
+  'icv.resize.value': 'Resize value',
+  'icv.resize.hint': 'The aspect ratio is kept and images are never enlarged.',
+  'icv.bg': 'Background for transparency',
+  'icv.bg.hint': 'JPG has no transparency: transparent areas take this color.',
+  'icv.list': 'Converted images',
+  'icv.status.progress': 'Processed {done} of {total}…',
+  'icv.status.complete': '{count} images ready',
+  'icv.summary': 'Total',
+  'icv.zip': 'Download all (.zip)',
+  'icv.zip.busy': 'Creating the ZIP…',
+  'icv.clear': 'Clear the list',
+  'icv.download': 'Download',
+  'icv.download.one': 'Download {name}',
+  'icv.remove.one': 'Remove {name}',
+  'icv.st.queued': 'Queued',
+  'icv.st.processing': 'Working',
+  'icv.st.done': 'Ready',
+  'icv.st.error': 'Error',
+  'icv.err.type': '{n} files ignored: not supported images.',
+  'icv.err.size': '{n} files ignored: they are over 50 MB.',
+  'icv.err.count': '{n} files ignored: the maximum is {max} at a time.',
+  'icv.err.item': 'I cannot convert this image: the browser cannot read the format or the file is damaged.',
+  'icv.err.zip': 'Could not create the ZIP.',
+  'icv.info.fmt.title': 'Which format to choose',
+  'icv.info.fmt.desc':
+    'JPG for photos, works everywhere. WebP and AVIF are usually smaller at the same quality. PNG is lossless and suits graphics, screenshots and transparency.',
+  'icv.info.exif.title': 'Orientation and metadata',
+  'icv.info.exif.desc':
+    'Photos taken in portrait mode are straightened before converting. The output file has no EXIF left. Animated GIFs give only the first frame.',
+  'icv.info.priv.title': 'Where the data goes',
+  'icv.info.priv.desc':
+    'Images stay on this page: they are never uploaded. The share link holds only the options (format, quality, resize), never the images.',
+};
+
+export const IMAGE_CONVERTER_DICTIONARIES: ToolDictionaries = { it, en };

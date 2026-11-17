@@ -25,6 +25,7 @@ import {
   toHex,
 } from './hash';
 import { HASH_DICTIONARIES } from './hash-generator.i18n';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 interface Row {
   algo: Algo;
@@ -122,6 +123,8 @@ export class HashGeneratorPage {
 
   constructor() {
     this.i18n.register(HASH_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('hash-generator');
+    if (rx?.text !== undefined) this.text.set(rx.text);
     // Testo: hash live (solo nel browser; la pagina prerenderizzata parte vuota)
     effect(() => {
       const t = this.text();

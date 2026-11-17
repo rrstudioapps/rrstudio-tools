@@ -121,6 +121,7 @@
   <app-io-panel [label]="i18n.t('fr.out')" inputId="fr-out" [meta]="total()">
     <span panel-actions>
       <app-copy-button [text]="output()" [disabled]="!output()" />
+      <app-send-to from="find-replace" [text]="output()" [disabled]="!output()" />
       <button type="button" class="btn small" [disabled]="!output()" (click)="download()"><app-icon name="download" /> {{ i18n.t('fr.download') }}</button>
       <button type="button" class="btn small" [disabled]="!output()" (click)="useAsInput()"><app-icon name="swap" /> {{ i18n.t('fr.use') }}</button>
     </span>

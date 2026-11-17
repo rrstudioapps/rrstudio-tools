@@ -14,6 +14,7 @@ import { JSON_QUERY_DICTIONARIES } from './json-query.i18n';
 import { SHARE_SCHEMA } from './json-query.share';
 import { MAX_RESULTS, compileJsonPath, parseJson, runJsonPath } from './jsonpath';
 import { jsonToSchemaText, jsonToTypeScript } from './json-types';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Tab = 'query' | 'ts' | 'schema';
 /** Righe mostrate nella tabella dei percorsi. */
@@ -152,6 +153,8 @@ export class JsonQueryPage {
 
   constructor() {
     this.i18n.register(JSON_QUERY_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('json-query');
+    if (rx?.text !== undefined) this.json.set(rx.text);
   }
 
   protected loadExample(id: (typeof EXAMPLES)[number]['id']): void {

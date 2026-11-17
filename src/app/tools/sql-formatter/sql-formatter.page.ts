@@ -14,6 +14,8 @@ import { SQL_DICTIONARIES } from './sql-formatter.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './sql-formatter.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Mode = 'format' | 'minify';
 type IndentChoice = '2' | '4' | 'tab';
@@ -24,7 +26,7 @@ const SAMPLE =
 
 @Component({
   selector: 'app-sql-formatter',
-  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sql-formatter.page.html',
   styleUrl: './sql-formatter.page.scss',
@@ -111,6 +113,8 @@ export class SqlFormatterPage {
 
   constructor() {
     this.i18n.register(SQL_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('sql-formatter');
+    if (rx?.text !== undefined) this.input.set(rx.text);
   }
 
   private meta(text: string): string {

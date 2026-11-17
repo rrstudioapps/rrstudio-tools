@@ -219,6 +219,7 @@
         <div class="head">
           <label class="eyebrow" for="qrr-raw">{{ i18n.t('qrr.raw') }}</label>
           <app-copy-button [text]="c.raw" />
+          <app-send-to from="qr-code-reader" [text]="c.raw" />
         </div>
         <textarea id="qrr-raw" class="io-textarea" rows="4" readonly spellcheck="false" [value]="c.raw" data-testid="qrr-raw"></textarea>
       </div>

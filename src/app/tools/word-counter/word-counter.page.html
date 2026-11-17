@@ -23,7 +23,10 @@
 
   <div class="layout">
     <app-io-panel [label]="i18n.t('wc.input')" inputId="wc-in">
-      <span panel-actions><app-copy-button [text]="text()" [disabled]="empty()" /></span>
+      <span panel-actions>
+        <app-copy-button [text]="text()" [disabled]="empty()" />
+        <app-send-to from="word-counter" [text]="text()" [disabled]="empty()" />
+      </span>
       <textarea
         id="wc-in"
         class="io-textarea"

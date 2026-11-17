@@ -14,6 +14,8 @@ import { Indent, JsonToken, formatJson, jsonStats, minifyJson, parseJson, tokeni
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './json-formatter.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Action = 'format' | 'minify';
 type IndentChoice = '2' | '4' | 'tab';
@@ -32,7 +34,7 @@ const SAMPLE =
 
 @Component({
   selector: 'app-json-formatter',
-  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './json-formatter.page.html',
   styleUrl: './json-formatter.page.scss',
@@ -146,6 +148,8 @@ export class JsonFormatterPage {
 
   constructor() {
     this.i18n.register(JSON_FORMATTER_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('json-formatter');
+    if (rx?.text !== undefined) this.input.set(rx.text);
   }
 
   protected onInput(e: Event): void {

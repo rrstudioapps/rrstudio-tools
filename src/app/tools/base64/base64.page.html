@@ -71,6 +71,7 @@
             </button>
           }
           <app-copy-button [text]="fullOutput()" [disabled]="fullOutput() === ''" />
+          <app-send-to from="base64" [text]="fullOutput()" [disabled]="fullOutput() === ''" />
         </span>
         <textarea id="b64-out" class="io-textarea" readonly spellcheck="false" [value]="shownOutput()"></textarea>
         @if (truncatedNote()) {

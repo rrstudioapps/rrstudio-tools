@@ -14,6 +14,8 @@ import { YAML_JSON_DICTIONARIES } from './yaml-json-converter.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './yaml-json-converter.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 const MAX_FILE = 5 * 1024 * 1024;
 const FORMAT_LABEL: Record<Format, string> = { yaml: 'YAML', json: 'JSON', toml: 'TOML' };
@@ -32,7 +34,7 @@ interface ErrorInfo {
 
 @Component({
   selector: 'app-yaml-json-converter',
-  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './yaml-json-converter.page.html',
   styleUrl: './yaml-json-converter.page.scss',
@@ -114,6 +116,15 @@ export class YamlJsonConverterPage {
 
   constructor() {
     this.i18n.register(YAML_JSON_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('yaml-json-converter');
+    if (rx?.text !== undefined) {
+      // un JSON in arrivo si converte in YAML; il testo semplice resta nel formato scelto
+      if (rx.kind === 'json') {
+        this.from.set('json');
+        this.to.set('yaml');
+      }
+      this.input.set(rx.text);
+    }
   }
 
   private meta(text: string): string {

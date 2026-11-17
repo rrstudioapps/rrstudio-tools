@@ -102,6 +102,7 @@
             <app-icon name="download" />
             {{ zipping() ? i18n.t('ic.zip.busy') : i18n.t('ic.zip') }}
           </button>
+          <app-send-to from="image-compressor" kind="image" [files]="doneFiles" [disabled]="doneCount() === 0 || zipping()" />
           <button type="button" class="btn small" (click)="clearAll()">
             <app-icon name="trash" /> {{ i18n.t('ic.clear') }}
           </button>

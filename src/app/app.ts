@@ -8,19 +8,21 @@ import { PwaService } from './core/pwa/pwa.service';
 import { SeoService } from './core/seo/seo.service';
 import { ThemeService } from './core/theme/theme.service';
 import { Footer } from './shared/footer';
+import { HandoffNotice } from './shared/handoff-notice';
 import { Header } from './shared/header';
 import { LangHint } from './shared/lang-hint';
 import { PwaStatus } from './shared/pwa-status';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Footer, LangHint, PwaStatus],
+  imports: [RouterOutlet, Header, Footer, HandoffNotice, LangHint, PwaStatus],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a class="skip" href="#main">{{ i18n.t('nav.skip') }}</a>
     <app-lang-hint />
     <app-header />
     <main id="main" tabindex="-1">
+      <app-handoff-notice />
       <router-outlet />
     </main>
     <app-footer />

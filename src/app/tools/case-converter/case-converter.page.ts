@@ -11,6 +11,7 @@ import { CASE_DICTIONARIES } from './case-converter.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './case-converter.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 const SAMPLE = 'getHTTPResponse per il nome della rosa\nuser_profile_id: perché è così';
 
@@ -59,6 +60,8 @@ export class CaseConverterPage {
 
   constructor() {
     this.i18n.register(CASE_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('case-converter');
+    if (rx?.text !== undefined) this.input.set(rx.text);
   }
 
   protected onInput(e: Event): void {

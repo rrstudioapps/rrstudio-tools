@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, PLATFORM_ID, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, PLATFORM_ID, afterNextRender, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { saveBytes } from '../../shared/download';
 import { FileDrop } from '../../shared/file-drop';
@@ -32,12 +32,14 @@ import {
 } from './image-crop';
 import { drawPreview, exportCrop, loadBitmap, transformedSize } from './image-crop-render';
 import { IMAGE_CROP_DICTIONARIES } from './image-crop.i18n';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type DragMode = { kind: 'move' } | { kind: 'resize'; handle: Handle };
 
 @Component({
   selector: 'app-image-crop',
-  imports: [FileDrop, Icon, PrivacyNote, Segmented],
+  imports: [FileDrop, Icon, PrivacyNote, Segmented, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './image-crop.page.html',
   styleUrl: './image-crop.page.scss',
@@ -124,6 +126,9 @@ export class ImageCropPage {
 
   constructor() {
     this.i18n.register(IMAGE_CROP_DICTIONARIES);
+    // immagini ricevute da un altro strumento: stessa strada del file-drop
+    const rx = inject(ToolHandoff).take('image-crop');
+    if (rx?.files?.length) afterNextRender(() => void this.onFiles(rx.files!));
     // ridisegna l'anteprima e riporta il ritaglio sui limiti nuovi quando cambia la trasformazione
     effect(() => {
       const angle = this.angle();
@@ -267,6 +272,21 @@ export class ImageCropPage {
     this.driver = 'height';
     this.outH.set(v);
   }
+
+  /** Il ritaglio come file, per "Invia a…" (stessa esportazione del download, senza salvare). */
+  protected readonly cropFiles = async (): Promise<File[]> => {
+    const bmp = this.bitmap;
+    if (!bmp) return [];
+    try {
+      const fmt = this.format();
+      const blob = await exportCrop(bmp, { angle: this.angle(), flipH: this.flipH(), flipV: this.flipV() }, this.rounded(), this.result(), fmt, this.quality());
+      const name = cropFileName(this.fileName(), fmt, this.i18n.lang() === 'en' ? 'crop' : 'ritaglio');
+      return [new File([blob], name, { type: MIME[fmt] })];
+    } catch {
+      this.error.set(this.i18n.t('crop.err.export'));
+      return [];
+    }
+  };
 
   protected async download(): Promise<void> {
     const bmp = this.bitmap;

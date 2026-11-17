@@ -95,6 +95,7 @@
     <app-io-panel [label]="i18n.t('sl.out')" inputId="sl-out" [meta]="stats()">
       <span panel-actions>
         <app-copy-button [text]="output()" [disabled]="!output()" />
+        <app-send-to from="sort-lines" [text]="output()" [disabled]="!output()" />
         <button type="button" class="btn small" [disabled]="!output()" (click)="download()"><app-icon name="download" /> {{ i18n.t('sl.download') }}</button>
         <button type="button" class="btn small" [disabled]="!output()" (click)="useAsInput()"><app-icon name="swap" /> {{ i18n.t('sl.use') }}</button>
       </span>

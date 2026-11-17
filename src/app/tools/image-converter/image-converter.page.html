@@ -1,0 +1,204 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.icv.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('icv.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="exif-note" role="note"><app-icon name="shield" /> {{ i18n.t('icv.exif') }}</p>
+
+  <app-share-link toolId="image-converter" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <app-file-drop
+    [hint]="i18n.t('icv.drop', { max: maxFiles })"
+    [accept]="accept"
+    [multiple]="true"
+    (filesSelected)="onFiles($event)"
+  >
+    <section class="settings" [attr.aria-label]="i18n.t('icv.settings')">
+      <div class="field wide">
+        <span class="lab" id="icv-format-lab">{{ i18n.t('icv.format') }}</span>
+        <div class="formats" role="group" aria-labelledby="icv-format-lab" data-testid="icv-formats">
+          @for (f of formatOptions(); track f.value) {
+            <button
+              type="button"
+              class="fmt"
+              [attr.data-format]="f.value"
+              [class.on]="effectiveFormat() === f.value"
+              [attr.aria-pressed]="effectiveFormat() === f.value"
+              [disabled]="f.disabled"
+              (click)="setFormat(f.value)"
+            >
+              {{ f.label }}
+            </button>
+          }
+        </div>
+        @if (detected() && unsupportedList()) {
+          <span class="hint" data-testid="icv-unsupported">{{ i18n.t('icv.unsupported', { formats: unsupportedList() }) }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label class="lab" for="icv-quality">{{ i18n.t('icv.quality') }}</label>
+        <div class="range">
+          <input
+            id="icv-quality"
+            type="range"
+            min="1"
+            max="100"
+            step="1"
+            [value]="settings().quality"
+            [disabled]="!qualityOn()"
+            (input)="setQuality($any($event.target).value)"
+          />
+          <output for="icv-quality" class="mono">{{ qualityOn() ? settings().quality : '—' }}</output>
+        </div>
+        @if (!qualityOn()) {
+          <span class="hint">{{ i18n.t('icv.quality.png') }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label class="lab" for="icv-resize">{{ i18n.t('icv.resize') }}</label>
+        <div class="inline">
+          <select id="icv-resize" [value]="settings().resizeMode" (change)="setResizeMode($any($event.target).value)">
+            @for (m of resizeModes(); track m.value) {
+              <option [value]="m.value" [selected]="m.value === settings().resizeMode">{{ m.label }}</option>
+            }
+          </select>
+          @if (settings().resizeMode !== 'none') {
+            <input
+              type="number"
+              min="1"
+              [max]="settings().resizeMode === 'percent' ? 100 : maxResize"
+              step="1"
+              inputmode="numeric"
+              class="num"
+              [attr.aria-label]="i18n.t('icv.resize.value')"
+              [value]="settings().resizeValue"
+              (input)="setResizeValue($any($event.target).value)"
+            />
+            <span class="unit mono">{{ settings().resizeMode === 'percent' ? '%' : 'px' }}</span>
+          }
+        </div>
+        <span class="hint">{{ i18n.t('icv.resize.hint') }}</span>
+      </div>
+
+      <div class="field">
+        <label class="lab" for="icv-bg">{{ i18n.t('icv.bg') }}</label>
+        <div class="inline">
+          <input
+            id="icv-bg"
+            type="color"
+            class="color"
+            [value]="settings().background"
+            [disabled]="!backgroundOn()"
+            (input)="setBackground($any($event.target).value)"
+          />
+          <span class="mono unit">{{ settings().background }}</span>
+        </div>
+        <span class="hint">{{ i18n.t('icv.bg.hint') }}</span>
+      </div>
+    </section>
+
+    <div class="tool-status" aria-live="polite" role="status">
+      @if (notice()) {
+        <p class="tool-error">{{ notice() }}</p>
+      }
+    </div>
+
+    @if (items().length > 0) {
+      <section class="results" [attr.aria-label]="i18n.t('icv.list')">
+        <div class="bar">
+          <p class="progress mono" role="status" aria-live="polite" data-testid="icv-status">{{ statusText() }}</p>
+          <span class="spacer"></span>
+          <button type="button" class="btn small primary" data-testid="icv-all" [disabled]="doneCount() === 0 || zipping()" (click)="downloadAll()">
+            <app-icon name="download" />
+            {{ zipping() ? i18n.t('icv.zip.busy') : i18n.t('icv.zip') }}
+          </button>
+          <app-send-to from="image-converter" kind="image" [files]="doneFiles" [disabled]="doneCount() === 0 || zipping()" />
+          <button type="button" class="btn small" (click)="clearAll()">
+            <app-icon name="trash" /> {{ i18n.t('icv.clear') }}
+          </button>
+        </div>
+
+        @if (summary(); as s) {
+          <p class="summary">
+            <span class="eyebrow">{{ i18n.t('icv.summary') }}</span>
+            <strong class="mono">{{ size(s.before) }} → {{ size(s.after) }}</strong>
+            <span class="mono saving" [class.worse]="s.percent < 0">{{ savingTotal(s.percent) }}</span>
+          </p>
+        }
+
+        <ul class="list" data-testid="icv-list">
+          @for (item of items(); track item.id) {
+            <li class="row" [attr.data-status]="item.status">
+              <span class="thumb">
+                @if (item.thumbUrl) {
+                  <img [src]="item.thumbUrl" alt="" />
+                } @else {
+                  <app-icon name="image" />
+                }
+              </span>
+              <div class="info">
+                <span class="name" [title]="item.file.name">{{ item.file.name }}</span>
+                @if (item.status === 'done') {
+                  <span class="meta mono">
+                    {{ item.srcWidth }}×{{ item.srcHeight }}
+                    @if (item.srcWidth !== item.outWidth || item.srcHeight !== item.outHeight) {
+                      → {{ item.outWidth }}×{{ item.outHeight }}
+                    }
+                    px
+                  </span>
+                  <span class="meta mono">
+                    {{ size(item.file.size) }} → {{ size(item.outBytes) }}
+                    <strong class="saving" [class.worse]="item.outBytes > item.file.size">{{ saving(item) }}</strong>
+                    · {{ label(item.outFormat) }}
+                  </span>
+                } @else if (item.status === 'error') {
+                  <span class="meta">{{ i18n.t('icv.err.item') }}</span>
+                }
+              </div>
+              <span class="badge" [attr.data-status]="item.status">{{ statusLabel(item.status) }}</span>
+              <div class="actions">
+                <button
+                  type="button"
+                  class="btn small"
+                  [disabled]="item.status !== 'done'"
+                  [attr.aria-label]="i18n.t('icv.download.one', { name: item.outName })"
+                  (click)="download(item)"
+                >
+                  <app-icon name="download" /> <span class="lbl">{{ i18n.t('icv.download') }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn small"
+                  [attr.aria-label]="i18n.t('icv.remove.one', { name: item.file.name })"
+                  (click)="remove(item)"
+                >
+                  <app-icon name="trash" />
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  </app-file-drop>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('icv.info.fmt.title') }}</h2>
+      <p>{{ i18n.t('icv.info.fmt.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('icv.info.exif.title') }}</h2>
+      <p>{{ i18n.t('icv.info.exif.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('icv.info.priv.title') }}</h2>
+      <p>{{ i18n.t('icv.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

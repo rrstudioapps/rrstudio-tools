@@ -13,12 +13,14 @@ import { URL_ENCODE_DICTIONARIES } from './url-encode.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './url-encode.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Direction = 'encode' | 'decode';
 
 @Component({
   selector: 'app-url-encode',
-  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './url-encode.page.html',
   styleUrl: './url-encode.page.scss',
@@ -102,6 +104,8 @@ export class UrlEncodePage {
 
   constructor() {
     this.i18n.register(URL_ENCODE_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('url-encode');
+    if (rx?.text !== undefined) this.input.set(rx.text);
   }
 
   protected onInput(e: Event): void {

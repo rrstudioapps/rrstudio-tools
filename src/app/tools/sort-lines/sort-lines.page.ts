@@ -12,13 +12,15 @@ import { SL_DICTIONARIES } from './sort-lines.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './sort-lines.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 const MODES: SortMode[] = ['alpha', 'natural', 'length', 'frequency', 'random', 'none'];
 const DEDUPES: DedupeMode[] = ['none', 'exact', 'ignoreCase'];
 
 @Component({
   selector: 'app-sort-lines',
-  imports: [ShareLink, Icon, IoPanel, PrivacyNote, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, CopyButton, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sort-lines.page.html',
   styleUrl: './sort-lines.page.scss',
@@ -102,6 +104,8 @@ export class SortLinesPage {
 
   constructor() {
     this.i18n.register(SL_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('sort-lines');
+    if (rx?.text !== undefined) this.input.set(rx.text);
   }
 
   protected useAsInput(): void {

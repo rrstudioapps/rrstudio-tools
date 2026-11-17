@@ -706,6 +706,66 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/image-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/image-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/color-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/color-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/color-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/color-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/color-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/color-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/color-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/color-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/curl-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/curl-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/curl-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/curl-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/curl-converter</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/curl-converter"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/curl-converter"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/curl-converter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/url-parser</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/url-parser"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/url-parser"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/url-parser"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/url-parser</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/url-parser"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/url-parser"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/url-parser"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/compound-interest</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/compound-interest"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/compound-interest"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/compound-interest"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/compound-interest</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/compound-interest"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/compound-interest"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/compound-interest"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/privacy</loc>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/privacy"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/privacy"/>

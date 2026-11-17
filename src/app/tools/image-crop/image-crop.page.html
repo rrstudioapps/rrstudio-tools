@@ -129,6 +129,7 @@
               <button type="button" class="btn primary" data-testid="crop-download" [disabled]="working()" (click)="download()">
                 <app-icon name="download" /> {{ i18n.t('crop.download') }}
               </button>
+              <app-send-to from="image-crop" kind="image" [files]="cropFiles" [disabled]="working()" />
             </div>
             <p class="tool-ok" role="status" aria-live="polite" data-testid="crop-status">{{ status() }}</p>
           </section>

@@ -29,6 +29,8 @@ import { BASE64_DICTIONARIES } from './base64.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './base64.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Mode = 'encode' | 'decode';
 
@@ -45,7 +47,7 @@ interface LoadedFile {
 
 @Component({
   selector: 'app-base64',
-  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './base64.page.html',
   styleUrl: './base64.page.scss',
@@ -178,6 +180,8 @@ export class Base64Page {
 
   constructor() {
     this.i18n.register(BASE64_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('base64');
+    if (rx?.text !== undefined) this.input.set(rx.text);
     // L'anteprima usa un object URL, revocato quando cambia il contenuto o si chiude la pagina
     effect((onCleanup) => {
       const src = this.previewSource();

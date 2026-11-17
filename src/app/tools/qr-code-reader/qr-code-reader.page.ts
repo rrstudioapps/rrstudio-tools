@@ -1,19 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  ElementRef,
-  HostListener,
-  PLATFORM_ID,
-  computed,
-  effect,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, PLATFORM_ID, afterNextRender, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { FileDrop } from '../../shared/file-drop';
@@ -23,6 +11,8 @@ import { Segmented, SegmentOption } from '../../shared/segmented';
 import { Content, classify } from './qr-content';
 import { QRR_DICTIONARIES } from './qr-code-reader.i18n';
 import { decodePixels, fitSize } from './qr-scan';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Source = 'image' | 'camera';
 type CameraState = 'off' | 'starting' | 'on';
@@ -35,7 +25,7 @@ const CAMERA_INTERVAL_MS = 130;
 
 @Component({
   selector: 'app-qr-code-reader',
-  imports: [Icon, PrivacyNote, Segmented, CopyButton, FileDrop],
+  imports: [Icon, PrivacyNote, Segmented, CopyButton, FileDrop, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './qr-code-reader.page.html',
   styleUrl: './qr-code-reader.page.scss',
@@ -81,6 +71,9 @@ export class QrCodeReaderPage {
 
   constructor() {
     this.i18n.register(QRR_DICTIONARIES);
+    // immagini ricevute da un altro strumento: stessa strada del file-drop
+    const rx = inject(ToolHandoff).take('qr-code-reader');
+    if (rx?.files?.length) afterNextRender(() => this.onFile(rx.files![0]));
     // collega il flusso al video e avvia la lettura quando entrambi esistono
     effect(() => {
       const v = this.video();

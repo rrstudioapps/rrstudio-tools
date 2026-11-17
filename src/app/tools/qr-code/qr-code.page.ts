@@ -13,6 +13,7 @@ import { bindSvgPreview } from '../../shared/svg-preview';
 import { ShareLink } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARED_FIELDS, SHARE_SCHEMA, fieldsFromShare } from './qr-code.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 const MAX_LOGO_BYTES = 5 * 1024 * 1024;
 /** Il logo viene ridotto a questo lato massimo prima di entrare nell'SVG (mantiene leggero il file). */
@@ -146,6 +147,12 @@ export class QrCodePage {
 
   constructor() {
     this.i18n.register(QR_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('qr-code-generator');
+    if (rx?.text !== undefined) {
+      const isUrl = /^https?:\/\/\S+$/i.test(rx.text.trim());
+      this.type.set(isUrl ? 'url' : 'text');
+      this.fields.update((f) => ({ ...f, [isUrl ? 'url' : 'text']: rx.text!.trim() }));
+    }
     // l'anteprima è lo stesso SVG che si scarica, servito come immagine da un object URL
     bindSvgPreview(() => this.svg(), this.previewUrl);
     afterNextRender(() => this.canCopyImage.set(typeof ClipboardItem !== 'undefined' && !!navigator.clipboard?.write));

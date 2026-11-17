@@ -121,6 +121,10 @@ export const en: Dict = {
   'common.output': 'Output',
   'common.copy': 'Copy',
   'common.copied': 'Copied',
+  'send.btn': 'Send to…',
+  'send.label': 'Send to… another tool',
+  'send.menu': 'Tools to send the result to',
+  'send.received': 'Received from {tool}',
   'common.clear': 'Clear',
   'common.swap': 'Swap',
   'common.chooseFile': 'Choose a file',
@@ -336,6 +340,19 @@ export const en: Dict = {
   'seo.jq.title': 'Online JSONPath, JSON to TypeScript and JSON Schema | rrstudio Tools',
   'seo.jq.desc':
     'Try JSONPath expressions on a JSON with filters, slices and result paths, and generate TypeScript interfaces or a JSON Schema (draft 2020-12). All in your browser.',
+
+  'tool.icv.title': 'Image format converter',
+  'tool.icv.desc':
+    'Convert images to PNG, JPG, WebP or AVIF in your browser, with quality and resizing of your choice. Several files at once, single or ZIP download.',
+  'seo.icv.title': 'Online image converter: PNG, JPG, WebP, AVIF | rrstudio Tools',
+  'seo.icv.desc':
+    'Convert several images to PNG, JPG, WebP or AVIF, adjust quality, resize keeping the aspect ratio and download everything as a ZIP. In your browser, nothing uploaded, no EXIF.',
+  'tool.colc.title': 'Color converter',
+  'tool.colc.desc':
+    'Convert a color between HEX, RGB, HSL, HWB, OKLCH, OKLAB and CMYK, generate the 50-950 shade scale and harmonies, and export CSS variables and JSON.',
+  'seo.colc.title': 'Online color converter: HEX, RGB, HSL, OKLCH and palettes | rrstudio Tools',
+  'seo.colc.desc':
+    'Convert colors between HEX, RGB, HSL, HWB, OKLCH, OKLAB and CMYK, with the sRGB gamut flagged. 50-950 shade scale, complementary, analogous and triadic colors, exportable as CSS variables or JSON.',
 
   'tool.yj.title': 'YAML, JSON and TOML converter',
   'tool.yj.desc':
@@ -653,4 +670,17 @@ export const en: Dict = {
   'fav.cleared': 'Favorites and menus deleted.',
   'seo.favorites.title': 'Favorites and custom menus | rrstudio Tools',
   'seo.favorites.desc': 'Your favorite tools and custom menus, saved in this browser only.',
+
+  'tool.curl.title': 'cURL converter',
+  'tool.curl.desc': 'Turn a curl command, including one copied from Chrome or Firefox, into JavaScript, Python, PHP or Go code, with warnings about what does not translate.',
+  'seo.curl.title': 'cURL converter to fetch, axios, Python, PHP and Go online | rrstudio Tools',
+  'seo.curl.desc': 'Paste a curl command (including Chrome and Firefox "Copy as cURL") and get code for fetch, axios, Node.js, Python requests, PHP and Go. Headers, JSON, forms, authentication. All in the browser, nothing is run.',
+  'tool.urlp.title': 'URL parser',
+  'tool.urlp.desc': 'Split a URL into protocol, host, domain, port, path, parameters and fragment; edit the parameters and strip tracking ones.',
+  'seo.urlp.title': 'URL parser online: parameters, domain and tracking | rrstudio Tools',
+  'seo.urlp.desc': 'Parse a URL: protocol, user, host, subdomain, port, path, query and fragment, with percent-encoding and punycode decoded. Editable parameter table and removal of utm_*, fbclid and gclid.',
+  'tool.ci.title': 'Compound interest calculator',
+  'tool.ci.desc': 'Work out the balance of a sum with compound interest and regular deposits: interest, real value after inflation, a year-by-year table and a chart.',
+  'seo.ci.title': 'Compound interest calculator with regular deposits online | rrstudio Tools',
+  'seo.ci.desc': 'Calculate compound interest: initial amount, monthly or yearly deposits, rate, compounding and term. Final balance, total paid in, interest, real value after inflation, table and chart.',
 };

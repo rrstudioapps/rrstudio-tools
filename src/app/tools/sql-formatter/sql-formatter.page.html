@@ -59,6 +59,7 @@
             <app-icon name="download" /> {{ i18n.t('sql.download') }}
           </button>
           <app-copy-button [text]="output()" [disabled]="output() === ''" />
+          <app-send-to from="sql-formatter" [text]="output()" [disabled]="output() === ''" />
         </span>
         <textarea
           id="sql-out"

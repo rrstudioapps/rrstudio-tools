@@ -65,6 +65,7 @@
     <app-io-panel [label]="i18n.t('ent.out')" inputId="ent-out" [meta]="outputMeta()">
       <span panel-actions>
         <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        <app-send-to from="html-entities" [text]="output()" [disabled]="output() === ''" />
       </span>
       <textarea
         id="ent-out"

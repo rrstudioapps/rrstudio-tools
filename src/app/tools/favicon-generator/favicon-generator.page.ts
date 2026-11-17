@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, afterNextRender, computed, effect, inject, signal, untracked } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { saveBytes } from '../../shared/download';
@@ -25,6 +25,7 @@ import {
 } from './favicon';
 import { FontFamily, LoadedImage, RenderOptions, RenderSource, canvasToPng, drawFavicon, loadImageFile } from './favicon-render';
 import { FAV_DICTIONARIES } from './favicon-generator.i18n';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type SourceKind = 'text' | 'image';
 const PREVIEW_SIZES = [16, 32, 48, 180] as const;
@@ -112,6 +113,9 @@ export class FaviconGeneratorPage {
 
   constructor() {
     this.i18n.register(FAV_DICTIONARIES);
+    // immagini ricevute da un altro strumento: stessa strada del file-drop
+    const rx = inject(ToolHandoff).take('favicon-generator');
+    if (rx?.files?.length) afterNextRender(() => void this.onFile(rx.files![0]));
     effect(() => {
       const src = this.renderSource();
       const opts = this.renderOptions();

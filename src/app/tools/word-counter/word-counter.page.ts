@@ -26,6 +26,8 @@ import { WC_DICTIONARIES } from './word-counter.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './word-counter.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 const CONVERSIONS: readonly Conversion[] = ['upper', 'lower', 'title', 'sentence', 'invert', 'spaces', 'blank'];
 /** Oltre questa lunghezza i conteggi si aggiornano con un breve ritardo mentre si scrive. */
@@ -48,7 +50,7 @@ interface LimitRow {
 
 @Component({
   selector: 'app-word-counter',
-  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './word-counter.page.html',
   styleUrl: './word-counter.page.scss',
@@ -156,6 +158,8 @@ export class WordCounterPage {
 
   constructor() {
     this.i18n.register(WC_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('word-counter');
+    if (rx?.text !== undefined) this.text.set(rx.text);
     effect((onCleanup) => {
       const t = this.text();
       if (t.length <= INSTANT_CHARS) {

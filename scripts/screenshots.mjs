@@ -1130,6 +1130,75 @@ try {
       await page.waitForTimeout(300);
     },
   });
+  await shot('image-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/image-converter/',
+    setup: async (page) => {
+      const photos = await drawImages(page);
+      await page.setInputFiles('input[type=file]', photos);
+      await page.waitForFunction(() => document.querySelectorAll('.row[data-status="done"]').length === document.querySelectorAll('li.row').length, null, { timeout: 30000 });
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('color-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/color-converter/',
+    setup: async (page) => {
+      await page.fill('[data-testid=colc-text]', 'oklch(62% 0.19 260)');
+      await page.waitForSelector('[data-testid=colc-shades]');
+    },
+  });
+  await shot('curl-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/curl-converter/',
+    setup: async (page) => {
+      await page.click('[data-testid=curl-sample]');
+      await page.waitForFunction(() => document.querySelector('[data-testid=curl-output]')?.value.includes('fetch('));
+      // con fetch nel browser l'intestazione Referer non è impostabile: deve comparire l'avviso
+      await page.waitForSelector('[data-testid=curl-warnings]');
+      await page.getByRole('button', { name: 'Python (requests)' }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=curl-output]')?.value.includes('import requests'));
+      const code = await page.locator('[data-testid=curl-output]').inputValue();
+      need(code.includes('json_data = {') && code.includes("'customer': 'Mario Rossi'"), 'corpo JSON non convertito in Python');
+      await page.getByRole('button', { name: 'JavaScript (fetch)' }).click();
+      await page.waitForSelector('[data-testid=curl-warnings]');
+    },
+  });
+  await shot('url-parser.png', {
+    width: 1280,
+    dark: false,
+    path: '/url-parser/',
+    setup: async (page) => {
+      await page.click('[data-testid=urlp-sample]');
+      await page.waitForSelector('[data-testid=urlp-table]');
+      // rimuovi tracciamento: nell'URL ricostruito non restano utm_* e fbclid
+      await page.click('[data-testid=urlp-strip]');
+      await page.waitForFunction(() => !document.querySelector('[data-testid=urlp-output]')?.value.includes('utm_'));
+      const out = await page.locator('[data-testid=urlp-output]').inputValue();
+      need(out.includes('colore=rosso') && !out.includes('fbclid') && out.endsWith('#recensioni'), 'URL ricostruito dopo la rimozione del tracciamento: ' + out);
+      await page.click('[data-testid=urlp-sample]');
+      await page.waitForSelector('[data-testid=urlp-table] .badge');
+    },
+  });
+  await shot('compound-interest.png', {
+    width: 1280,
+    dark: false,
+    path: '/compound-interest/',
+    setup: async (page) => {
+      await page.fill('#ci-principal', '10.000');
+      await page.fill('#ci-contribution', '200');
+      await page.fill('#ci-rate', '6');
+      await page.fill('#ci-years', '20');
+      await page.fill('#ci-inflation', '2');
+      await page.waitForSelector('[data-testid=ci-chart] rect');
+      // 10.000 € + 200 €/mese a fine mese, 6% annuo capitalizzato mensilmente: montante 10.000·1,005^240 + 200·(1,005^240 − 1)/0,005
+      const fin = (await page.locator('[data-testid=ci-final]').innerText()).replace(/\s/g, '');
+      need(fin === '125.510,22€', 'montante inatteso: ' + fin);
+    },
+  });
   await shot('meta-tag-preview.png', {
     width: 1280,
     dark: false,
@@ -1406,6 +1475,36 @@ try {
     async (page) => [await val(page, '#mutuo-capital'), await val(page, '#mutuo-tan'), await val(page, '#mutuo-years'), await txt(page, '[data-testid=mutuo-stats]')],
   );
   await shareCase(
+    'curl-converter',
+    '/curl-converter/',
+    async (page) => {
+      await page.click('[data-testid=curl-sample]');
+      await page.waitForFunction(() => document.querySelector('[data-testid=curl-output]')?.value.includes('fetch('));
+    },
+    async (page) => [await val(page, '[data-testid=curl-input]'), await val(page, '[data-testid=curl-output]')],
+  );
+  await shareCase(
+    'url-parser',
+    '/url-parser/',
+    async (page) => {
+      await page.click('[data-testid=urlp-sample]');
+      await page.waitForSelector('[data-testid=urlp-table]');
+    },
+    async (page) => [await val(page, '[data-testid=urlp-input]'), await val(page, '[data-testid=urlp-output]')],
+  );
+  await shareCase(
+    'compound-interest',
+    '/compound-interest/',
+    async (page) => {
+      await page.fill('#ci-principal', '10.000');
+      await page.fill('#ci-contribution', '200');
+      await page.fill('#ci-rate', '6');
+      await page.fill('#ci-years', '20');
+      await page.waitForSelector('[data-testid=ci-table]');
+    },
+    async (page) => [await val(page, '#ci-principal'), await val(page, '#ci-rate'), await val(page, '#ci-years'), await txt(page, '[data-testid=ci-stats]')],
+  );
+  await shareCase(
     'find-replace',
     '/find-replace/',
     async (page) => {
@@ -1437,6 +1536,56 @@ try {
     },
     async (page) => [await val(page, '#meta-f-title'), await val(page, '#meta-f-description'), await val(page, '#meta-f-ogImage'), await val(page, '[data-testid=meta-snippet]')],
   );
+
+  // "Invia a…": il risultato di uno strumento passa a un altro senza essere salvato. Solo in --check.
+  const handoffCase = async (name, path, run) => {
+    if (!CHECK) return;
+    const prefix = `[handoff ${name}] `;
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'it-IT' });
+    const page = await ctx.newPage();
+    page.setDefaultTimeout(20000);
+    page.on('request', (r) => !/^(blob:|data:)/.test(r.url()) && !r.url().startsWith(base) && errors.push(prefix + 'richiesta esterna: ' + r.url()));
+    page.on('console', (m) => m.type() === 'error' && errors.push(prefix + m.text()));
+    page.on('pageerror', (e) => errors.push(prefix + e.message));
+    try {
+      await page.goto(base + path);
+      await page.waitForTimeout(900);
+      await run(page);
+      // niente è stato scritto nello storage del browser e l'indirizzo non porta dati
+      const leaked = await page.evaluate(() => JSON.stringify([{ ...localStorage }, { ...sessionStorage }, location.hash, location.search]));
+      must(!/received|Mario|"a":1|montagna/.test(leaked), 'il contenuto inviato è finito nello storage o nell\'indirizzo: ' + leaked.slice(0, 200));
+    } catch (e) {
+      errors.push(prefix + 'interazione fallita: ' + e.message.split('\n').slice(0, 3).join(' | '));
+    }
+    await ctx.close();
+  };
+  const sendTo = async (page, title) => {
+    await page.getByRole('button', { name: 'Invia a… un altro strumento' }).click();
+    await page.getByRole('button', { name: title }).click();
+  };
+  await handoffCase('json-formatter → json-viewer', '/json-formatter/', async (page) => {
+    await page.fill('#json-in', '{"a":1,"b":[1,2,3],"nome":"Mario"}');
+    await page.waitForSelector('#json-out code span');
+    await sendTo(page, 'JSON Viewer ed Editor');
+    await page.waitForURL('**/json-viewer');
+    await page.getByText('Ricevuto da JSON Formatter e Validator').waitFor();
+    await page.locator('#jv-search').waitFor();
+    must((await page.locator('main').innerText()).includes('nome'), 'il JSON ricevuto non è nel visualizzatore');
+    // l'avviso sparisce alla navigazione successiva
+    await page.getByRole('link', { name: /Privacy/ }).first().click();
+    await page.waitForURL('**/privacy');
+    must((await page.getByText('Ricevuto da').count()) === 0, 'l\'avviso "Ricevuto da" è rimasto dopo la navigazione');
+  });
+  await handoffCase('image-crop → image-compressor', '/image-crop/', async (page) => {
+    const [photo] = await drawImages(page);
+    await page.setInputFiles('input[type=file]', [{ name: 'montagna.jpg', mimeType: 'image/jpeg', buffer: photo.buffer }]);
+    await page.locator('[data-testid=crop-source]', { hasText: '1600×1067' }).waitFor();
+    await page.waitForFunction(() => document.querySelector('[data-testid=crop-stage] canvas')?.width > 100);
+    await sendTo(page, 'Comprimi e converti immagini');
+    await page.waitForURL('**/image-compressor');
+    await page.getByText('Ricevuto da Ritaglia e ruota immagini').waitFor();
+    await page.locator('li.row[data-status=done]').first().waitFor();
+  });
 } finally {
   clearTimeout(watchdog);
   await browser.close();

@@ -56,6 +56,7 @@
             <app-icon name="download" /> {{ i18n.t('yj.download') }}
           </button>
           <app-copy-button [text]="output()" [disabled]="output() === ''" />
+          <app-send-to from="yaml-json-converter" [kind]="to() === 'json' ? 'json' : 'text'" [text]="output()" [disabled]="output() === ''" />
         </span>
         <textarea
           id="yj-out"

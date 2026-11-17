@@ -15,6 +15,8 @@ import { FR_DICTIONARIES } from './find-replace.i18n';
 import { ShareLink } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA, decodeRule, encodeRule } from './find-replace.share';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 interface Row extends Rule {
   id: number;
@@ -27,7 +29,7 @@ const PREVIEW_MAX_CHARS = 200_000;
 
 @Component({
   selector: 'app-find-replace',
-  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './find-replace.page.html',
   styleUrl: './find-replace.page.scss',
@@ -121,6 +123,8 @@ export class FindReplacePage {
 
   constructor() {
     this.i18n.register(FR_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('find-replace');
+    if (rx?.text !== undefined) this.text.set(rx.text);
     let timer: ReturnType<typeof setTimeout> | undefined;
     // il calcolo parte poco dopo l'ultima modifica; solo nel browser (nessun worker nel prerender)
     effect((onCleanup) => {

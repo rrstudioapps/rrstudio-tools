@@ -1,16 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  ElementRef,
-  PLATFORM_ID,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, PLATFORM_ID, afterNextRender, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { I18nService } from '../../core/i18n/i18n.service';
@@ -28,6 +19,7 @@ import { inspectImage, isHeic, isSupportedImage, prepareImage } from './image-pr
 import { buildImagesPdf } from './pdf-build';
 import { MARGINS_MM, Orientation, PageFormat, PerPage, pageCount } from './pdf-layout';
 import { DPIS, Dpi, MAX_PAGES, OutFormat, imageName, renderPageImage } from './pdf-render';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 export type Mode = 'images-to-pdf' | 'pdf-to-images';
 
@@ -176,6 +168,9 @@ export class ImagesPdfPage {
 
   constructor() {
     this.i18n.register(IMAGES_PDF_DICTIONARIES);
+    // immagini ricevute da un altro strumento: stessa strada del file-drop
+    const rx = inject(ToolHandoff).take('images-pdf');
+    if (rx?.files?.length) afterNextRender(() => void this.onImages(rx.files!));
     inject(DestroyRef).onDestroy(() => {
       this.releaseItems();
       this.releaseResults();

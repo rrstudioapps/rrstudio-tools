@@ -16,6 +16,7 @@ import { DIFF_DICTIONARIES } from './text-diff.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './text-diff.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type View = 'side' | 'inline';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -157,6 +158,9 @@ export class TextDiffPage {
 
   constructor() {
     this.i18n.register(DIFF_DICTIONARIES);
+    // il testo ricevuto diventa il testo di sinistra
+    const rx = inject(ToolHandoff).take('text-diff');
+    if (rx?.text !== undefined) this.textA.set(rx.text);
     // confronto con un breve ritardo (digitazione), in un worker; le risposte superate vengono scartate
     effect((onCleanup) => {
       const a = this.textA();

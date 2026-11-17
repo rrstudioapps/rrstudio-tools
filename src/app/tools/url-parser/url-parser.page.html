@@ -1,0 +1,133 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.urlp.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('urlp.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="url-parser" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <app-io-panel [label]="i18n.t('urlp.url')" inputId="urlp-input">
+    <span panel-actions>
+      <button type="button" class="btn small" data-testid="urlp-sample" (click)="loadSample()">{{ i18n.t('urlp.sample') }}</button>
+      <button type="button" class="btn small" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('urlp.clear') }}</button>
+    </span>
+    <textarea
+      id="urlp-input"
+      class="io-textarea code"
+      rows="3"
+      spellcheck="false"
+      data-testid="urlp-input"
+      [placeholder]="i18n.t('urlp.url.ph')"
+      [value]="text()"
+      (input)="onUrl($any($event.target).value)"
+    ></textarea>
+  </app-io-panel>
+  @if (invalid()) {
+    <p class="tool-error" role="alert" data-testid="urlp-error">{{ i18n.t('urlp.err.invalid') }}</p>
+  }
+
+  @if (url(); as u) {
+    @if (u.assumedScheme) {
+      <p class="hint" role="note">{{ i18n.t('urlp.assumed') }}</p>
+    }
+
+    <section class="panel" [attr.aria-label]="i18n.t('urlp.parts')">
+      <h2 class="eyebrow">{{ i18n.t('urlp.parts') }}</h2>
+      <dl class="parts" data-testid="urlp-parts">
+        @for (p of parts(); track p.label) {
+          <div>
+            <dt>{{ p.label }}</dt>
+            <dd [class.mono]="p.mono">{{ p.value }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+
+    <section class="panel" [attr.aria-label]="i18n.t('urlp.segments')">
+      <h2 class="eyebrow">{{ i18n.t('urlp.segments') }}</h2>
+      @if (u.segments.length > 0) {
+        <ol class="segments" data-testid="urlp-segments">
+          @for (s of u.segments; track $index) {
+            <li>
+              <span class="mono">{{ s.decoded }}</span>
+              @if (s.decoded !== s.raw) {
+                <span class="raw mono">{{ s.raw }}</span>
+              }
+            </li>
+          }
+        </ol>
+      } @else {
+        <p class="hint">{{ i18n.t('urlp.segments.none') }}</p>
+      }
+    </section>
+
+    <section class="panel" [attr.aria-label]="i18n.t('urlp.query')">
+      <div class="panel-head">
+        <h2 class="eyebrow">{{ i18n.t('urlp.query') }}</h2>
+        <button type="button" class="btn small" data-testid="urlp-add" (click)="add()"><app-icon name="plus" /> {{ i18n.t('urlp.add') }}</button>
+        <button type="button" class="btn small" data-testid="urlp-strip" [disabled]="trackingCount() === 0" (click)="stripTracking()">{{ i18n.t('urlp.removeTracking') }}</button>
+      </div>
+      <p class="hint" role="status" aria-live="polite" data-testid="urlp-tracking">
+        {{ trackingCount() > 0 ? i18n.t('urlp.trackingFound', { n: trackingCount() }) : i18n.t('urlp.trackingNone') }}
+      </p>
+      @if (params().length > 0) {
+        <div class="table-wrap">
+          <table class="params" data-testid="urlp-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ i18n.t('urlp.col.key') }}</th>
+                <th scope="col">{{ i18n.t('urlp.col.value') }}</th>
+                <th scope="col"><span class="visually-hidden">{{ i18n.t('urlp.col.actions') }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of params(); track p.id; let i = $index) {
+                <tr [class.is-tracking]="isTracking(p.key)">
+                  <td>
+                    <input type="text" class="mono" autocomplete="off" spellcheck="false" [attr.aria-label]="i18n.t('urlp.row.key', { n: i + 1 })" [value]="p.key" (input)="setKey(i, $any($event.target).value)" />
+                    @if (isTracking(p.key)) {
+                      <span class="badge">{{ i18n.t('urlp.tracking') }}</span>
+                    }
+                  </td>
+                  <td>
+                    <input type="text" class="mono" autocomplete="off" spellcheck="false" [attr.aria-label]="i18n.t('urlp.row.value', { n: i + 1 })" [value]="p.value" (input)="setValue(i, $any($event.target).value)" />
+                  </td>
+                  <td class="acts">
+                    <button type="button" class="btn small icon" [disabled]="i === 0" [attr.aria-label]="i18n.t('urlp.row.up', { n: i + 1 })" (click)="move(i, -1)"><app-icon name="up" /></button>
+                    <button type="button" class="btn small icon" [disabled]="i === params().length - 1" [attr.aria-label]="i18n.t('urlp.row.down', { n: i + 1 })" (click)="move(i, 1)"><app-icon name="down" /></button>
+                    <button type="button" class="btn small icon" [attr.aria-label]="i18n.t('urlp.row.remove', { n: i + 1 })" (click)="remove(i)"><app-icon name="trash" /></button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="hint">{{ i18n.t('urlp.query.none') }}</p>
+      }
+    </section>
+
+    <app-io-panel [label]="i18n.t('urlp.rebuilt')" inputId="urlp-output">
+      <span panel-actions><app-copy-button [text]="rebuilt()" [disabled]="!rebuilt()" /></span>
+      <textarea id="urlp-output" class="io-textarea code" readonly rows="3" spellcheck="false" data-testid="urlp-output" [value]="rebuilt()"></textarea>
+    </app-io-panel>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('urlp.info.heuristic.title') }}</h2>
+      <p>{{ i18n.t('urlp.info.heuristic.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('urlp.info.tracking.title') }}</h2>
+      <p>{{ i18n.t('urlp.info.tracking.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('urlp.info.priv.title') }}</h2>
+      <p>{{ i18n.t('urlp.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

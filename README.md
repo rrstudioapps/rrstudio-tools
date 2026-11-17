@@ -109,9 +109,11 @@ Encode, decode and compute.
 | [**chmod calculator**](https://tools.rr-dev.eu/chmod-calculator) | Tick r/w/x for owner, group and others plus setuid, setgid and sticky; octal (3 or 4 digits), symbolic (`rwxr-xr-x`, with s/S/t/T) and the `chmod` command stay in sync. Apply expressions such as `u+x,go-w` to the current permissions, and pick common presets (644, 755, 600…) with an explanation. |
 | [**.htpasswd generator**](https://tools.rr-dev.eu/htpasswd-generator) | `.htpasswd` lines for several users with bcrypt (`$2y$`, chosen cost, computed in a Web Worker), APR1-MD5 or `{SHA}` (the last two flagged as weak), plus a checker that tests a password against an existing line. |
 | [**Certificate decoder**](https://tools.rr-dev.eu/certificate-decoder) | Paste PEM or load a PEM/DER/CRT/CSR file: X.509 certificates (also chains) and PKCS#10 requests with subject, issuer, validity and days to expiry, SANs, key usage, extended key usage, basic constraints, key algorithm and size, serial, SHA-1/SHA-256 fingerprints, SKI/AKI. |
+| [**cURL converter**](https://tools.rr-dev.eu/curl-converter) | Paste a curl command (also Chrome/Firefox "Copy as cURL", multi-line with `\` or `^`) and get JavaScript fetch, axios, Node.js fetch, Python requests, PHP curl or Go net/http code. Hand-written shell parser; warns about options that do not translate. Nothing is run and no request is sent. |
 | [**Meta tag preview**](https://tools.rr-dev.eu/meta-tag-preview) | Paste a page's HTML (or just the `<head>`) or fill in the fields: title, description, canonical, Open Graph, Twitter Card, favicon, robots and hreflang are extracted and shown as generic previews (Google result, Facebook/LinkedIn card, X, WhatsApp/Telegram). Checks for lengths, missing or duplicate tags and relative URLs, plus a generated HTML snippet. No network requests. |
 | [**Sign a PDF**](https://tools.rr-dev.eu/pdf-sign) | Sign a PDF in the browser: draw (mouse, touch, pen), type or upload your signature (optional white-background removal), place and resize it by dragging or with the keyboard on several pages, add a date, download the signed PDF. A graphic signature, not a digital or qualified one. |
 | [**Crop images**](https://tools.rr-dev.eu/image-crop) | Crop with draggable handles or keyboard (free, 1:1, 4:3, 3:2, 16:9, 9:16, 4:5, 35×45 mm ID photo), rotate by 90° or any angle, flip, resize, respect EXIF orientation, export PNG/JPEG/WebP with quality. Metadata is not copied. |
+| [**Image format converter**](https://tools.rr-dev.eu/image-converter) | Convert several images to PNG, JPG, WebP or AVIF (formats the browser cannot encode are disabled), with quality, optional resize by width, height or percentage, background color for transparency in JPG, EXIF orientation respected, single or ZIP download. Options can be shared in a link, never the images. |
 
 ### Web & design
 
@@ -120,7 +122,9 @@ Colors, CSS, SVG and icons.
 | Tool | What it does |
 |---|---|
 | [**Slug generator**](https://tools.rr-dev.eu/slug-generator) | URL slugs from text: accents and extended Latin transliterated, separator, maximum length without splitting words, Italian/English stop words and bulk mode (one slug per line, unique duplicates). |
+| [**URL parser**](https://tools.rr-dev.eu/url-parser) | Split a URL into protocol, user, host, subdomain/domain, port, path segments, query and fragment, with percent-encoding and punycode decoded. Editable query-parameter table (add, remove, reorder) that rebuilds the URL live, tracking parameters highlighted with a one-click removal. |
 | [**Color contrast checker (WCAG)**](https://tools.rr-dev.eu/color-contrast-checker) | Two colors (picker or HEX, rgb(), hsl(), oklch(), CSS names, with alpha), WCAG 2.x contrast ratio with AA/AAA for normal text, large text and graphical objects, preview, swap, copyable HEX/RGB/HSL/OKLCH and the closest color (lightness in OKLCH) that reaches AA and AAA. |
+| [**Color converter**](https://tools.rr-dev.eu/color-converter) | Type a color as HEX (3/4/6/8), rgb(), hsl(), hwb(), oklch(), oklab() or a CSS name, or use the picker, and copy HEX, RGB, HSL, HWB, OKLCH, OKLAB and an indicative CMYK. sRGB↔OKLab/OKLCH implemented by hand (Ottosson), out-of-gamut OKLCH flagged and mapped by reducing chroma. 50-950 shade scale in OKLCH, complementary, analogous and triadic colors, CSS variables and JSON export, link to the contrast checker. |
 | [**CSS unit converter**](https://tools.rr-dev.eu/css-unit-converter) | px, rem, em, pt, pc, %, vw, vh, cm, mm and inches with your own root and parent font size and viewport; a quick px-to-rem table and bulk conversion of a pasted stylesheet (comments, strings, `url()` and `@media` left alone). |
 | [**CSS generator**](https://tools.rr-dev.eu/css-generator) | Linear, radial and conic gradients (draggable or numeric color stops with opacity, angle, center, repeating) and multi-layer `box-shadow` (inset, offset, blur, spread, color with alpha), with a live preview and copyable CSS. |
 | [**SVG optimizer**](https://tools.rr-dev.eu/svg-optimizer) | Shrink SVGs with SVGO (safe default preset): precision, viewBox kept by default, metadata and comments, before/after sizes, side-by-side preview as an image (SVG is never injected into the page), many files at once with a ZIP download. |
@@ -151,6 +155,7 @@ Codice fiscale, IBAN, VAT number and electronic invoices.
 | [**Working days calculator (in Italian)**](https://tools.rr-dev.eu/calcolo-giorni-lavorativi) | Working days between two dates (calendar days, weekends, holidays on weekdays listed) or a deadline by adding/subtracting working days. Italian national holidays with Easter (Gauss/Meeus algorithm), optional patron saint of a regional capital and one custom date. Indicative. |
 | [**Withholding tax calculator (in Italian)**](https://tools.rr-dev.eu/calcolo-ritenuta-acconto) | Gross to net and net to gross for an occasional service or a freelancer fee: editable withholding rate (20%), optional 4% INPS surcharge, pension fund with its own percentage, optional VAT and the 2 € stamp duty above 77.47 € (charged to the client or not), with a copyable line-by-line statement. Integer-cent arithmetic. |
 | [**Mortgage payment calculator (in Italian)**](https://tools.rr-dev.eu/calcolo-rata-mutuo) | Payment, total interest and a full French amortization schedule from principal, nominal rate (TAN) and term in years and months; monthly, quarterly or half-yearly payments, TAN 0% supported, paginated table and CSV export. |
+| [**Compound interest calculator**](https://tools.rr-dev.eu/compound-interest) | Initial amount, monthly or yearly deposits (start or end of period), nominal rate, compounding from annual to daily, term, optional inflation (real value) and an optional free tax-on-returns field. Final balance, total paid in, interest, year-by-year table and a hand-drawn SVG chart. |
 | [**Numbers in words (in Italian)**](https://tools.rr-dev.eu/numeri-in-lettere) | Writes a number (decimals, negatives, up to 999 billion) in correct Italian: ventuno, centottanta, ventitré, milleuno, un milione. Cheque mode gives the cents as digits (`milleduecentotrentaquattro/56`), with an optional "euro". |
 
 More tools are coming, with the same rule: nothing leaves your browser.
@@ -498,6 +503,28 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Route `/meta-tag-preview` (also `/en/meta-tag-preview`). The pasted HTML is parsed with `DOMParser`: the resulting document has no browsing context, so no script runs and no image, stylesheet or link is loaded (the e2e test pastes HTML full of external URLs and fails on any network request). Remote `og:image` URLs are never downloaded: the previews show a placeholder with the URL, and a local image can be loaded just for the preview.
 - Previews are generic and approximate (Google result desktop/phone, Facebook/LinkedIn, X summary and large card, WhatsApp/Telegram) and use the same fallbacks the services use (`og:title` → `title`, `twitter:*` → `og:*`). Checks: recommended lengths, missing title/description/`og:image`/canonical, relative or `http://` image URLs, invalid `twitter:card`, `noindex`, duplicate tags, invalid hreflang and missing `x-default`. The snippet generator escapes attribute values and round-trips through the parser (tested). The share link keeps the fields, not the pasted HTML.
 
+### cURL converter
+
+![cURL converter](docs/screenshots/curl-converter.png)
+
+- Route `/curl-converter` (also `/en/curl-converter`). The command is parsed by hand (no library): POSIX quoting, `$'...'`, `\` and `^` line continuations (Chrome's "Copy as cURL (cmd)"), grouped short options (`-sSL`), and the common options (`-X`, `-H`, `-d`/`--data-raw`/`--data-binary`/`--data-urlencode`, `--json`, `-F`, `-u`, `-b`, `-A`, `-e`, `-L`, `-k`, `-G`, `--compressed`). Nothing is executed and no variable or command is expanded.
+- Unknown or untranslatable options are reported, as are language limits (for example `-k` in browser `fetch`, forbidden headers such as `Cookie`, a body on a GET). Like curl, redirects are not followed without `-L`, and the generated code says so explicitly.
+- The share link contains the whole command (it can include tokens), and the tool says so next to the button.
+
+### URL parser
+
+![URL parser](docs/screenshots/url-parser.png)
+
+- Route `/url-parser` (also `/en/url-parser`). Uses the browser `URL` API; punycode names are decoded with a small decoder. The subdomain/domain split is a declared heuristic (last label, or the last two for `co.uk`-like cases): there is no Public Suffix List.
+- The query table keeps the original encoding of untouched rows and re-encodes only the ones you edit. Tracking parameters (`utm_*`, `fbclid`, `gclid`, `msclkid`, `mc_cid`, `_ga` and similar) are recognised by name.
+
+### Compound interest calculator
+
+![Compound interest calculator](docs/screenshots/compound-interest.png)
+
+- Route `/compound-interest` (also `/en/compound-interest`). The nominal rate and the compounding give the effective annual rate and the simulation runs month by month, so with monthly compounding it matches the textbook closed formulas (the unit tests check them). No tax rules are built in: the optional tax field has no default and is applied once to the interest at the end.
+- The chart is a hand-written SVG (stacked bars of paid-in and interest); the year-by-year table has the same data.
+
 ### Sign a PDF
 
 ![Sign a PDF](docs/screenshots/pdf-sign.png)
@@ -757,6 +784,10 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   [JSONPath, JSON → TypeScript e JSON Schema](https://tools.rr-dev.eu/json-query),
   [Anteprima meta tag e Open Graph](https://tools.rr-dev.eu/meta-tag-preview), [Firma PDF](https://tools.rr-dev.eu/pdf-sign) (firma grafica),
   [Ritaglia e ruota immagini](https://tools.rr-dev.eu/image-crop),
+  [Convertitore cURL](https://tools.rr-dev.eu/curl-converter), [Analizzatore URL](https://tools.rr-dev.eu/url-parser),
+  [Calcolo interesse composto](https://tools.rr-dev.eu/compound-interest),
+  [Convertitore formato immagini](https://tools.rr-dev.eu/image-converter) (PNG, JPG, WebP, AVIF),
+  [Convertitore colori](https://tools.rr-dev.eu/color-converter) (HEX, RGB, HSL, HWB, OKLCH, OKLAB, palette),
   [Convertitore CSV, JSON ed Excel](https://tools.rr-dev.eu/csv-json-converter), tutti con
   elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, afterNextRender, computed, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { safeFileName, saveBytes } from '../../shared/download';
 import { FileDrop } from '../../shared/file-drop';
@@ -13,6 +13,8 @@ import { Group, Gps, Sensitive, buildGroups, formatAccuracy, formatCoords, osmUr
 import { PhotoMeta, countFields, readMetadata } from './exif-parser';
 import { rotatePixels } from './exif-rotate';
 import { EXIF_DICTIONARIES } from './exif-viewer.i18n';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 const MAX_FILES = 30;
 const MAX_BYTES = 50 * 1024 * 1024;
@@ -42,7 +44,7 @@ interface Photo {
 
 @Component({
   selector: 'app-exif-viewer',
-  imports: [Icon, PrivacyNote, FileDrop],
+  imports: [Icon, PrivacyNote, FileDrop, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './exif-viewer.page.html',
   styleUrl: './exif-viewer.page.scss',
@@ -67,6 +69,9 @@ export class ExifViewerPage {
 
   constructor() {
     this.i18n.register(EXIF_DICTIONARIES);
+    // immagini ricevute da un altro strumento: stessa strada del file-drop
+    const rx = inject(ToolHandoff).take('exif-viewer');
+    if (rx?.files?.length) afterNextRender(() => void this.onFiles(rx.files!));
     inject(DestroyRef).onDestroy(() => this.release());
   }
 
@@ -217,6 +222,12 @@ export class ExifViewerPage {
   private mime(p: Photo): string {
     return `image/${p.meta.format}`;
   }
+
+  /** Le foto ripulite come file, per "Invia a…". */
+  protected readonly cleanedFiles = (): File[] =>
+    this.photos()
+      .filter((p) => p.cleaned)
+      .map((p) => new File([p.cleaned!.bytes as BlobPart], this.cleanName(p), { type: this.mime(p) }));
 
   protected download(p: Photo): void {
     if (p.cleaned) saveBytes(p.cleaned.bytes, this.cleanName(p), this.mime(p));

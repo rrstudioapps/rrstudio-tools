@@ -1,0 +1,194 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.ci.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ci.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="compound-interest" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <p class="disclaimer" role="note">{{ i18n.t('ci.disclaimer') }}</p>
+
+  <div class="ci-layout">
+    <div class="controls">
+      <div class="row2">
+        <div class="field">
+          <label for="ci-principal">{{ i18n.t('ci.principal') }}</label>
+          <input id="ci-principal" type="text" inputmode="decimal" autocomplete="off" placeholder="10.000" [value]="principalText()" [attr.aria-invalid]="fieldError('amount')" (input)="principalText.set($any($event.target).value)" />
+        </div>
+        <div class="field">
+          <label for="ci-contribution">{{ i18n.t('ci.contribution') }}</label>
+          <input id="ci-contribution" type="text" inputmode="decimal" autocomplete="off" placeholder="200" [value]="contributionText()" [attr.aria-invalid]="fieldError('amount')" (input)="contributionText.set($any($event.target).value)" />
+        </div>
+      </div>
+      @if (fieldError('amount')) {
+        <p class="tool-error">{{ i18n.t(amountErrorKey()) }}</p>
+      }
+      <div class="field">
+        <span class="label">{{ i18n.t('ci.frequency') }}</span>
+        <app-segmented [label]="i18n.t('ci.frequency')" [options]="frequencies()" [(value)]="frequency" />
+      </div>
+      <div class="field">
+        <span class="label">{{ i18n.t('ci.timing') }}</span>
+        <app-segmented [label]="i18n.t('ci.timing')" [options]="timings()" [(value)]="timing" />
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="ci-rate">{{ i18n.t('ci.rate') }}</label>
+          <input id="ci-rate" type="text" inputmode="decimal" autocomplete="off" placeholder="5" [value]="rateText()" [attr.aria-invalid]="fieldError('rate')" (input)="rateText.set($any($event.target).value)" />
+          @if (fieldError('rate')) {
+            <p class="tool-error">{{ i18n.t('ci.err.rate') }}</p>
+          }
+        </div>
+        <div class="field">
+          <label for="ci-years">{{ i18n.t('ci.years') }}</label>
+          <input id="ci-years" type="text" inputmode="numeric" autocomplete="off" [value]="yearsText()" [attr.aria-invalid]="fieldError('years')" (input)="yearsText.set($any($event.target).value)" />
+          @if (fieldError('years')) {
+            <p class="tool-error">{{ i18n.t('ci.err.years') }}</p>
+          }
+        </div>
+      </div>
+      <div class="field">
+        <label for="ci-compounding">{{ i18n.t('ci.compounding') }}</label>
+        <select id="ci-compounding" [value]="compounding()" (change)="onCompounding($any($event.target).value)">
+          @for (c of compoundings; track c) {
+            <option [value]="c" [selected]="c === compounding()">{{ i18n.t('ci.comp.' + c) }}</option>
+          }
+        </select>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="ci-inflation">{{ i18n.t('ci.inflation') }}</label>
+          <input id="ci-inflation" type="text" inputmode="decimal" autocomplete="off" placeholder="2" [value]="inflationText()" [attr.aria-invalid]="fieldError('inflation')" (input)="inflationText.set($any($event.target).value)" />
+          @if (fieldError('inflation')) {
+            <p class="tool-error">{{ i18n.t('ci.err.inflation') }}</p>
+          }
+        </div>
+        <div class="field">
+          <label for="ci-tax">{{ i18n.t('ci.tax') }}</label>
+          <input id="ci-tax" type="text" inputmode="decimal" autocomplete="off" [value]="taxText()" [attr.aria-invalid]="fieldError('tax')" (input)="taxText.set($any($event.target).value)" />
+          @if (fieldError('tax')) {
+            <p class="tool-error">{{ i18n.t('ci.err.tax') }}</p>
+          }
+        </div>
+      </div>
+      <p class="hint">{{ i18n.t('ci.tax.hint') }}</p>
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('ci.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('ci.result') }}</h2>
+      @if (result(); as r) {
+        <div class="headline">
+          <span class="hl-label">{{ i18n.t('ci.final') }}</span>
+          <span class="hl-value" data-testid="ci-final">{{ money(r.final) }} €</span>
+        </div>
+        <dl class="stats" data-testid="ci-stats">
+          <div>
+            <dt>{{ i18n.t('ci.deposited') }}</dt>
+            <dd data-testid="ci-deposited">{{ money(r.deposited) }} €</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('ci.interest') }}</dt>
+            <dd data-testid="ci-interest">{{ money(r.interest) }} €</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('ci.real') }}</dt>
+            <dd data-testid="ci-real">{{ money(r.real) }} €</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('ci.effective') }}</dt>
+            <dd>{{ rate(r.effectiveRatePct) }}</dd>
+          </div>
+          @if (hasTax()) {
+            <div>
+              <dt>{{ i18n.t('ci.tax.amount') }}</dt>
+              <dd>{{ money(r.tax) }} €</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('ci.netFinal') }}</dt>
+              <dd data-testid="ci-net">{{ money(r.netFinal) }} €</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('ci.netInterest') }}</dt>
+              <dd>{{ money(r.netInterest) }} €</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('ci.netReal') }}</dt>
+              <dd>{{ money(r.netReal) }} €</dd>
+            </div>
+          }
+        </dl>
+      } @else {
+        <p class="empty">{{ i18n.t('ci.empty') }}</p>
+      }
+    </section>
+  </div>
+
+  @if (result(); as r) {
+    <section class="chart" [attr.aria-label]="i18n.t('ci.chart')">
+      <h2 class="eyebrow">{{ i18n.t('ci.chart') }}</h2>
+      <svg [attr.viewBox]="'0 0 ' + vbW + ' ' + vbH" role="img" [attr.aria-label]="i18n.t('ci.chart.alt')" data-testid="ci-chart">
+        <g [attr.transform]="'translate(' + plotX + ',' + plotY + ')'">
+          @for (b of bars(); track b.year) {
+            <rect class="bar-dep" [attr.x]="b.x" [attr.y]="b.depositedY" [attr.width]="b.width" [attr.height]="b.depositedH" />
+            <rect class="bar-int" [attr.x]="b.x" [attr.y]="b.interestY" [attr.width]="b.width" [attr.height]="b.interestH" />
+          }
+          <line class="axis" x1="0" [attr.y1]="plotH" [attr.x2]="plotW" [attr.y2]="plotH" />
+        </g>
+        <text class="tick" [attr.x]="plotX - 6" [attr.y]="plotY + 10" text-anchor="end">{{ yMax() }}</text>
+        <text class="tick" [attr.x]="plotX - 6" [attr.y]="plotY + plotH" text-anchor="end">0</text>
+        <text class="tick" [attr.x]="plotX" [attr.y]="plotY + plotH + 18" text-anchor="start">1</text>
+        <text class="tick" [attr.x]="plotX + plotW" [attr.y]="plotY + plotH + 18" text-anchor="end">{{ r.rows.length }}</text>
+      </svg>
+      <p class="legend">
+        <span class="sw dep" aria-hidden="true"></span>{{ i18n.t('ci.legend.deposited') }}
+        <span class="sw int" aria-hidden="true"></span>{{ i18n.t('ci.legend.interest') }}
+      </p>
+    </section>
+
+    <section class="plan" [attr.aria-label]="i18n.t('ci.table')">
+      <h2 class="eyebrow">{{ i18n.t('ci.table') }}</h2>
+      <div class="table-wrap">
+        <table class="plan-table" data-testid="ci-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('ci.col.year') }}</th>
+              <th scope="col">{{ i18n.t('ci.col.deposited') }}</th>
+              <th scope="col">{{ i18n.t('ci.col.interest') }}</th>
+              <th scope="col">{{ i18n.t('ci.col.balance') }}</th>
+              <th scope="col">{{ i18n.t('ci.col.real') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of r.rows; track row.year) {
+              <tr>
+                <td>{{ row.year }}</td>
+                <td>{{ money(row.deposited) }}</td>
+                <td>{{ money(row.interest) }}</td>
+                <td>{{ money(row.balance) }}</td>
+                <td>{{ money(row.real) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ci.info.model.title') }}</h2>
+      <p>{{ i18n.t('ci.info.model.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ci.info.real.title') }}</h2>
+      <p>{{ i18n.t('ci.info.real.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ci.info.priv.title') }}</h2>
+      <p>{{ i18n.t('ci.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

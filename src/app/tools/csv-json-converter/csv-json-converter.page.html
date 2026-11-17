@@ -47,6 +47,7 @@
         <span panel-actions>
           @if (target() !== 'xlsx') {
             <app-copy-button [text]="outText()" [disabled]="outText() === ''" />
+            <app-send-to from="csv-json-converter" [kind]="target() === 'csv' ? 'csv' : 'json'" [text]="outText()" [disabled]="outText() === ''" />
           }
           <button type="button" class="btn small" data-testid="cj-download" [disabled]="!canDownload()" (click)="download()">
             <app-icon name="download" /> {{ i18n.t('cj.download', { ext: ext() }) }}

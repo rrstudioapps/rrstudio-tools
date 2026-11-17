@@ -24,6 +24,8 @@ import {
 } from './convert';
 import { Delimiter, Workbook, decodeText, parseCsv, readWorkbook, unparseCsv, writeXlsx } from './convert-io';
 import { CJ_DICTIONARIES } from './csv-json-converter.i18n';
+import { SendTo } from '../../shared/send-to';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type InputKind = 'auto' | 'csv' | 'json';
 type Target = 'csv' | 'json' | 'xlsx';
@@ -47,7 +49,7 @@ const EMPTY: Converted = { table: null, text: '', delimiter: ',', error: null };
 
 @Component({
   selector: 'app-csv-json-converter',
-  imports: [Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop],
+  imports: [Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './csv-json-converter.page.html',
   styleUrl: './csv-json-converter.page.scss',
@@ -146,6 +148,8 @@ export class CsvJsonConverterPage {
 
   constructor() {
     this.i18n.register(CJ_DICTIONARIES);
+    const rx = inject(ToolHandoff).take('csv-json-converter');
+    if (rx?.text !== undefined) this.input.set(rx.text);
     // conversione a ogni cambio di ingresso o di opzione; le risposte superate vengono scartate
     effect((onCleanup) => {
       const snapshot = {

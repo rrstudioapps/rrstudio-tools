@@ -120,6 +120,10 @@ export const it = {
   'common.output': 'Output',
   'common.copy': 'Copia',
   'common.copied': 'Copiato',
+  'send.btn': 'Invia a…',
+  'send.label': 'Invia a… un altro strumento',
+  'send.menu': 'Strumenti a cui inviare il risultato',
+  'send.received': 'Ricevuto da {tool}',
   'common.clear': 'Cancella',
   'common.swap': 'Inverti',
   'common.chooseFile': 'Scegli un file',
@@ -335,6 +339,19 @@ export const it = {
   'seo.jq.title': 'JSONPath online, JSON in TypeScript e JSON Schema | rrstudio Tools',
   'seo.jq.desc':
     'Prova espressioni JSONPath su un JSON con filtri, slice e percorsi dei risultati, e genera interfacce TypeScript o uno JSON Schema (draft 2020-12). Tutto nel browser.',
+
+  'tool.icv.title': 'Convertitore formato immagini',
+  'tool.icv.desc':
+    'Converti immagini in PNG, JPG, WebP o AVIF nel browser, con qualità e ridimensionamento a scelta. Più file insieme, download singolo o in ZIP.',
+  'seo.icv.title': 'Convertitore di immagini online: PNG, JPG, WebP, AVIF | rrstudio Tools',
+  'seo.icv.desc':
+    'Converti più immagini in PNG, JPG, WebP o AVIF, regola la qualità, ridimensiona mantenendo le proporzioni e scarica tutto in ZIP. Nel browser, senza caricare nulla e senza EXIF.',
+  'tool.colc.title': 'Convertitore colori',
+  'tool.colc.desc':
+    'Converti un colore tra HEX, RGB, HSL, HWB, OKLCH, OKLAB e CMYK, genera la scala di tinte 50-950 e le armonie, ed esporta variabili CSS e JSON.',
+  'seo.colc.title': 'Convertitore colori online: HEX, RGB, HSL, OKLCH e palette | rrstudio Tools',
+  'seo.colc.desc':
+    'Converti colori tra HEX, RGB, HSL, HWB, OKLCH, OKLAB e CMYK, con gamut sRGB indicato. Scala di tinte 50-950, complementari, analoghi e triadici, esportabili come variabili CSS o JSON.',
 
   'tool.yj.title': 'Convertitore YAML, JSON e TOML',
   'tool.yj.desc':
@@ -652,6 +669,19 @@ export const it = {
   'fav.cleared': 'Preferiti e menu cancellati.',
   'seo.favorites.title': 'Preferiti e menu personalizzati | rrstudio Tools',
   'seo.favorites.desc': 'I tuoi strumenti preferiti e i menu personalizzati, salvati solo in questo browser.',
+
+  'tool.curl.title': 'Convertitore cURL',
+  'tool.curl.desc': 'Trasforma un comando curl, anche copiato da Chrome o Firefox, in codice JavaScript, Python, PHP o Go, con avvisi su ciò che non si traduce.',
+  'seo.curl.title': 'Convertitore cURL in fetch, axios, Python, PHP e Go online | rrstudio Tools',
+  'seo.curl.desc': 'Incolla un comando curl (anche "Copia come cURL" di Chrome e Firefox) e ottieni il codice per fetch, axios, Node.js, Python requests, PHP e Go. Intestazioni, JSON, moduli, autenticazione. Tutto nel browser, senza eseguire nulla.',
+  'tool.urlp.title': 'Analizzatore URL',
+  'tool.urlp.desc': 'Scomponi un URL in protocollo, host, dominio, porta, percorso, parametri e frammento; modifica i parametri e togli quelli di tracciamento.',
+  'seo.urlp.title': 'Analizzatore URL online: parametri, dominio e tracciamento | rrstudio Tools',
+  'seo.urlp.desc': 'Analizza un URL: protocollo, utente, host, sottodominio, porta, percorso, query e frammento, con percent-encoding e punycode decodificati. Tabella dei parametri modificabile e rimozione di utm_*, fbclid e gclid.',
+  'tool.ci.title': 'Calcolo interesse composto',
+  'tool.ci.desc': 'Calcola il montante di un capitale con interesse composto e versamenti periodici: interessi, valore reale con l\'inflazione, tabella anno per anno e grafico.',
+  'seo.ci.title': 'Calcolo interesse composto con versamenti periodici online | rrstudio Tools',
+  'seo.ci.desc': 'Calcola l\'interesse composto: capitale iniziale, versamenti mensili o annuali, tasso, capitalizzazione e durata. Montante, totale versato, interessi, valore reale con inflazione, tabella e grafico.',
 };
 
 export type Dict = typeof it;
