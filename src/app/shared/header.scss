@@ -4,6 +4,7 @@
   display: block;
 }
 .bar {
+  position: relative; // àncora del pannello dei preferiti su schermi stretti
   border-bottom: 1px solid var(--line);
 }
 .bar-inner {
@@ -106,5 +107,15 @@
   }
   .brand {
     margin-right: auto;
+    min-width: 0;
+  }
+  .name {
+    white-space: nowrap;
+  }
+  .actions {
+    gap: var(--space-2);
+  }
+  .lang-btn {
+    padding-inline: 9px;
   }
 }

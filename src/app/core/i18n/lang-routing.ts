@@ -15,6 +15,14 @@ export const EN_PREFIX = 'en';
 /** Pagine informative statiche (non sono strumenti): esistono in entrambe le lingue, senza voce nel registry. */
 export const STATIC_PAGES: readonly string[] = ['privacy'];
 
+/**
+ * Pagina personale dei preferiti: slug diverso per lingua (/preferiti, /en/favorites), noindex,
+ * fuori da sitemap, hreflang e immagini social.
+ */
+export const FAVORITES_SLUG: Record<Lang, string> = { it: 'preferiti', en: 'favorites' };
+
+export const isFavoritesSlug = (slug: string): boolean => slug === FAVORITES_SLUG.it || slug === FAVORITES_SLUG.en;
+
 export interface Alternate {
   hreflang: string;
   href: string;
@@ -64,6 +72,7 @@ export function hasOgImage(slug: string, lang: Lang): boolean {
 /** Percorso della stessa pagina nell'altra lingua, o null se non esiste (strumento solo italiano). */
 export function alternatePath(path: string, target: Lang): string | null {
   const slug = slugFromPath(path);
+  if (isFavoritesSlug(slug)) return routePath(FAVORITES_SLUG[target], target);
   return hasLang(slug, target) ? routePath(slug, target) : null;
 }
 

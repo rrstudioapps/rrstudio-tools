@@ -1,0 +1,312 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container fav-page rise">
+  <header class="intro">
+    <p class="eyebrow">{{ i18n.t('fav.menu') }}</p>
+    <h1>{{ i18n.t('fav.page.title') }}</h1>
+    <p class="lead">{{ i18n.t('fav.page.lead') }}</p>
+  </header>
+
+  <p class="visually-hidden" role="status" aria-live="polite">{{ live() }}</p>
+
+  @if (!fav.ready()) {
+    <p class="muted">{{ i18n.t('fav.loading') }}</p>
+  } @else {
+    @if (!fav.persisted()) {
+      <p class="note warn" role="alert">{{ i18n.t('fav.nostorage') }}</p>
+    }
+    @if (fav.hiddenCount() > 0) {
+      <p class="note">{{ i18n.t('fav.hidden', { n: fav.hiddenCount() }) }}</p>
+    }
+    @if (notice(); as n) {
+      <p class="note" [class.warn]="n.error" [attr.role]="n.error ? 'alert' : 'status'">{{ n.text }}</p>
+    }
+
+    @if (pending(); as p) {
+      <section class="box preview" aria-labelledby="imp-h">
+        <h2 id="imp-h" tabindex="-1">{{ i18n.t('fav.import.title') }}</h2>
+        <p>{{ p.source === 'link' ? i18n.t('fav.import.from.link') : i18n.t('fav.import.from.file', { name: p.name }) }}</p>
+        <dl class="sum">
+          <dt>{{ i18n.t('fav.import.favs', { n: p.state.favorites.length }) }}</dt>
+          <dd>{{ p.state.favorites.length ? previewTitles(p.state.favorites) : i18n.t('fav.import.none') }}</dd>
+          <dt>{{ i18n.t('fav.import.groups', { n: p.state.groups.length }) }}</dt>
+          <dd>
+            @if (p.state.groups.length) {
+              @for (g of p.state.groups; track g.id; let last = $last) {
+                <span class="gname">{{ g.name }}</span> ({{ g.tools.length }}){{ last ? '' : ', ' }}
+              }
+            } @else {
+              {{ i18n.t('fav.import.none') }}
+            }
+          </dd>
+        </dl>
+        @if (p.unknown > 0) {
+          <p class="note">{{ i18n.t('fav.import.dropped', { n: p.unknown }) }}</p>
+        }
+        @if (p.trimmed > 0) {
+          <p class="note">{{ i18n.t('fav.import.trimmed') }}</p>
+        }
+        <fieldset class="mode">
+          <legend>{{ i18n.t('fav.import.mode') }}</legend>
+          <label>
+            <input type="radio" name="imp-mode" value="merge" [checked]="importMode() === 'merge'" (change)="importMode.set('merge')" />
+            {{ i18n.t('fav.import.merge') }}
+          </label>
+          <label>
+            <input type="radio" name="imp-mode" value="replace" [checked]="importMode() === 'replace'" (change)="importMode.set('replace')" />
+            {{ i18n.t('fav.import.replace') }}
+          </label>
+        </fieldset>
+        <div class="row-btns">
+          <button type="button" class="btn primary" (click)="confirmImport()">{{ i18n.t('fav.import.go') }}</button>
+          <button type="button" class="btn" (click)="cancelImport()">{{ i18n.t('fav.cancel') }}</button>
+        </div>
+      </section>
+    }
+
+    <!-- Preferiti -->
+    <section class="sec" aria-labelledby="fav-list-h">
+      <div class="sec-head">
+        <h2 id="fav-list-h">{{ i18n.t('fav.list.title') }} <span class="count">{{ fav.favoriteTools().length }}</span></h2>
+        <button
+          type="button"
+          class="btn small"
+          id="pkb-fav"
+          [attr.aria-expanded]="pickerFor() === FAV"
+          aria-controls="pk-panel-fav"
+          (click)="togglePicker(FAV)"
+        >
+          <app-icon name="plus" /> {{ i18n.t('fav.add.tools') }}
+        </button>
+      </div>
+      <ng-container [ngTemplateOutlet]="picker" [ngTemplateOutletContext]="{ key: FAV }" />
+      @if (fav.favoriteTools().length) {
+        <ng-container [ngTemplateOutlet]="rows" [ngTemplateOutletContext]="{ $implicit: fav.favoriteTools(), key: FAV, label: i18n.t('fav.list.title') }" />
+      } @else {
+        <p class="muted">{{ i18n.t('fav.list.empty') }}</p>
+      }
+    </section>
+
+    <!-- Menu personalizzati -->
+    <section class="sec" aria-labelledby="fav-groups-h">
+      <div class="sec-head">
+        <h2 id="fav-groups-h">{{ i18n.t('fav.groups.title') }} <span class="count">{{ fav.groups().length }}</span></h2>
+      </div>
+      <form class="new" (submit)="$event.preventDefault(); createGroup(newName)">
+        <label class="visually-hidden" for="new-group">{{ i18n.t('fav.group.new.label') }}</label>
+        <input
+          #newName
+          id="new-group"
+          type="text"
+          autocomplete="off"
+          [attr.maxlength]="maxName"
+          [placeholder]="i18n.t('fav.group.new.ph')"
+          [disabled]="atGroupLimit()"
+        />
+        <button type="submit" class="btn" [disabled]="atGroupLimit()"><app-icon name="plus" /> {{ i18n.t('fav.group.create') }}</button>
+      </form>
+      @if (atGroupLimit()) {
+        <p class="note">{{ i18n.t('fav.group.limit', { max: maxGroups }) }}</p>
+      }
+      @if (!fav.groups().length) {
+        <p class="muted">{{ i18n.t('fav.groups.empty') }}</p>
+      }
+      @for (g of fav.groups(); track g.id; let gi = $index; let gl = $last) {
+        <article class="group" [attr.aria-labelledby]="'gh-' + g.id">
+          <div class="group-head">
+            @if (renaming() === g.id) {
+              <form class="rename" (submit)="$event.preventDefault(); saveRename(g.id, rn)">
+                <label class="visually-hidden" [for]="'rn-' + g.id">{{ i18n.t('fav.group.rename.label', { name: g.name }) }}</label>
+                <input
+                  #rn
+                  [id]="'rn-' + g.id"
+                  type="text"
+                  autocomplete="off"
+                  [attr.maxlength]="maxName"
+                  [value]="g.name"
+                  (keydown.escape)="$event.stopPropagation(); cancelRename(g.id)"
+                />
+                <button type="submit" class="btn small">{{ i18n.t('fav.group.save') }}</button>
+                <button type="button" class="btn small" (click)="cancelRename(g.id)">{{ i18n.t('fav.cancel') }}</button>
+              </form>
+            } @else {
+              <h3 [id]="'gh-' + g.id">{{ g.name }} <span class="count">{{ g.tools.length }}</span></h3>
+            }
+            <div class="group-actions">
+              <button
+                type="button"
+                class="ib"
+                [attr.aria-disabled]="gi === 0"
+                [attr.aria-label]="i18n.t('fav.group.up', { name: g.name })"
+                [attr.title]="i18n.t('fav.group.up', { name: g.name })"
+                (click)="moveGroup(gi, -1)"
+              >
+                <app-icon name="up" />
+              </button>
+              <button
+                type="button"
+                class="ib"
+                [attr.aria-disabled]="gl"
+                [attr.aria-label]="i18n.t('fav.group.down', { name: g.name })"
+                [attr.title]="i18n.t('fav.group.down', { name: g.name })"
+                (click)="moveGroup(gi, 1)"
+              >
+                <app-icon name="down" />
+              </button>
+              <button type="button" class="btn small" [id]="'rnb-' + g.id" (click)="startRename(g.id)">{{ i18n.t('fav.group.rename') }}</button>
+              <button
+                type="button"
+                class="btn small"
+                [id]="'pkb-' + g.id"
+                [attr.aria-expanded]="pickerFor() === g.id"
+                [attr.aria-controls]="'pk-panel-' + g.id"
+                (click)="togglePicker(g.id)"
+              >
+                <app-icon name="plus" /> {{ i18n.t('fav.add.tools') }}
+              </button>
+              @if (confirmDelete() === g.id) {
+                <span class="confirm" role="group" [attr.aria-label]="i18n.t('fav.confirm.delete', { name: g.name })">
+                  {{ i18n.t('fav.confirm.delete', { name: g.name }) }}
+                  <button type="button" class="btn small primary" (click)="deleteGroup(g.id)">{{ i18n.t('fav.delete') }}</button>
+                  <button type="button" class="btn small" (click)="confirmDelete.set(null)">{{ i18n.t('fav.cancel') }}</button>
+                </span>
+              } @else {
+                <button type="button" class="btn small" (click)="confirmDelete.set(g.id)">
+                  <app-icon name="trash" /> {{ i18n.t('fav.group.delete') }}
+                </button>
+              }
+            </div>
+          </div>
+          <ng-container [ngTemplateOutlet]="picker" [ngTemplateOutletContext]="{ key: g.id }" />
+          @if (g.tools.length) {
+            <ng-container [ngTemplateOutlet]="rows" [ngTemplateOutletContext]="{ $implicit: g.tools, key: g.id, label: g.name }" />
+          } @else {
+            <p class="muted">{{ i18n.t('fav.empty.group') }}</p>
+          }
+        </article>
+      }
+    </section>
+
+    <!-- Esporta, importa, condividi -->
+    <section class="sec" aria-labelledby="fav-data-h">
+      <div class="sec-head"><h2 id="fav-data-h">{{ i18n.t('fav.data.title') }}</h2></div>
+      <div class="row-btns">
+        <button type="button" class="btn" [disabled]="fav.isEmpty()" (click)="exportJson()"><app-icon name="download" /> {{ i18n.t('fav.export') }}</button>
+        <button type="button" class="btn" (click)="file.click()"><app-icon name="upload" /> {{ i18n.t('fav.import') }}</button>
+        <input #file type="file" class="visually-hidden" tabindex="-1" accept=".json,application/json" aria-label="{{ i18n.t('fav.import') }}" (change)="onFile($event)" />
+        <button type="button" class="btn" (click)="makeShare()"><app-icon name="link" /> {{ i18n.t('fav.share') }}</button>
+      </div>
+      @if (shareUrl(); as url) {
+        <div class="share">
+          <label for="share-url">{{ i18n.t('fav.share.label') }}</label>
+          <div class="share-row">
+            <input id="share-url" type="text" readonly [value]="url" (focus)="$any($event.target).select()" />
+            <app-copy-button [text]="url" />
+          </div>
+        </div>
+      }
+      <p class="muted small-note">{{ i18n.t('fav.share.note') }}</p>
+    </section>
+
+    <!-- Cancella tutto -->
+    <section class="sec danger">
+      @if (confirmClear()) {
+        <p role="alert">{{ i18n.t('fav.clear.confirm') }}</p>
+        <div class="row-btns">
+          <button type="button" class="btn primary" (click)="clearAll()">{{ i18n.t('fav.clear.yes') }}</button>
+          <button type="button" class="btn" (click)="confirmClear.set(false)">{{ i18n.t('fav.cancel') }}</button>
+        </div>
+      } @else {
+        <button type="button" class="btn" [disabled]="fav.isEmpty()" (click)="confirmClear.set(true)">
+          <app-icon name="trash" /> {{ i18n.t('fav.clear') }}
+        </button>
+      }
+    </section>
+  }
+</div>
+
+<!-- Elenco riordinabile: trascinamento e pulsanti su/giù (i pulsanti restano attivabili ai bordi per non perdere il focus) -->
+<ng-template #rows let-tools let-key="key" let-label="label">
+  <ol class="rows" [attr.aria-label]="label">
+    @for (t of tools; track t.id; let i = $index; let first = $first; let last = $last) {
+      <li
+        class="row"
+        [class.dragging]="dragId() === t.id"
+        draggable="true"
+        (dragstart)="dragStart($event, key, t.id)"
+        (dragover)="dragOver($event, key)"
+        (drop)="drop($event, key, t.id)"
+        (dragend)="dragEnd()"
+      >
+        <span class="grip" aria-hidden="true" [attr.title]="i18n.t('fav.drag')">⋮⋮</span>
+        <a class="row-title" [routerLink]="i18n.link(t.path)">{{ title(t) }}</a>
+        <span class="row-actions">
+          <button
+            type="button"
+            class="ib"
+            [attr.aria-disabled]="first"
+            [attr.aria-label]="i18n.t('fav.item.up', { name: title(t) })"
+            [attr.title]="i18n.t('fav.item.up', { name: title(t) })"
+            (click)="move(key, tools, i, -1)"
+          >
+            <app-icon name="up" />
+          </button>
+          <button
+            type="button"
+            class="ib"
+            [attr.aria-disabled]="last"
+            [attr.aria-label]="i18n.t('fav.item.down', { name: title(t) })"
+            [attr.title]="i18n.t('fav.item.down', { name: title(t) })"
+            (click)="move(key, tools, i, 1)"
+          >
+            <app-icon name="down" />
+          </button>
+          <button
+            type="button"
+            class="ib"
+            [attr.aria-label]="i18n.t('fav.item.remove', { name: title(t) })"
+            [attr.title]="i18n.t('fav.item.remove', { name: title(t) })"
+            (click)="removeTool(key, t)"
+          >
+            <app-icon name="close" />
+          </button>
+        </span>
+      </li>
+    }
+  </ol>
+</ng-template>
+
+<!-- Ricerca per aggiungere strumenti a una lista -->
+<ng-template #picker let-key="key">
+  @if (pickerFor() === key) {
+    <div class="picker" [id]="'pk-panel-' + key">
+      <label class="visually-hidden" [for]="'pk-' + key">{{ i18n.t('fav.add.search') }}</label>
+      <input
+        [id]="'pk-' + key"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        [placeholder]="i18n.t('fav.add.ph')"
+        [value]="pickerQuery()"
+        (input)="onPickerInput($event)"
+        (keydown)="onPickerKey($event, key)"
+      />
+      @if (shownResults().length) {
+        <ul class="found">
+          @for (t of shownResults(); track t.id) {
+            <li>
+              <span>{{ title(t) }}</span>
+              <button type="button" class="btn small" [attr.aria-label]="i18n.t('fav.add.aria', { name: title(t) })" (click)="addTool(key, t)">
+                {{ i18n.t('fav.add.btn') }}
+              </button>
+            </li>
+          }
+        </ul>
+        @if (results().length > shownResults().length) {
+          <p class="muted small-note">{{ i18n.t('fav.add.more', { n: shownResults().length }) }}</p>
+        }
+      } @else {
+        <p class="muted small-note">{{ i18n.t('fav.add.none') }}</p>
+      }
+    </div>
+  }
+</ng-template>

@@ -3,7 +3,7 @@
   <article class="container privacy rise">
     <p class="eyebrow">Privacy</p>
     <h1>Informativa sulla privacy</h1>
-    <p class="updated">Ultimo aggiornamento: 16 novembre 2026</p>
+    <p class="updated">Ultimo aggiornamento: 17 novembre 2026</p>
 
     <h2>Titolare del trattamento</h2>
     <p>
@@ -36,12 +36,28 @@
       <li><code>rrtools.theme</code>: il tema chiaro o scuro che hai scelto;</li>
       <li><code>rrtools.hint.en</code>: la chiusura della barra «available in English»;</li>
       <li>
-        <code>rrstudio.markdown-editor.draft</code>: la bozza dell'editor Markdown, solo se lo usi.
+        <code>rrstudio.markdown-editor.draft</code>: la bozza dell'editor Markdown, solo se lo usi;
+      </li>
+      <li>
+        <code>rrtools.favorites</code>: i tuoi preferiti e i menu personalizzati, solo se li usi. Contiene soltanto
+        gli identificativi degli strumenti che hai scelto e il nome e l'ordine dei menu che hai creato, nient'altro.
       </li>
     </ul>
     <p>
-      Per cancellarli usa il pulsante «Cancella bozza» (per la bozza) oppure cancella i dati del sito dalle
-      impostazioni del browser.
+      Per cancellarli usa il pulsante «Cancella bozza» (per la bozza), il pulsante «Cancella preferiti e menu» nella
+      pagina <a [routerLink]="i18n.link('preferiti')">Preferiti</a> (per i preferiti) oppure cancella i dati del sito
+      dalle impostazioni del browser.
+    </p>
+    <p>
+      Il link di condivisione dei preferiti contiene i dati dopo il simbolo <code>#</code>: il browser non invia mai
+      questa parte dell'indirizzo al server, quindi restano sul tuo dispositivo e su quello di chi apre il link, che
+      deve confermare prima che venga importato qualcosa.
+    </p>
+    <p>
+      Il sito usa un service worker e la Cache Storage del browser solo per conservare i file del sito (pagine,
+      script, stili, font) e farlo funzionare anche offline. Nessun dato inserito negli strumenti viene salvato. Per
+      svuotare questa cache usa «Svuota la cache offline» nel pannello «Usa offline» in fondo alle pagine, oppure
+      cancella i dati del sito dalle impostazioni del browser.
     </p>
 
     <h2>Log tecnici del server</h2>
@@ -98,7 +114,7 @@
   <article class="container privacy rise">
     <p class="eyebrow">Privacy</p>
     <h1>Privacy notice</h1>
-    <p class="updated">Last updated: 16 November 2026</p>
+    <p class="updated">Last updated: 17 November 2026</p>
 
     <h2>Data controller</h2>
     <p>
@@ -130,11 +146,28 @@
       <li><code>rrtools.theme</code>: the light or dark theme you chose;</li>
       <li><code>rrtools.hint.en</code>: whether you closed the "available in English" bar;</li>
       <li>
-        <code>rrstudio.markdown-editor.draft</code>: the Markdown editor draft, only if you use it.
+        <code>rrstudio.markdown-editor.draft</code>: the Markdown editor draft, only if you use it;
+      </li>
+      <li>
+        <code>rrtools.favorites</code>: your favorites and custom menus, only if you use them. It contains only the
+        identifiers of the tools you picked and the names and order of the menus you created, nothing else.
       </li>
     </ul>
     <p>
-      To remove them use the "Clear draft" button (for the draft) or clear the site data from your browser settings.
+      To remove them use the "Clear draft" button (for the draft), the "Delete favorites and menus" button on the
+      <a [routerLink]="i18n.link('favorites')">Favorites</a> page (for favorites) or clear the site data from your
+      browser settings.
+    </p>
+    <p>
+      The favorites share link carries its data after the <code>#</code> symbol: browsers never send that part of the
+      address to the server, so the data stays on your device and on the device of whoever opens the link, who must
+      confirm before anything is imported.
+    </p>
+    <p>
+      The site uses a service worker and the browser's Cache Storage only to keep the site files (pages, scripts,
+      styles, fonts) so that it also works offline. No data entered in the tools is saved. To empty this cache use
+      "Clear the offline cache" in the "Use offline" panel at the bottom of the pages, or clear the site data from
+      your browser settings.
     </p>
 
     <h2>Technical server logs</h2>

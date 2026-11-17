@@ -116,6 +116,26 @@
     }
   }
 }
+// Card con link e stella affiancati (il pulsante sta fuori dall'<a>: niente elementi interattivi annidati)
+.card {
+  position: relative;
+}
+.card-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+  color: inherit;
+  text-decoration: none;
+  h3 {
+    padding-right: 44px; // spazio per la stella
+  }
+}
+.fav {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-3);
+}
 .num {
   font-family: var(--mono);
   font-size: var(--fs-sm);
@@ -330,6 +350,14 @@
     grid-template-columns: 1fr;
     gap: var(--space-1);
     padding-block: var(--space-3);
+    .card-link {
+      display: grid;
+      gap: var(--space-1);
+    }
+    .fav {
+      top: var(--space-2);
+      right: 0;
+    }
     h3 {
       font-size: var(--fs-lg);
     }

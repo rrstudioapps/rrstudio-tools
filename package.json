@@ -4,14 +4,16 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && node scripts/build-sw.mjs",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --no-watch",
+    "test": "ng test --no-watch && node --test scripts/*.test.mjs",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit",
     "screenshots": "node scripts/screenshots.mjs",
     "e2e": "node scripts/screenshots.mjs --check",
     "smoke": "node scripts/smoke.mjs",
     "og-images": "node scripts/og-images.mjs",
+    "pwa-icons": "node scripts/pwa-icons.mjs",
+    "pwa-check": "node scripts/pwa-check.mjs",
     "licenses": "node scripts/third-party-licenses.mjs"
   },
   "private": true,

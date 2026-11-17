@@ -13,6 +13,7 @@
     </nav>
 
     <div class="actions">
+      <app-favorites-menu />
       <div class="lang" role="group" [attr.aria-label]="i18n.t('nav.lang')">
         @for (l of langs; track l) {
           @if (l === i18n.lang()) {

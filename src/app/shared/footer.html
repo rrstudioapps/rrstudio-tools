@@ -7,6 +7,9 @@
         <a [href]="license" target="_blank" rel="noopener">{{ i18n.t('footer.license') }}</a> ·
         <a [href]="repo" target="_blank" rel="noopener">{{ i18n.t('footer.source') }}</a> ·
         <a [routerLink]="i18n.link('privacy')">{{ i18n.t('footer.privacy') }}</a>
+        @if (pwa.supported()) {
+          · <button type="button" class="linklike" (click)="offline.open()">{{ i18n.t('pwa.footer') }}</button>
+        }
       </p>
       <ul class="links">
         <li class="family">rrstudio:</li>
@@ -30,4 +33,5 @@
       {{ i18n.t('footer.noads') }}
     </p>
   </div>
+  <app-offline-dialog #offline />
 </footer>

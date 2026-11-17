@@ -4,11 +4,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LANGS } from '../core/i18n/i18n.service';
 import { ThemeService } from '../core/theme/theme.service';
+import { FavoritesMenu } from './favorites-menu';
 import { Icon } from './icon';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Icon],
+  imports: [RouterLink, RouterLinkActive, Icon, FavoritesMenu],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.html',
   styleUrl: './header.scss',

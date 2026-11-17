@@ -31,6 +31,8 @@ jobs:
         run: npm run smoke
       - name: E2E (tool interactions)
         run: npm run e2e
+      - name: PWA (service worker, offline use, update)
+        run: npm run pwa-check
       - name: Check prerendered pages
         run: |
           test -f dist/rrstudio-tools/browser/index.html

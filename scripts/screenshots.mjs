@@ -6,7 +6,7 @@
 // dà errori in console, fa richieste esterne o un'interazione fallisce.
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
@@ -867,6 +867,104 @@ try {
     setup: async (page) => {
       await page.getByRole('button', { name: 'Testo di esempio' }).click();
       await page.waitForTimeout(1800); // il browser carica le voci locali (se ce ne sono)
+    },
+  });
+
+  // Preferiti e menu personalizzati: due stelle dalla home, un menu, esportazione, cancellazione e reimport da link.
+  // Lo screenshot finale è quello della pagina di gestione con dati d'esempio.
+  const must = (cond, msg) => {
+    if (!cond) throw new Error(msg);
+  };
+  await shot('favorites.png', {
+    width: 1280,
+    dark: false,
+    path: '/',
+    setup: async (page) => {
+      const readKey = () => page.evaluate(() => localStorage.getItem('rrtools.favorites'));
+      // 1. due preferiti dalle card della home
+      const star = (title) => page.getByRole('button', { name: 'Aggiungi ai preferiti: ' + title, exact: true });
+      await page.waitForFunction(() => !document.querySelector('app-favorite-button button:disabled'));
+      await star('Base64 Encode/Decode').click();
+      await star('Hash e checksum').click();
+      await page.waitForSelector('#fav-h');
+      must((await page.locator('#fav-h').textContent()).includes('2'), 'la sezione preferiti non mostra 2 strumenti');
+      // il pulsante sta fuori dal link: nessun elemento interattivo annidato nelle card
+      must((await page.locator('a button, a app-favorite-button').count()) === 0, 'pulsante dentro un link');
+      // persistenza: dopo il ricaricamento restano premuti
+      await page.reload();
+      await page.waitForSelector('#fav-h');
+      must((await page.locator('#fav-h').textContent()).includes('2'), 'i preferiti non sono sopravvissuti al ricaricamento');
+      must(JSON.parse(await readKey()).favorites.length === 2, 'chiave rrtools.favorites mancante');
+      // la stella nella pagina di uno strumento
+      await page.goto(base + '/url-encode/');
+      const toolStar = page.getByRole('button', { name: 'Aggiungi ai preferiti', exact: true });
+      await toolStar.waitFor();
+      must((await toolStar.getAttribute('aria-pressed')) === 'false', 'stella dello strumento già premuta');
+      await toolStar.click();
+      await page.waitForSelector('app-tool-frame button[aria-pressed=true]'); // stella premuta (con attesa dell'aggiornamento)
+      await toolStar.click(); // la toglie di nuovo
+      await page.waitForSelector('app-tool-frame button[aria-pressed=false]');
+      // 2. menu a tendina dell'intestazione: Esc chiude e riporta il focus sul pulsante
+      const menuBtn = page.locator('app-favorites-menu button.trigger');
+      await menuBtn.click();
+      await page.waitForSelector('button.trigger[aria-expanded=true]');
+      await page.getByRole('link', { name: 'Hash e checksum', exact: true }).waitFor();
+      await page.keyboard.press('Escape');
+      await page.waitForSelector('button.trigger[aria-expanded=false]');
+      must(await menuBtn.evaluate((el) => el === document.activeElement), 'il focus non torna sul pulsante');
+      await menuBtn.click();
+      await page.getByRole('link', { name: 'Gestisci preferiti e menu' }).click();
+      await page.waitForURL('**/preferiti');
+      await page.waitForSelector('#new-group');
+      must((await page.locator('meta[name=robots]').getAttribute('content')).includes('noindex'), 'noindex mancante');
+      // 3. un menu personalizzato con uno strumento aggiunto dalla ricerca
+      await page.fill('#new-group', 'Lavoro');
+      await page.getByRole('button', { name: 'Crea menu' }).click();
+      await page.getByRole('button', { name: 'Aggiungi strumenti' }).nth(1).click();
+      await page.getByRole('searchbox', { name: 'Cerca uno strumento da aggiungere' }).fill('uuid');
+      await page.getByRole('button', { name: /^Aggiungi «Generatore UUID»/ }).click();
+      await page.getByRole('button', { name: /^Aggiungi «Generatore UUID»/ }).waitFor({ state: 'detached' });
+      // riordino da tastiera: "Hash" sotto "Base64" e di nuovo su
+      const down = page.getByRole('button', { name: 'Sposta «Base64 Encode/Decode» in basso' });
+      await down.click();
+      await page.waitForFunction(() => {
+        const t = [...document.querySelectorAll('ol[aria-label="Preferiti"] .row-title')].map((e) => e.textContent);
+        return t[0] === 'Hash e checksum' && t[1] === 'Base64 Encode/Decode';
+      });
+      // 4. esportazione
+      const [dl] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Esporta JSON' }).click()]);
+      const exported = readFileSync(await dl.path(), 'utf8');
+      const data = JSON.parse(exported);
+      must(data.v === 1 && data.favorites.length === 2 && data.groups.length === 1 && data.groups[0].tools.length === 1, 'esportazione inattesa');
+      // 5. link di condivisione
+      await page.getByRole('button', { name: 'Crea link di condivisione' }).click();
+      const url = await page.inputValue('#share-url');
+      must(url.includes('/preferiti#d='), 'link di condivisione inatteso: ' + url);
+      // 6. cancella tutto (con conferma)
+      await page.getByRole('button', { name: 'Cancella preferiti e menu' }).click();
+      await page.getByRole('button', { name: 'Sì, cancella tutto' }).click();
+      await page.waitForFunction(() => localStorage.getItem('rrtools.favorites') === null);
+      // 7. reimport dal link: anteprima e conferma, mai import automatico
+      await page.goto(url);
+      await page.getByRole('heading', { name: 'Importare questi dati?' }).waitFor();
+      must((await readKey()) === null, 'import automatico dal link');
+      await page.waitForFunction(() => !location.hash, null, { timeout: 5000 }).catch(() => {
+        throw new Error('dati lasciati nell\'indirizzo');
+      });
+      await page.getByRole('button', { name: 'Importa', exact: true }).click();
+      must(JSON.parse(await readKey()).groups.length === 1, 'import dal link non riuscito');
+      // 8. file non valido: messaggio chiaro, nessuna modifica
+      await page.setInputFiles('input[type=file]', { name: 'rotto.json', mimeType: 'application/json', buffer: Buffer.from('{non json') });
+      await page.getByRole('alert').filter({ hasText: 'JSON' }).waitFor();
+      // 9. la home mostra preferiti e menu
+      await page.goto(base + '/');
+      await page.waitForSelector('#fav-h');
+      must((await page.locator('#fav-h').textContent()).includes('2'), 'home senza i preferiti reimportati');
+      must((await page.locator('h2.cat-title', { hasText: 'Lavoro' }).count()) === 1, 'home senza il menu personalizzato');
+      // schermata finale: la pagina di gestione con i dati d'esempio
+      await page.goto(base + '/preferiti/');
+      await page.waitForSelector('.group');
+      await page.waitForTimeout(300);
     },
   });
 } finally {

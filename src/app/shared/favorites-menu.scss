@@ -1,0 +1,103 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+:host {
+  display: inline-flex;
+  position: relative;
+}
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease);
+  &:hover,
+  &[aria-expanded='true'] {
+    border-color: var(--ink);
+  }
+}
+.panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  width: min(340px, calc(100vw - 2 * var(--gutter)));
+  max-height: min(70vh, 520px);
+  overflow-y: auto;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 14%);
+}
+.h {
+  margin: var(--space-3) 0 var(--space-2);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  &:first-child {
+    margin-top: 0;
+  }
+}
+.list {
+  list-style: none;
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  a {
+    display: block;
+    padding: 6px 0;
+    color: var(--ink);
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.empty {
+  margin: 0 0 var(--space-3);
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+}
+.manage {
+  display: block;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: var(--fw-medium);
+}
+@media (max-width: 640px) {
+  // su schermi stretti il pannello si ancora alla barra intera (la voce non sta a destra)
+  :host {
+    position: static;
+  }
+  .panel {
+    left: var(--gutter);
+    right: var(--gutter);
+    width: auto;
+  }
+  .trigger {
+    width: 36px;
+    padding: 0;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .txt {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}

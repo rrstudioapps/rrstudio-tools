@@ -39,6 +39,56 @@
   <p class="results" role="status" aria-live="polite">{{ resultText() }}</p>
 </section>
 
+@if (showFavs()) {
+  @if (favs.favoriteTools().length) {
+    <section class="container cat fav-sec" id="preferiti-home" aria-labelledby="fav-h">
+      <div class="cat-head">
+        <h2 class="eyebrow cat-title" id="fav-h">
+          {{ i18n.t('fav.home.title') }} <span class="cat-count">{{ favs.favoriteTools().length }}</span>
+        </h2>
+        <p class="cat-desc">
+          {{ i18n.t('fav.home.desc') }}
+          <a [routerLink]="i18n.link(favSlug())">{{ i18n.t('fav.home.manage') }}</a>
+        </p>
+      </div>
+      <div class="grid tools-grid">
+        @for (tool of favs.favoriteTools(); track tool.id) {
+          <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: tool }" />
+        }
+      </div>
+    </section>
+  }
+  @for (g of favs.groups(); track g.id) {
+    @if (g.tools.length) {
+      <section class="container cat fav-sec" [attr.aria-labelledby]="'fg-' + g.id">
+        <div class="cat-head">
+          <h2 class="eyebrow cat-title" [id]="'fg-' + g.id">
+            {{ g.name }} <span class="cat-count">{{ g.tools.length }}</span>
+          </h2>
+          <p class="cat-desc">{{ i18n.t('fav.home.group') }}</p>
+        </div>
+        <div class="grid tools-grid">
+          @for (tool of g.tools; track tool.id) {
+            <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: tool }" />
+          }
+        </div>
+      </section>
+    }
+  }
+}
+
+<ng-template #card let-tool>
+  <div class="item card">
+    <a class="card-link link" [routerLink]="i18n.link(tool.path)">
+      <span class="num">{{ numbers().get(tool.id)! < 10 ? '0' + numbers().get(tool.id) : numbers().get(tool.id) }}</span>
+      <h3>{{ i18n.t(tool.titleKey) }}</h3>
+      <p>{{ i18n.t(tool.descriptionKey) }}</p>
+      <span class="open">{{ i18n.t('home.open') }} <span class="arrow" aria-hidden="true">→</span></span>
+    </a>
+    <app-favorite-button class="fav" [toolId]="tool.id" [toolTitle]="i18n.t(tool.titleKey)" />
+  </div>
+</ng-template>
+
 @for (g of sections(); track g.category.id) {
   <section class="container cat" [id]="anchor(g.category)" [attr.aria-labelledby]="anchor(g.category) + '-h'">
     <div class="cat-head">
@@ -49,12 +99,7 @@
     </div>
     <div class="grid tools-grid">
       @for (tool of g.tools; track tool.id) {
-        <a class="item link" [routerLink]="i18n.link(tool.path)">
-          <span class="num">{{ numbers().get(tool.id)! < 10 ? '0' + numbers().get(tool.id) : numbers().get(tool.id) }}</span>
-          <h3>{{ i18n.t(tool.titleKey) }}</h3>
-          <p>{{ i18n.t(tool.descriptionKey) }}</p>
-          <span class="open">{{ i18n.t('home.open') }} <span class="arrow" aria-hidden="true">→</span></span>
-        </a>
+        <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: tool }" />
       }
     </div>
   </section>

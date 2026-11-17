@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
-// Smoke test E2E di tutte le pagine (home, privacy, strumenti; IT e /en/) servendo dist/rrstudio-tools/browser.
+// Smoke test E2E di tutte le pagine (home, privacy, preferiti, strumenti; IT e /en/) servendo dist/rrstudio-tools/browser.
 // Per ogni pagina, a 360 e 1280 px: nessun errore in console, nessuno scorrimento orizzontale,
 // axe-core senza violazioni critical/serious in tema chiaro e scuro.
 // Uso: npm run build && npm run smoke   (serve Chromium di Playwright; CHROMIUM_PATH se non lo trova)
@@ -34,8 +34,8 @@ if (!tools.length || tools.some((t) => !t.path)) {
   console.error('Impossibile leggere il registry degli strumenti');
   process.exit(1);
 }
-const pages = ['/', '/privacy/'];
-const pagesEn = ['/en/', '/en/privacy/'];
+const pages = ['/', '/privacy/', '/preferiti/'];
+const pagesEn = ['/en/', '/en/privacy/', '/en/favorites/'];
 for (const t of tools) {
   pages.push(`/${t.path}/`);
   if (!t.italyOnly) pagesEn.push(`/en/${t.path}/`);

@@ -1,16 +1,23 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { Route, Routes } from '@angular/router';
+import { FAVORITES_SLUG } from './core/i18n/lang-routing';
+import { ToolFrame } from './shared/tool-frame';
 import { TOOLS, ToolDefinition } from './tools/tools.registry';
 
 function toRoute(tool: ToolDefinition): Route {
   const seo = { titleKey: tool.seo.titleKey, descriptionKey: tool.seo.descriptionKey };
+  // Route padre con la cornice comune (stella dei preferiti); la pagina vera è il figlio con path vuoto,
+  // che eredita i dati (seo, toolId, routeData) dal padre.
   return {
     path: tool.path,
-    data: { seo, ...tool.routeData },
-    ...(tool.loadChildren
-      ? { loadChildren: tool.loadChildren }
-      : { loadComponent: tool.loadComponent }),
+    component: ToolFrame,
+    data: { seo, toolId: tool.id, ...tool.routeData },
+    children: [
+      tool.loadChildren
+        ? { path: '', loadChildren: tool.loadChildren }
+        : { path: '', loadComponent: tool.loadComponent },
+    ],
   };
 }
 
@@ -27,6 +34,13 @@ const PRIVACY: Route = {
   data: { seo: { titleKey: 'seo.privacy.title', descriptionKey: 'seo.privacy.desc' } },
 };
 
+/** Pagina personale dei preferiti: /preferiti e /en/favorites (noindex, fuori dalla sitemap). */
+const favoritesRoute = (lang: 'it' | 'en'): Route => ({
+  path: FAVORITES_SLUG[lang],
+  loadComponent: () => import('./pages/favorites').then((m) => m.FavoritesPage),
+  data: { seo: { titleKey: 'seo.favorites.title', descriptionKey: 'seo.favorites.desc', noindex: true } },
+});
+
 /**
  * Route generate dal registry dei tool, più la home. La radice è italiana; la versione inglese
  * sta sotto /en/ con gli stessi slug, tranne gli strumenti `italyOnly` (solo in italiano).
@@ -35,12 +49,14 @@ export const routes: Routes = [
   HOME,
   ...TOOLS.map(toRoute),
   PRIVACY,
+  favoritesRoute('it'),
   {
     path: 'en',
     children: [
       HOME,
       ...TOOLS.filter((t) => !t.italyOnly).map(toRoute),
       PRIVACY,
+      favoritesRoute('en'),
       // /en/<sconosciuto> → home inglese
       { path: '**', redirectTo: '/en' },
     ],

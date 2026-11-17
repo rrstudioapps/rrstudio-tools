@@ -12,6 +12,8 @@ import { SITE_URL } from '../links';
 export interface SeoData {
   titleKey: string;
   descriptionKey: string;
+  /** Pagina personale: meta robots noindex, senza canonical né hreflang. */
+  noindex?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -71,8 +73,20 @@ export class SeoService {
     for (const [key, content, attr] of tags) {
       this.meta.updateTag({ [attr]: key, content }, `${attr}='${key}'`);
     }
+    this.setRobots(seo.noindex === true);
+    if (seo.noindex) {
+      this.doc.head.querySelector('link[rel="canonical"]')?.remove();
+      this.setAlternates([]);
+      return;
+    }
     this.setCanonical(url);
     this.setAlternates(hreflangLinks(slug));
+  }
+
+  /** noindex solo per le pagine personali; le altre pagine non hanno il tag. */
+  private setRobots(noindex: boolean): void {
+    if (noindex) this.meta.updateTag({ name: 'robots', content: 'noindex, follow' }, "name='robots'");
+    else this.meta.removeTag("name='robots'");
   }
 
   private setCanonical(url: string): void {

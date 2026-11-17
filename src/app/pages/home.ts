@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
-import { Location } from '@angular/common';
+import { Location, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FavoritesService } from '../core/favorites/favorites.service';
+import { FAVORITES_SLUG } from '../core/i18n/lang-routing';
 import { I18nService } from '../core/i18n/i18n.service';
+import { FavoriteButton } from '../shared/favorite-button';
 import { CATEGORIES, TOOLS, ToolCategory, ToolCategoryId, ToolDefinition } from '../tools/tools.registry';
 import { categoryFromUrl, filterTools, groupByCategory } from './tool-filter';
 
@@ -15,13 +18,14 @@ interface Pill {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [RouterLink, NgTemplateOutlet, FavoriteButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class Home {
   protected readonly i18n = inject(I18nService);
+  protected readonly favs = inject(FavoritesService);
   private readonly location = inject(Location);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -77,6 +81,10 @@ export class Home {
       this.shownCategories(),
     );
   });
+
+  /** Preferiti e menu personalizzati in cima: solo nel browser (mai nel prerender), senza filtri attivi e se non vuoti. */
+  protected readonly showFavs = computed(() => this.favs.ready() && !this.filtering());
+  protected readonly favSlug = computed(() => FAVORITES_SLUG[this.i18n.lang()]);
 
   protected readonly resultCount = computed(() => this.sections().reduce((n, g) => n + g.tools.length, 0));
   protected readonly filtering = computed(() => this.category() !== null || this.query().trim() !== '');
