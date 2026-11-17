@@ -36,7 +36,11 @@ const TYPES = {
   '.csv': 'text/csv; charset=utf-8',
 };
 let swVersion = null;
+/** Durante la fase offline il server chiude ogni connessione: su alcune build di Chromium
+ *  context.setOffline() non blocca le richieste fatte dal service worker. */
+let serverDown = false;
 const server = createServer((req, res) => {
+  if (serverDown) return void req.socket.destroy();
   const path = normalize(decodeURIComponent(new URL(req.url, base).pathname));
   let file = join(root, path);
   if (!file.startsWith(root)) return void res.writeHead(403).end();
@@ -115,6 +119,7 @@ try {
   // --- 3. offline: pagina mai visitata, con tutto idratato
   console.log('Offline');
   await ctx.setOffline(true);
+  serverDown = true;
   logs.length = 0;
   for (const url of ['/base64/', '/en/qr-code-generator/', '/pdf-tools/', '/preferiti/', '/en/favorites/']) {
     await page.goto(base + url);
@@ -149,6 +154,7 @@ try {
   await page.goto(base + '/en/zz-not-cached/');
   ok(await shown(page.getByRole('heading', { name: 'You are offline' })), 'pagina offline in inglese');
   await ctx.setOffline(false);
+  serverDown = false;
 
   // --- 4. aggiornamento: una "nuova versione" (VERSION diversa) resta in attesa finché l'utente non la chiede
   console.log('Aggiornamento');
