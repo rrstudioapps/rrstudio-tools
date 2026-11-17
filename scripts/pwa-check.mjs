@@ -60,6 +60,8 @@ const fail = (msg) => {
   console.error('  KO ' + msg);
 };
 const ok = (cond, msg) => (cond ? console.log('  ok ' + msg) : fail(msg));
+/** true se l'elemento diventa visibile entro 5 s. */
+const shown = (locator) => locator.waitFor({ state: 'visible', timeout: 5000 }).then(() => true, () => false);
 
 let browser;
 try {
@@ -132,7 +134,7 @@ try {
     toggled = (await page.getAttribute('html', 'data-theme')) !== before;
   }
   ok(toggled, 'pagina offline interattiva (idratata)');
-  ok(await page.getByText('Sei offline').first().isVisible(), 'indicatore "Sei offline"');
+  ok(await shown(page.getByText('Sei offline').first()), 'indicatore "Sei offline"');
   const inCache = await page.evaluate(async () => ({
     worker: !!(await caches.match('/pdfjs/pdf.worker.min.mjs')),
     words: !!(await caches.match('/wordlists/eff-large.txt')),
@@ -141,10 +143,11 @@ try {
   ok(logs.length === 0, 'nessun errore in console offline' + (logs.length ? ': ' + logs.slice(0, 3).join(' | ') : ''));
 
   // pagina offline tradotta per un indirizzo non in cache
+  // (si aspetta che l'elemento compaia: sui runner veloci isVisible() subito dopo goto arriva troppo presto)
   await page.goto(base + '/zz-non-esiste/');
-  ok(await page.getByRole('heading', { name: 'Sei offline' }).isVisible(), 'pagina offline in italiano');
+  ok(await shown(page.getByRole('heading', { name: 'Sei offline' })), 'pagina offline in italiano');
   await page.goto(base + '/en/zz-not-cached/');
-  ok(await page.getByRole('heading', { name: 'You are offline' }).isVisible(), 'pagina offline in inglese');
+  ok(await shown(page.getByRole('heading', { name: 'You are offline' })), 'pagina offline in inglese');
   await ctx.setOffline(false);
 
   // --- 4. aggiornamento: una "nuova versione" (VERSION diversa) resta in attesa finché l'utente non la chiede
