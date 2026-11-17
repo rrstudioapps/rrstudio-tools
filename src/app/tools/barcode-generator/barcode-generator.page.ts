@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { saveBytes } from '../../shared/download';
 import { Icon } from '../../shared/icon';
@@ -10,6 +10,7 @@ import { Segmented, SegmentOption } from '../../shared/segmented';
 import { BarcodeError, BarcodeFormat, FORMATS, MAX_BULK, MAX_LENGTH, Normalized, formatInfo, normalizeInput, planBulk } from './barcode';
 import { BC_DICTIONARIES } from './barcode-generator.i18n';
 import { BarcodeStyle, DEFAULT_STYLE, renderPng, renderSvg } from './barcode-render';
+import { bindSvgPreview } from '../../shared/svg-preview';
 
 type Mode = 'single' | 'bulk';
 type BulkKind = 'svg' | 'png';
@@ -101,7 +102,6 @@ export class BarcodeGeneratorPage {
   );
 
   private seq = 0;
-  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.i18n.register(BC_DICTIONARIES);
@@ -127,23 +127,7 @@ export class BarcodeGeneratorPage {
           this.renderFailed.set(true);
         });
     });
-    effect((onCleanup) => {
-      const svg = this.svg();
-      if (!svg || typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
-        this.previewUrl.set(null);
-        return;
-      }
-      let url: string;
-      try {
-        url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
-      } catch {
-        this.previewUrl.set(null);
-        return;
-      }
-      this.previewUrl.set(url);
-      onCleanup(() => URL.revokeObjectURL(url));
-    });
-    this.destroyRef.onDestroy(() => this.previewUrl.set(null));
+    bindSvgPreview(() => this.svg(), this.previewUrl);
   }
 
   private errorMessage(error: BarcodeError, n: { expected?: string; lengths?: readonly number[] }): string {

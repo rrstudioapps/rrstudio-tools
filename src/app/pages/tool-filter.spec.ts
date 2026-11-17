@@ -59,9 +59,10 @@ describe('filterTools', () => {
     expect(filterTools(TOOLS, null, 'json zzzz', texts)).toEqual([]);
   });
   it('combina categoria e ricerca', () => {
-    // tra gli strumenti per sviluppatori parlano di JSON il decodificatore JWT e le conversioni YAML/XML/entità
-    expect(filterTools(TOOLS, 'dev', 'json', texts).map((t) => t.id).sort()).toEqual(['html-entities', 'jwt-decoder', 'xml-formatter', 'yaml-json-converter']);
-    expect(filterTools(TOOLS, 'data', 'json', texts).length).toBe(3);
+    // tra gli strumenti per sviluppatori parlano di JSON il decodificatore JWT e le entità; YAML/XML sono in Dati
+    expect(filterTools(TOOLS, 'dev', 'json', texts).map((t) => t.id).sort()).toEqual(['html-entities', 'jwt-decoder']);
+    expect(filterTools(TOOLS, 'data', 'json', texts).map((t) => t.id)).toContain('xml-formatter');
+    expect(filterTools(TOOLS, 'data', 'json', texts).length).toBeGreaterThanOrEqual(3);
   });
   it('nessun risultato per una ricerca assurda', () => {
     expect(filterTools(TOOLS, null, 'qwertyuiop', texts)).toEqual([]);
@@ -71,7 +72,7 @@ describe('filterTools', () => {
 describe('groupByCategory', () => {
   it('rispetta l\'ordine delle categorie e salta quelle vuote', () => {
     const g = groupByCategory(TOOLS);
-    expect(g.map((x) => x.category.id)).toEqual(['data', 'dev', 'security', 'italy']);
+    expect(g.map((x) => x.category.id)).toEqual(['text', 'data', 'media', 'calc', 'dev', 'web', 'security', 'italy']);
     expect(g.reduce((n, x) => n + x.tools.length, 0)).toBe(TOOLS.length);
     const only = groupByCategory(TOOLS.filter((t) => t.category === 'dev'));
     expect(only.map((x) => x.category.id)).toEqual(['dev']);
@@ -82,6 +83,11 @@ describe('categoryFromSlug / categoryFromUrl', () => {
   it('riconosce gli slug', () => {
     expect(categoryFromSlug('sviluppatori')).toBe('dev');
     expect(categoryFromSlug(' Italia ')).toBe('italy');
+    expect(categoryFromSlug('testo')).toBe('text');
+    expect(categoryFromSlug('immagini-pdf')).toBe('media');
+    expect(categoryFromSlug('images-pdf')).toBe('media');
+    expect(categoryFromSlug('calcolatori')).toBe('calc');
+    expect(categoryFromSlug('web-design')).toBe('web');
     expect(categoryFromSlug('boh')).toBeNull();
     expect(categoryFromSlug(null)).toBeNull();
   });

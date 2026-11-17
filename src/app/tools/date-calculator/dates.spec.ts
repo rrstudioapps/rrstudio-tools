@@ -17,6 +17,7 @@ import {
   parseIso,
   toDays,
   weekday,
+  ymdToUtcMs,
 } from './dates';
 
 const d = (s: string): Ymd => {
@@ -206,5 +207,14 @@ describe('età e compleanno', () => {
     expect([a.years, a.months, a.days, a.totalDays]).toEqual([0, 0, 0, 0]);
     expect(computeAge(d('2030-01-01'), d('2026-11-16'))).toBeNull();
     expect(compareDates(d('2024-01-01'), d('2024-01-02'))).toBeLessThan(0);
+  });
+});
+
+describe('ymdToUtcMs', () => {
+  it('gestisce gli anni 1-99 senza spostarli al 1900', () => {
+    const dt = new Date(ymdToUtcMs({ y: 50, m: 3, d: 7 }));
+    expect(dt.getUTCFullYear()).toBe(50);
+    expect(dt.getUTCMonth()).toBe(2);
+    expect(dt.getUTCDate()).toBe(7);
   });
 });

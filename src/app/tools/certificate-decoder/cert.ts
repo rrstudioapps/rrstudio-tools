@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
+import { tryBase64ToBytes } from '../../shared/base64';
 import type * as Pkijs from 'pkijs';
 
 // ---------- tipi ----------
@@ -308,18 +309,7 @@ export function extractPemBlocks(text: string): PemBlock[] {
   return blocks;
 }
 
-export function base64ToBytes(b64: string): Uint8Array | null {
-  const clean = b64.replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/');
-  if (clean === '' || !/^[A-Za-z0-9+/]*={0,2}$/.test(clean)) return null;
-  try {
-    const bin = atob(clean.padEnd(Math.ceil(clean.length / 4) * 4, '='));
-    const out = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-    return out;
-  } catch {
-    return null;
-  }
-}
+export const base64ToBytes = tryBase64ToBytes;
 
 const CERT_LABELS = new Set(['CERTIFICATE', 'X509 CERTIFICATE', 'TRUSTED CERTIFICATE']);
 const CSR_LABELS = new Set(['CERTIFICATE REQUEST', 'NEW CERTIFICATE REQUEST', 'X509 CRL REQUEST']);

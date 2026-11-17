@@ -28,8 +28,12 @@
         spellcheck="false"
         [placeholder]="i18n.t('home.search.ph')"
         [value]="query()"
+        aria-keyshortcuts="/ Control+K Meta+K"
+        #searchInput
         (input)="onSearch($event)"
+        (keydown)="onSearchKey($event)"
       />
+      <kbd class="kbd" aria-hidden="true">{{ modKey() }} K</kbd>
     </div>
   </div>
   <p class="results" role="status" aria-live="polite">{{ resultText() }}</p>

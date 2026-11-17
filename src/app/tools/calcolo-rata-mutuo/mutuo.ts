@@ -93,7 +93,9 @@ export function computeMortgage(input: MortgageInput): MortgageOutcome {
   for (let n = 1; n <= periods; n++) {
     const interest = Math.round(balance * i);
     const last = n === periods;
-    const principal = last ? balance : Math.min(balance, payment - interest);
+    // Capitale mai negativo (la rata arrotondata può non coprire gli interessi) e debito mai azzerato prima
+    // dell'ultima rata (con capitali piccoli e durate lunghe): l'ultima rata assorbe la differenza.
+    const principal = last ? balance : Math.max(0, Math.min(Math.max(balance - 1, 0), payment - interest));
     balance -= principal;
     totalInterest += interest;
     schedule.push({ n, payment: principal + interest, interest, principal, balance });

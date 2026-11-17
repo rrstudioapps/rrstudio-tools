@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
-import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterNextRender, computed, effect, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { Icon } from '../../shared/icon';
 import { PrivacyNote } from '../../shared/privacy-note';
@@ -9,6 +9,7 @@ import { Ecl, QrCode, QrError, encodeQr, maxByteCapacity } from './qr-encoder';
 import { EMPTY_FIELDS, QR_TYPES, QrFields, QrType, WifiSecurity, buildPayload, parseCoordinate } from './qr-payload';
 import { MAX_LOGO_FRACTION, MIN_LOGO_FRACTION, RenderOptions, contrastIssue, contrastRatio, drawToCanvas, toSvg } from './qr-render';
 import { QR_DICTIONARIES } from './qr-code.i18n';
+import { bindSvgPreview } from '../../shared/svg-preview';
 
 const MAX_LOGO_BYTES = 5 * 1024 * 1024;
 /** Il logo viene ridotto a questo lato massimo prima di entrare nell'SVG (mantiene leggero il file). */
@@ -106,23 +107,12 @@ export class QrCodePage {
     return this.i18n.t('qr.info', { version: qr.version, modules: qr.size, ecl: qr.ecl, bytes: new Intl.NumberFormat(this.i18n.locale()).format(bytes) });
   });
 
-  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     this.i18n.register(QR_DICTIONARIES);
     // l'anteprima è lo stesso SVG che si scarica, servito come immagine da un object URL
-    effect((onCleanup) => {
-      const svg = this.svg();
-      if (!svg || typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
-        this.previewUrl.set(null);
-        return;
-      }
-      const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
-      this.previewUrl.set(url);
-      onCleanup(() => URL.revokeObjectURL(url));
-    });
+    bindSvgPreview(() => this.svg(), this.previewUrl);
     afterNextRender(() => this.canCopyImage.set(typeof ClipboardItem !== 'undefined' && !!navigator.clipboard?.write));
-    this.destroyRef.onDestroy(() => this.previewUrl.set(null));
   }
 
   private safeMargin(): number {

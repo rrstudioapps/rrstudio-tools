@@ -170,6 +170,7 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
 | @angular/compiler-cli | 22.2.6 | MIT | https://github.com/angular/angular |
 | @types/node | 22.20.5 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
 | @types/papaparse | 5.5.2 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
+| axe-core | 4.14.0 | MPL-2.0 | https://github.com/dequelabs/axe-core |
 | jsdom | 31.0.1 | MIT | https://github.com/jsdom/jsdom |
 | playwright-core | 1.59.1 | Apache-2.0 | https://github.com/microsoft/playwright |
 | prettier | 3.10.1 | MIT | prettier/prettier |

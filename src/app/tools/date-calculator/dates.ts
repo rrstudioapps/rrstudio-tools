@@ -47,6 +47,13 @@ export function fromDays(z: number): Ymd {
   return { y: yoe + era * 400 + (m <= 2 ? 1 : 0), m, d };
 }
 
+/** Millisecondi UTC di una data; Date.UTC tratterebbe gli anni 1-99 come 1901-1999, quindi si imposta l'anno a parte. */
+export function ymdToUtcMs({ y, m, d }: Ymd): number {
+  const dt = new Date(0);
+  dt.setUTCFullYear(y, m - 1, d);
+  return dt.getTime();
+}
+
 /** Giorno della settimana: 0 = domenica … 6 = sabato. */
 export function weekday(date: Ymd): number {
   return (((toDays(date) + 4) % 7) + 7) % 7; // il 1970-01-01 era giovedì

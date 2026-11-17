@@ -146,10 +146,23 @@ export function regionOf(tz: string): string {
   return parts.length > 1 ? parts.slice(0, -1).join(' / ').replace(/_/g, ' ') : '';
 }
 
+const nameFormatters = new Map<string, Intl.DateTimeFormat>();
+
+/** Formatter per il nome del fuso, in cache: crearne ~400 a ogni tasto nella ricerca sarebbe lento. */
+function nameFormatter(tz: string, locale: string, style: 'long' | 'short'): Intl.DateTimeFormat {
+  const key = `${locale}|${tz}|${style}`;
+  let f = nameFormatters.get(key);
+  if (!f) {
+    f = new Intl.DateTimeFormat(locale, { timeZone: tz, timeZoneName: style });
+    nameFormatters.set(key, f);
+  }
+  return f;
+}
+
 /** Nome esteso del fuso nella lingua (es. "Central European Standard Time"); '' se non disponibile. */
 export function zoneLongName(tz: string, ms: number, locale: string): string {
   try {
-    const p = new Intl.DateTimeFormat(locale, { timeZone: tz, timeZoneName: 'long' }).formatToParts(ms);
+    const p = nameFormatter(tz, locale, 'long').formatToParts(ms);
     return p.find((x) => x.type === 'timeZoneName')?.value ?? '';
   } catch {
     return '';
@@ -159,7 +172,7 @@ export function zoneLongName(tz: string, ms: number, locale: string): string {
 /** Sigla breve del fuso (CET, EDT, GMT+9…). */
 export function zoneShortName(tz: string, ms: number, locale: string): string {
   try {
-    const p = new Intl.DateTimeFormat(locale, { timeZone: tz, timeZoneName: 'short' }).formatToParts(ms);
+    const p = nameFormatter(tz, locale, 'short').formatToParts(ms);
     return p.find((x) => x.type === 'timeZoneName')?.value ?? '';
   } catch {
     return '';

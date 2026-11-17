@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
+import { bytesToBase64, tryBase64ToBytes } from '../../shared/base64';
 
 /**
  * Cifratura con passphrase: AES-256-GCM, chiave derivata con PBKDF2-HMAC-SHA256 (WebCrypto).
@@ -166,22 +167,13 @@ export async function decrypt(data: Uint8Array, password: string): Promise<Uint8
 
 // ---- testo (formato binario scritto in Base64) ----
 
-export function toBase64(bytes: Uint8Array): string {
-  let bin = '';
-  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-  return btoa(bin);
-}
+export const toBase64 = (bytes: Uint8Array): string => bytesToBase64(bytes);
 
 /** Base64 (anche URL-safe, con spazi e a capo). */
 export function fromBase64(text: string): Uint8Array {
-  const clean = text.replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/');
-  if (clean === '' || !/^[A-Za-z0-9+/]*={0,2}$/.test(clean)) throw new CryptError('base64');
-  try {
-    const bin = atob(clean);
-    return Uint8Array.from(bin, (c) => c.charCodeAt(0));
-  } catch {
-    throw new CryptError('base64');
-  }
+  const bytes = tryBase64ToBytes(text);
+  if (!bytes) throw new CryptError('base64');
+  return bytes;
 }
 
 export async function encryptText(text: string, password: string, opts?: EncryptOptions): Promise<string> {

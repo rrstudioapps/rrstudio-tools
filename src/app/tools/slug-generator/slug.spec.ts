@@ -136,3 +136,16 @@ describe('slugWords', () => {
     expect(slugWords('Ciao Mondo', false)).toEqual(['Ciao', 'Mondo']);
   });
 });
+
+describe('generateBulk (unicità)', () => {
+  const base = { ...DEFAULT_OPTIONS, unique: true };
+  it('non produce duplicati quando un suffisso coincide con un altro slug', () => {
+    const r = generateBulk('foo\nfoo\nfoo 2', base);
+    expect(new Set(r).size).toBe(3);
+  });
+  it('resta unico anche con maxLength', () => {
+    const r = generateBulk('abcdef\nabcdef\nabcdef\nabcdef', { ...base, maxLength: 6 });
+    expect(new Set(r).size).toBe(4);
+    r.forEach((s) => expect(s.length).toBeLessThanOrEqual(6));
+  });
+});

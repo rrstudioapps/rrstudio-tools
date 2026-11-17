@@ -39,8 +39,8 @@ describe('formatXml', () => {
   it('non decodifica le entità e conserva le virgolette degli attributi', () => {
     expect(fmt(`<a  x = 'a"b'   y="&amp;&#233;">1 &lt; 2 &#x41;</a>`)).toBe(`<a x='a"b' y="&amp;&#233;">1 &lt; 2 &#x41;</a>\n`);
   });
-  it('contenuto misto: il testo va su righe proprie', () => {
-    expect(fmt('<p>ciao <b>mondo</b> fine</p>')).toBe('<p>\n  ciao\n  <b>mondo</b>\n  fine\n</p>\n');
+  it('contenuto misto: resta in linea, il testo non cambia', () => {
+    expect(fmt('<p>ciao <b>mondo</b> fine</p>')).toBe('<p>ciao <b>mondo</b> fine</p>\n');
   });
   it('elemento vuoto con tag di chiusura resta com\'è', () => {
     expect(fmt('<a><b></b></a>')).toBe('<a>\n  <b></b>\n</a>\n');
@@ -172,5 +172,23 @@ describe('domCheck', () => {
   });
   it('null per un XML valido', () => {
     expect(domCheck('<a><b/></a>')).toBeNull();
+  });
+});
+
+describe('contenuto misto e xml:space', () => {
+  it('la formattazione non altera il testo del contenuto misto', () => {
+    expect(fmt('<p>Ciao <b>mondo</b> bello</p>')).toBe('<p>Ciao <b>mondo</b> bello</p>\n');
+    expect(fmt('<p><b>a</b> <i>b</i> testo</p>')).toBe('<p><b>a</b> <i>b</i> testo</p>\n');
+  });
+  it('il minify conserva spazi e nodi di soli spazi nel contenuto misto', () => {
+    expect(minifyXml('<p>Ciao <b>x</b> <i>y</i> fine</p>', o2)).toEqual({ ok: true, text: '<p>Ciao <b>x</b> <i>y</i> fine</p>' });
+  });
+  it('xml:space="default" su un discendente annulla il preserve', () => {
+    const r = parseXml('<a xml:space="preserve"><b xml:space="default"><c/></b><d/></a>');
+    if (!r.ok) throw new Error('parse');
+    const a = r.nodes[0] as { children: { preserve: boolean; children: { preserve: boolean }[] }[] };
+    expect(a.children[0].preserve).toBe(false);
+    expect(a.children[0].children[0].preserve).toBe(false);
+    expect(a.children[1].preserve).toBe(true);
   });
 });

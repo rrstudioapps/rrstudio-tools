@@ -6,6 +6,9 @@ import type { WorkerRequest, WorkerResponse } from './find-replace.worker';
 /** Tempo massimo concesso alle regole prima di fermare il worker (backtracking catastrofico, testo enorme). */
 export const FIND_REPLACE_TIMEOUT_MS = 3000;
 
+/** Oltre questa durata una richiesta ancora in corso fa terminare il worker quando ne arriva una nuova; prima si accoda. */
+export const FIND_REPLACE_STALE_KILL_MS = 300;
+
 /** La richiesta è stata sostituita da una più recente: va ignorata. */
 export class StaleRun extends Error {}
 /** Le regole non hanno risposto entro il tempo massimo: il worker è stato terminato. */
@@ -20,6 +23,7 @@ interface Pending {
   reject: (e: Error) => void;
   msg: WorkerRequest;
   timer: ReturnType<typeof setTimeout> | null;
+  startedAt: number;
 }
 
 /**
@@ -38,14 +42,17 @@ export class FindReplaceClient {
 
   run(req: RunRequest): Promise<Outcome> {
     if (this.pending) {
+      // una richiesta lunga si ferma terminando il worker; una breve si lascia finire (la risposta si scarta)
+      // e la nuova si accoda, senza ricreare il worker a ogni tasto
+      const slow = Date.now() - this.pending.startedAt > FIND_REPLACE_STALE_KILL_MS;
       this.clearPending(new StaleRun());
-      this.dispose();
+      if (slow) this.dispose();
     }
     const worker = this.ensureWorker();
     if (!worker) return Promise.reject(new NoWorker());
     return new Promise<Outcome>((resolve, reject) => {
       const msg: WorkerRequest = { ...req, id: ++this.nextId };
-      const p: Pending = { resolve, reject, msg, timer: null };
+      const p: Pending = { resolve, reject, msg, timer: null, startedAt: Date.now() };
       this.pending = p;
       worker.postMessage(msg);
       if (this.ready) this.arm(p);

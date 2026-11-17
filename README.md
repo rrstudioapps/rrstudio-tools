@@ -32,34 +32,63 @@ Tools that only make sense in Italy (codice fiscale, IBAN & partita IVA, e-invoi
 
 ## Tools
 
-The home page groups the tools by category, with filter pills (shareable as `?categoria=sviluppatori`, or `?category=developers` on the English home) and a search box.
+The home page groups the tools by category, with filter pills (shareable as `?categoria=sviluppatori`, or `?category=developers` on the English home) and a search box (press `/` or `Ctrl+K` / `⌘K` to jump to it).
 
-### Data & documents
+### Text
 
-Tables, JSON, PDF and images.
+Write, compare, sort and clean up text.
+
+| Tool | What it does |
+|---|---|
+| [**Text compare (diff)**](https://tools.rr-dev.eu/text-diff) | Compare two texts or files line by line (Myers algorithm), with word or character differences inside changed lines, side-by-side or inline view, options to ignore whitespace, case and blank lines, navigation between differences and export as a unified diff (`.patch`). Runs in a Web Worker, fine with 5,000 lines. |
+| [**Markdown editor**](https://tools.rr-dev.eu/markdown-editor) | Write Markdown (CommonMark + GFM: headings, lists and task lists, tables with alignment, quotes, code blocks with language) with a live side-by-side preview, a formatting toolbar and shortcuts. Safe preview: raw HTML is never run and external images are not loaded. Export `.md`, a standalone HTML file or PDF (browser print). The draft stays in your browser. |
+| [**Word & character counter**](https://tools.rr-dev.eu/word-counter) | Words, characters (with and without spaces, emoji and accents count 1), sentences, paragraphs, lines, reading (about 200 wpm) and speaking (about 130 wpm) time, most frequent words without Italian/English stopwords, length limits (SMS, X, meta description, title, Instagram) and case conversions. |
+| [**Text case converter**](https://tools.rr-dev.eu/case-converter) | camelCase, PascalCase, snake_case, SCREAMING_SNAKE, kebab-case, Train-Case, dot.case, path/case, Title Case (English and Italian rules, with elisions), Sentence case, upper/lower and aLtErNaTiNg, line by line, with acronyms and accents handled. |
+| [**Lorem ipsum generator**](https://tools.rr-dev.eu/lorem-ipsum-generator) | Paragraphs, sentences or words, optional classic opening, text or HTML `<p>`, deterministic generator with an optional seed for repeatable output. |
+| [**Sort lines**](https://tools.rr-dev.eu/sort-lines) | Sort lines alphabetically (`Intl.Collator`, Italian or English rules), naturally, by length, by frequency, in reverse or randomly; remove duplicates (with or without case, spaces), blank lines and margins, count occurrences, add prefix, suffix and numbering. |
+| [**Find and replace**](https://tools.rr-dev.eu/find-replace) | Plain-text or regex find and replace (flags g, i, m, s, u, `$1` and `$<name>` groups, case, whole words), several rules in sequence, highlighted preview with counts. Runs in a Web Worker with a timeout against catastrophic regexes. |
+| [**Text to speech**](https://tools.rr-dev.eu/text-to-speech) | Read a text aloud with the Web Speech API: voice and language, speed, pitch, volume, pause/resume/stop and a highlighted sentence. Only local voices (`localService`) are shown and used: network voices would send the text to external servers. |
+
+### Data
+
+Tables and structured formats.
 
 | Tool | What it does |
 |---|---|
 | [**CSV → Dashboard**](https://tools.rr-dev.eu/csv-dashboard) | Drop a CSV or Excel file and get KPI cards, a time chart, a category chart and a filterable, sortable table. Customize columns, chart types, color and title, then export as a self-contained HTML file, PNG or PDF. |
-| [**JSON Viewer & Editor**](https://tools.rr-dev.eu/json-viewer) | Explore JSON as a lazy, paginated tree (files up to 50 MB), search keys and values, copy the JavaScript path or JSON Pointer of a node, edit values and keys inline, add, delete, duplicate, move and retype nodes, with undo/redo and a formatted Text view. |
+| [**CSV, JSON & Excel converter**](https://tools.rr-dev.eu/csv-json-converter) | Convert CSV, JSON and Excel into each other: automatic delimiter, header row, array of objects or of arrays, nested objects flattened to `a.b` and rebuilt, sheet picker, table preview. Formulas in the exported CSV and XLSX are neutralised. |
 | [**JSON Formatter and Validator**](https://tools.rr-dev.eu/json-formatter) | Format (2 / 4 spaces or tab), minify and sort keys, with live validation: errors show line and column, plus size, key count and depth, and light syntax highlighting. |
-| [**PDF tools: merge, split, rotate**](https://tools.rr-dev.eu/pdf-tools) | Merge several PDFs, extract or split pages (every page, every N pages or by ranges like `1-3, 5, 8-10`), rotate, delete and reorder pages from a grid of thumbnails. Your PDFs are never uploaded: fine for confidential documents. |
+| [**JSON Viewer & Editor**](https://tools.rr-dev.eu/json-viewer) | Explore JSON as a lazy, paginated tree (files up to 50 MB), search keys and values, copy the JavaScript path or JSON Pointer of a node, edit values and keys inline, add, delete, duplicate, move and retype nodes, with undo/redo and a formatted Text view. |
+| [**YAML / JSON / TOML converter**](https://tools.rr-dev.eu/yaml-json-converter) | Convert between YAML, JSON and TOML in every direction (`yaml` and `smol-toml`), multiple YAML documents, anchors and merge keys, 2/4-space or tab indentation, sorted keys, errors with line and column and a "go to error" button, file upload and download. |
+| [**XML formatter**](https://tools.rr-dev.eu/xml-formatter) | Format or minify XML keeping comments, CDATA, entities and `xml:space="preserve"`; well-formedness checks with line and column errors (plus the browser's DOMParser as second opinion) and a simple XML to JSON conversion. |
+| [**SQL formatter**](https://tools.rr-dev.eu/sql-formatter) | Format or minify SQL (`sql-formatter`) for standard SQL, PostgreSQL, MySQL, MariaDB, SQLite, T-SQL, BigQuery, PL/SQL and more, keyword case and indentation; the minifier never touches strings, quoted names or hints. |
+
+### Images, PDF & codes
+
+Images, PDFs, QR codes and barcodes.
+
+| Tool | What it does |
+|---|---|
+| [**QR code generator**](https://tools.rr-dev.eu/qr-code-generator) | QR codes for text, links, WiFi, contacts (vCard), email, SMS and locations, with error correction, size, margin, colours (with a low-contrast warning) and an optional centre logo. Download PNG or SVG, or copy the image. |
 | [**Image compressor & converter**](https://tools.rr-dev.eu/image-compressor) | Compress and convert many images at once to JPEG, WebP, PNG or AVIF, with quality and resize options, a before/after slider and a ZIP download. Done in your browser; EXIF metadata (GPS included) is stripped. |
+| [**PDF tools: merge, split, rotate**](https://tools.rr-dev.eu/pdf-tools) | Merge several PDFs, extract or split pages (every page, every N pages or by ranges like `1-3, 5, 8-10`), rotate, delete and reorder pages from a grid of thumbnails. Your PDFs are never uploaded: fine for confidential documents. |
 | [**Images to PDF**](https://tools.rr-dev.eu/images-to-pdf) | Combine JPG, PNG and WebP images into one PDF: reorder the thumbnails (drag & drop or keyboard), choose A4, Letter or fit-to-image pages, orientation, margins, 1, 2 or 4 images per page and the quality. EXIF orientation is respected. |
 | [**PDF to images**](https://tools.rr-dev.eu/pdf-to-images) | Turn PDF pages (all, or a range like `1-3, 5`) into PNG or JPEG at 72, 150 or 300 dpi, with previews and single or ZIP download. |
-| [**QR code generator**](https://tools.rr-dev.eu/qr-code-generator) | QR codes for text, links, WiFi, contacts (vCard), email, SMS and locations, with error correction, size, margin, colours (with a low-contrast warning) and an optional centre logo. Download PNG or SVG, or copy the image. |
-| [**CSV, JSON & Excel converter**](https://tools.rr-dev.eu/csv-json-converter) | Convert CSV, JSON and Excel into each other: automatic delimiter, header row, array of objects or of arrays, nested objects flattened to `a.b` and rebuilt, sheet picker, table preview. Formulas in the exported CSV and XLSX are neutralised. |
-| [**Markdown editor**](https://tools.rr-dev.eu/markdown-editor) | Write Markdown (CommonMark + GFM: headings, lists and task lists, tables with alignment, quotes, code blocks with language) with a live side-by-side preview, a formatting toolbar and shortcuts. Safe preview: raw HTML is never run and external images are not loaded. Export `.md`, a standalone HTML file or PDF (browser print). The draft stays in your browser. |
-| [**Word & character counter**](https://tools.rr-dev.eu/word-counter) | Words, characters (with and without spaces, emoji and accents count 1), sentences, paragraphs, lines, reading (about 200 wpm) and speaking (about 130 wpm) time, most frequent words without Italian/English stopwords, length limits (SMS, X, meta description, title, Instagram) and case conversions. |
+| [**Barcode generator**](https://tools.rr-dev.eu/barcode-generator) | EAN-13, EAN-8, UPC-A, Code 128, Code 39, ITF-14, ITF, Codabar, MSI and Pharmacode with `jsbarcode`: validation, computed check digit, bar width, height, text and colours, SVG or PNG download, and bulk generation from a list into a ZIP. |
+| [**QR code reader**](https://tools.rr-dev.eu/qr-code-reader) | Read QR codes from an uploaded, dropped or pasted image or with the camera (only on request, stopped on exit) using `jsQR`. Recognises URLs, Wi-Fi, vCard, email, phone, SMS, location and text; links are shown as text with warnings and never opened automatically. |
+
+### Calculators
+
+Percentages, units, dates, time zones and number bases.
+
+| Tool | What it does |
+|---|---|
+| [**Unix timestamp converter**](https://tools.rr-dev.eu/timestamp-converter) | Timestamp to date (seconds, milliseconds, microseconds or nanoseconds, detected) and date to timestamp, ISO 8601, RFC 2822 and a readable format, any time zone of your browser with daylight saving handled, a live "now", relative time, and many timestamps at once (one per line). |
 | [**Percentage calculator**](https://tools.rr-dev.eu/percentage-calculator) | Five calculations on one page: X% of Y, X is what % of Y, percentage change from A to B, add or subtract a percentage (discount, markup, VAT) and reverse percentage (the price before a discount). Live results with a copy button, clear errors for division by zero and a 100% discount. |
 | [**Unit converter**](https://tools.rr-dev.eu/unit-converter) | Length, mass, temperature, area, volume, speed, time, digital data (SI KB and binary KiB), pressure and energy. Search a unit by name or symbol across all categories, swap units and see the value in every unit of the category. Temperature goes through Celsius and refuses values below absolute zero. |
 | [**Date and age calculator**](https://tools.rr-dev.eu/date-calculator) | Difference between two dates in years, months and days (plus total days and weeks, end day optional), add or subtract days, weeks, months and years, and exact age with the days to the next birthday. Month ends (31 January + 1 month) and leap years (29 February) are handled. |
 | [**Time zone converter**](https://tools.rr-dev.eu/timezone-converter) | Convert a time between IANA time zones and compare several at once. Zones and daylight saving come from `Intl` only (no time zone database is shipped); search by city, nonexistent and repeated local times at DST changes are flagged. |
-| [**Barcode generator**](https://tools.rr-dev.eu/barcode-generator) | EAN-13, EAN-8, UPC-A, Code 128, Code 39, ITF-14, ITF, Codabar, MSI and Pharmacode with `jsbarcode`: validation, computed check digit, bar width, height, text and colours, SVG or PNG download, and bulk generation from a list into a ZIP. |
-| [**QR code reader**](https://tools.rr-dev.eu/qr-code-reader) | Read QR codes from an uploaded, dropped or pasted image or with the camera (only on request, stopped on exit) using `jsQR`. Recognises URLs, Wi-Fi, vCard, email, phone, SMS, location and text; links are shown as text with warnings and never opened automatically. |
-| [**Sort lines**](https://tools.rr-dev.eu/sort-lines) | Sort lines alphabetically (`Intl.Collator`, Italian or English rules), naturally, by length, by frequency, in reverse or randomly; remove duplicates (with or without case, spaces), blank lines and margins, count occurrences, add prefix, suffix and numbering. |
-| [**Find and replace**](https://tools.rr-dev.eu/find-replace) | Plain-text or regex find and replace (flags g, i, m, s, u, `$1` and `$<name>` groups, case, whole words), several rules in sequence, highlighted preview with counts. Runs in a Web Worker with a timeout against catastrophic regexes. |
-| [**Text to speech**](https://tools.rr-dev.eu/text-to-speech) | Read a text aloud with the Web Speech API: voice and language, speed, pitch, volume, pause/resume/stop and a highlighted sentence. Only local voices (`localService`) are shown and used: network voices would send the text to external servers. |
+| [**Number base converter**](https://tools.rr-dev.eu/number-base-converter) | Binary, octal, decimal, hexadecimal and any base from 2 to 36 with BigInt (no size limit), two's complement at 8, 16, 32 and 64 bits with a bit view, and IEEE-754 float32 and float64: decode a bit pattern or encode a number, with the exact stored decimal value. |
 
 ### Developers
 
@@ -67,31 +96,30 @@ Encode, decode and compute.
 
 | Tool | What it does |
 |---|---|
+| [**Regex tester**](https://tools.rr-dev.eu/regex-tester) | Test JavaScript regular expressions: flags `g i m s u y d`, highlighted matches, numbered and named groups, replacement preview (`$1`, `$<name>`, `$&`), the pattern explained in plain words and an example library. Runs in a Web Worker with a 1 second timeout, so catastrophic backtracking cannot freeze the page. |
 | [**Base64 Encode/Decode**](https://tools.rr-dev.eu/base64) | Encode and decode text or files to Base64 with correct UTF-8, an URL-safe option and data URLs. Drop a file to get its Base64, or decode back to a downloadable file with an image preview. |
 | [**URL Encode/Decode**](https://tools.rr-dev.eu/url-encode) | Percent-encode and decode text, as a component or as a full URL, with optional "space as +". Shows a copyable table of the URL parts and decoded query parameters. |
-| [**Text compare (diff)**](https://tools.rr-dev.eu/text-diff) | Compare two texts or files line by line (Myers algorithm), with word or character differences inside changed lines, side-by-side or inline view, options to ignore whitespace, case and blank lines, navigation between differences and export as a unified diff (`.patch`). Runs in a Web Worker, fine with 5,000 lines. |
 | [**Hash & checksum**](https://tools.rr-dev.eu/hash-generator) | MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of a text (live) or a file up to 2 GB, in hex and Base64, with a progress bar, cancel and a "compare with a checksum" field. |
 | [**JWT decoder**](https://tools.rr-dev.eu/jwt-decoder) | Paste a JSON Web Token (a leading `Bearer ` is fine) and read the header and payload, highlighted, the algorithm and the `exp`, `iat`, `nbf` and `auth_time` dates in your time zone and in UTC with "expires in…/expired … ago". Clear errors for missing segments, bad Base64URL or JSON; JWE (5 segments) is recognised. The signature is **not** verified. |
 | [**UUID generator**](https://tools.rr-dev.eu/uuid-generator) | UUID v4, UUID v7 (correct timestamp, monotonic within a millisecond) and ULID, 1-1000 at a time, upper/lower case, with or without hyphens, with braces; copy all or download a `.txt`. A validator reads the version, variant and the date inside v7 and ULID. Only `crypto.getRandomValues`. |
-| [**YAML / JSON / TOML converter**](https://tools.rr-dev.eu/yaml-json-converter) | Convert between YAML, JSON and TOML in every direction (`yaml` and `smol-toml`), multiple YAML documents, anchors and merge keys, 2/4-space or tab indentation, sorted keys, errors with line and column and a "go to error" button, file upload and download. |
-| [**XML formatter**](https://tools.rr-dev.eu/xml-formatter) | Format or minify XML keeping comments, CDATA, entities and `xml:space="preserve"`; well-formedness checks with line and column errors (plus the browser's DOMParser as second opinion) and a simple XML to JSON conversion. |
-| [**SQL formatter**](https://tools.rr-dev.eu/sql-formatter) | Format or minify SQL (`sql-formatter`) for standard SQL, PostgreSQL, MySQL, MariaDB, SQLite, T-SQL, BigQuery, PL/SQL and more, keyword case and indentation; the minifier never touches strings, quoted names or hints. |
 | [**HTML entities & escaping**](https://tools.rr-dev.eu/html-entities) | Encode/decode HTML entities (named, decimal, hex; basic, non-ASCII or every character) without touching the DOM, plus escape/unescape for JavaScript and JSON strings and URL components, with error positions. |
-| [**Text case converter**](https://tools.rr-dev.eu/case-converter) | camelCase, PascalCase, snake_case, SCREAMING_SNAKE, kebab-case, Train-Case, dot.case, path/case, Title Case (English and Italian rules, with elisions), Sentence case, upper/lower and aLtErNaTiNg, line by line, with acronyms and accents handled. |
-| [**Slug generator**](https://tools.rr-dev.eu/slug-generator) | URL slugs from text: accents and extended Latin transliterated, separator, maximum length without splitting words, Italian/English stop words and bulk mode (one slug per line, unique duplicates). |
-| [**Lorem ipsum generator**](https://tools.rr-dev.eu/lorem-ipsum-generator) | Paragraphs, sentences or words, optional classic opening, text or HTML `<p>`, deterministic generator with an optional seed for repeatable output. |
 | [**Cron expressions**](https://tools.rr-dev.eu/cron-expression) | Explain cron in Italian or English (`cronstrue`), validate 5 or 6 fields and `@daily`-style aliases with clear errors, field editor with presets, next N runs in local time or UTC with Vixie's day-of-month/day-of-week rule and DST handling. |
-| [**Unix timestamp converter**](https://tools.rr-dev.eu/timestamp-converter) | Timestamp to date (seconds, milliseconds, microseconds or nanoseconds, detected) and date to timestamp, ISO 8601, RFC 2822 and a readable format, any time zone of your browser with daylight saving handled, a live "now", relative time, and many timestamps at once (one per line). |
-| [**Color contrast checker (WCAG)**](https://tools.rr-dev.eu/color-contrast-checker) | Two colors (picker or HEX, rgb(), hsl(), oklch(), CSS names, with alpha), WCAG 2.x contrast ratio with AA/AAA for normal text, large text and graphical objects, preview, swap, copyable HEX/RGB/HSL/OKLCH and the closest color (lightness in OKLCH) that reaches AA and AAA. |
-| [**Regex tester**](https://tools.rr-dev.eu/regex-tester) | Test JavaScript regular expressions: flags `g i m s u y d`, highlighted matches, numbered and named groups, replacement preview (`$1`, `$<name>`, `$&`), the pattern explained in plain words and an example library. Runs in a Web Worker with a 1 second timeout, so catastrophic backtracking cannot freeze the page. |
-| [**Number base converter**](https://tools.rr-dev.eu/number-base-converter) | Binary, octal, decimal, hexadecimal and any base from 2 to 36 with BigInt (no size limit), two's complement at 8, 16, 32 and 64 bits with a bit view, and IEEE-754 float32 and float64: decode a bit pattern or encode a number, with the exact stored decimal value. |
 | [**chmod calculator**](https://tools.rr-dev.eu/chmod-calculator) | Tick r/w/x for owner, group and others plus setuid, setgid and sticky; octal (3 or 4 digits), symbolic (`rwxr-xr-x`, with s/S/t/T) and the `chmod` command stay in sync. Apply expressions such as `u+x,go-w` to the current permissions, and pick common presets (644, 755, 600…) with an explanation. |
+| [**.htpasswd generator**](https://tools.rr-dev.eu/htpasswd-generator) | `.htpasswd` lines for several users with bcrypt (`$2y$`, chosen cost, computed in a Web Worker), APR1-MD5 or `{SHA}` (the last two flagged as weak), plus a checker that tests a password against an existing line. |
+| [**Certificate decoder**](https://tools.rr-dev.eu/certificate-decoder) | Paste PEM or load a PEM/DER/CRT/CSR file: X.509 certificates (also chains) and PKCS#10 requests with subject, issuer, validity and days to expiry, SANs, key usage, extended key usage, basic constraints, key algorithm and size, serial, SHA-1/SHA-256 fingerprints, SKI/AKI. |
+
+### Web & design
+
+Colors, CSS, SVG and icons.
+
+| Tool | What it does |
+|---|---|
+| [**Slug generator**](https://tools.rr-dev.eu/slug-generator) | URL slugs from text: accents and extended Latin transliterated, separator, maximum length without splitting words, Italian/English stop words and bulk mode (one slug per line, unique duplicates). |
+| [**Color contrast checker (WCAG)**](https://tools.rr-dev.eu/color-contrast-checker) | Two colors (picker or HEX, rgb(), hsl(), oklch(), CSS names, with alpha), WCAG 2.x contrast ratio with AA/AAA for normal text, large text and graphical objects, preview, swap, copyable HEX/RGB/HSL/OKLCH and the closest color (lightness in OKLCH) that reaches AA and AAA. |
 | [**CSS unit converter**](https://tools.rr-dev.eu/css-unit-converter) | px, rem, em, pt, pc, %, vw, vh, cm, mm and inches with your own root and parent font size and viewport; a quick px-to-rem table and bulk conversion of a pasted stylesheet (comments, strings, `url()` and `@media` left alone). |
 | [**CSS generator**](https://tools.rr-dev.eu/css-generator) | Linear, radial and conic gradients (draggable or numeric color stops with opacity, angle, center, repeating) and multi-layer `box-shadow` (inset, offset, blur, spread, color with alpha), with a live preview and copyable CSS. |
 | [**SVG optimizer**](https://tools.rr-dev.eu/svg-optimizer) | Shrink SVGs with SVGO (safe default preset): precision, viewBox kept by default, metadata and comments, before/after sizes, side-by-side preview as an image (SVG is never injected into the page), many files at once with a ZIP download. |
 | [**Favicon generator**](https://tools.rr-dev.eu/favicon-generator) | From an image (PNG, JPG, SVG) or a letter or emoji, with colors, shape, padding and crop: `favicon.ico` (16, 32, 48 PNG-in-ICO), PNGs at 16, 32, 180 (apple-touch-icon), 192 and 512, `site.webmanifest` and the HTML snippet, all in a ZIP. |
-| [**.htpasswd generator**](https://tools.rr-dev.eu/htpasswd-generator) | `.htpasswd` lines for several users with bcrypt (`$2y$`, chosen cost, computed in a Web Worker), APR1-MD5 or `{SHA}` (the last two flagged as weak), plus a checker that tests a password against an existing line. |
-| [**Certificate decoder**](https://tools.rr-dev.eu/certificate-decoder) | Paste PEM or load a PEM/DER/CRT/CSR file: X.509 certificates (also chains) and PKCS#10 requests with subject, issuer, validity and days to expiry, SANs, key usage, extended key usage, basic constraints, key algorithm and size, serial, SHA-1/SHA-256 fingerprints, SKI/AKI. |
 
 ### Security
 

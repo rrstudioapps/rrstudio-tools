@@ -206,10 +206,35 @@
   }
 }
 .search {
+  position: relative;
   flex: 0 1 280px;
   min-width: 0;
   input {
     width: 100%;
+  }
+}
+// Suggerimento della scorciatoia: solo con mouse/tastiera, non sui dispositivi touch
+.kbd {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: var(--space-3);
+  transform: translateY(-50%);
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .kbd {
+    display: block;
+  }
+  .search input:focus ~ .kbd,
+  .search input:not(:placeholder-shown) ~ .kbd {
+    display: none;
   }
 }
 .results {
@@ -269,7 +294,61 @@
     flex-basis: 100%;
   }
   .filters-row {
+    flex-wrap: nowrap;
     flex-direction: column-reverse;
     align-items: stretch;
+  }
+}
+
+// Schermi stretti: pill in una sola riga scorrevole e card compatte
+@media (max-width: 600px) {
+  .pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px; // non tagliare il bordo delle pill
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .pill {
+    flex: 0 0 auto;
+  }
+  .cat {
+    margin-top: var(--space-5);
+  }
+  .cat-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tools-grid .item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+    padding-block: var(--space-3);
+    h3 {
+      font-size: var(--fs-lg);
+    }
+    p {
+      font-size: var(--fs-sm);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .num,
+    .open {
+      display: none; // ridondanti su mobile: il link ha già il titolo
+    }
+    &.soon .num {
+      display: none;
+    }
+  }
+  .why .item {
+    padding-block: var(--space-4);
   }
 }

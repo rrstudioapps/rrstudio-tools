@@ -135,3 +135,29 @@ describe('highlightPieces e escapeRegex', () => {
     expect(new RegExp(escapeRegex(s), 'u').test(s)).toBe(true);
   });
 });
+
+describe('regex: parola intera Unicode e segnaposto', () => {
+  it('parola intera con lettere accentate (stessi confini della modalità testo)', () => {
+    const r = run('città cittàdina la città.', [rule({ mode: 'regex', find: 'città', replace: 'X', wholeWord: true })]);
+    expect(r.output).toBe('X cittàdina la X.');
+    expect(r.outcomes[0].count).toBe(2);
+  });
+  it('parola intera con pattern non valido con u: errore del motore, nessun crash', () => {
+    const r = run('abc', [rule({ mode: 'regex', find: '\\q', replace: 'X', wholeWord: true })]);
+    expect(r.outcomes[0].error).not.toBeNull();
+    expect(r.output).toBe('abc');
+  });
+  it('i segnaposto della sostituzione si espandono come in String.replace', () => {
+    const text = 'ab-cd ef-gh';
+    for (const rep of ['$2$1', '[$&]', '$$', '$`|$\'', '$<x>', '$12', '$0']) {
+      const find = rep === '$<x>' ? '(?<x>[a-z]+)-(?<y>[a-z]+)' : '([a-z]+)-([a-z]+)';
+      const r = run(text, [rule({ mode: 'regex', find, replace: rep })]);
+      expect(r.output).toBe(text.replace(new RegExp(find, 'gi'), rep));
+    }
+  });
+  it('conteggio e posizioni in un solo passaggio', () => {
+    const r = run('a b a', [rule({ mode: 'regex', find: 'a', replace: 'X' })]);
+    expect(r.outcomes[0].count).toBe(2);
+    expect(r.previewMatches).toEqual([{ index: 0, end: 1 }, { index: 4, end: 5 }]);
+  });
+});

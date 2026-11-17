@@ -75,6 +75,7 @@ export class YamlJsonConverterPage {
       let text = e.message;
       if (text === 'toml-root') text = this.i18n.t('yj.err.tomlRoot');
       else if (text.startsWith('toml-null:')) text = this.i18n.t('yj.err.tomlNull', { path: text.slice('toml-null:'.length) });
+      else if (text.startsWith('json-nonfinite:')) text = this.i18n.t('yj.err.jsonNonFinite', { path: text.slice('json-nonfinite:'.length) });
       return { title: this.i18n.t('yj.err.write', { fmt }), text };
     }
     const title = this.i18n.t('yj.err.parse', { fmt: FORMAT_LABEL[this.from()] });

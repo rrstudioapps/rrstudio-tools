@@ -290,6 +290,23 @@ export function findTomlProblem(value: unknown, path = ''): string | null {
   return null;
 }
 
+/** Percorso del primo numero non finito (NaN, Infinity, -Infinity), che JSON non può rappresentare, o null. */
+export function findNonFinite(value: unknown, path = ''): string | null {
+  if (typeof value === 'number') return Number.isFinite(value) ? null : `${path || '(root)'} = ${value}`;
+  if (Array.isArray(value)) {
+    for (let i = 0; i < value.length; i++) {
+      const p = findNonFinite(value[i], `${path}[${i}]`);
+      if (p) return p;
+    }
+  } else if (value !== null && typeof value === 'object' && !(value instanceof Date)) {
+    for (const [k, v] of Object.entries(value)) {
+      const p = findNonFinite(v, path ? `${path}.${k}` : k);
+      if (p) return p;
+    }
+  }
+  return null;
+}
+
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return v !== null && typeof v === 'object' && !Array.isArray(v) && !(v instanceof Date);
 }
@@ -299,6 +316,10 @@ function indentSize(indent: Indent): number {
 }
 
 export function serialize(value: unknown, format: Format, opts: ConvertOptions, asDocuments: boolean): string {
+  if (format === 'json') {
+    const bad = findNonFinite(value);
+    if (bad) throw new RangeError('json-nonfinite:' + bad);
+  }
   const data = normalize(value, format === 'toml', opts.sortKeys);
   if (format === 'json') {
     return JSON.stringify(data, null, opts.indent === 'tab' ? '\t' : indentSize(opts.indent)) ?? 'null';

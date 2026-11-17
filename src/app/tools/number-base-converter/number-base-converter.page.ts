@@ -91,7 +91,7 @@ export class NumberBaseConverterPage {
   protected readonly rows = computed<Row[]>(() => {
     const v = this.value();
     if (v === null) return [];
-    const o = { upper: this.upper(), group: this.group() };
+    const o = { upper: this.upper(), group: this.group(), lang: this.i18n.lang() };
     const rows: Row[] = [
       { key: 'bin', label: this.i18n.t('nb.row.bin'), text: toBase(v, 2, o) },
       { key: 'oct', label: this.i18n.t('nb.row.oct'), text: toBase(v, 8, o) },

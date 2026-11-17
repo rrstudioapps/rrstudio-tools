@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
+import { bytesToBase64 } from '../../shared/base64';
 import { Md5 } from '../hash-generator/streaming-hash';
 
 export type HtAlgo = 'bcrypt' | 'apr1' | 'sha1';
@@ -90,16 +91,10 @@ export function apr1(password: string | Uint8Array, salt: string): string {
   return `$apr1$${salt.slice(0, 8)}$${out}`;
 }
 
-function toBase64(bytes: Uint8Array): string {
-  let s = '';
-  for (const b of bytes) s += String.fromCharCode(b);
-  return btoa(s);
-}
-
 /** `{SHA}` + base64 dello SHA-1: senza salt, quindi molto debole. */
 export async function sha1Hash(password: string | Uint8Array): Promise<string> {
   const d = await globalThis.crypto.subtle.digest('SHA-1', bytesOf(password) as BufferSource);
-  return '{SHA}' + toBase64(new Uint8Array(d));
+  return '{SHA}' + bytesToBase64(new Uint8Array(d));
 }
 
 type Bcrypt = { hash(pw: string, rounds: number): Promise<string>; compare(pw: string, hash: string): Promise<boolean> };

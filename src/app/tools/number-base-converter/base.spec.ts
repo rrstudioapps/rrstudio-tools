@@ -75,6 +75,7 @@ describe('scrittura in una base', () => {
     expect(toBase(0xdeadbeefn, 16, { group: true, upper: true })).toBe('DEAD BEEF');
     expect(toBase(1234567n, 10, { group: true })).toBe('1.234.567');
     expect(toBase(-1234567n, 10, { group: true })).toBe('-1.234.567');
+    expect(toBase(1234567n, 10, { group: true, lang: 'en' })).toBe('1,234,567');
     expect(groupFromRight('abcdefg', 3)).toBe('a bcd efg');
   });
   it('andata e ritorno su tutte le basi', () => {

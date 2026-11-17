@@ -37,7 +37,7 @@ Thanks for your interest in rrstudio Tools! / Grazie per l'interesse verso rrstu
    The SEO service points `og:image` and `twitter:image` to them; commit the new files.
    / Immagine social: `npm run og-images` genera `public/og/<lingua>/<slug>.png`, poi committa i file.
 6. Regenerate the sitemap with `UPDATE_SITEMAP=1 npm test` (the test fails if `public/sitemap.xml` is out of date).
-7. Run `npm run typecheck`, `npm test` and `npm run build`.
+7. Run `npm run typecheck`, `npm test` and `npm run build`, then `npm run smoke` and `npm run e2e` (they need the Playwright Chromium; `CHROMIUM_PATH` if it is not found).
 
 ## Development / Sviluppo
 
@@ -46,4 +46,6 @@ npm ci
 npm start            # dev server
 npm test             # unit tests
 npm run build        # static build in dist/rrstudio-tools/browser
+npm run smoke        # after a build: every page (IT/EN, 360 and 1280 px) for console errors, horizontal scroll, axe (light and dark)
+npm run e2e          # after a build: runs the tool interactions of the screenshot script without writing files
 ```

@@ -7,7 +7,7 @@ import { formatNumber } from '../../shared/decimal';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { DC_DICTIONARIES } from './date-calculator.i18n';
-import { Ymd, addInterval, computeAge, dateDifference, formatIso, isLeapYear, parseIso } from './dates';
+import { Ymd, addInterval, computeAge, dateDifference, formatIso, isLeapYear, parseIso, ymdToUtcMs } from './dates';
 
 type Mode = 'diff' | 'add' | 'age';
 type Dir = 'plus' | 'minus';
@@ -79,7 +79,7 @@ export class DateCalculatorPage {
   protected readonly countsBad = computed(() => [this.years(), this.months(), this.weeks(), this.days()].some((t) => parseCount(t) === null));
 
   private dateText(d: Ymd): string {
-    return new Intl.DateTimeFormat(this.i18n.locale(), { dateStyle: 'full', timeZone: 'UTC' }).format(Date.UTC(d.y, d.m - 1, d.d));
+    return new Intl.DateTimeFormat(this.i18n.locale(), { dateStyle: 'full', timeZone: 'UTC' }).format(ymdToUtcMs(d));
   }
 
   private num(n: number): string {

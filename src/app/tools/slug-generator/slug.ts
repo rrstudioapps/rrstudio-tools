@@ -85,22 +85,32 @@ export interface BulkOptions extends SlugOptions {
 
 /** Uno slug per ogni riga; le righe vuote restano vuote. */
 export function generateBulk(text: string, opts: BulkOptions): string[] {
-  const seen = new Map<string, number>();
+  const used = new Set<string>(); // tutti gli slug già emessi, anche quelli con suffisso
+  const counters = new Map<string, number>(); // ultimo suffisso provato per ogni slug di base
   return text
     .replace(/\r\n?/g, '\n')
     .split('\n')
     .map((line) => {
       const slug = generateSlug(line, opts);
       if (!opts.unique || slug === '') return slug;
-      const n = (seen.get(slug) ?? 0) + 1;
-      seen.set(slug, n);
-      if (n === 1) return slug;
-      const suffix = opts.separator + n;
-      let base = slug;
-      if (opts.maxLength > 0 && base.length + suffix.length > opts.maxLength) {
-        base = base.slice(0, Math.max(1, opts.maxLength - suffix.length)).replace(/[-_.]+$/, '');
+      if (!used.has(slug)) {
+        used.add(slug);
+        return slug;
       }
-      return base + suffix;
+      let n = counters.get(slug) ?? 1;
+      let candidate: string;
+      do {
+        n++;
+        const suffix = opts.separator + n;
+        let base = slug;
+        if (opts.maxLength > 0 && base.length + suffix.length > opts.maxLength) {
+          base = base.slice(0, Math.max(1, opts.maxLength - suffix.length)).replace(/[-_.]+$/, '');
+        }
+        candidate = base + suffix;
+      } while (used.has(candidate));
+      counters.set(slug, n);
+      used.add(candidate);
+      return candidate;
     });
 }
 

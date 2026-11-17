@@ -47,6 +47,8 @@ export interface FormatOptions {
   upper?: boolean;
   /** Raggruppa le cifre (4 per binario ed esadecimale, 3 per ottale, 3 per decimale). */
   group?: boolean;
+  /** Lingua dell'interfaccia: decide il separatore delle migliaia in decimale ('.' in italiano, ',' in inglese, come shared/decimal.ts). */
+  lang?: 'it' | 'en';
 }
 
 const GROUP_SIZE: Record<number, number> = { 2: 4, 8: 3, 10: 3, 16: 4 };
@@ -57,7 +59,7 @@ export function toBase(value: bigint, base: number, opts: FormatOptions = {}): s
   if (neg) s = s.slice(1);
   if (opts.upper) s = s.toUpperCase();
   const size = GROUP_SIZE[base];
-  if (opts.group && size) s = groupFromRight(s, size, base === 10 ? '.' : ' ');
+  if (opts.group && size) s = groupFromRight(s, size, base === 10 ? (opts.lang === 'en' ? ',' : '.') : ' ');
   return (neg ? '-' : '') + s;
 }
 

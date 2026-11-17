@@ -25,6 +25,12 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Install Chromium for the browser tests
+        run: npx playwright-core install --with-deps chromium
+      - name: Smoke test (all pages, console, overflow, axe)
+        run: npm run smoke
+      - name: E2E (tool interactions)
+        run: npm run e2e
       - name: Check prerendered pages
         run: |
           test -f dist/rrstudio-tools/browser/index.html

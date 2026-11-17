@@ -136,3 +136,19 @@ describe('esportazione CSV', () => {
     expect(scheduleToCsv([{ n: 2, payment: 5, interest: 0, principal: 5, balance: 0 }], head, 'en')).toContain('2,0.05,0.00,0.05,0.00');
   });
 });
+
+describe('capitali piccoli e durate lunghe', () => {
+  it('nessuna rata negativa, piano completo fino alla scadenza, residuo finale zero', () => {
+    for (const tan of [0, 1, 17, 100]) {
+      for (const capital of [1, 100, 1000, 5555]) {
+        const r = run({ capital, tan, months: 600, periodicity: 'monthly' });
+        expect(r.schedule.length).toBe(600);
+        expect(r.schedule.every((row) => row.principal >= 0 && row.payment >= 0 && row.balance >= 0)).toBe(true);
+        expect(r.schedule[599].balance).toBe(0);
+        // il debito non si azzera prima della scadenza (se il capitale in centesimi lo permette)
+        if (capital > 1) expect(r.schedule.slice(0, 599).every((row) => row.balance > 0)).toBe(true);
+        expect(r.schedule.reduce((a, row) => a + row.principal, 0)).toBe(capital);
+      }
+    }
+  });
+});

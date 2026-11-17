@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { I18nService } from '../core/i18n/i18n.service';
 import { CATEGORIES, TOOLS, ToolCategory, ToolCategoryId, ToolDefinition } from '../tools/tools.registry';
@@ -24,6 +24,10 @@ export class Home {
   protected readonly i18n = inject(I18nService);
   private readonly location = inject(Location);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  /** ⌘K su Mac, Ctrl+K altrove: solo per il suggerimento mostrato accanto alla ricerca. */
+  protected readonly modKey = signal('Ctrl');
 
   /** In /en/ niente strumenti italyOnly né la loro categoria: restano in una riga discreta in fondo. */
   protected readonly english = computed(() => this.i18n.lang() === 'en');
@@ -60,7 +64,7 @@ export class Home {
       { id: null, label: this.i18n.t('home.filter.all'), count: m.length },
       ...this.shownCategories().map((c) => ({
         id: c.id,
-        label: this.i18n.t(c.titleKey),
+        label: this.i18n.t(c.shortKey),
         count: m.filter((t) => t.category === c.id).length,
       })),
     ];
@@ -92,10 +96,24 @@ export class Home {
       const slugUrl = '/?' + (param ? 'categoria=' + param : '') + (snap.fragment ? '#' + snap.fragment : '');
       this.urlCategory.set(categoryFromUrl(slugUrl));
       this.ready.set(true);
+      if (/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) this.modKey.set('⌘');
+      // scorciatoie: "/" e Ctrl/⌘+K portano il focus sulla ricerca (non se si sta già scrivendo in un campo)
+      const onKey = (e: KeyboardEvent) => {
+        const input = this.searchInput()?.nativeElement;
+        if (!input || e.defaultPrevented) return;
+        const isK = (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 'k';
+        const isSlash = e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !this.isTyping(e.target);
+        if (!isK && !isSlash) return;
+        e.preventDefault();
+        input.focus();
+        input.select();
+      };
+      document.addEventListener('keydown', onKey);
+      this.destroyRef.onDestroy(() => document.removeEventListener('keydown', onKey));
     });
     // tasto indietro/avanti: il router non vede gli URL scritti con location.go, ci pensiamo noi
     const sub = this.location.subscribe((e) => this.urlCategory.set(categoryFromUrl(e.url ?? '')));
-    inject(DestroyRef).onDestroy(() => sub.unsubscribe());
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 
   protected select(id: ToolCategoryId | null): void {
@@ -111,6 +129,20 @@ export class Home {
 
   protected onSearch(e: Event): void {
     this.query.set((e.target as HTMLInputElement).value);
+  }
+
+  /** Esc nella ricerca la svuota. */
+  protected onSearchKey(e: KeyboardEvent): void {
+    if (e.key === 'Escape' && this.query() !== '') {
+      e.preventDefault();
+      this.query.set('');
+      (e.target as HTMLInputElement).value = '';
+    }
+  }
+
+  private isTyping(t: EventTarget | null): boolean {
+    const el = t as HTMLElement | null;
+    return !!el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
   }
 
   protected reset(): void {

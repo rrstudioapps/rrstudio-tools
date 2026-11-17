@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
+import { bytesToBase64 } from '../../shared/base64';
 import { Md5, Sha256 } from './streaming-hash';
 
 export type Algo = 'md5' | 'sha1' | 'sha256' | 'sha384' | 'sha512';
@@ -41,11 +42,7 @@ export function toHex(bytes: Uint8Array, upper = false): string {
   return upper ? s.toUpperCase() : s;
 }
 
-export function toBase64(bytes: Uint8Array): string {
-  let s = '';
-  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-  return btoa(s);
-}
+export const toBase64 = (bytes: Uint8Array): string => bytesToBase64(bytes);
 
 /** Digest di un buffer: SHA via Web Crypto, MD5 in TypeScript. */
 export async function digest(algo: Algo, data: Uint8Array): Promise<Uint8Array> {

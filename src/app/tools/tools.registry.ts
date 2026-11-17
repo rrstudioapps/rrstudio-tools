@@ -9,7 +9,7 @@ import type { DictKey } from '../core/i18n/it';
  * Descrizione di un tool. Per aggiungerne uno: nuova cartella in tools/ + una voce qui.
  * Titolo/descrizione e dati SEO sono chiavi del dizionario principale (core/i18n).
  */
-export type ToolCategoryId = 'data' | 'dev' | 'security' | 'italy';
+export type ToolCategoryId = 'text' | 'data' | 'media' | 'calc' | 'dev' | 'web' | 'security' | 'italy';
 
 /** Categoria mostrata in home. L'ordine dell'array CATEGORIES è quello delle sezioni. */
 export interface ToolCategory {
@@ -19,14 +19,20 @@ export interface ToolCategory {
   /** Lo stesso in inglese (?category=slug o #slug nelle pagine /en/). */
   slugEn: string;
   titleKey: DictKey;
+  /** Nome corto per le pill dei filtri. */
+  shortKey: DictKey;
   descriptionKey: DictKey;
 }
 
 export const CATEGORIES: readonly ToolCategory[] = [
-  { id: 'data', slug: 'dati', slugEn: 'data', titleKey: 'cat.data.title', descriptionKey: 'cat.data.desc' },
-  { id: 'dev', slug: 'sviluppatori', slugEn: 'developers', titleKey: 'cat.dev.title', descriptionKey: 'cat.dev.desc' },
-  { id: 'security', slug: 'sicurezza', slugEn: 'security', titleKey: 'cat.security.title', descriptionKey: 'cat.security.desc' },
-  { id: 'italy', slug: 'italia', slugEn: 'italy', titleKey: 'cat.italy.title', descriptionKey: 'cat.italy.desc' },
+  { id: 'text', slug: 'testo', slugEn: 'text', titleKey: 'cat.text.title', shortKey: 'cat.text.short', descriptionKey: 'cat.text.desc' },
+  { id: 'data', slug: 'dati', slugEn: 'data', titleKey: 'cat.data.title', shortKey: 'cat.data.short', descriptionKey: 'cat.data.desc' },
+  { id: 'media', slug: 'immagini-pdf', slugEn: 'images-pdf', titleKey: 'cat.media.title', shortKey: 'cat.media.short', descriptionKey: 'cat.media.desc' },
+  { id: 'calc', slug: 'calcolatori', slugEn: 'calculators', titleKey: 'cat.calc.title', shortKey: 'cat.calc.short', descriptionKey: 'cat.calc.desc' },
+  { id: 'dev', slug: 'sviluppatori', slugEn: 'developers', titleKey: 'cat.dev.title', shortKey: 'cat.dev.short', descriptionKey: 'cat.dev.desc' },
+  { id: 'web', slug: 'web-design', slugEn: 'web-design', titleKey: 'cat.web.title', shortKey: 'cat.web.short', descriptionKey: 'cat.web.desc' },
+  { id: 'security', slug: 'sicurezza', slugEn: 'security', titleKey: 'cat.security.title', shortKey: 'cat.security.short', descriptionKey: 'cat.security.desc' },
+  { id: 'italy', slug: 'italia', slugEn: 'italy', titleKey: 'cat.italy.title', shortKey: 'cat.italy.short', descriptionKey: 'cat.italy.desc' },
 ];
 
 export interface ToolDefinition {
@@ -67,7 +73,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'qr-code-generator',
     path: 'qr-code-generator',
     icon: 'qr',
-    category: 'data',
+    category: 'media',
     keywords: {
       it: 'qr code generatore codice qr wifi vcard biglietto da visita contatto url link sms email geo posizione logo png svg barcode',
       en: 'qr code generator wifi vcard business card contact url link sms email geo location logo png svg barcode',
@@ -81,7 +87,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'text-diff',
     path: 'text-diff',
     icon: 'columns',
-    category: 'dev',
+    category: 'text',
     keywords: {
       it: 'diff confronto confronta testi file differenze righe parole patch unified git compare',
       en: 'diff compare text files differences lines words patch unified git',
@@ -95,7 +101,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'markdown-editor',
     path: 'markdown-editor',
     icon: 'markdown',
-    category: 'data',
+    category: 'text',
     keywords: {
       it: 'markdown editor anteprima live md html pdf titoli elenchi tabelle codice formatta scrivi documento readme commonmark gfm',
       en: 'markdown editor live preview md html pdf headings lists tables code format write document readme commonmark gfm',
@@ -109,7 +115,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'word-counter',
     path: 'word-counter',
     icon: 'type',
-    category: 'data',
+    category: 'text',
     keywords: {
       it: 'contatore parole caratteri conta frasi paragrafi righe tempo di lettura parlato densità parole frequenti stopword sms twitter x meta description maiuscolo minuscolo iniziali maiuscole',
       en: 'word counter character count sentences paragraphs lines reading time speaking time keyword density frequent words stopwords sms twitter x meta description uppercase lowercase title case',
@@ -198,7 +204,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'image-compressor',
     path: 'image-compressor',
     icon: 'image',
-    category: 'data',
+    category: 'media',
     keywords: { it: 'immagini foto comprimi converti webp avif jpeg png ridimensiona zip', en: 'images photos compress convert webp avif jpeg png resize zip' },
     titleKey: 'tool.ic.title',
     descriptionKey: 'tool.ic.desc',
@@ -210,7 +216,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'pdf-tools',
     path: 'pdf-tools',
     icon: 'layers',
-    category: 'data',
+    category: 'media',
     keywords: { it: 'pdf unisci dividi ruota pagine estrai riordina merge split', en: 'pdf merge split rotate pages extract reorder' },
     titleKey: 'tool.pdf.title',
     descriptionKey: 'tool.pdf.desc',
@@ -221,7 +227,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'images-to-pdf',
     path: 'images-to-pdf',
     icon: 'image',
-    category: 'data',
+    category: 'media',
     keywords: {
       it: 'immagini in pdf jpg png webp foto unisci converti pagina a4 letter margini',
       en: 'images to pdf jpg png webp photos combine convert page a4 letter margins',
@@ -236,7 +242,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'pdf-to-images',
     path: 'pdf-to-images',
     icon: 'file',
-    category: 'data',
+    category: 'media',
     keywords: {
       it: 'pdf in immagini png jpeg jpg converti pagine dpi risoluzione esporta zip',
       en: 'pdf to images png jpeg jpg convert pages dpi resolution export zip',
@@ -358,7 +364,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'yaml-json-converter',
     path: 'yaml-json-converter',
     icon: 'swap',
-    category: 'dev',
+    category: 'data',
     keywords: {
       it: 'yaml yml json toml converti convertitore conversione configurazione config docker compose kubernetes documenti multipli indentazione formatta valida',
       en: 'yaml yml json toml convert converter conversion configuration config docker compose kubernetes multiple documents indentation format validate',
@@ -372,7 +378,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'xml-formatter',
     path: 'xml-formatter',
     icon: 'markup',
-    category: 'dev',
+    category: 'data',
     keywords: {
       it: 'xml formatta formattatore minifica indenta rientri valida buona formazione errori riga colonna cdata commenti converti json svg rss',
       en: 'xml format formatter beautify pretty print minify indent validate well-formed errors line column cdata comments convert json svg rss',
@@ -386,7 +392,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'sql-formatter',
     path: 'sql-formatter',
     icon: 'database',
-    category: 'dev',
+    category: 'data',
     keywords: {
       it: 'sql formatta formattatore query minifica indenta database postgresql postgres mysql mariadb sqlite sql server t-sql bigquery oracle maiuscole parole chiave',
       en: 'sql format formatter beautify query minify indent database postgresql postgres mysql mariadb sqlite sql server t-sql bigquery oracle uppercase keywords',
@@ -414,7 +420,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'case-converter',
     path: 'case-converter',
     icon: 'aa',
-    category: 'data',
+    category: 'text',
     keywords: {
       it: 'maiuscole minuscole camelcase pascalcase snake_case kebab-case screaming title case sentence case converti testo maiuscolo minuscolo capitalizza prima lettera alternato iniziali',
       en: 'uppercase lowercase camelcase pascalcase snake_case kebab-case screaming title case sentence case convert text capitalize first letter alternating',
@@ -428,7 +434,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'slug-generator',
     path: 'slug-generator',
     icon: 'slug',
-    category: 'dev',
+    category: 'web',
     keywords: {
       it: 'slug generatore url permalink indirizzo amichevole seo titolo accenti traslitterazione trattini parole vuote stop words blocco elenco',
       en: 'slug generator url permalink friendly address seo title accents transliteration hyphens stop words bulk list',
@@ -442,7 +448,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'lorem-ipsum-generator',
     path: 'lorem-ipsum-generator',
     icon: 'paragraph',
-    category: 'data',
+    category: 'text',
     keywords: {
       it: 'lorem ipsum generatore testo segnaposto riempimento finto paragrafi frasi parole html seme mockup placeholder',
       en: 'lorem ipsum generator placeholder dummy filler text paragraphs sentences words html seed mockup',
@@ -470,7 +476,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'timestamp-converter',
     path: 'timestamp-converter',
     icon: 'clock',
-    category: 'dev',
+    category: 'calc',
     keywords: {
       it: 'timestamp unix epoch data ora converti convertitore secondi millisecondi fuso orario iso 8601 rfc 2822 ora legale adesso relativo',
       en: 'timestamp unix epoch date time convert converter seconds milliseconds time zone iso 8601 rfc 2822 daylight saving now relative',
@@ -484,7 +490,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'color-contrast-checker',
     path: 'color-contrast-checker',
     icon: 'contrast',
-    category: 'dev',
+    category: 'web',
     keywords: {
       it: 'colori contrasto wcag accessibilita aa aaa rapporto testo sfondo hex rgb hsl oklch conversione luminanza a11y',
       en: 'color colour contrast wcag accessibility aa aaa ratio text background hex rgb hsl oklch conversion luminance a11y',
@@ -616,7 +622,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'percentage-calculator',
     path: 'percentage-calculator',
     icon: 'percent',
-    category: 'data',
+    category: 'calc',
     keywords: {
       it: 'percentuale percentuali calcolo sconto aumento variazione percentuale ricarico inversa scorporo per cento prezzo di partenza',
       en: 'percentage percent calculator discount markup increase decrease change reverse percentage original price',
@@ -631,7 +637,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'unit-converter',
     path: 'unit-converter',
     icon: 'ruler',
-    category: 'data',
+    category: 'calc',
     keywords: {
       it: 'unità di misura convertitore conversione lunghezza peso massa temperatura celsius fahrenheit kelvin area volume velocità tempo byte kb kib pressione bar psi energia kwh kcal miglia pollici libbre litri galloni',
       en: 'unit converter conversion length weight mass temperature celsius fahrenheit kelvin area volume speed time bytes kb kib pressure bar psi energy kwh kcal miles inches pounds litres gallons',
@@ -645,7 +651,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'date-calculator',
     path: 'date-calculator',
     icon: 'calendar',
-    category: 'data',
+    category: 'calc',
     keywords: {
       it: 'date calcolo differenza tra date giorni tra due date aggiungi togli giorni mesi anni settimane età compleanno quanti anni ho bisestile calendario',
       en: 'date calculator difference between dates days between add subtract days months years weeks age birthday how old leap year calendar',
@@ -659,7 +665,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'timezone-converter',
     path: 'timezone-converter',
     icon: 'globe',
-    category: 'data',
+    category: 'calc',
     keywords: {
       it: 'fusi orari fuso orario convertitore ora legale orologio mondiale città utc gmt riunione new york tokyo londra roma iana confronta',
       en: 'time zones time zone converter daylight saving world clock city utc gmt meeting planner new york tokyo london rome iana compare',
@@ -673,7 +679,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'number-base-converter',
     path: 'number-base-converter',
     icon: 'binary',
-    category: 'dev',
+    category: 'calc',
     keywords: {
       it: 'basi numeriche binario ottale esadecimale decimale hex bin convertitore complemento a due bit ieee 754 float32 float64 virgola mobile bigint base 36',
       en: 'number base converter binary octal hexadecimal decimal hex bin twos complement bits ieee 754 float32 float64 floating point bigint base 36',
@@ -688,7 +694,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'barcode-generator',
     path: 'barcode-generator',
     icon: 'barcode',
-    category: 'data',
+    category: 'media',
     keywords: {
       it: 'codice a barre barcode ean13 ean-13 ean8 upc code128 code39 itf14 codabar cifra di controllo etichette svg png zip generatore elenco',
       en: 'barcode generator ean13 ean-13 ean8 upc code128 code39 itf14 codabar check digit labels svg png zip bulk list',
@@ -702,7 +708,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'qr-code-reader',
     path: 'qr-code-reader',
     icon: 'scan',
-    category: 'data',
+    category: 'media',
     keywords: {
       it: 'lettore qr leggi codice qr scanner fotocamera immagine decodifica wifi vcard url scansione inquadra',
       en: 'qr code reader scanner scan camera image decode wifi vcard url read',
@@ -716,7 +722,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'sort-lines',
     path: 'sort-lines',
     icon: 'sortLines',
-    category: 'data',
+    category: 'text',
     keywords: {
       it: 'ordina righe elenco alfabetico ordine duplicati rimuovi righe vuote conta occorrenze numera prefisso suffisso casuale naturale lunghezza',
       en: 'sort lines list alphabetical order duplicates remove blank lines count occurrences number prefix suffix random natural length',
@@ -730,7 +736,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'find-replace',
     path: 'find-replace',
     icon: 'findReplace',
-    category: 'data',
+    category: 'text',
     keywords: {
       it: 'trova e sostituisci cerca sostituisci testo regex espressioni regolari gruppi più regole massa sostituzione parole intere',
       en: 'find and replace search replace text regex regular expressions groups multiple rules bulk whole words',
@@ -744,7 +750,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'text-to-speech',
     path: 'text-to-speech',
     icon: 'speaker',
-    category: 'data',
+    category: 'text',
     keywords: {
       it: 'sintesi vocale leggi ad alta voce testo in voce tts voce lettura sintetizzatore audio speechsynthesis',
       en: 'text to speech tts read aloud voice synthesis synthesizer audio speechsynthesis reader',
@@ -772,7 +778,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'css-unit-converter',
     path: 'css-unit-converter',
     icon: 'expand',
-    category: 'dev',
+    category: 'web',
     keywords: {
       it: 'css unità px rem em pt percentuale vw vh cm mm pollici convertitore pixel dimensione carattere responsive foglio di stile conversione in blocco',
       en: 'css units px rem em pt percent vw vh cm mm inches converter pixels font size responsive stylesheet bulk conversion',
@@ -786,7 +792,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'css-generator',
     path: 'css-generator',
     icon: 'palette',
-    category: 'dev',
+    category: 'web',
     keywords: {
       it: 'css generatore gradiente lineare radiale conico sfumatura box-shadow ombra ombre inset colore stop anteprima codice linear-gradient radial-gradient conic-gradient',
       en: 'css generator gradient linear radial conic box-shadow shadow shadows inset color stops preview code linear-gradient radial-gradient conic-gradient',
@@ -800,7 +806,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'svg-optimizer',
     path: 'svg-optimizer',
     icon: 'pen',
-    category: 'dev',
+    category: 'web',
     keywords: {
       it: 'svg ottimizzatore ottimizza comprimi riduci peso svgo vettoriale minifica metadati viewbox zip icone',
       en: 'svg optimizer optimize compress minify reduce size svgo vector metadata viewbox zip icons',
@@ -814,7 +820,7 @@ export const TOOLS: readonly ToolDefinition[] = [
     id: 'favicon-generator',
     path: 'favicon-generator',
     icon: 'star',
-    category: 'dev',
+    category: 'web',
     keywords: {
       it: 'favicon generatore ico png apple touch icon android chrome manifest webmanifest icona sito emoji lettera immagine logo 16 32 180 192 512 zip',
       en: 'favicon generator ico png apple touch icon android chrome manifest webmanifest site icon emoji letter image logo 16 32 180 192 512 zip',

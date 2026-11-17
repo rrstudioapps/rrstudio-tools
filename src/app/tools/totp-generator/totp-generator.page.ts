@@ -33,6 +33,7 @@ import {
   verifyTotp,
 } from './totp';
 import { TOTP_DICTIONARIES } from './totp-generator.i18n';
+import { bindSvgPreview } from '../../shared/svg-preview';
 
 @Component({
   selector: 'app-totp-generator',
@@ -187,26 +188,12 @@ export class TotpGeneratorPage {
         .then((r) => {
           if (id === this.seqVerify) this.verifyResult.set(r);
         })
-        .catch(() => this.verifyResult.set(null));
+        .catch(() => {
+          if (id === this.seqVerify) this.verifyResult.set(null);
+        });
     });
     // anteprima del QR: lo stesso SVG che si scarica, servito come immagine da un object URL
-    effect((onCleanup) => {
-      const svg = this.svg();
-      if (!svg || typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
-        this.previewUrl.set(null);
-        return;
-      }
-      let url: string;
-      try {
-        url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
-      } catch {
-        this.previewUrl.set(null);
-        return;
-      }
-      this.previewUrl.set(url);
-      onCleanup(() => URL.revokeObjectURL(url));
-    });
-    this.destroyRef.onDestroy(() => this.previewUrl.set(null));
+    bindSvgPreview(() => this.svg(), this.previewUrl);
   }
 
   protected onSecret(e: Event): void {

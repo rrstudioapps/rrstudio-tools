@@ -2,6 +2,8 @@
 // © 2026 rrstudio — rrstudio Tools
 // Genera gli screenshot in docs/screenshots/ servendo dist/rrstudio-tools/browser in locale.
 // Uso: npm run build && npm run screenshots   (serve Chromium di Playwright già installato)
+// Con --check (npm run e2e) esegue tutte le interazioni ma non scrive nulla; exit 1 se una pagina
+// dà errori in console, fa richieste esterne o un'interazione fallisce.
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
@@ -12,7 +14,8 @@ const HOST = process.env.HOST ?? '127.0.0.1';
 const PORT = 4377;
 const base = `http://${HOST}:${PORT}`;
 const out = 'docs/screenshots';
-mkdirSync(out, { recursive: true });
+const CHECK = process.argv.includes('--check') || process.env.CHECK === '1';
+if (!CHECK) mkdirSync(out, { recursive: true });
 
 // Server statico temporaneo, fermato per PID al termine
 const server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', HOST], {
@@ -55,13 +58,19 @@ try {
     });
     const page = await ctx.newPage();
     page.setDefaultTimeout(20000);
-    page.on('request', (r) => !/^(blob:|data:)/.test(r.url()) && !r.url().startsWith(base) && errors.push('richiesta esterna: ' + r.url()));
-    page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
-    page.on('pageerror', (e) => errors.push(e.message));
-    await page.goto(base + path);
-    await page.waitForTimeout(900); // animazione d'ingresso delle sezioni
-    if (setup) await setup(page);
-    await page.screenshot({ path: join(out, name), fullPage: true });
+    const prefix = `[${name}] `;
+    page.on('request', (r) => !/^(blob:|data:)/.test(r.url()) && !r.url().startsWith(base) && errors.push(prefix + 'richiesta esterna: ' + r.url()));
+    page.on('console', (m) => m.type() === 'error' && errors.push(prefix + m.text()));
+    page.on('pageerror', (e) => errors.push(prefix + e.message));
+    try {
+      await page.goto(base + path);
+      await page.waitForTimeout(900); // animazione d'ingresso delle sezioni
+      if (setup) await setup(page);
+      if (!CHECK) await page.screenshot({ path: join(out, name), fullPage: true });
+    } catch (e) {
+      // un'interazione fallita non ferma gli altri: viene riportata alla fine con exit 1
+      errors.push(prefix + 'interazione fallita: ' + e.message.split('\n')[0]);
+    }
     await ctx.close();
   }
   const csvSample = async (page) => {
@@ -866,6 +875,8 @@ try {
   server.kill();
 }
 if (errors.length) {
-  console.error('Errori in console:', errors);
+  console.error('Errori:', errors);
   process.exitCode = 1;
+} else if (CHECK) {
+  console.log('e2e: tutte le interazioni riuscite, nessun errore in console');
 }

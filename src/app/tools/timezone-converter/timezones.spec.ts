@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   cityOf,
   formatOffset,
@@ -165,5 +165,19 @@ describe('ricerca per città', () => {
   });
   it('normalizzazione', () => {
     expect(normalizeSearch(' Città_del / Messico ')).toBe('citta del messico');
+  });
+});
+
+describe('cache dei formatter dei nomi', () => {
+  it('una seconda ricerca per nome esteso non crea nuovi Intl.DateTimeFormat', () => {
+    const zones = ['Europe/Rome', 'America/New_York', 'Asia/Tokyo', 'Australia/Sydney'];
+    searchZones('zzz nome inesistente', zones, 'it-IT'); // scalda la cache
+    const spy = vi.spyOn(Intl, 'DateTimeFormat');
+    try {
+      searchZones('zzz nome inesistente', zones, 'it-IT');
+      expect(spy).not.toHaveBeenCalled();
+    } finally {
+      spy.mockRestore();
+    }
   });
 });

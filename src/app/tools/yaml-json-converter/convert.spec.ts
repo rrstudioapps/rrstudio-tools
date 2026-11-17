@@ -202,4 +202,9 @@ describe('funzioni di supporto', () => {
     expect(findTomlProblem({ a: 1 })).toBeNull();
     expect(findTomlProblem({ a: [{ b: null }] })).toBe('a[0].b');
   });
+  it('verso JSON, Infinity e NaN non diventano null: errore con il percorso', () => {
+    expect(convert('a:\n  b: [1, .inf]', 'yaml', 'json')).toEqual({ ok: false, stage: 'write', error: { message: 'json-nonfinite:a.b[1] = Infinity' } });
+    expect(convert('x: .nan', 'yaml', 'json')).toEqual({ ok: false, stage: 'write', error: { message: 'json-nonfinite:x = NaN' } });
+    expect(convert('x = -inf', 'toml', 'json')).toEqual({ ok: false, stage: 'write', error: { message: 'json-nonfinite:x = -Infinity' } });
+  });
 });

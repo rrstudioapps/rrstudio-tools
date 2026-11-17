@@ -92,7 +92,11 @@ export class QrCodeReaderPage {
       void el.play().catch(() => undefined);
       this.scheduleScan();
     });
-    this.destroyRef.onDestroy(() => this.stopCamera());
+    this.destroyRef.onDestroy(() => {
+      this.stopCamera();
+      const url = this.imageUrl();
+      if (url) URL.revokeObjectURL(url);
+    });
   }
 
   // ---- immagine ----

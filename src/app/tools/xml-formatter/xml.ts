@@ -193,8 +193,9 @@ export function parseXml(src: string): ParseResult {
           rootCount++;
           if (rootCount > 1) throw new Fail('multiRoot', start);
         }
-        const preserve =
-          attrs.some((x) => x.name === 'xml:space' && x.value === 'preserve') || stack.some((s) => s.node.preserve);
+        // xml:space si eredita dall'antenato più vicino; "default" su un discendente annulla il preserve
+        const space = attrs.find((x) => x.name === 'xml:space')?.value;
+        const preserve = space === 'preserve' ? true : space === 'default' ? false : (stack[stack.length - 1]?.node.preserve ?? false);
         const node: Extract<XmlNode, { t: 'el' }> = { t: 'el', name, attrs, selfClose, children: [], preserve, inner: '' };
         container().push(node);
         if (!selfClose) stack.push({ node, offset: start, innerStart: j });
@@ -239,6 +240,16 @@ function rawOf(n: XmlNode): string {
   return n.raw;
 }
 
+/** Contenuto misto: testo non vuoto accanto a elementi, commenti o istruzioni (gli spazi sono significativi). */
+function isMixed(el: Extract<XmlNode, { t: 'el' }>): boolean {
+  return el.children.some((c) => c.t === 'text' && !isBlank(c.value)) && el.children.some((c) => c.t !== 'text' && c.t !== 'cdata');
+}
+
+/** Figli di un contenuto misto in linea: il testo resta identico, compresi i nodi di soli spazi. */
+function mixedInline(el: Extract<XmlNode, { t: 'el' }>, o: FormatOptions): string {
+  return el.children.map((c) => (c.t === 'text' ? c.value : minifyNode(c, o))).join('');
+}
+
 function visibleChildren(el: Extract<XmlNode, { t: 'el' }>, keepComments: boolean): XmlNode[] {
   return el.children.filter((c) => !(c.t === 'text' && isBlank(c.value)) && !(c.t === 'comment' && !keepComments));
 }
@@ -264,6 +275,10 @@ function printNode(n: XmlNode, depth: number, unit: string, o: FormatOptions, ou
     out.push(`${pad}${open}>${n.inner}</${n.name}>`);
     return;
   }
+  if (isMixed(n)) {
+    out.push(`${pad}${open}>${mixedInline(n, o)}</${n.name}>`);
+    return;
+  }
   const kids = visibleChildren(n, o.keepComments);
   if (kids.length === 0) {
     out.push(`${pad}${open}></${n.name}>`);
@@ -287,7 +302,7 @@ function minifyNode(n: XmlNode, o: FormatOptions): string {
   const open = openTag(n);
   if (n.selfClose) return `${open}/>`;
   if (n.preserve) return `${open}>${n.inner}</${n.name}>`;
-  const kids = n.children.map((c) => minifyNode(c, o)).join('');
+  const kids = isMixed(n) ? mixedInline(n, o) : n.children.map((c) => minifyNode(c, o)).join('');
   return kids === '' ? `${open}/>` : `${open}>${kids}</${n.name}>`;
 }
 

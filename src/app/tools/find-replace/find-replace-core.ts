@@ -82,8 +82,11 @@ export function buildRuleRegex(rule: Rule): RegExp | string {
     if (rule.flags.m) flags += 'm';
     if (rule.flags.s) flags += 's';
     if (rule.flags.u) flags += 'u';
-    const src = rule.wholeWord ? `\\b(?:${rule.find})\\b` : rule.find;
-    return new RegExp(src, flags);
+    if (!rule.wholeWord) return new RegExp(rule.find, flags);
+    // parola intera: stessi confini Unicode della modalità testo; servono le proprietà \p{…}, quindi il flag u
+    // (si aggiunge da soli: se il pattern non è valido con u, l'errore del motore viene mostrato)
+    if (!rule.flags.u) flags += 'u';
+    return new RegExp(`(?<![\\p{L}\\p{N}_])(?:${rule.find})(?![\\p{L}\\p{N}_])`, flags);
   } catch (e) {
     return e instanceof Error ? e.message : String(e);
   }
@@ -94,27 +97,70 @@ export function isActive(rule: Rule): boolean {
   return rule.enabled && rule.find !== '';
 }
 
-function countAndCollect(re: RegExp, text: string, wantPositions: boolean): { count: number; capped: boolean; positions: { index: number; end: number }[]; truncated: boolean } {
-  const positions: { index: number; end: number }[] = [];
-  let count = 0;
-  let truncated = false;
-  const g = re.global ? re : new RegExp(re.source, re.flags + 'g');
-  const single = !re.global;
-  for (const m of text.matchAll(g)) {
-    count++;
-    if (wantPositions) {
-      if (positions.length < MAX_PREVIEW_MATCHES) positions.push({ index: m.index!, end: m.index! + m[0].length });
-      else truncated = true;
+type Positions = { index: number; end: number }[];
+
+/** Espande i segnaposto di una stringa di sostituzione ($$, $&, $`, $', $n, $nn, $<nome>) come fa String.replace. */
+function expandTemplate(tpl: string, args: unknown[]): string {
+  const hasGroups = typeof args[args.length - 1] === 'object' && args[args.length - 1] !== null;
+  const tail = hasGroups ? 3 : 2;
+  const match = args[0] as string;
+  const caps = args.slice(1, args.length - tail) as (string | undefined)[];
+  const offset = args[args.length - tail] as number;
+  const input = args[args.length - tail + 1] as string;
+  const named = hasGroups ? (args[args.length - 1] as Record<string, string | undefined>) : null;
+  return tpl.replace(/\$(\$|&|`|'|\d{1,2}|<[^>]*>)/g, (all, t: string) => {
+    if (t === '$') return '$';
+    if (t === '&') return match;
+    if (t === '`') return input.slice(0, offset);
+    if (t === "'") return input.slice(offset + match.length);
+    if (t[0] === '<') {
+      if (!named) return all;
+      return named[t.slice(1, -1)] ?? '';
     }
-    if (single || count >= MAX_COUNT) break;
-  }
-  return { count, capped: count >= MAX_COUNT && !single, positions, truncated };
+    let k = Number(t);
+    if (t.length === 2 && (k < 1 || k > caps.length)) {
+      // "$12" senza dodici gruppi vale "$1" seguito da "2"
+      const one = Number(t[0]);
+      if (one >= 1 && one <= caps.length) return (caps[one - 1] ?? '') + t[1];
+      return all;
+    }
+    if (k < 1 || k > caps.length) return all;
+    return caps[k - 1] ?? '';
+  });
 }
 
-/** Applica una regola: restituisce il nuovo testo. In modalità testo la sostituzione è letterale ($ non è speciale). */
+/**
+ * Applica una regola in una sola passata: il nuovo testo, il conteggio e (se richiesto) le posizioni
+ * delle occorrenze nel testo di partenza. In modalità testo la sostituzione è letterale ($ non è speciale).
+ */
+export function applyRuleCounting(
+  text: string,
+  rule: Rule,
+  re: RegExp,
+  wantPositions: boolean,
+): { text: string; count: number; capped: boolean; positions: Positions; truncated: boolean } {
+  const positions: Positions = [];
+  let count = 0;
+  let capped = false;
+  let truncated = false;
+  const out = text.replace(re, (...args: unknown[]) => {
+    const m = args[0] as string;
+    const hasGroups = typeof args[args.length - 1] === 'object' && args[args.length - 1] !== null;
+    const offset = args[args.length - (hasGroups ? 3 : 2)] as number;
+    if (count < MAX_COUNT) count++;
+    else capped = true;
+    if (wantPositions) {
+      if (positions.length < MAX_PREVIEW_MATCHES) positions.push({ index: offset, end: offset + m.length });
+      else truncated = true;
+    }
+    return rule.mode === 'text' ? rule.replace : expandTemplate(rule.replace, args);
+  });
+  return { text: out, count, capped: capped || count >= MAX_COUNT, positions, truncated };
+}
+
+/** Applica una regola: restituisce il nuovo testo. */
 export function applyRule(text: string, rule: Rule, re: RegExp): string {
-  if (rule.mode === 'text') return text.replace(re, () => rule.replace);
-  return text.replace(re, rule.replace);
+  return applyRuleCounting(text, rule, re, false).text;
 }
 
 export function runRules(req: RunRequest): RunResult {
@@ -133,16 +179,16 @@ export function runRules(req: RunRequest): RunResult {
       out.error = re;
       return;
     }
-    const c = countAndCollect(re, text, i === req.previewRule);
-    out.count = c.count;
-    out.countCapped = c.capped;
-    if (i === req.previewRule) {
-      previewMatches = c.positions;
-      previewTruncated = c.truncated;
-    }
     out.applied = true;
     try {
-      text = applyRule(text, rule, re);
+      const c = applyRuleCounting(text, rule, re, i === req.previewRule);
+      text = c.text;
+      out.count = c.count;
+      out.countCapped = c.capped;
+      if (i === req.previewRule) {
+        previewMatches = c.positions;
+        previewTruncated = c.truncated;
+      }
     } catch (e) {
       out.error = e instanceof Error ? e.message : String(e);
       out.applied = false;
