@@ -1,0 +1,149 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.s2p.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('s2p.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="svg-to-png" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <app-file-drop [hint]="i18n.t('s2p.drop')" accept=".svg,image/svg+xml" (filesSelected)="onFiles($event)">
+    <div class="paste">
+      <label class="eyebrow" for="s2p-input">{{ i18n.t('s2p.input') }}</label>
+      <textarea
+        id="s2p-input"
+        class="io-textarea code"
+        rows="8"
+        spellcheck="false"
+        wrap="off"
+        [placeholder]="i18n.t('s2p.input.ph')"
+        [value]="svg()"
+        (input)="setSvg($any($event.target).value)"
+      ></textarea>
+      <div class="row">
+        <button type="button" class="btn small" data-testid="s2p-sample" (click)="sample()">{{ i18n.t('s2p.sample') }}</button>
+        <button type="button" class="btn small" [disabled]="svg() === ''" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('s2p.clear') }}</button>
+      </div>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (error() || readError(); as e) {
+      <p class="tool-error" role="alert" data-testid="s2p-error">{{ e }}</p>
+    }
+    @if (info(); as i) {
+      @if (i.source === 'fallback') {
+        <p class="tool-warn" data-testid="s2p-fallback">{{ i18n.t('s2p.fallback.warn') }}</p>
+      }
+      @if (i.external.length > 0) {
+        <div class="tool-warn" data-testid="s2p-external">
+          <p>{{ i18n.t('s2p.external.warn', { n: i.external.length }) }}</p>
+          <ul class="ext mono">
+            @for (u of externalShown(); track u) {
+              <li>{{ u }}</li>
+            }
+            @if (i.external.length > externalShown().length) {
+              <li>{{ i18n.t('s2p.external.more') }}</li>
+            }
+          </ul>
+        </div>
+      }
+    }
+  </div>
+
+  @if (info(); as i) {
+    <div class="workspace">
+      <section class="panel" [attr.aria-label]="i18n.t('s2p.preview')">
+        <h2 class="eyebrow">{{ i18n.t('s2p.preview') }}</h2>
+        <div class="stage" [class.solid]="!transparent()" [style.background-color]="transparent() ? null : background()">
+          @if (previewUrl(); as url) {
+            <img [src]="url" [alt]="i18n.t('s2p.previewAlt')" data-testid="s2p-preview" />
+          }
+        </div>
+        <p class="hint mono" data-testid="s2p-size">{{ i18n.t('s2p.size', { w: i.size.width % 1 ? i.size.width.toFixed(1) : i.size.width, h: i.size.height % 1 ? i.size.height.toFixed(1) : i.size.height, source: sourceLabel() }) }}</p>
+      </section>
+
+      <section class="panel" [attr.aria-label]="i18n.t('s2p.settings')">
+        <h2 class="eyebrow">{{ i18n.t('s2p.settings') }}</h2>
+        <app-segmented [label]="i18n.t('s2p.mode')" [options]="modes()" [value]="mode()" (valueChange)="setMode($event)" />
+        @switch (mode()) {
+          @case ('scale') {
+            <div class="row">
+              <label class="lbl" for="s2p-scale">{{ i18n.t('s2p.scale') }}</label>
+              <select id="s2p-scale" data-testid="s2p-scale" [value]="scale()" (change)="setScale($any($event.target).value)">
+                @for (s of scales; track s) {
+                  <option [value]="s" [selected]="s === scale()">{{ i18n.t('s2p.scale.opt', { n: s }) }}</option>
+                }
+              </select>
+            </div>
+          }
+          @case ('width') {
+            <label class="field">
+              <span class="lbl">{{ i18n.t('s2p.width') }}</span>
+              <input id="s2p-value" type="number" inputmode="numeric" min="1" data-testid="s2p-value" [value]="valueText()" (input)="valueText.set($any($event.target).value)" />
+            </label>
+          }
+          @case ('height') {
+            <label class="field">
+              <span class="lbl">{{ i18n.t('s2p.height') }}</span>
+              <input id="s2p-value" type="number" inputmode="numeric" min="1" data-testid="s2p-value" [value]="valueText()" (input)="valueText.set($any($event.target).value)" />
+            </label>
+          }
+        }
+        @if (out(); as o) {
+          <p class="tool-ok" data-testid="s2p-result" aria-live="polite">{{ i18n.t('s2p.result', { w: o.width, h: o.height }) }}</p>
+          @if (o.clamped) {
+            <p class="tool-warn">{{ i18n.t('s2p.clamped', { w: o.width, h: o.height }) }}</p>
+          }
+        }
+
+        <app-segmented [label]="i18n.t('s2p.format')" [options]="formats" [(value)]="format" />
+        @if (qualityOn()) {
+          <div class="row">
+            <label class="lbl" for="s2p-quality">{{ i18n.t('s2p.quality') }}</label>
+            <input id="s2p-quality" type="range" min="10" max="100" [value]="quality()" (input)="setQuality($any($event.target).value)" />
+            <output class="mono" for="s2p-quality">{{ quality() }}</output>
+          </div>
+        }
+
+        <h3 class="eyebrow">{{ i18n.t('s2p.bg') }}</h3>
+        <label class="check"><input type="checkbox" data-testid="s2p-transparent" [checked]="transparent()" (change)="transparent.set($any($event.target).checked)" /> {{ i18n.t('s2p.transparent') }}</label>
+        @if (!transparent()) {
+          <div class="row">
+            <label class="lbl" for="s2p-bg">{{ i18n.t('s2p.bgColor') }}</label>
+            <input id="s2p-bg" type="color" [value]="background()" (input)="setBackground($any($event.target).value)" />
+            <output class="mono" for="s2p-bg">{{ background() }}</output>
+          </div>
+        }
+        @if (format() === 'jpeg' && transparent()) {
+          <p class="hint">{{ i18n.t('s2p.jpegNote') }}</p>
+        }
+
+        <div class="row">
+          <button type="button" class="btn primary" data-testid="s2p-download" [disabled]="working() || !out()" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('s2p.download') }}
+          </button>
+          <app-send-to from="svg-to-png" kind="image" [files]="imageFiles" [disabled]="working() || !out()" />
+        </div>
+        <p class="tool-ok" role="status" aria-live="polite" data-testid="s2p-status">{{ status() }}</p>
+      </section>
+    </div>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('s2p.info.size.title') }}</h2>
+      <p>{{ i18n.t('s2p.info.size.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('s2p.info.ext.title') }}</h2>
+      <p>{{ i18n.t('s2p.info.ext.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('s2p.info.priv.title') }}</h2>
+      <p>{{ i18n.t('s2p.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

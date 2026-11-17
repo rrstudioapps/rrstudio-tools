@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.options,
+.message,
+.result,
+.verify {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.options {
+  padding-block: var(--space-4);
+  border-block: 1px solid var(--line);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-4);
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.keyin {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  &:hover {
+    border-color: var(--muted);
+  }
+  &:focus-visible {
+    border-color: var(--ink);
+  }
+}
+.lbl {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.chosen {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.out {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3);
+  code {
+    flex: 1 1 280px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    padding: var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+  }
+}

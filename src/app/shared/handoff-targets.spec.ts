@@ -26,6 +26,13 @@ describe('compatibilità del passaggio tra strumenti', () => {
     expect(t).not.toContain('image-compressor');
   });
 
+  it('un SVG arriva a svg-to-png e agli strumenti di testo, ma un testo semplice non arriva a svg-to-png', () => {
+    expect(handoffTargets('svg', 'svg-optimizer', ORDER)).toEqual(expect.arrayContaining(['svg-to-png', 'base64']));
+    expect(handoffTargets('text', 'base64', ORDER)).not.toContain('svg-to-png');
+    expect(handoffTargets('json', 'json-formatter', ORDER)).not.toContain('svg-to-png');
+    expect(isValidPayload({ kind: 'svg', text: '<svg/>', from: 'svg-optimizer' })).toBe(true);
+  });
+
   it('il CSV arriva al convertitore CSV e agli strumenti di testo', () => {
     expect(accepts('csv-json-converter', 'csv')).toBe(true);
     expect(accepts('sort-lines', 'csv')).toBe(true);

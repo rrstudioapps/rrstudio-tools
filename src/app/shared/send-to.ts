@@ -108,7 +108,7 @@ export class SendTo {
   /** Id dello strumento di partenza. */
   readonly from = input.required<string>();
   readonly kind = input<HandoffKind>('text');
-  /** Contenuto per i tipi testuali (text, json, csv). */
+  /** Contenuto per i tipi testuali (text, json, csv, svg). */
   readonly text = input('');
   /** Per image e files: i file da inviare, calcolati al clic (possono richiedere un'elaborazione). */
   readonly files = input<(() => File[] | Promise<File[]>) | null>(null);
@@ -126,7 +126,7 @@ export class SendTo {
   protected async send(to: string, path: string): Promise<void> {
     this.open.set(false);
     const kind = this.kind();
-    const isText = kind === 'text' || kind === 'json' || kind === 'csv';
+    const isText = kind === 'text' || kind === 'json' || kind === 'csv' || kind === 'svg';
     const files = isText ? undefined : await this.files()?.();
     const ok = this.handoff.offer({ kind, from: this.from(), ...(isText ? { text: this.text() } : { files }) }, to);
     if (ok) await this.router.navigateByUrl(this.i18n.link(path));

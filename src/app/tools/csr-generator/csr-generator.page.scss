@@ -1,0 +1,81 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-3) var(--space-4);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.textin {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  &:hover {
+    border-color: var(--muted);
+  }
+  &:focus-visible {
+    border-color: var(--ink);
+  }
+}
+.lbl {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.keybox {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  resize: vertical;
+}
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  dd {
+    margin: var(--space-1) 0 0;
+    overflow-wrap: anywhere;
+    font-size: var(--fs-sm);
+  }
+}
+.chip {
+  display: inline-block;
+  margin: 0 var(--space-2) var(--space-1) 0;
+  padding: 2px var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.badtext {
+  font-weight: 600;
+  text-decoration: underline;
+}

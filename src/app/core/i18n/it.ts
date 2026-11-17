@@ -340,6 +340,24 @@ export const it = {
   'seo.jq.desc':
     'Prova espressioni JSONPath su un JSON con filtri, slice e percorsi dei risultati, e genera interfacce TypeScript o uno JSON Schema (draft 2020-12). Tutto nel browser.',
 
+  'tool.wm.title': 'Filigrana su immagini e PDF',
+  'tool.wm.desc':
+    'Aggiungi una filigrana di testo o un logo a più immagini e PDF insieme: posizione, mosaico, rotazione e opacità, con anteprima dal vivo e senza caricare nulla.',
+  'seo.wm.title': 'Filigrana su immagini e PDF online, senza caricare i file | rrstudio Tools',
+  'seo.wm.desc':
+    'Metti una filigrana di testo o un logo su foto e PDF: nove posizioni o mosaico, rotazione, opacità, colore, tutte le pagine o solo alcune. Più file insieme in ZIP, direttamente nel browser.',
+  'tool.cpk.title': 'Contagocce e palette da immagine',
+  'tool.cpk.desc':
+    'Leggi il colore di un pixel con un clic, un tocco o la tastiera (HEX, RGB, HSL, OKLCH) con lente d\'ingrandimento, e ricava la palette dei colori dominanti da un\'immagine.',
+  'seo.cpk.title': 'Contagocce colore e palette da un\'immagine online | rrstudio Tools',
+  'seo.cpk.desc':
+    'Carica una foto e preleva il colore di qualsiasi pixel in HEX, RGB, HSL e OKLCH, con lente e storico. Calcola la palette dei colori dominanti con le percentuali ed esportala in CSS o JSON. Nel browser.',
+  'tool.s2p.title': 'SVG in PNG',
+  'tool.s2p.desc':
+    'Converti un SVG in PNG, JPG o WebP: scala da 1x a 8x o dimensione precisa, sfondo trasparente o colorato, anche se l\'SVG non ha width e height. Nel browser.',
+  'seo.s2p.title': 'Converti SVG in PNG, JPG o WebP online, senza caricare il file | rrstudio Tools',
+  'seo.s2p.desc':
+    'Trasforma un SVG in immagine PNG, JPG o WebP alla risoluzione che vuoi (1x-8x o larghezza e altezza), con sfondo trasparente o colorato. Gestisce i viewBox e avvisa sulle risorse esterne. Tutto nel browser.',
   'tool.icv.title': 'Convertitore formato immagini',
   'tool.icv.desc':
     'Converti immagini in PNG, JPG, WebP o AVIF nel browser, con qualità e ridimensionamento a scelta. Più file insieme, download singolo o in ZIP.',
@@ -492,6 +510,34 @@ export const it = {
   'seo.totp.title': 'Generatore di codici TOTP 2FA online | rrstudio Tools',
   'seo.totp.desc':
     'Genera e verifica codici TOTP (RFC 6238) con SHA-1, SHA-256 o SHA-512, conto alla rovescia e QR otpauth. Tutto nel browser.',
+
+  'tool.hmac.title': 'Generatore HMAC',
+  'tool.hmac.desc':
+    'Calcola l\'HMAC di un testo o di un file con una chiave (SHA-1, SHA-256, SHA-384, SHA-512) e verifica una firma attesa a tempo costante.',
+  'seo.hmac.title': 'Generatore HMAC online (SHA-256, SHA-512) | rrstudio Tools',
+  'seo.hmac.desc':
+    'Calcola e verifica HMAC con SHA-1, SHA-256, SHA-384 o SHA-512 da testo o file, con chiave in testo, hex o Base64. Tutto nel browser, senza inviare nulla.',
+
+  'tool.ssh.title': 'Generatore chiavi SSH',
+  'tool.ssh.desc':
+    'Genera coppie di chiavi SSH Ed25519 o RSA nel browser: chiave pubblica per authorized_keys, privata in formato OpenSSH o PKCS#8 e impronta SHA256.',
+  'seo.ssh.title': 'Generatore di chiavi SSH online (Ed25519, RSA) | rrstudio Tools',
+  'seo.ssh.desc':
+    'Crea chiavi SSH Ed25519 o RSA 2048, 3072, 4096 con WebCrypto: formato OpenSSH, PKCS#8 e fingerprint come ssh-keygen. Le chiavi non lasciano il browser.',
+
+  'tool.csr.title': 'Generatore CSR',
+  'tool.csr.desc':
+    'Crea una richiesta di certificato (CSR) con soggetto e SAN, con chiave nuova RSA o ECDSA oppure una chiave esistente, e controllala.',
+  'seo.csr.title': 'Generatore CSR online (richiesta di certificato) | rrstudio Tools',
+  'seo.csr.desc':
+    'Genera una CSR PKCS#10 con nome comune, organizzazione e SAN (DNS e IP), chiave RSA o ECDSA e chiave privata PEM. Tutto nel browser, con controllo della richiesta.',
+
+  'tool.sss.title': 'Dividi un segreto (Shamir)',
+  'tool.sss.desc':
+    'Dividi un segreto in N parti con soglia K (Shamir su GF(256)) e ricostruiscilo incollando K parti. Parti in hex o Base64, da scaricare o stampare.',
+  'seo.sss.title': 'Dividi un segreto con Shamir online | rrstudio Tools',
+  'seo.sss.desc':
+    'Condivisione di segreti di Shamir: dividi una password o una frase di recupero in N parti, ne bastano K per ricostruirla. Tutto nel browser.',
 
   'tool.fenc.title': 'Cifra e decifra file',
   'tool.fenc.desc':
@@ -682,6 +728,40 @@ export const it = {
   'tool.ci.desc': 'Calcola il montante di un capitale con interesse composto e versamenti periodici: interessi, valore reale con l\'inflazione, tabella anno per anno e grafico.',
   'seo.ci.title': 'Calcolo interesse composto con versamenti periodici online | rrstudio Tools',
   'seo.ci.desc': 'Calcola l\'interesse composto: capitale iniziale, versamenti mensili o annuali, tasso, capitalizzazione e durata. Montante, totale versato, interessi, valore reale con inflazione, tabella e grafico.',
+  'tool.stat.title': 'Calcolatrice statistica',
+  'tool.stat.desc': 'Incolla dei numeri o una colonna CSV: media, mediana, moda, varianza, deviazione standard, quartili, percentili, outlier e istogramma.',
+  'seo.stat.title': 'Calcolatrice statistica online: media, mediana, deviazione standard | rrstudio Tools',
+  'seo.stat.desc': 'Calcola media, mediana, moda, varianza e deviazione standard (campione e popolazione), quartili, IQR, percentili, outlier e istogramma da numeri incollati o da una colonna CSV.',
+
+  'tool.ar.title': 'Calcolo proporzioni (aspect ratio)',
+  'tool.ar.desc': 'Ricava il rapporto da larghezza e altezza, calcola il lato che manca, ridimensiona in proporzione e copia il CSS aspect-ratio.',
+  'seo.ar.title': 'Calcolo proporzioni e aspect ratio online: 16:9, 4:3, ridimensiona | rrstudio Tools',
+  'seo.ar.desc': 'Calcola il rapporto d\'aspetto (16:9, 4:3, 21:9, A4…) da larghezza e altezza, trova il lato mancante, ridimensiona in proporzione con arrotondamento a pari o multipli di 8 e copia il CSS aspect-ratio.',
+
+  'tool.rom.title': 'Numeri romani',
+  'tool.rom.desc': 'Converti numeri in numeri romani e viceversa, da 1 a 3.999 (o fino a 3.999.999 con la linea sopra), con controllo della forma canonica.',
+  'seo.rom.title': 'Numeri romani: convertitore da numeri a romani e viceversa | rrstudio Tools',
+  'seo.rom.desc': 'Converti un numero in numeri romani e viceversa. Controlla la forma canonica e spiega gli errori (IIII, VX, IC), con anni rapidi e vinculum fino a 3.999.999.',
+
+  'tool.uni.title': 'Ispettore Unicode',
+  'tool.uni.desc': 'Vedi ogni carattere con code point, categoria, byte UTF-8 e UTF-16, entità HTML ed escape; trova invisibili, omoglifi e alfabeti mescolati.',
+  'seo.uni.title': 'Ispettore Unicode: caratteri invisibili, omoglifi, code point, UTF-8 | rrstudio Tools',
+  'seo.uni.desc': 'Analizza un testo carattere per carattere: code point U+XXXX, categoria, UTF-8/UTF-16, entità HTML, escape JavaScript e CSS. Rimuove i caratteri invisibili, segnala omoglifi e normalizza in NFC o NFKC.',
+
+  'tool.morse.title': 'Codice Morse',
+  'tool.morse.desc': 'Traduci testo in codice Morse e viceversa, ascoltalo con Web Audio o guardalo lampeggiare, con velocità e frequenza regolabili.',
+  'seo.morse.title': 'Traduttore codice Morse: testo, audio e lampeggio | rrstudio Tools',
+  'seo.morse.desc': 'Traduci testo in codice Morse e codice Morse in testo, con numeri, punteggiatura e lettere accentate. Riproduci l\'audio (parole al minuto e frequenza regolabili) e scegli simboli e separatori.',
+
+  'tool.cph.title': 'Cifrari classici',
+  'tool.cph.desc': 'ROT13, ROT47, Cesare, Atbash e Vigenère per cifrare e decifrare, con forza bruta su Cesare. Giochi e studio, non sicuri.',
+  'seo.cph.title': 'Cifrari classici online: ROT13, Cesare, Atbash, Vigenère | rrstudio Tools',
+  'seo.cph.desc': 'Cifra e decifra con ROT13, ROT47, cifrario di Cesare (con tutti i 25 spostamenti in forza bruta), Atbash e Vigenère. Cifrari storici non sicuri, per gioco e per imparare.',
+
+  'tool.lire.title': 'Convertitore lire euro',
+  'tool.lire.desc': 'Converti lire in euro e euro in lire con il cambio fisso 1 € = 1936,27 lire, con arrotondamento e tabella dei tagli storici.',
+  'seo.lire.title': 'Convertitore lire euro: cambio 1936,27, banconote e monete | rrstudio Tools',
+  'seo.lire.desc': 'Converti lire in euro e euro in lire con il cambio irrevocabile 1 euro = 1936,27 lire (Reg. CE 2866/98), arrotondando al centesimo o alla lira, con la tabella dei tagli storici di banconote e monete.',
 };
 
 export type Dict = typeof it;

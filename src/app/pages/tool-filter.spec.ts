@@ -40,18 +40,19 @@ describe('filterTools', () => {
       'calcolo-rata-mutuo',
       'calcolo-ritenuta-acconto',
       'codice-fiscale',
+      'convertitore-lire-euro',
       'fattura-elettronica',
       'iban-partita-iva',
       'numeri-in-lettere',
     ]);
   });
   it('cerca nelle parole chiave', () => {
-    expect(filterTools(TOOLS, null, 'sha256', texts).map((t) => t.id)).toEqual(['hash-generator']);
+    expect(filterTools(TOOLS, null, 'sha256', texts).map((t) => t.id).sort()).toEqual(['hash-generator', 'hmac-generator']);
     expect(filterTools(TOOLS, null, 'checksum', texts).map((t) => t.id)).toContain('hash-generator');
   });
   it('cerca nel titolo e nella descrizione, ignorando gli accenti', () => {
-    const t = (x: { id: string }) => ({ title: x.id === 'base64' ? 'Codifica però' : 'x', description: x.id === 'url-encode' ? 'perché sì' : 'y' });
-    expect(filterTools(TOOLS, null, 'pero', t).map((x) => x.id)).toEqual(['base64']);
+    const t = (x: { id: string }) => ({ title: x.id === 'base64' ? 'Codifica zàzzera' : 'x', description: x.id === 'url-encode' ? 'perché sì' : 'y' });
+    expect(filterTools(TOOLS, null, 'zazzera', t).map((x) => x.id)).toEqual(['base64']);
     expect(filterTools(TOOLS, null, 'perche', t).map((x) => x.id)).toEqual(['url-encode']);
   });
   it('più parole: devono esserci tutte', () => {

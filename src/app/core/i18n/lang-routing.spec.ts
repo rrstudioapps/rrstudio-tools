@@ -67,6 +67,7 @@ describe('URL ↔ lingua', () => {
       'calcolo-rata-mutuo',
       'calcolo-ritenuta-acconto',
       'codice-fiscale',
+      'convertitore-lire-euro',
       'fattura-elettronica',
       'iban-partita-iva',
       'numeri-in-lettere',

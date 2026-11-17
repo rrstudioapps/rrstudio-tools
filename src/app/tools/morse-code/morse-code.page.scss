@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-end;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 200px;
+  > label {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.play {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.lamp {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: transparent;
+  // riquadro piccolo: la luminosità non cambia su tutta la pagina
+  &.on {
+    background: var(--ink);
+  }
+  &:not(.bright).on {
+    background: var(--ink);
+    border-style: dashed;
+  }
+}
+.table {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  .ch {
+    display: inline-block;
+    min-width: 2ch;
+    font-weight: var(--fw-bold);
+  }
+  .code {
+    color: var(--ink-2);
+    letter-spacing: 0.08em;
+  }
+}

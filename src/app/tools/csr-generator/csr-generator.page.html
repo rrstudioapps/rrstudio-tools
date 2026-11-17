@@ -1,0 +1,169 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.csr.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('csr.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="block" aria-labelledby="csr-subject-title">
+    <h2 class="eyebrow" id="csr-subject-title">{{ i18n.t('csr.subject') }}</h2>
+    <div class="grid">
+      @for (f of fields; track f.key) {
+        <div class="col">
+          <label class="lbl" [for]="f.id">{{ i18n.t(f.labelKey) }}</label>
+          <input
+            [id]="f.id"
+            type="text"
+            class="textin"
+            autocomplete="off"
+            spellcheck="false"
+            [attr.maxlength]="f.maxLength"
+            [placeholder]="i18n.t(f.phKey)"
+            [value]="subject()[f.key]"
+            (input)="setField(f.key, $any($event.target).value)"
+            [attr.data-testid]="'csr-' + f.key"
+          />
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="csr-san-title">
+    <h2 class="eyebrow" id="csr-san-title">{{ i18n.t('csr.san') }}</h2>
+    <label class="visually-hidden" for="csr-san">{{ i18n.t('csr.san') }}</label>
+    <textarea
+      id="csr-san"
+      class="io-textarea mono"
+      rows="3"
+      spellcheck="false"
+      [placeholder]="i18n.t('csr.san.ph')"
+      [value]="sanText()"
+      (input)="sanText.set($any($event.target).value)"
+      data-testid="csr-san"
+    ></textarea>
+    <p class="hint">{{ i18n.t('csr.san.hint') }}</p>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (sanInvalidText()) {
+        <p class="tool-error" data-testid="csr-san-invalid">{{ sanInvalidText() }}</p>
+      } @else if (sanCountText()) {
+        <p class="tool-ok">{{ sanCountText() }}</p>
+      }
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="csr-key-title">
+    <h2 class="eyebrow" id="csr-key-title">{{ i18n.t('csr.key') }}</h2>
+    <app-segmented [label]="i18n.t('csr.key')" [options]="choices()" [(value)]="choice" />
+    @if (choice() === 'existing') {
+      <label class="lbl" for="csr-pem">{{ i18n.t('csr.key.pem') }}</label>
+      <textarea
+        id="csr-pem"
+        class="io-textarea mono"
+        rows="6"
+        spellcheck="false"
+        autocomplete="off"
+        [placeholder]="'-----BEGIN PRIVATE KEY-----'"
+        [value]="existingPem()"
+        (input)="existingPem.set($any($event.target).value)"
+        data-testid="csr-pem"
+      ></textarea>
+      <p class="hint">{{ i18n.t('csr.key.pem.hint') }}</p>
+    } @else {
+      <p class="hint">{{ i18n.t('csr.key.new.hint') }}</p>
+    }
+    <div class="row">
+      <button type="button" class="btn primary" [disabled]="busy()" (click)="generate()" data-testid="csr-generate">
+        <app-icon name="key" /> {{ i18n.t('csr.generate') }}
+      </button>
+      <button type="button" class="btn small" [disabled]="!result() || busy()" (click)="clear()">{{ i18n.t('csr.clear') }}</button>
+    </div>
+  </section>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (busy()) {
+      <p class="tool-ok">{{ i18n.t('csr.busy') }}</p>
+    } @else if (errorText()) {
+      <p class="tool-error" data-testid="csr-error">{{ errorText() }}</p>
+    }
+  </div>
+
+  @if (result(); as r) {
+    <section class="block" aria-labelledby="csr-out-title">
+      <h2 class="eyebrow" id="csr-out-title">{{ i18n.t('csr.out.csr') }}</h2>
+      <textarea class="keybox mono" rows="10" readonly spellcheck="false" [attr.aria-label]="i18n.t('csr.out.csr')" [value]="r.csrPem" data-testid="csr-output"></textarea>
+      <div class="row">
+        <app-copy-button [text]="r.csrPem" [label]="i18n.t('csr.out.csr')" />
+        <button type="button" class="btn small" (click)="downloadCsr()"><app-icon name="download" /> {{ baseName() }}.csr</button>
+      </div>
+      <p class="hint">{{ i18n.t('csr.out.csr.hint') }}</p>
+    </section>
+
+    @if (r.keyPem) {
+      <section class="block" aria-labelledby="csr-keyout-title">
+        <h2 class="eyebrow" id="csr-keyout-title">{{ i18n.t('csr.out.key') }}</h2>
+        <p class="tool-warn" role="note">
+          <span>{{ i18n.t('csr.out.key.warn') }}</span>
+        </p>
+        <textarea class="keybox mono" rows="8" readonly spellcheck="false" [attr.aria-label]="i18n.t('csr.out.key')" [value]="r.keyPem" data-testid="csr-key"></textarea>
+        <div class="row">
+          <app-copy-button [text]="r.keyPem" [label]="i18n.t('csr.out.key')" />
+          <button type="button" class="btn small" (click)="downloadKey()"><app-icon name="download" /> {{ baseName() }}.key</button>
+        </div>
+      </section>
+    } @else {
+      <p class="hint">{{ i18n.t('csr.out.key.none') }}</p>
+    }
+
+    @if (info(); as i) {
+      <section class="block" aria-labelledby="csr-check-title">
+        <h2 class="eyebrow" id="csr-check-title">{{ i18n.t('csr.check') }}</h2>
+        <p class="hint">{{ i18n.t('csr.check.desc') }}</p>
+        <dl class="facts" data-testid="csr-check">
+          <div>
+            <dt class="eyebrow">{{ i18n.t('csr.check.subject') }}</dt>
+            <dd class="mono">{{ i.subject.text }}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow">{{ i18n.t('csr.check.san') }}</dt>
+            <dd class="mono">
+              @for (s of i.san; track $index) {
+                <span class="chip">{{ s.type === 'ip' ? 'IP' : 'DNS' }}: {{ s.value }}</span>
+              } @empty {
+                {{ i18n.t('csr.check.none') }}
+              }
+            </dd>
+          </div>
+          <div>
+            <dt class="eyebrow">{{ i18n.t('csr.check.key') }}</dt>
+            <dd class="mono">{{ keyText(i) }}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow">{{ i18n.t('csr.check.alg') }}</dt>
+            <dd class="mono">{{ i.signature.name }}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow">{{ i18n.t('csr.check.sig') }}</dt>
+            <dd [class.badtext]="i.signatureValid === false" data-testid="csr-check-sig">{{ sigText(i.signatureValid) }}</dd>
+          </div>
+        </dl>
+      </section>
+    }
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('csr.info.what.title') }}</h2>
+      <p>{{ i18n.t('csr.info.what.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('csr.info.openssl.title') }}</h2>
+      <p>{{ i18n.t('csr.info.openssl.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('csr.info.priv.title') }}</h2>
+      <p>{{ i18n.t('csr.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

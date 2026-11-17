@@ -1,0 +1,106 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.ssh.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ssh.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="options" [attr.aria-label]="i18n.t('ssh.options')">
+    <div class="row">
+      <span class="lbl">{{ i18n.t('ssh.type') }}</span>
+      <app-segmented [label]="i18n.t('ssh.type')" [options]="kinds()" [(value)]="kind" />
+    </div>
+    @if (edSupported() === false) {
+      <p class="tool-warn" role="note" data-testid="ssh-no-ed">
+        <span>{{ i18n.t('ssh.noEd') }}</span>
+      </p>
+    }
+    <div class="row">
+      <div class="col">
+        <label class="lbl" for="ssh-comment">{{ i18n.t('ssh.comment') }}</label>
+        <input
+          id="ssh-comment"
+          type="text"
+          class="textin mono"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [placeholder]="i18n.t('ssh.comment.ph')"
+          [value]="comment()"
+          (input)="comment.set($any($event.target).value)"
+          data-testid="ssh-comment"
+        />
+      </div>
+      <button type="button" class="btn primary" [disabled]="busy()" (click)="generate()" data-testid="ssh-generate">
+        <app-icon name="key" /> {{ i18n.t('ssh.generate') }}
+      </button>
+      <button type="button" class="btn small" [disabled]="!result() || busy()" (click)="clear()">{{ i18n.t('ssh.clear') }}</button>
+    </div>
+    <p class="hint">{{ i18n.t('ssh.hint') }}</p>
+  </section>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (busy()) {
+      <p class="tool-ok">{{ i18n.t('ssh.busy') }}</p>
+    } @else if (errorText()) {
+      <p class="tool-error" data-testid="ssh-error">{{ errorText() }}</p>
+    }
+  </div>
+
+  @if (result(); as r) {
+    <section class="result" aria-labelledby="ssh-fp-title">
+      <h2 class="eyebrow" id="ssh-fp-title">{{ i18n.t('ssh.fingerprint') }}</h2>
+      <p class="mono fp" data-testid="ssh-fingerprint">{{ r.fingerprint }}</p>
+      <p class="hint">{{ bitsText() }}</p>
+    </section>
+
+    <section class="result" aria-labelledby="ssh-pub-title">
+      <h2 class="eyebrow" id="ssh-pub-title">{{ i18n.t('ssh.public') }}</h2>
+      <p class="desc">{{ i18n.t('ssh.public.desc') }}</p>
+      <textarea class="keybox mono" rows="3" readonly spellcheck="false" [attr.aria-label]="i18n.t('ssh.public')" [value]="r.publicKey" data-testid="ssh-public"></textarea>
+      <div class="row">
+        <app-copy-button [text]="r.publicKey" [label]="i18n.t('ssh.public')" />
+        <button type="button" class="btn small" (click)="download('pub')"><app-icon name="download" /> {{ baseName() }}.pub</button>
+      </div>
+    </section>
+
+    <section class="result" aria-labelledby="ssh-priv-title">
+      <h2 class="eyebrow" id="ssh-priv-title">{{ i18n.t('ssh.private') }}</h2>
+      <p class="tool-warn" role="note">
+        <span>{{ i18n.t('ssh.private.warn') }}</span>
+      </p>
+      <h3 class="sub">{{ i18n.t('ssh.openssh') }}</h3>
+      <textarea class="keybox mono" rows="8" readonly spellcheck="false" [attr.aria-label]="i18n.t('ssh.openssh')" [value]="r.privateOpenSsh" data-testid="ssh-private"></textarea>
+      <div class="row">
+        <app-copy-button [text]="r.privateOpenSsh" [label]="i18n.t('ssh.openssh')" />
+        <button type="button" class="btn small" (click)="download('openssh')"><app-icon name="download" /> {{ baseName() }}</button>
+      </div>
+      <h3 class="sub">{{ i18n.t('ssh.pkcs8') }}</h3>
+      <textarea class="keybox mono" rows="6" readonly spellcheck="false" [attr.aria-label]="i18n.t('ssh.pkcs8')" [value]="r.privatePkcs8" data-testid="ssh-pkcs8"></textarea>
+      <div class="row">
+        <app-copy-button [text]="r.privatePkcs8" [label]="i18n.t('ssh.pkcs8')" />
+        <button type="button" class="btn small" (click)="download('pkcs8')"><app-icon name="download" /> {{ baseName() }}.pem</button>
+      </div>
+      <p class="hint">{{ i18n.t('ssh.passphrase') }}</p>
+    </section>
+  } @else if (!busy()) {
+    <p class="empty">{{ i18n.t('ssh.empty') }}</p>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ssh.info.use.title') }}</h2>
+      <p>{{ i18n.t('ssh.info.use.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ssh.info.which.title') }}</h2>
+      <p>{{ i18n.t('ssh.info.which.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ssh.info.priv.title') }}</h2>
+      <p>{{ i18n.t('ssh.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

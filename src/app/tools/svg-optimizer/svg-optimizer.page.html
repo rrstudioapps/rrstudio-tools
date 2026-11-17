@@ -155,6 +155,7 @@
           <label class="eyebrow" for="svgo-code">{{ i18n.t('svgo.code') }}</label>
           <span class="actions">
             <app-copy-button [text]="r.data" [label]="i18n.t('svgo.copy')" />
+            <app-send-to from="svg-optimizer" kind="svg" [text]="r.data" />
             <button type="button" class="btn small" (click)="downloadOne(sel)">
               <app-icon name="download" /> {{ i18n.t('svgo.download') }}
             </button>

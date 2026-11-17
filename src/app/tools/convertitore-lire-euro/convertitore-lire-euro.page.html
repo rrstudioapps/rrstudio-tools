@@ -1,0 +1,96 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.lire.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('lire.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="convertitore-lire-euro" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('lire.mode')" [options]="modes()" [(value)]="mode" />
+  </div>
+
+  <div class="lire-layout">
+    <div class="field">
+      <label for="lire-amount">{{ i18n.t(mode() === 'toEuro' ? 'lire.amount.lire' : 'lire.amount.euro') }}</label>
+      <input
+        id="lire-amount"
+        type="text"
+        inputmode="decimal"
+        autocomplete="off"
+        data-testid="lire-amount"
+        [placeholder]="i18n.t(mode() === 'toEuro' ? 'lire.amount.ph.lire' : 'lire.amount.ph.euro')"
+        [value]="amount()"
+        [attr.aria-invalid]="error() !== ''"
+        [attr.aria-describedby]="error() ? 'lire-err' : null"
+        (input)="amount.set($any($event.target).value)"
+      />
+      @if (error()) {
+        <p id="lire-err" class="tool-error">{{ error() }}</p>
+      }
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('lire.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('lire.result') }}</h2>
+      @if (result(); as r) {
+        <p class="big" data-testid="lire-result">{{ r.main }}</p>
+        <p class="hint">{{ r.note }}</p>
+        <p class="hint" data-testid="lire-exact">{{ r.exact }}</p>
+        <div class="actions"><app-copy-button [text]="r.copy" /></div>
+      } @else {
+        <p class="hint">{{ i18n.t('lire.empty') }}</p>
+      }
+    </section>
+  </div>
+
+  <p class="hint">{{ i18n.t('lire.rate') }}</p>
+  <p class="hint">{{ i18n.t('lire.status') }}</p>
+
+  <section class="denoms" [attr.aria-label]="i18n.t('lire.table.title')">
+    <h2 class="eyebrow">{{ i18n.t('lire.table.title') }}</h2>
+    <div class="tables">
+      <table data-testid="lire-notes">
+        <caption>{{ i18n.t('lire.table.notes') }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ i18n.t('lire.col.value') }}</th>
+            <th scope="col">{{ i18n.t('lire.col.subject') }}</th>
+            <th scope="col">{{ i18n.t('lire.col.year') }}</th>
+            <th scope="col" class="num">{{ i18n.t('lire.col.euro') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of banknotes; track d.lire) {
+            <tr>
+              <td>{{ i18n.t('lire.lire', { v: d.label }) }}</td>
+              <td>{{ d.subject }}</td>
+              <td>{{ d.year }}</td>
+              <td class="num">{{ i18n.t('lire.euro', { v: d.euro }) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <table data-testid="lire-coins">
+        <caption>{{ i18n.t('lire.table.coins') }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ i18n.t('lire.col.value') }}</th>
+            <th scope="col" class="num">{{ i18n.t('lire.col.euro') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of coins; track d.lire) {
+            <tr>
+              <td>{{ i18n.t('lire.lire', { v: d.label }) }}</td>
+              <td class="num">{{ i18n.t('lire.euro', { v: d.euro }) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="hint">{{ i18n.t('lire.table.note') }}</p>
+  </section>
+</div>

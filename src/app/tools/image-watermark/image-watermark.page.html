@@ -1,0 +1,194 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.wm.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('wm.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="image-watermark" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <app-file-drop [hint]="i18n.t('wm.drop', { max: maxFiles })" [accept]="accept" [multiple]="true" (filesSelected)="onFiles($event)">
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (loading()) {
+        <p class="tool-ok">{{ i18n.t('wm.loading') }}</p>
+      }
+      @if (error()) {
+        <p class="tool-error" role="alert">{{ error() }}</p>
+      }
+      @if (notice()) {
+        <p class="tool-ok">{{ notice() }}</p>
+      }
+    </div>
+
+    @if (items().length > 0) {
+      <section class="panel" [attr.aria-label]="i18n.t('wm.files')">
+        <h2 class="eyebrow">{{ i18n.t('wm.files') }}</h2>
+        <ul class="files" data-testid="wm-files">
+          @for (it of items(); track it.id) {
+            <li [class.sel]="it.id === selectedId()">
+              <button type="button" class="pick" [attr.aria-pressed]="it.id === selectedId()" (click)="select(it.id)">
+                <span class="badge">{{ i18n.t(it.kind === 'pdf' ? 'wm.file.pdf' : 'wm.file.image') }}</span>
+                <span class="fname">{{ it.file.name }}</span>
+                <span class="fsize mono">{{ size(it.file.size) }}</span>
+              </button>
+              <button type="button" class="btn small" [attr.aria-label]="i18n.t('wm.file.remove', { name: it.file.name })" (click)="remove(it)">
+                <app-icon name="close" />
+              </button>
+            </li>
+          }
+        </ul>
+        <div class="row">
+          <button type="button" class="btn small" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('wm.clear') }}</button>
+        </div>
+      </section>
+    }
+
+    <div class="workspace">
+      <div class="stage-wrap">
+        <h2 class="eyebrow">{{ i18n.t('wm.preview') }}</h2>
+        <div class="stage" data-testid="wm-stage" [class.empty]="!hasSource()">
+          <canvas #preview class="img" role="img" [attr.aria-label]="i18n.t('wm.canvasLabel')"></canvas>
+        </div>
+        @if (hasPdf()) {
+          <p class="hint">{{ i18n.t('wm.previewPdf') }}</p>
+        }
+      </div>
+
+      <div class="side">
+        <section class="panel" [attr.aria-label]="i18n.t('wm.settings')">
+          <h2 class="eyebrow">{{ i18n.t('wm.settings') }}</h2>
+          <app-segmented [label]="i18n.t('wm.kind')" [options]="kinds()" [value]="settings().kind" (valueChange)="patch({ kind: $event })" />
+
+          @if (!isImageKind()) {
+            <label class="field">
+              <span class="lbl">{{ i18n.t('wm.text') }}</span>
+              <input id="wm-text" type="text" [maxLength]="maxText" [value]="settings().text" (input)="setText($any($event.target).value)" />
+            </label>
+            <app-segmented [label]="i18n.t('wm.font')" [options]="fonts()" [value]="settings().font" (valueChange)="patch({ font: $event })" />
+            <label class="check"><input type="checkbox" [checked]="settings().bold" (change)="patch({ bold: $any($event.target).checked })" /> {{ i18n.t('wm.bold') }}</label>
+            <div class="row">
+              <label class="lbl" for="wm-size">{{ i18n.t('wm.size') }}</label>
+              <input id="wm-size" type="range" [min]="limits.sizePct.min" [max]="limits.sizePct.max" step="0.5" [value]="settings().sizePct" (input)="setNum('sizePct', $any($event.target).value)" />
+              <output class="mono" for="wm-size">{{ settings().sizePct }}%</output>
+            </div>
+            <div class="row">
+              <label class="lbl" for="wm-color">{{ i18n.t('wm.color') }}</label>
+              <input id="wm-color" type="color" [value]="settings().color" (input)="setColor($any($event.target).value)" />
+              <output class="mono" for="wm-color">{{ settings().color }}</output>
+            </div>
+          } @else {
+            <div class="row">
+              <label class="btn small file-btn">
+                <app-icon name="upload" /> {{ i18n.t(logoName() ? 'wm.logo.change' : 'wm.logo.pick') }}
+                <input type="file" accept="image/*" data-testid="wm-logo" (change)="onLogo($any($event.target).files)" />
+              </label>
+              <span class="hint">{{ logoName() ? i18n.t('wm.logo.name', { name: logoName() }) : i18n.t('wm.logo.none') }}</span>
+            </div>
+            <p class="hint">{{ i18n.t('wm.logo.hint') }}</p>
+            <div class="row">
+              <label class="lbl" for="wm-logo-scale">{{ i18n.t('wm.logoScale') }}</label>
+              <input id="wm-logo-scale" type="range" [min]="limits.logoScale.min" [max]="limits.logoScale.max" [value]="settings().logoScale" (input)="setNum('logoScale', $any($event.target).value)" />
+              <output class="mono" for="wm-logo-scale">{{ settings().logoScale }}%</output>
+            </div>
+          }
+
+          <div class="row">
+            <label class="lbl" for="wm-opacity">{{ i18n.t('wm.opacity') }}</label>
+            <input id="wm-opacity" type="range" [min]="limits.opacity.min" [max]="limits.opacity.max" [value]="settings().opacity" (input)="setNum('opacity', $any($event.target).value)" />
+            <output class="mono" for="wm-opacity">{{ settings().opacity }}%</output>
+          </div>
+          <div class="row">
+            <label class="lbl" for="wm-rotation">{{ i18n.t('wm.rotation') }}</label>
+            <input id="wm-rotation" type="range" [min]="limits.rotation.min" [max]="limits.rotation.max" step="1" [value]="settings().rotation" (input)="setNum('rotation', $any($event.target).value)" />
+            <output class="mono" for="wm-rotation">{{ settings().rotation }}°</output>
+          </div>
+        </section>
+
+        <section class="panel" [attr.aria-label]="i18n.t('wm.position')">
+          <h2 class="eyebrow">{{ i18n.t('wm.position') }}</h2>
+          <div class="grid9" role="group" [attr.aria-label]="i18n.t('wm.position')" data-testid="wm-positions">
+            @for (a of anchors; track a) {
+              <button
+                type="button"
+                class="cell"
+                [attr.data-pos]="a"
+                [class.on]="settings().position === a"
+                [attr.aria-pressed]="settings().position === a"
+                [attr.aria-label]="i18n.t('wm.pos.' + a)"
+                (click)="setPosition(a)"
+              ></button>
+            }
+          </div>
+          <button type="button" class="btn small tile" data-pos="tile" [class.on]="isTile()" [attr.aria-pressed]="isTile()" (click)="setPosition('tile')">
+            <app-icon name="layers" /> {{ i18n.t('wm.pos.tile') }}
+          </button>
+          @if (!isTile()) {
+            <div class="row">
+              <label class="lbl" for="wm-margin">{{ i18n.t('wm.margin') }}</label>
+              <input id="wm-margin" type="range" [min]="limits.margin.min" [max]="limits.margin.max" [value]="settings().margin" (input)="setNum('margin', $any($event.target).value)" />
+              <output class="mono" for="wm-margin">{{ settings().margin }}%</output>
+            </div>
+          } @else {
+            <div class="row">
+              <label class="lbl" for="wm-gap">{{ i18n.t('wm.gap') }}</label>
+              <input id="wm-gap" type="range" [min]="limits.gap.min" [max]="limits.gap.max" [value]="settings().gap" (input)="setNum('gap', $any($event.target).value)" />
+              <output class="mono" for="wm-gap">{{ settings().gap }}%</output>
+            </div>
+          }
+        </section>
+
+        @if (hasPdf()) {
+          <section class="panel" [attr.aria-label]="i18n.t('wm.pages')">
+            <label class="field">
+              <span class="eyebrow">{{ i18n.t('wm.pages') }}</span>
+              <input id="wm-pages" type="text" [placeholder]="i18n.t('wm.pages.ph')" [value]="pagesText()" (input)="pagesText.set($any($event.target).value)" />
+            </label>
+            <p class="hint">{{ i18n.t('wm.pages.hint') }}</p>
+          </section>
+        }
+
+        @if (imageCount() > 0) {
+          <section class="panel" [attr.aria-label]="i18n.t('wm.out')">
+            <h2 class="eyebrow">{{ i18n.t('wm.out') }}</h2>
+            <app-segmented [label]="i18n.t('wm.format')" [options]="formats()" [(value)]="format" />
+            @if (qualityOn()) {
+              <div class="row">
+                <label class="lbl" for="wm-quality">{{ i18n.t('wm.quality') }}</label>
+                <input id="wm-quality" type="range" min="10" max="100" [value]="quality()" (input)="setQuality($any($event.target).value)" />
+                <output class="mono" for="wm-quality">{{ quality() }}</output>
+              </div>
+            }
+            <p class="hint">{{ i18n.t('wm.noMeta') }}</p>
+          </section>
+        }
+
+        <section class="panel">
+          <div class="row">
+            <button type="button" class="btn primary" data-testid="wm-download" [disabled]="working() || items().length === 0" (click)="download()">
+              <app-icon name="download" /> {{ i18n.t(items().length > 1 ? 'wm.download.zip' : 'wm.download') }}
+            </button>
+            <app-send-to from="image-watermark" kind="image" [files]="imageFiles" [disabled]="working() || imageCount() === 0 || !ready()" />
+          </div>
+          <p class="tool-ok" role="status" aria-live="polite" data-testid="wm-status">{{ status() }}</p>
+        </section>
+      </div>
+    </div>
+  </app-file-drop>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('wm.info.pos.title') }}</h2>
+      <p>{{ i18n.t('wm.info.pos.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('wm.info.size.title') }}</h2>
+      <p>{{ i18n.t('wm.info.size.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('wm.info.priv.title') }}</h2>
+      <p>{{ i18n.t('wm.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

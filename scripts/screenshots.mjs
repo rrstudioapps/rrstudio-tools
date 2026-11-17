@@ -460,6 +460,70 @@ try {
       await page.waitForSelector('[data-testid=nl-result]');
     },
   });
+  await shot('statistics-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/statistics-calculator/',
+    setup: async (page) => {
+      await page.getByTestId('stat-sample').click();
+      await page.waitForSelector('[data-testid=stat-results]');
+      await page.waitForSelector('[data-testid=stat-hist]');
+    },
+  });
+  await shot('aspect-ratio-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/aspect-ratio-calculator/',
+    setup: async (page) => {
+      await page.waitForSelector('[data-testid=ar-ratio]');
+    },
+  });
+  await shot('roman-numerals.png', {
+    width: 1280,
+    dark: false,
+    path: '/roman-numerals/',
+    setup: async (page) => {
+      await page.fill('#rom-input', 'MCMXCIV');
+      await page.waitForSelector('[data-testid=rom-result]');
+    },
+  });
+  await shot('unicode-inspector.png', {
+    width: 1280,
+    dark: false,
+    path: '/unicode-inspector/',
+    setup: async (page) => {
+      await page.getByTestId('uni-sample').click();
+      await page.waitForSelector('[data-testid=uni-summary]');
+      await page.waitForSelector('[data-testid=uni-homoglyph]');
+    },
+  });
+  await shot('morse-code.png', {
+    width: 1280,
+    dark: false,
+    path: '/morse-code/',
+    setup: async (page) => {
+      await page.fill('#morse-in', 'SOS ciao mondo');
+      await page.waitForFunction(() => document.querySelector('#morse-out')?.value.startsWith('...'));
+    },
+  });
+  await shot('classic-ciphers.png', {
+    width: 1280,
+    dark: false,
+    path: '/classic-ciphers/',
+    setup: async (page) => {
+      await page.fill('#cph-in', 'Attacco all\'alba');
+      await page.waitForSelector('[data-testid=cph-brute]');
+    },
+  });
+  await shot('convertitore-lire-euro.png', {
+    width: 1280,
+    dark: false,
+    path: '/convertitore-lire-euro/',
+    setup: async (page) => {
+      await page.fill('#lire-amount', '100.000');
+      await page.waitForSelector('[data-testid=lire-result]');
+    },
+  });
   await shot('percentage-calculator.png', {
     width: 1280,
     dark: false,
@@ -843,6 +907,64 @@ try {
       await page.waitForTimeout(300);
     },
   });
+  const chk = (cond, msg) => {
+    if (!cond) throw new Error(msg);
+  };
+  await shot('hmac-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/hmac-generator/',
+    setup: async (page) => {
+      // caso 2 dell'RFC 4231 (HMAC-SHA-256 con chiave "Jefe")
+      await page.fill('#hmac-key', 'Jefe');
+      await page.fill('#hmac-msg', 'what do ya want for nothing?');
+      await page.waitForSelector('[data-testid=hmac-output]');
+      const mac = (await page.locator('[data-testid=hmac-output]').innerText()).trim();
+      chk(mac === '5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843', 'HMAC inatteso: ' + mac);
+      await page.fill('#hmac-expected', 'sha256=' + mac.toUpperCase());
+      await page.waitForSelector('[data-testid=hmac-verify-result]');
+      chk(/✓/.test(await page.locator('[data-testid=hmac-verify-result]').innerText()), 'verifica HMAC non riuscita');
+    },
+  });
+  await shot('ssh-key-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/ssh-key-generator/',
+    setup: async (page) => {
+      await page.fill('#ssh-comment', 'mario@portatile');
+      await page.click('[data-testid=ssh-generate]');
+      await page.waitForSelector('[data-testid=ssh-fingerprint]');
+      chk(/^SHA256:[A-Za-z0-9+/]{43}$/.test((await page.locator('[data-testid=ssh-fingerprint]').innerText()).trim()), 'fingerprint SSH inatteso');
+      chk((await page.locator('[data-testid=ssh-private]').inputValue()).startsWith('-----BEGIN OPENSSH PRIVATE KEY-----'), 'chiave privata OpenSSH inattesa');
+    },
+  });
+  await shot('csr-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/csr-generator/',
+    setup: async (page) => {
+      await page.fill('#csr-cn', 'www.example.com');
+      await page.fill('#csr-o', 'Esempio S.r.l.');
+      await page.fill('#csr-l', 'Milano');
+      await page.fill('#csr-c', 'it');
+      await page.fill('#csr-san', 'www.example.com\nexample.com\n192.0.2.10');
+      await page.click('[data-testid=csr-generate]');
+      await page.waitForSelector('[data-testid=csr-check]');
+      chk(/Valida/.test(await page.locator('[data-testid=csr-check-sig]').innerText()), 'firma della CSR non valida');
+      chk((await page.locator('[data-testid=csr-output]').inputValue()).startsWith('-----BEGIN CERTIFICATE REQUEST-----'), 'CSR inattesa');
+    },
+  });
+  await shot('shamir-secret-sharing.png', {
+    width: 1280,
+    dark: false,
+    path: '/shamir-secret-sharing/',
+    setup: async (page) => {
+      await page.fill('#sss-secret', 'correct horse battery staple');
+      await page.click('[data-testid=sss-split]');
+      await page.waitForSelector('[data-testid=sss-share]');
+      chk((await page.locator('[data-testid=sss-share]').count()) === 5, 'numero di parti inatteso');
+    },
+  });
   await shot('file-encrypt.png', {
     width: 1280,
     dark: false,
@@ -1138,6 +1260,40 @@ try {
       const photos = await drawImages(page);
       await page.setInputFiles('input[type=file]', photos);
       await page.waitForFunction(() => document.querySelectorAll('.row[data-status="done"]').length === document.querySelectorAll('li.row').length, null, { timeout: 30000 });
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('image-watermark.png', {
+    width: 1280,
+    dark: false,
+    path: '/image-watermark/',
+    setup: async (page) => {
+      await page.setInputFiles('input[type=file]', await drawImages(page));
+      await page.waitForSelector('[data-testid=wm-files] li');
+      await page.locator('[data-pos=tile]').click();
+      await page.fill('#wm-text', 'rrstudio');
+      await page.waitForTimeout(500);
+    },
+  });
+  await shot('image-color-picker.png', {
+    width: 1280,
+    dark: false,
+    path: '/image-color-picker/',
+    setup: async (page) => {
+      const [photo] = await drawImages(page);
+      await page.setInputFiles('input[type=file]', [photo]);
+      await page.waitForSelector('[data-testid=cpk-palette] li');
+      await page.locator('[data-testid=cpk-stage]').click({ position: { x: 60, y: 60 } });
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('svg-to-png.png', {
+    width: 1280,
+    dark: false,
+    path: '/svg-to-png/',
+    setup: async (page) => {
+      await page.locator('[data-testid=s2p-sample]').click();
+      await page.waitForSelector('[data-testid=s2p-preview]');
       await page.waitForTimeout(300);
     },
   });

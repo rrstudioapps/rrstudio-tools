@@ -1,0 +1,93 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.rom.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('rom.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="roman-numerals" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="rom-layout">
+    <div class="controls">
+      <div class="field">
+        <label for="rom-input">{{ i18n.t('rom.input') }}</label>
+        <input
+          id="rom-input"
+          type="text"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          [placeholder]="i18n.t('rom.input.ph')"
+          [value]="input()"
+          [attr.aria-invalid]="outcome().kind === 'error'"
+          [attr.aria-describedby]="outcome().kind === 'error' ? 'rom-err' : null"
+          data-testid="rom-input"
+          (input)="input.set($any($event.target).value)"
+        />
+      </div>
+      <label class="check">
+        <input type="checkbox" [checked]="extended()" (change)="extended.set($any($event.target).checked)" />
+        {{ i18n.t('rom.extended') }}
+      </label>
+      @if (extended()) {
+        <p class="hint">{{ i18n.t('rom.extended.hint') }}</p>
+        <p class="hint">{{ i18n.t('rom.overline') }}</p>
+      }
+      <div class="years">
+        <span class="eyebrow">{{ i18n.t('rom.years') }}</span>
+        <div class="chips">
+          @for (y of years; track y) {
+            <button type="button" class="btn small" (click)="setYear(y)">{{ y }}</button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('rom.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('rom.result') }}</h2>
+      @switch (outcome().kind) {
+        @case ('roman') {
+          <p class="label">{{ i18n.t('rom.res.roman') }}</p>
+          <p class="big" data-testid="rom-result">{{ $any(outcome()).text }}</p>
+          <div class="actions"><app-copy-button [text]="$any(outcome()).text" /></div>
+        }
+        @case ('value') {
+          <p class="label">{{ i18n.t('rom.res.value') }}</p>
+          <p class="big" data-testid="rom-result">{{ $any(outcome()).value }}</p>
+          <div class="actions"><app-copy-button [text]="'' + $any(outcome()).value" /></div>
+        }
+        @case ('error') {
+          <p id="rom-err" class="tool-error" data-testid="rom-error">{{ $any(outcome()).message }}</p>
+        }
+        @default {
+          <p class="empty">{{ i18n.t('rom.empty') }}</p>
+        }
+      }
+    </section>
+  </div>
+
+  <section class="rules">
+    <h2 class="eyebrow">{{ i18n.t('rom.table.title') }}</h2>
+    <table class="letters">
+      <tbody>
+        <tr>
+          @for (l of letters; track l[0]) {
+            <th scope="col">{{ l[0] }}</th>
+          }
+        </tr>
+        <tr>
+          @for (l of letters; track l[0]) {
+            <td>{{ l[1] }}</td>
+          }
+        </tr>
+      </tbody>
+    </table>
+    <ul>
+      @for (r of rules; track r) {
+        <li>{{ i18n.t('rom.rule.' + r) }}</li>
+      }
+    </ul>
+  </section>
+</div>

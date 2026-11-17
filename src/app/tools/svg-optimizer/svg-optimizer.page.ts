@@ -2,6 +2,7 @@
 // © 2026 rrstudio — rrstudio Tools
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { SendTo } from '../../shared/send-to';
 import { CopyButton } from '../../shared/copy-button';
 import { saveBytes } from '../../shared/download';
 import { FileDrop } from '../../shared/file-drop';
@@ -38,7 +39,7 @@ interface Item {
 
 @Component({
   selector: 'app-svg-optimizer',
-  imports: [Icon, PrivacyNote, FileDrop, CopyButton],
+  imports: [Icon, PrivacyNote, FileDrop, CopyButton, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './svg-optimizer.page.html',
   styleUrl: './svg-optimizer.page.scss',

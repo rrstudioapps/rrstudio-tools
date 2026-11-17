@@ -1,0 +1,128 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.uni.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('uni.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="unicode-inspector" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <app-io-panel [label]="i18n.t('uni.in')" inputId="uni-in">
+    <span panel-actions>
+      <button type="button" class="btn small" data-testid="uni-sample" (click)="loadSample()">{{ i18n.t('uni.sample') }}</button>
+      <button type="button" class="btn small" (click)="onInput('')"><app-icon name="trash" /> {{ i18n.t('uni.clear') }}</button>
+    </span>
+    <textarea
+      id="uni-in"
+      class="io-textarea"
+      rows="6"
+      spellcheck="false"
+      data-testid="uni-in"
+      [placeholder]="i18n.t('uni.in.ph')"
+      [value]="input()"
+      (input)="onInput($any($event.target).value)"
+    ></textarea>
+  </app-io-panel>
+
+  @if (report().codePointCount > 0) {
+    <section class="panel" [attr.aria-label]="i18n.t('uni.summary')" data-testid="uni-summary">
+      <h2 class="eyebrow">{{ i18n.t('uni.summary') }}</h2>
+      <ul class="sum">
+        <li>{{ i18n.t('uni.sum.graphemes', { n: report().graphemeCount }) }}</li>
+        <li>{{ i18n.t('uni.sum.codepoints', { n: report().codePointCount }) }}</li>
+        <li>{{ i18n.t('uni.sum.utf16', { n: report().utf16Length }) }}</li>
+        <li>{{ i18n.t('uni.sum.utf8', { n: report().utf8Length }) }}</li>
+        <li>{{ scriptsText() }}</li>
+      </ul>
+      @if (report().invisibleCount > 0) {
+        <p class="tool-warn" role="status" data-testid="uni-invisible">{{ i18n.t('uni.warn.invisible', { n: report().invisibleCount }) }}</p>
+      }
+      @if (report().mixedWords.length > 0) {
+        <p class="tool-warn" role="status" data-testid="uni-mixed">{{ i18n.t('uni.warn.mixed', { list: report().mixedWords.slice(0, 8).join(', ') }) }}</p>
+      }
+      @if (report().homoglyphCount > 0) {
+        <p class="tool-warn" role="status" data-testid="uni-homoglyph">{{ i18n.t('uni.warn.homoglyph', { n: report().homoglyphCount }) }}</p>
+      }
+      @if (clean()) {
+        <p class="tool-ok" role="status">{{ i18n.t('uni.warn.ok') }}</p>
+      }
+      @if (report().truncated) {
+        <p class="hint">{{ i18n.t('uni.warn.truncated', { n: maxShown }) }}</p>
+      }
+    </section>
+
+    <section class="panel" [attr.aria-label]="i18n.t('uni.tools')">
+      <h2 class="eyebrow">{{ i18n.t('uni.tools') }}</h2>
+      <div class="btns">
+        <button type="button" class="btn" data-testid="uni-clean" [attr.aria-pressed]="transform() === 'clean'" (click)="transform.set('clean')">{{ i18n.t('uni.btn.clean') }}</button>
+        <button type="button" class="btn" data-testid="uni-nfc" [attr.aria-pressed]="transform() === 'nfc'" (click)="transform.set('nfc')">{{ i18n.t('uni.btn.nfc') }}</button>
+        <button type="button" class="btn" data-testid="uni-nfkc" [attr.aria-pressed]="transform() === 'nfkc'" (click)="transform.set('nfkc')">{{ i18n.t('uni.btn.nfkc') }}</button>
+      </div>
+      <label class="check">
+        <input type="checkbox" [checked]="keepEmoji()" (change)="keepEmoji.set($any($event.target).checked)" />
+        {{ i18n.t('uni.keepEmoji') }}
+      </label>
+      <p class="hint">{{ i18n.t('uni.tools.hint') }}</p>
+      @if (transform()) {
+        <app-io-panel [label]="i18n.t('uni.out')" inputId="uni-out" [meta]="outputNote()">
+          <span panel-actions>
+            <button type="button" class="btn small" (click)="useOutput()">{{ i18n.t('uni.out.useAsInput') }}</button>
+            <app-copy-button [text]="output()" [disabled]="output() === ''" />
+            <app-send-to from="unicode-inspector" [text]="output()" [disabled]="output() === ''" />
+          </span>
+          <textarea id="uni-out" class="io-textarea" rows="4" readonly spellcheck="false" data-testid="uni-out" [value]="output()"></textarea>
+        </app-io-panel>
+      }
+    </section>
+
+    <section class="panel" [attr.aria-label]="i18n.t('uni.table')">
+      <h2 class="eyebrow">{{ i18n.t('uni.table') }}</h2>
+      <div class="scroll">
+        <table class="chars" data-testid="uni-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('uni.col.char') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.cp') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.name') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.cat') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.block') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.utf8') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.utf16') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.html') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.js') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.css') }}</th>
+              <th scope="col">{{ i18n.t('uni.col.flags') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of report().chars; track $index) {
+              <tr [class.flag]="c.invisible || c.homoglyphOf" [class.alt]="c.grapheme % 2 === 1">
+                <td class="glyph" [class.ph]="c.invisible">{{ shown(c) }}</td>
+                <td class="mono">{{ c.hex }}</td>
+                <td>{{ c.name ?? '—' }}</td>
+                <td>{{ c.category }} · {{ i18n.t('uni.cat.' + c.category) }}</td>
+                <td>{{ c.block ?? '—' }}</td>
+                <td class="mono">{{ c.utf8 }}</td>
+                <td class="mono">{{ c.utf16 }}</td>
+                <td class="mono">{{ c.entity }}</td>
+                <td class="mono">{{ c.js }}</td>
+                <td class="mono">{{ c.css }}</td>
+                <td>
+                  @for (f of flags(c); track f) {
+                    <span class="tag">{{ f }}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">{{ i18n.t('uni.nameNote') }}</p>
+      <p class="hint">{{ i18n.t('uni.homoNote') }}</p>
+    </section>
+  } @else {
+    <p class="hint">{{ i18n.t('uni.empty') }}</p>
+  }
+</div>

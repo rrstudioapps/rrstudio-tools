@@ -48,6 +48,9 @@ Write, compare, sort and clean up text.
 | [**Sort lines**](https://tools.rr-dev.eu/sort-lines) | Sort lines alphabetically (`Intl.Collator`, Italian or English rules), naturally, by length, by frequency, in reverse or randomly; remove duplicates (with or without case, spaces), blank lines and margins, count occurrences, add prefix, suffix and numbering. |
 | [**Find and replace**](https://tools.rr-dev.eu/find-replace) | Plain-text or regex find and replace (flags g, i, m, s, u, `$1` and `$<name>` groups, case, whole words), several rules in sequence, highlighted preview with counts. Runs in a Web Worker with a timeout against catastrophic regexes. |
 | [**Text to speech**](https://tools.rr-dev.eu/text-to-speech) | Read a text aloud with the Web Speech API: voice and language, speed, pitch, volume, pause/resume/stop and a highlighted sentence. Only local voices (`localService`) are shown and used: network voices would send the text to external servers. |
+| [**Unicode inspector**](https://tools.rr-dev.eu/unicode-inspector) | Every character of a text (by grapheme) with U+ code point, category, block, UTF-8/UTF-16 bytes, HTML entity and JS/CSS escapes. Flags invisible characters (zero-width, bidi, odd spaces), common Cyrillic/Greek homoglyphs and mixed scripts; removes invisibles and normalises to NFC/NFKC. Names only where derivable without big tables (ASCII, invisibles, CJK, Hangul). |
+| [**Morse code translator**](https://tools.rr-dev.eu/morse-code) | Text to Morse and back (letters, numbers, punctuation, accented letters), configurable symbols and separators, audio with Web Audio (WPM and pitch) and an optional visual flash that respects `prefers-reduced-motion`. |
+| [**Classic ciphers**](https://tools.rr-dev.eu/classic-ciphers) | ROT13, ROT47, Caesar (with brute force over the 25 shifts), Atbash and Vigenère, with a warning that they are not secure. |
 
 ### Data
 
@@ -114,6 +117,9 @@ Encode, decode and compute.
 | [**Sign a PDF**](https://tools.rr-dev.eu/pdf-sign) | Sign a PDF in the browser: draw (mouse, touch, pen), type or upload your signature (optional white-background removal), place and resize it by dragging or with the keyboard on several pages, add a date, download the signed PDF. A graphic signature, not a digital or qualified one. |
 | [**Crop images**](https://tools.rr-dev.eu/image-crop) | Crop with draggable handles or keyboard (free, 1:1, 4:3, 3:2, 16:9, 9:16, 4:5, 35×45 mm ID photo), rotate by 90° or any angle, flip, resize, respect EXIF orientation, export PNG/JPEG/WebP with quality. Metadata is not copied. |
 | [**Image format converter**](https://tools.rr-dev.eu/image-converter) | Convert several images to PNG, JPG, WebP or AVIF (formats the browser cannot encode are disabled), with quality, optional resize by width, height or percentage, background color for transparency in JPG, EXIF orientation respected, single or ZIP download. Options can be shared in a link, never the images. |
+| [**Watermark images and PDFs**](https://tools.rr-dev.eu/image-watermark) | Text (font, size, colour, opacity, rotation) or logo watermark on several images and PDFs at once: nine positions with margin or a tiled pattern, live preview, all pages or a page range of each PDF, PNG/JPEG/WebP output (or the original format), single download or ZIP. Images are redrawn from scratch (no metadata). |
+| [**Image color picker and palette**](https://tools.rr-dev.eu/image-color-picker) | Pick the colour of any pixel by click, tap or keyboard (arrow keys move the crosshair) with a magnifier; HEX, RGB, HSL and OKLCH values, session-only history, dominant palette of 5 to 12 colours (median cut plus k-means, deterministic) with percentages, CSS/JSON export and a link to the colour converter. |
+| [**SVG to PNG**](https://tools.rr-dev.eu/svg-to-png) | Paste or load an SVG and export PNG, JPG or WebP at 1x-8x or an exact width/height, transparent or coloured background. Handles SVGs without width/height (viewBox) and warns about external resources, which are never loaded. |
 
 ### Web & design
 
@@ -140,6 +146,10 @@ Strong passwords, two-factor codes, encrypted files and photo metadata.
 | [**EXIF viewer & remover**](https://tools.rr-dev.eu/exif-viewer) | See the EXIF, GPS, XMP and IPTC metadata of JPEG, PNG and WebP photos, with warnings for GPS, serial numbers and owner names, and remove it with no recompression (pixels stay identical). Before/after field counts, single or ZIP download. |
 | [**Password strength checker**](https://tools.rr-dev.eu/password-strength-checker) | Score 0-4 with `zxcvbn-ts` (common, English and Italian dictionaries, loaded only on this page), estimated time to crack in four attack scenarios, entropy, warnings and suggestions in Italian and English. No online check (no Have I Been Pwned): the password never leaves the page. |
 | [**TOTP generator (2FA)**](https://tools.rr-dev.eu/totp-generator) | TOTP codes (RFC 6238) from a Base32 secret or an `otpauth://` URI: SHA-1/256/512, 6-8 digits, any period, current code with countdown plus previous and next, verification with a tolerance of ±N periods, otpauth QR. HMAC with WebCrypto, tested with the RFC vectors. |
+| [**HMAC generator**](https://tools.rr-dev.eu/hmac-generator) | HMAC of a text or a file with SHA-1/256/384/512; key as text, hex or Base64; output in hex, Base64 or Base64url; verification of an expected signature (also with a `sha256=` prefix) with a constant-time comparison. WebCrypto, tested with the RFC 4231 vectors. |
+| [**SSH key generator**](https://tools.rr-dev.eu/ssh-key-generator) | Ed25519 (when the browser supports it) and RSA 2048/3072/4096 key pairs: public key in `authorized_keys` format, private key in OpenSSH (`openssh-key-v1`, unencrypted) and PKCS#8 PEM, SHA256 fingerprint as `ssh-keygen -l`. Keys never leave the browser. |
+| [**CSR generator**](https://tools.rr-dev.eu/csr-generator) | PKCS#10 certificate signing request with subject (CN, O, OU, L, ST, C, email) and SANs (DNS and IP), new RSA 2048/4096 or ECDSA P-256/P-384 key or a pasted PKCS#8 key; PEM CSR plus private key and a read-back of the generated request. |
+| [**Shamir secret sharing**](https://tools.rr-dev.eu/shamir-secret-sharing) | Split a secret into N shares (2-255) with threshold K over GF(256), random numbers from `crypto.getRandomValues`; shares in hex or Base64, downloadable as separate files or printable; rebuild by pasting K shares, with clear errors for missing, duplicate or inconsistent shares. |
 | [**Encrypt and decrypt files**](https://tools.rr-dev.eu/file-encrypt) | Encrypt files and text with a passphrase: AES-256-GCM, key from PBKDF2-SHA256 (600,000 iterations, random salt), documented `.rrenc` format with an authenticated header, clear error on a wrong passphrase or tampering. Files up to 256 MB, text as Base64. |
 
 ### Italy: tax & banking
@@ -156,7 +166,11 @@ Codice fiscale, IBAN, VAT number and electronic invoices.
 | [**Withholding tax calculator (in Italian)**](https://tools.rr-dev.eu/calcolo-ritenuta-acconto) | Gross to net and net to gross for an occasional service or a freelancer fee: editable withholding rate (20%), optional 4% INPS surcharge, pension fund with its own percentage, optional VAT and the 2 € stamp duty above 77.47 € (charged to the client or not), with a copyable line-by-line statement. Integer-cent arithmetic. |
 | [**Mortgage payment calculator (in Italian)**](https://tools.rr-dev.eu/calcolo-rata-mutuo) | Payment, total interest and a full French amortization schedule from principal, nominal rate (TAN) and term in years and months; monthly, quarterly or half-yearly payments, TAN 0% supported, paginated table and CSV export. |
 | [**Compound interest calculator**](https://tools.rr-dev.eu/compound-interest) | Initial amount, monthly or yearly deposits (start or end of period), nominal rate, compounding from annual to daily, term, optional inflation (real value) and an optional free tax-on-returns field. Final balance, total paid in, interest, year-by-year table and a hand-drawn SVG chart. |
+| [**Statistics calculator**](https://tools.rr-dev.eu/statistics-calculator) | Paste numbers (or a CSV column): count, sum, min, max, mean, median, mode, sample and population variance and standard deviation, quartiles and IQR (inclusive method, stated), any percentile, 1.5 IQR outliers and a hand-drawn SVG histogram. |
+| [**Aspect ratio calculator**](https://tools.rr-dev.eu/aspect-ratio-calculator) | Reduced ratio (GCD) and decimal from width and height, the other side from a ratio, presets (16:9, 4:3, 21:9, 1:1, 9:16, 3:2, A4), proportional resize with optional rounding to even numbers or multiples of 8, and CSS `aspect-ratio`. |
+| [**Roman numerals converter**](https://tools.rr-dev.eu/roman-numerals) | Numbers to Roman numerals and back, 1 to 3,999 (up to 3,999,999 with the overline), with canonical-form validation and explained errors (IIII, VX, IC…). |
 | [**Numbers in words (in Italian)**](https://tools.rr-dev.eu/numeri-in-lettere) | Writes a number (decimals, negatives, up to 999 billion) in correct Italian: ventuno, centottanta, ventitré, milleuno, un milione. Cheque mode gives the cents as digits (`milleduecentotrentaquattro/56`), with an optional "euro". |
+| [**Lire to euro converter (in Italian)**](https://tools.rr-dev.eu/convertitore-lire-euro) | Fixed rate 1 € = 1936.27 lire (Reg. EC 2866/98), both directions, exact integer arithmetic with rounding to the cent or the lira, and a table of historical banknote and coin denominations. Italian only. |
 
 More tools are coming, with the same rule: nothing leaves your browser.
 
@@ -532,6 +546,27 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Route `/pdf-sign` (also `/en/pdf-sign`). Pages are rendered with pdf.js (same loader as the PDF tools); the signature is embedded with `pdf-lib` as a transparent PNG. Placements are stored as fractions of the page as seen on screen and converted to PDF coordinates taking the page rotation and CropBox origin into account (unit-tested for the four rotations). Signatures are made by drawing (pointer events, pen pressure, undo), typing (system italic fonts, nothing downloaded) or from an image (optional white-to-transparent threshold, auto-trim).
 - Several signatures and dates on several pages, drag and corner handle or keyboard (arrows, `+`/`-`, `Delete`), "copy to all pages". Password-protected or encrypted PDFs are refused with a clear message. A prominent notice says this is a graphic signature, not a digital or qualified one. The e2e test reads the produced PDF with `pdf-lib` and checks the image is on the right page.
 
+### Watermark images and PDFs
+
+![Watermark images and PDFs](docs/screenshots/image-watermark.png)
+
+- Route `/image-watermark` (also `/en/image-watermark`). Text or logo watermark; every size (text height, margin, tile gap, logo width) is a percentage of the shorter side, so preview and full-resolution export match. Placement is pure, unit-tested logic: nine anchor points that keep the rotated box inside the margins, or a staggered tile pattern (capped at about 2000 repeats).
+- Images go through `createImageBitmap` (EXIF orientation applied) and a canvas, so metadata is dropped. PDFs are written with `pdf-lib` on all pages or a range, using the standard Helvetica, Times and Courier fonts (characters outside WinAnsi become `?`, with a notice); rotated pages and CropBox are handled. The share link carries only the text options, never images, the logo or PDFs.
+
+### Image color picker and palette
+
+![Image color picker and palette](docs/screenshots/image-color-picker.png)
+
+- Route `/image-color-picker` (also `/en/image-color-picker`). The pixel is read from the canvas (images over 4096 px are shown reduced); the crosshair moves with the pointer or, from the keyboard, with the arrow keys (Shift for ten pixels, Enter adds to the history). The history lives in memory only.
+- The palette samples up to 40,000 non-transparent pixels, splits them with median cut and refines the centres with a few k-means steps: same image, same palette. Percentages always add up to 100. "Open in the colour converter" passes the colour through the converter's share link.
+
+### SVG to PNG
+
+![SVG to PNG](docs/screenshots/svg-to-png.png)
+
+- Route `/svg-to-png` (also `/en/svg-to-png`). The SVG is drawn through an `<img>` with a blob URL (no script runs, no external resource is requested) and encoded from a canvas. Size comes from `width`/`height`, else from the `viewBox`, else 300×150 with a warning; the output is limited to 16384 px per side and 100 megapixels.
+- The SVG is parsed with `DOMParser`, given an `xmlns` and `viewBox` if missing, and stripped of scripts, `foreignObject` and event handlers before drawing. It receives text and `.svg` files from "Send to…" and the SVG optimizer can send its output here.
+
 ### Crop images
 
 ![Crop images](docs/screenshots/image-crop.png)
@@ -554,6 +589,83 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Route `/totp-generator` (also `/en/totp-generator`). Paste a Base32 secret or an `otpauth://totp/` URI (settings, label and issuer are filled in), or generate a random 160-bit secret.
 - SHA-1, SHA-256, SHA-512, 6-8 digits, period 5-300 s. Shows the current code with a countdown and the previous and next ones; verifies a typed code with a window of ±0-5 periods and says which period it belongs to.
 - The otpauth URI and its QR (using the QR encoder of the QR generator) can be copied or downloaded. HMAC is computed with WebCrypto; the tests use the RFC 4226 and RFC 6238 vectors.
+
+### HMAC generator
+
+![HMAC generator](docs/screenshots/hmac-generator.png)
+
+- Route `/hmac-generator` (also `/en/hmac-generator`). Message as text or file, key as text, hex or Base64 (an empty key is allowed), SHA-1/256/384/512, output in hex, Base64 or Base64url. Text can arrive from other tools through "Send to".
+- A pasted expected signature (hex, Base64, Base64url, optionally with a prefix such as `sha256=`) is compared in constant time. Key and message never go into share links. Tests use the RFC 4231 vectors (SHA-256/384/512) and RFC 2202 (SHA-1).
+
+### SSH key generator
+
+![SSH key generator](docs/screenshots/ssh-key-generator.png)
+
+- Route `/ssh-key-generator` (also `/en/ssh-key-generator`). Ed25519 is offered only if WebCrypto can generate it (feature detection); otherwise a notice appears and only RSA 2048/3072/4096 is available.
+- Outputs: the public key line (`ssh-ed25519 AAAA… comment`), the private key as `-----BEGIN OPENSSH PRIVATE KEY-----` (unencrypted, with a warning) and as PKCS#8, and the `SHA256:…` fingerprint. Passphrase protection is not offered: the encrypted OpenSSH format needs bcrypt_pbkdf, not available in WebCrypto, and no dependency was added (use `ssh-keygen -p`). Output was checked against `ssh-keygen` (`-l` and `-y` read the generated files).
+
+### CSR generator
+
+![CSR generator](docs/screenshots/csr-generator.png)
+
+- Route `/csr-generator` (also `/en/csr-generator`). Subject fields, SANs (DNS names incl. wildcards, IPv4 and IPv6), a new RSA/ECDSA key or a pasted unencrypted PKCS#8 key. The request is built with `pkijs` (one RDN per subject field) and verified with `openssl req -verify` during development.
+- The generated CSR is decoded again with the certificate decoder's code and shown below, with its signature check.
+
+### Shamir secret sharing
+
+![Shamir secret sharing](docs/screenshots/shamir-secret-sharing.png)
+
+- Route `/shamir-secret-sharing` (also `/en/shamir-secret-sharing`). Shamir's scheme over GF(256) (AES polynomial), N from 2 to 255, threshold K from 2 to N, secret up to 16 KiB as UTF-8. A CRC-32 is appended before splitting so wrong or mixed shares are detected when rebuilding.
+- Shares look like `S1H-3-5-2-…` (`S1B-` for Base64): format, threshold, total and index. They can be copied, downloaded as one file each or printed (the page prints only the shares). The tests rebuild the secret from every combination of K shares.
+
+### Statistics calculator
+
+![Statistics calculator](docs/screenshots/statistics-calculator.png)
+
+- Route `/statistics-calculator` (also `/en/statistics-calculator`). Paste numbers separated by spaces, new lines or semicolons (in Italian the comma is the decimal separator) or pick a column of a CSV. The page gives count, sum, min, max, range, mean, median, mode, sample and population variance and standard deviation, quartiles, IQR, any percentile and the outliers outside 1.5 IQR.
+- Quartiles and percentiles use the inclusive linear-interpolation method (like Excel's QUARTILE.INC and R's type 7), and the page says so, since other programs give slightly different values. The histogram is a hand-written SVG with an adjustable number of classes.
+
+### Aspect ratio calculator
+
+![Aspect ratio calculator](docs/screenshots/aspect-ratio-calculator.png)
+
+- Route `/aspect-ratio-calculator` (also `/en/aspect-ratio-calculator`). Find the reduced ratio (GCD) and the decimal value from width and height, compute the missing side from a ratio (presets 16:9, 4:3, 21:9, 1:1, 9:16, 3:2, A4) and resize proportionally.
+- Rounding can be to the nearest integer, to even numbers or to multiples of 8 (useful for video codecs). It also gives the CSS `aspect-ratio` rule and the `padding-top` fallback, with a preview of the rectangle.
+
+### Unicode inspector
+
+![Unicode inspector](docs/screenshots/unicode-inspector.png)
+
+- Route `/unicode-inspector` (also `/en/unicode-inspector`). Every character of a text, by grapheme, with U+ code point, category, block, UTF-8 and UTF-16 bytes, HTML entity and JavaScript/CSS escapes. A summary counts graphemes, code points and bytes.
+- It flags invisible characters (zero-width, bidi, odd spaces), common Cyrillic/Greek homoglyphs and words that mix scripts, and cleans the text (remove invisibles, NFC/NFKC). Character names are shown only where they can be derived without big tables (ASCII, invisibles, CJK, Hangul).
+
+### Roman numerals converter
+
+![Roman numerals converter](docs/screenshots/roman-numerals.png)
+
+- Route `/roman-numerals` (also `/en/roman-numerals`). Numbers to Roman numerals and back, from 1 to 3,999 (up to 3,999,999 with the overline).
+- A Roman numeral is accepted only in canonical form: wrong ones (IIII, VX, IC...) get an explanation and, when possible, the correct form. Quick-year buttons and a table of letters and rules are on the page.
+
+### Morse code translator
+
+![Morse code translator](docs/screenshots/morse-code.png)
+
+- Route `/morse-code` (also `/en/morse-code`). Text to Morse and back, with letters, numbers, punctuation and accented letters; symbols and separators are configurable and reading accepts the other common forms too.
+- You can listen to the code (Web Audio, speed in words per minute with the PARIS rule, pitch) or watch it flash; the flash respects `prefers-reduced-motion`. The full alphabet is shown below.
+
+### Classic ciphers
+
+![Classic ciphers](docs/screenshots/classic-ciphers.png)
+
+- Route `/classic-ciphers` (also `/en/classic-ciphers`). ROT13, ROT47, Caesar, Atbash and Vigenere, to encrypt or decrypt, with a clear warning that they are not secure.
+- For Caesar the page lists all 25 shifts (brute force) and a button applies the one that makes sense. Accented letters, digits and symbols are left unchanged.
+
+### Lire to euro converter (Italian only)
+
+![Lire to euro converter (Italian only)](docs/screenshots/convertitore-lire-euro.png)
+
+- Route `/convertitore-lire-euro`, with no `/en/` version. Fixed rate 1 euro = 1,936.27 lire (Reg. EC 2866/98), both directions, with exact integer arithmetic.
+- Results are rounded to the cent (euro) or to the lira, as the regulations require, and the exact value is shown too. A table lists the historical banknote and coin denominations with their value in euro.
 
 ### Encrypt and decrypt files
 
@@ -777,6 +889,7 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   [Generatore di favicon](https://tools.rr-dev.eu/favicon-generator), [Generatore .htpasswd](https://tools.rr-dev.eu/htpasswd-generator),
   [Decodificatore di certificati](https://tools.rr-dev.eu/certificate-decoder) (X.509 e CSR),
   [Verifica robustezza password](https://tools.rr-dev.eu/password-strength-checker), [Generatore TOTP (2FA)](https://tools.rr-dev.eu/totp-generator),
+  [Generatore HMAC](https://tools.rr-dev.eu/hmac-generator), [Generatore chiavi SSH](https://tools.rr-dev.eu/ssh-key-generator), [Generatore CSR](https://tools.rr-dev.eu/csr-generator), [Dividi un segreto (Shamir)](https://tools.rr-dev.eu/shamir-secret-sharing),
   [Cifra e decifra file](https://tools.rr-dev.eu/file-encrypt) (AES-256-GCM), [Generatore di codici a barre](https://tools.rr-dev.eu/barcode-generator),
   [Lettore di codici QR](https://tools.rr-dev.eu/qr-code-reader), [Ordina righe](https://tools.rr-dev.eu/sort-lines),
   [Trova e sostituisci](https://tools.rr-dev.eu/find-replace), [Sintesi vocale](https://tools.rr-dev.eu/text-to-speech) (solo voci locali) e
@@ -787,7 +900,14 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   [Convertitore cURL](https://tools.rr-dev.eu/curl-converter), [Analizzatore URL](https://tools.rr-dev.eu/url-parser),
   [Calcolo interesse composto](https://tools.rr-dev.eu/compound-interest),
   [Convertitore formato immagini](https://tools.rr-dev.eu/image-converter) (PNG, JPG, WebP, AVIF),
+  [Filigrana su immagini e PDF](https://tools.rr-dev.eu/image-watermark),
+  [Contagocce e palette da immagine](https://tools.rr-dev.eu/image-color-picker),
+  [SVG in PNG](https://tools.rr-dev.eu/svg-to-png),
   [Convertitore colori](https://tools.rr-dev.eu/color-converter) (HEX, RGB, HSL, HWB, OKLCH, OKLAB, palette),
+  [Calcolatrice statistica](https://tools.rr-dev.eu/statistics-calculator), [Calcolo proporzioni](https://tools.rr-dev.eu/aspect-ratio-calculator),
+  [Numeri romani](https://tools.rr-dev.eu/roman-numerals), [Ispettore Unicode](https://tools.rr-dev.eu/unicode-inspector),
+  [Codice Morse](https://tools.rr-dev.eu/morse-code), [Cifrari classici](https://tools.rr-dev.eu/classic-ciphers),
+  [Convertitore lire euro](https://tools.rr-dev.eu/convertitore-lire-euro),
   [Convertitore CSV, JSON ed Excel](https://tools.rr-dev.eu/csv-json-converter), tutti con
   elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build

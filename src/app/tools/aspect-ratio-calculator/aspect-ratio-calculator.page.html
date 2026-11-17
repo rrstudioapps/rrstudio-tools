@@ -1,0 +1,154 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.ar.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ar.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="aspect-ratio-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('ar.mode')" [options]="modes()" [(value)]="mode" />
+  </div>
+
+  <div class="ar-layout">
+    <div class="controls">
+      @if (mode() === 'find') {
+        <div class="row">
+          <div class="field">
+            <label for="ar-w">{{ i18n.t('ar.width') }} ({{ i18n.t('ar.unit') }})</label>
+            <input id="ar-w" type="text" inputmode="decimal" autocomplete="off" data-testid="ar-w" [value]="width()" (input)="width.set($any($event.target).value)" />
+          </div>
+          <div class="field">
+            <label for="ar-h">{{ i18n.t('ar.height') }} ({{ i18n.t('ar.unit') }})</label>
+            <input id="ar-h" type="text" inputmode="decimal" autocomplete="off" data-testid="ar-h" [value]="height()" (input)="height.set($any($event.target).value)" />
+          </div>
+        </div>
+        @if (found(); as f) {
+          <section class="result" aria-live="polite">
+            <p class="label">{{ i18n.t('ar.res.ratio') }}</p>
+            @if (f.ratioText) {
+              <p class="big" data-testid="ar-ratio">{{ f.ratioText }}</p>
+            } @else {
+              <p class="hint">{{ i18n.t('ar.res.noInt') }}</p>
+            }
+            <p class="label">{{ i18n.t('ar.res.decimal') }}: <span class="mono" data-testid="ar-decimal">{{ f.decimal }}</span></p>
+            @if (f.nearText) {
+              <p class="hint">{{ f.nearText }}</p>
+            }
+            <div class="actions">
+              <button type="button" class="btn small" (click)="useFound()"><app-icon name="right" /> {{ i18n.t('ar.useRatio') }}</button>
+            </div>
+          </section>
+          <section class="result">
+            <h2 class="eyebrow">{{ i18n.t('ar.resize.title') }}</h2>
+            <div class="row">
+              <div class="field">
+                <label for="ar-nw">{{ i18n.t('ar.resize.newWidth') }} ({{ i18n.t('ar.unit') }})</label>
+                <input id="ar-nw" type="text" inputmode="decimal" autocomplete="off" data-testid="ar-nw" [value]="newWidth()" (input)="newWidth.set($any($event.target).value)" />
+              </div>
+              <div class="field">
+                <label for="ar-round1">{{ i18n.t('ar.rounding') }}</label>
+                <select id="ar-round1" [value]="rounding()" (change)="onRounding($event)">
+                  <option value="none">{{ i18n.t('ar.rounding.none') }}</option>
+                  <option value="integer">{{ i18n.t('ar.rounding.integer') }}</option>
+                  <option value="even">{{ i18n.t('ar.rounding.even') }}</option>
+                  <option value="multiple8">{{ i18n.t('ar.rounding.multiple8') }}</option>
+                </select>
+              </div>
+            </div>
+            @if (f.resized; as r) {
+              <p class="big small" data-testid="ar-resized">{{ i18n.t('ar.solved.size', { w: r.w, h: r.h }) }}</p>
+            }
+            <p class="hint">{{ i18n.t('ar.rounding.hint') }}</p>
+          </section>
+          <section class="result">
+            <h2 class="eyebrow">{{ i18n.t('ar.css') }}</h2>
+            <pre class="code" data-testid="ar-css">{{ f.css }}</pre>
+            <div class="actions"><app-copy-button [text]="f.css" /></div>
+            <p class="hint">{{ i18n.t('ar.css.fallback') }}</p>
+            <pre class="code">{{ f.pad }}</pre>
+            <div class="actions"><app-copy-button [text]="f.pad" /></div>
+          </section>
+        } @else {
+          <p class="tool-error" role="alert">{{ i18n.t('ar.invalid') }}</p>
+        }
+      } @else {
+        <div class="field">
+          <span class="eyebrow">{{ i18n.t('ar.presets') }}</span>
+          <div class="chips">
+            @for (p of presets; track p.id) {
+              <button type="button" class="btn small" [attr.data-testid]="'ar-preset-' + p.id" (click)="applyPreset(p)">{{ p.label }}</button>
+            }
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="ar-rw">{{ i18n.t('ar.ratio.w') }}</label>
+            <input id="ar-rw" type="text" inputmode="decimal" autocomplete="off" data-testid="ar-rw" [value]="ratioW()" (input)="ratioW.set($any($event.target).value)" />
+          </div>
+          <div class="field">
+            <label for="ar-rh">{{ i18n.t('ar.ratio.h') }}</label>
+            <input id="ar-rh" type="text" inputmode="decimal" autocomplete="off" data-testid="ar-rh" [value]="ratioH()" (input)="ratioH.set($any($event.target).value)" />
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn small" (click)="flip()"><app-icon name="swap" /> {{ i18n.t('ar.flip') }}</button>
+        </div>
+        <div class="field">
+          <span class="eyebrow">{{ i18n.t('ar.side') }}</span>
+          <app-segmented [label]="i18n.t('ar.side')" [options]="sides()" [(value)]="side" />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="ar-v">{{ i18n.t('ar.value') }} ({{ i18n.t('ar.unit') }})</label>
+            <input id="ar-v" type="text" inputmode="decimal" autocomplete="off" data-testid="ar-v" [value]="value()" (input)="value.set($any($event.target).value)" />
+          </div>
+          <div class="field">
+            <label for="ar-round2">{{ i18n.t('ar.rounding') }}</label>
+            <select id="ar-round2" [value]="rounding()" (change)="onRounding($event)">
+              <option value="none">{{ i18n.t('ar.rounding.none') }}</option>
+              <option value="integer">{{ i18n.t('ar.rounding.integer') }}</option>
+              <option value="even">{{ i18n.t('ar.rounding.even') }}</option>
+              <option value="multiple8">{{ i18n.t('ar.rounding.multiple8') }}</option>
+            </select>
+          </div>
+        </div>
+        <p class="hint">{{ i18n.t('ar.rounding.hint') }}</p>
+        @if (solved(); as s) {
+          <section class="result" aria-live="polite">
+            <h2 class="eyebrow">{{ i18n.t('ar.solved') }}</h2>
+            <p class="big" data-testid="ar-solved">{{ s.size }}</p>
+            @if (s.showError) {
+              <p class="hint">{{ i18n.t('ar.solved.error', { e: s.error }) }}</p>
+            }
+            <div class="actions"><app-copy-button [text]="s.size" /></div>
+          </section>
+          <section class="result">
+            <h2 class="eyebrow">{{ i18n.t('ar.css') }}</h2>
+            <pre class="code" data-testid="ar-css">{{ s.css }}</pre>
+            <div class="actions"><app-copy-button [text]="s.css" /></div>
+            <p class="hint">{{ i18n.t('ar.css.fallback') }}</p>
+            <pre class="code">{{ s.pad }}</pre>
+            <div class="actions"><app-copy-button [text]="s.pad" /></div>
+          </section>
+        } @else {
+          <p class="tool-error" role="alert">{{ i18n.t('ar.invalid') }}</p>
+        }
+      }
+    </div>
+
+    <aside class="preview" [attr.aria-label]="i18n.t('ar.preview')">
+      <h2 class="eyebrow">{{ i18n.t('ar.preview') }}</h2>
+      @if (preview(); as p) {
+        <div class="box">
+          <div class="rect" role="img" data-testid="ar-rect" [style.width.px]="p.w" [style.height.px]="p.h" [attr.aria-label]="i18n.t('ar.preview.label', { r: p.label })">
+            <span>{{ p.label }}</span>
+          </div>
+        </div>
+      }
+    </aside>
+  </div>
+</div>

@@ -5,11 +5,11 @@
  * Passaggio del risultato di uno strumento a un altro ("Invia a…"): tipi e mappa di compatibilità.
  * Logica pura (niente Angular): il servizio che tiene il contenuto in memoria è in `tool-handoff.ts`.
  */
-export type HandoffKind = 'text' | 'json' | 'csv' | 'image' | 'files';
+export type HandoffKind = 'text' | 'json' | 'csv' | 'svg' | 'image' | 'files';
 
 export interface HandoffPayload {
   kind: HandoffKind;
-  /** Contenuto per i tipi testuali (text, json, csv). */
+  /** Contenuto per i tipi testuali (text, json, csv, svg). */
   text?: string;
   /** File (con nome e mime) per i tipi image e files. */
   files?: File[];
@@ -18,7 +18,7 @@ export interface HandoffPayload {
 }
 
 /**
- * Quali tipi accetta ciascuno strumento. Un contenuto `json` o `csv` è anche testo: lo prendono
+ * Quali tipi accetta ciascuno strumento. Un contenuto `json`, `csv` o `svg` è anche testo: lo prendono
  * anche gli strumenti che dichiarano `text` (vedi `accepts`). Gli strumenti assenti non ricevono nulla.
  */
 export const HANDOFF_ACCEPTS: Readonly<Record<string, readonly HandoffKind[]>> = {
@@ -30,7 +30,12 @@ export const HANDOFF_ACCEPTS: Readonly<Record<string, readonly HandoffKind[]>> =
   base64: ['text'],
   'url-encode': ['text'],
   'hash-generator': ['text'],
+  'hmac-generator': ['text'],
   'word-counter': ['text'],
+  'statistics-calculator': ['csv', 'text'],
+  'unicode-inspector': ['text'],
+  'morse-code': ['text'],
+  'classic-ciphers': ['text'],
   'find-replace': ['text'],
   'sort-lines': ['text'],
   'case-converter': ['text'],
@@ -40,6 +45,9 @@ export const HANDOFF_ACCEPTS: Readonly<Record<string, readonly HandoffKind[]>> =
   'text-diff': ['text'],
   'markdown-editor': ['text'],
   'qr-code-generator': ['text'],
+  'image-watermark': ['image'],
+  'image-color-picker': ['image'],
+  'svg-to-png': ['svg', 'image'],
   'image-crop': ['image'],
   'image-compressor': ['image'],
   'image-converter': ['image'],
@@ -54,7 +62,7 @@ export function accepts(toolId: string, kind: HandoffKind): boolean {
   const list = HANDOFF_ACCEPTS[toolId];
   if (!list) return false;
   if (list.includes(kind)) return true;
-  return (kind === 'json' || kind === 'csv') && list.includes('text');
+  return (kind === 'json' || kind === 'csv' || kind === 'svg') && list.includes('text');
 }
 
 /** Id degli strumenti a cui si può inviare un contenuto di quel tipo, escluso quello di partenza. Ordine: quello di `order`. */
@@ -64,6 +72,6 @@ export function handoffTargets(kind: HandoffKind, fromId: string, order: readonl
 
 /** Un payload è consegnabile se ha il contenuto che il suo tipo richiede. */
 export function isValidPayload(p: HandoffPayload): boolean {
-  if (p.kind === 'text' || p.kind === 'json' || p.kind === 'csv') return typeof p.text === 'string';
+  if (p.kind === 'text' || p.kind === 'json' || p.kind === 'csv' || p.kind === 'svg') return typeof p.text === 'string';
   return Array.isArray(p.files) && p.files.length > 0;
 }

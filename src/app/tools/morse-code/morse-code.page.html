@@ -1,0 +1,136 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.morse.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('morse.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="morse-code" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('morse.mode')" [options]="modes()" [value]="mode()" (valueChange)="onMode($event)" />
+  </div>
+
+  <div class="tool-panels">
+    <app-io-panel [label]="i18n.t(mode() === 'encode' ? 'morse.in.text' : 'morse.in.morse')" inputId="morse-in">
+      <span panel-actions>
+        <button type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('morse.clear') }}</button>
+      </span>
+      <textarea
+        id="morse-in"
+        class="io-textarea"
+        rows="8"
+        spellcheck="false"
+        data-testid="morse-in"
+        [placeholder]="inputPlaceholder()"
+        [value]="input()"
+        (input)="input.set($any($event.target).value)"
+      ></textarea>
+    </app-io-panel>
+
+    <app-io-panel [label]="i18n.t(mode() === 'encode' ? 'morse.out.morse' : 'morse.out.text')" inputId="morse-out">
+      <span panel-actions>
+        <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        <app-send-to from="morse-code" [text]="output()" [disabled]="output() === ''" />
+      </span>
+      <textarea id="morse-out" class="io-textarea" rows="8" readonly spellcheck="false" data-testid="morse-out" [value]="output()"></textarea>
+    </app-io-panel>
+  </div>
+
+  @for (w of warnings(); track w) {
+    <p class="tool-warn" role="status">{{ w }}</p>
+  }
+
+  @if (mode() === 'encode') {
+    <section class="panel" [attr.aria-label]="i18n.t('morse.options')">
+      <h2 class="eyebrow">{{ i18n.t('morse.options') }}</h2>
+      <div class="opts">
+        <div class="field">
+          <label for="morse-symbols">{{ i18n.t('morse.symbols') }}</label>
+          <select id="morse-symbols" [value]="symbols()" (change)="symbols.set($any($event.target).value)">
+            <option value="ascii">{{ i18n.t('morse.symbols.ascii') }}</option>
+            <option value="dots">{{ i18n.t('morse.symbols.dots') }}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="morse-ls">{{ i18n.t('morse.letterSep') }}</label>
+          <select id="morse-ls" [value]="letterSep()" (change)="letterSep.set($any($event.target).value)">
+            <option value="space">{{ i18n.t('morse.letterSep.space') }}</option>
+            <option value="double">{{ i18n.t('morse.letterSep.double') }}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="morse-ws">{{ i18n.t('morse.wordSep') }}</label>
+          <select id="morse-ws" [value]="wordSep()" (change)="wordSep.set($any($event.target).value)">
+            <option value="slash">{{ i18n.t('morse.wordSep.slash') }}</option>
+            <option value="spaces">{{ i18n.t('morse.wordSep.spaces') }}</option>
+            <option value="bar">{{ i18n.t('morse.wordSep.bar') }}</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint">{{ i18n.t('morse.options.hint') }}</p>
+    </section>
+  }
+
+  <section class="panel" [attr.aria-label]="i18n.t('morse.play')">
+    <h2 class="eyebrow">{{ i18n.t('morse.play') }}</h2>
+    <div class="opts">
+      <div class="field">
+        <label for="morse-wpm">{{ i18n.t('morse.wpm', { n: wpm() }) }}</label>
+        <input id="morse-wpm" type="range" min="5" max="40" step="1" [value]="wpm()" (input)="wpm.set(+$any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="morse-freq">{{ i18n.t('morse.freq', { n: freq() }) }}</label>
+        <input id="morse-freq" type="range" min="300" max="1000" step="10" [value]="freq()" (input)="freq.set(+$any($event.target).value)" />
+      </div>
+      <label class="check">
+        <input type="checkbox" [checked]="flash() && !reducedMotion" [disabled]="reducedMotion" (change)="flash.set($any($event.target).checked)" />
+        {{ i18n.t('morse.flash') }}
+      </label>
+    </div>
+    @if (reducedMotion) {
+      <p class="hint">{{ i18n.t('morse.flash.reduced') }}</p>
+    }
+    <div class="play">
+      @if (!playing()) {
+        <button type="button" class="btn" data-testid="morse-play" [disabled]="durationText() === ''" (click)="play()">
+          <app-icon name="speaker" /> {{ i18n.t('morse.play.listen') }}
+        </button>
+      } @else {
+        <button type="button" class="btn" data-testid="morse-stop" (click)="stop()">
+          <app-icon name="close" /> {{ i18n.t('morse.stop') }}
+        </button>
+      }
+      @if (flash() || reducedMotion) {
+        <div
+          class="lamp"
+          role="img"
+          data-testid="morse-lamp"
+          [class.on]="signalOn()"
+          [class.bright]="flash() && !reducedMotion"
+          [attr.aria-label]="signalOn() ? i18n.t('morse.signal.on') : i18n.t('morse.signal.off')"
+        ></div>
+      }
+      <span class="hint">{{ durationText() || i18n.t('morse.nothing') }}</span>
+    </div>
+    @if (truncated()) {
+      <p class="hint">{{ i18n.t('morse.truncated') }}</p>
+    }
+    @if (audioError()) {
+      <p class="tool-warn" role="status">{{ i18n.t('morse.noaudio') }}</p>
+    }
+    <p class="hint">{{ i18n.t('morse.timing') }}</p>
+  </section>
+
+  <section class="panel" [attr.aria-label]="i18n.t('morse.table.title')">
+    <h2 class="eyebrow">{{ i18n.t('morse.table.title') }}</h2>
+    <ul class="table">
+      @for (r of table; track r[0]) {
+        <li><span class="ch">{{ r[0] }}</span> <span class="code">{{ r[1] }}</span></li>
+      }
+    </ul>
+    <p class="hint">{{ i18n.t('morse.table.note') }}</p>
+  </section>
+</div>

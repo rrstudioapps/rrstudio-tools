@@ -1,0 +1,115 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.hmac.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('hmac.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="options" [attr.aria-label]="i18n.t('hmac.options')">
+    <div class="row">
+      <span class="lbl">{{ i18n.t('hmac.algorithm') }}</span>
+      <app-segmented [label]="i18n.t('hmac.algorithm')" [options]="algorithms" [(value)]="algorithm" />
+      <span class="lbl">{{ i18n.t('hmac.output') }}</span>
+      <app-segmented [label]="i18n.t('hmac.output')" [options]="outFormats" [(value)]="outFormat" />
+    </div>
+    <div class="row">
+      <div class="col">
+        <label class="lbl" for="hmac-key">{{ i18n.t('hmac.key') }}</label>
+        <input
+          id="hmac-key"
+          class="keyin mono"
+          [type]="visible() ? 'text' : 'password'"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [value]="keyText()"
+          (input)="keyText.set($any($event.target).value)"
+          data-testid="hmac-key"
+        />
+      </div>
+      <app-segmented [label]="i18n.t('hmac.key.format')" [options]="keyFormats()" [(value)]="keyFormat" />
+      <button type="button" class="btn small" [attr.aria-pressed]="visible()" (click)="visible.set(!visible())">
+        {{ visible() ? i18n.t('hmac.hide') : i18n.t('hmac.show') }}
+      </button>
+    </div>
+    <p class="hint">{{ i18n.t('hmac.key.hint') }}</p>
+  </section>
+
+  <section class="message" [attr.aria-label]="i18n.t('hmac.message')">
+    <app-segmented [label]="i18n.t('hmac.message')" [options]="sources()" [(value)]="source" />
+    @if (source() === 'file') {
+      <app-file-drop [hint]="i18n.t('hmac.file.hint')" (fileSelected)="onFile($event)">
+        <p class="chosen" aria-live="polite" data-testid="hmac-file">{{ fileInfo() || i18n.t('hmac.file.none') }}</p>
+      </app-file-drop>
+    } @else {
+      <app-io-panel [label]="i18n.t('hmac.message')" inputId="hmac-msg">
+        <textarea
+          id="hmac-msg"
+          class="io-textarea"
+          rows="6"
+          spellcheck="false"
+          [value]="message()"
+          (input)="message.set($any($event.target).value)"
+          data-testid="hmac-message"
+        ></textarea>
+      </app-io-panel>
+    }
+  </section>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (errorText()) {
+      <p class="tool-error" data-testid="hmac-error">{{ errorText() }}</p>
+    }
+  </div>
+
+  @if (output()) {
+    <section class="result" aria-labelledby="hmac-out-title">
+      <h2 class="eyebrow" id="hmac-out-title">{{ i18n.t('hmac.result') }}</h2>
+      <div class="out">
+        <code class="mono" data-testid="hmac-output">{{ output() }}</code>
+        <app-copy-button [text]="output()" />
+      </div>
+    </section>
+  }
+
+  <section class="verify" aria-labelledby="hmac-verify-title">
+    <h2 class="eyebrow" id="hmac-verify-title">{{ i18n.t('hmac.verify.title') }}</h2>
+    <p class="hint">{{ i18n.t('hmac.verify.desc') }}</p>
+    <label class="visually-hidden" for="hmac-expected">{{ i18n.t('hmac.verify.label') }}</label>
+    <input
+      id="hmac-expected"
+      type="text"
+      class="keyin mono"
+      autocomplete="off"
+      spellcheck="false"
+      [placeholder]="i18n.t('hmac.verify.label')"
+      [value]="expected()"
+      (input)="expected.set($any($event.target).value)"
+      data-testid="hmac-expected"
+    />
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (outcome()) {
+        <p [class.tool-ok]="outcome() === 'match'" [class.tool-error]="outcome() !== 'match'" data-testid="hmac-verify-result">
+          {{ outcome() === 'match' ? '✓ ' : '✗ ' }}{{ outcomeText() }}
+        </p>
+      }
+    </div>
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('hmac.info.how.title') }}</h2>
+      <p>{{ i18n.t('hmac.info.how.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('hmac.info.use.title') }}</h2>
+      <p>{{ i18n.t('hmac.info.use.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('hmac.info.priv.title') }}</h2>
+      <p>{{ i18n.t('hmac.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

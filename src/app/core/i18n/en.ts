@@ -341,6 +341,24 @@ export const en: Dict = {
   'seo.jq.desc':
     'Try JSONPath expressions on a JSON with filters, slices and result paths, and generate TypeScript interfaces or a JSON Schema (draft 2020-12). All in your browser.',
 
+  'tool.wm.title': 'Watermark images and PDFs',
+  'tool.wm.desc':
+    'Add a text or logo watermark to several images and PDFs at once: position, tiling, rotation and opacity, with a live preview and nothing uploaded.',
+  'seo.wm.title': 'Watermark images and PDFs online, without uploading files | rrstudio Tools',
+  'seo.wm.desc':
+    'Put a text or logo watermark on photos and PDFs: nine positions or tiled, rotation, opacity, colour, all pages or just some. Several files at once as a ZIP, right in your browser.',
+  'tool.cpk.title': 'Image color picker and palette',
+  'tool.cpk.desc':
+    'Read a pixel\'s colour with a click, a tap or the keyboard (HEX, RGB, HSL, OKLCH) with a magnifier, and extract the dominant colour palette from an image.',
+  'seo.cpk.title': 'Image colour picker and palette extractor online | rrstudio Tools',
+  'seo.cpk.desc':
+    'Load a photo and pick the colour of any pixel as HEX, RGB, HSL and OKLCH, with a magnifier and history. Compute the dominant colour palette with percentages and export it as CSS or JSON. In your browser.',
+  'tool.s2p.title': 'SVG to PNG',
+  'tool.s2p.desc':
+    'Convert an SVG to PNG, JPG or WebP: 1x to 8x scale or an exact size, transparent or coloured background, even when the SVG has no width and height. In your browser.',
+  'seo.s2p.title': 'Convert SVG to PNG, JPG or WebP online, without uploading the file | rrstudio Tools',
+  'seo.s2p.desc':
+    'Turn an SVG into a PNG, JPG or WebP image at the resolution you want (1x-8x or width and height), with a transparent or coloured background. Handles viewBox and warns about external resources. All in your browser.',
   'tool.icv.title': 'Image format converter',
   'tool.icv.desc':
     'Convert images to PNG, JPG, WebP or AVIF in your browser, with quality and resizing of your choice. Several files at once, single or ZIP download.',
@@ -493,6 +511,34 @@ export const en: Dict = {
   'seo.totp.title': 'Online TOTP 2FA code generator | rrstudio Tools',
   'seo.totp.desc':
     'Generate and verify TOTP codes (RFC 6238) with SHA-1, SHA-256 or SHA-512, a countdown and an otpauth QR. Everything in the browser.',
+
+  'tool.hmac.title': 'HMAC generator',
+  'tool.hmac.desc':
+    'Compute the HMAC of a text or file with a key (SHA-1, SHA-256, SHA-384, SHA-512) and verify an expected signature in constant time.',
+  'seo.hmac.title': 'Online HMAC generator (SHA-256, SHA-512) | rrstudio Tools',
+  'seo.hmac.desc':
+    'Compute and verify HMACs with SHA-1, SHA-256, SHA-384 or SHA-512 from text or a file, with a text, hex or Base64 key. All in the browser, nothing is sent.',
+
+  'tool.ssh.title': 'SSH key generator',
+  'tool.ssh.desc':
+    'Generate Ed25519 or RSA SSH key pairs in the browser: public key for authorized_keys, private key in OpenSSH or PKCS#8 format and SHA256 fingerprint.',
+  'seo.ssh.title': 'Online SSH key generator (Ed25519, RSA) | rrstudio Tools',
+  'seo.ssh.desc':
+    'Create Ed25519 or RSA 2048, 3072, 4096 SSH keys with WebCrypto: OpenSSH format, PKCS#8 and ssh-keygen style fingerprint. Keys never leave the browser.',
+
+  'tool.csr.title': 'CSR generator',
+  'tool.csr.desc':
+    'Create a certificate signing request (CSR) with subject and SANs, with a new RSA or ECDSA key or an existing one, and check it.',
+  'seo.csr.title': 'Online CSR generator (certificate signing request) | rrstudio Tools',
+  'seo.csr.desc':
+    'Generate a PKCS#10 CSR with common name, organization and SANs (DNS and IP), RSA or ECDSA key and PEM private key. All in the browser, with a check of the request.',
+
+  'tool.sss.title': 'Shamir secret sharing',
+  'tool.sss.desc':
+    'Split a secret into N shares with threshold K (Shamir over GF(256)) and rebuild it by pasting K shares. Hex or Base64 shares, to download or print.',
+  'seo.sss.title': 'Split a secret with Shamir online | rrstudio Tools',
+  'seo.sss.desc':
+    'Shamir secret sharing: split a password or recovery phrase into N shares, any K rebuild it. All in the browser.',
 
   'tool.fenc.title': 'Encrypt and decrypt files',
   'tool.fenc.desc':
@@ -683,4 +729,38 @@ export const en: Dict = {
   'tool.ci.desc': 'Work out the balance of a sum with compound interest and regular deposits: interest, real value after inflation, a year-by-year table and a chart.',
   'seo.ci.title': 'Compound interest calculator with regular deposits online | rrstudio Tools',
   'seo.ci.desc': 'Calculate compound interest: initial amount, monthly or yearly deposits, rate, compounding and term. Final balance, total paid in, interest, real value after inflation, table and chart.',
+  'tool.stat.title': 'Statistics calculator',
+  'tool.stat.desc': 'Paste numbers or a CSV column: mean, median, mode, variance, standard deviation, quartiles, percentiles, outliers and a histogram.',
+  'seo.stat.title': 'Statistics calculator online: mean, median, standard deviation | rrstudio Tools',
+  'seo.stat.desc': 'Work out mean, median, mode, variance and standard deviation (sample and population), quartiles, IQR, percentiles, outliers and a histogram from pasted numbers or a CSV column.',
+
+  'tool.ar.title': 'Aspect ratio calculator',
+  'tool.ar.desc': 'Find the ratio from width and height, work out the missing side, resize proportionally and copy the CSS aspect-ratio.',
+  'seo.ar.title': 'Aspect ratio calculator online: 16:9, 4:3, resize | rrstudio Tools',
+  'seo.ar.desc': 'Calculate the aspect ratio (16:9, 4:3, 21:9, A4…) from width and height, find the missing side, resize proportionally with rounding to even numbers or multiples of 8 and copy the CSS aspect-ratio.',
+
+  'tool.rom.title': 'Roman numerals converter',
+  'tool.rom.desc': 'Convert numbers to Roman numerals and back, from 1 to 3,999 (or up to 3,999,999 with the overline), with a check of the canonical form.',
+  'seo.rom.title': 'Roman numerals converter: numbers to Roman and back | rrstudio Tools',
+  'seo.rom.desc': 'Convert a number to Roman numerals and back. It checks the canonical form and explains mistakes (IIII, VX, IC), with quick years and the vinculum up to 3,999,999.',
+
+  'tool.uni.title': 'Unicode inspector',
+  'tool.uni.desc': 'See every character with code point, category, UTF-8 and UTF-16 bytes, HTML entity and escapes; find invisibles, homoglyphs and mixed scripts.',
+  'seo.uni.title': 'Unicode inspector: invisible characters, homoglyphs, code points, UTF-8 | rrstudio Tools',
+  'seo.uni.desc': 'Analyse a text character by character: U+XXXX code point, category, UTF-8/UTF-16, HTML entity, JavaScript and CSS escapes. Removes invisible characters, flags homoglyphs and normalises to NFC or NFKC.',
+
+  'tool.morse.title': 'Morse code translator',
+  'tool.morse.desc': 'Translate text to Morse code and back, hear it with Web Audio or watch it flash, with adjustable speed and pitch.',
+  'seo.morse.title': 'Morse code translator: text, audio and flash | rrstudio Tools',
+  'seo.morse.desc': 'Translate text to Morse code and Morse code to text, with numbers, punctuation and accented letters. Play the audio (adjustable words per minute and pitch) and choose symbols and separators.',
+
+  'tool.cph.title': 'Classic ciphers',
+  'tool.cph.desc': 'ROT13, ROT47, Caesar, Atbash and Vigenère to encrypt and decrypt, with Caesar brute force. For fun and study, not secure.',
+  'seo.cph.title': 'Classic ciphers online: ROT13, Caesar, Atbash, Vigenère | rrstudio Tools',
+  'seo.cph.desc': 'Encrypt and decrypt with ROT13, ROT47, the Caesar cipher (with all 25 shifts by brute force), Atbash and Vigenère. Historical ciphers that are not secure, for fun and learning.',
+
+  'tool.lire.title': 'Convertitore lire euro',
+  'tool.lire.desc': 'Converti lire in euro e euro in lire con il cambio fisso 1 € = 1936,27 lire, con arrotondamento e tabella dei tagli storici.',
+  'seo.lire.title': 'Convertitore lire euro: cambio 1936,27, banconote e monete | rrstudio Tools',
+  'seo.lire.desc': 'Converti lire in euro e euro in lire con il cambio irrevocabile 1 euro = 1936,27 lire (Reg. CE 2866/98), arrotondando al centesimo o alla lira, con la tabella dei tagli storici di banconote e monete.',
 };

@@ -1,0 +1,93 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.cph.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('cph.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="tool-warn" role="note" data-testid="cph-warn">
+    {{ i18n.t('cph.warn') }}
+    <a [routerLink]="i18n.link('file-encrypt')">{{ i18n.t('cph.warn.link') }}</a>
+  </p>
+
+  <app-share-link toolId="classic-ciphers" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('cph.cipher')" [options]="ciphers()" [(value)]="cipher" />
+    @if (hasDirection()) {
+      <app-segmented [label]="i18n.t('cph.dir')" [options]="directions()" [value]="dir()" (valueChange)="decrypt.set($event === 'dec')" />
+    }
+    @if (cipher() === 'caesar') {
+      <div class="field inline">
+        <label for="cph-shift">{{ i18n.t('cph.shift') }}</label>
+        <input id="cph-shift" type="number" min="-25" max="25" step="1" [value]="shift()" (input)="setShift($any($event.target).value)" />
+      </div>
+    }
+    @if (cipher() === 'vigenere') {
+      <div class="field inline">
+        <label for="cph-key">{{ i18n.t('cph.key') }}</label>
+        <input
+          id="cph-key"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          [placeholder]="i18n.t('cph.key.ph')"
+          [value]="key()"
+          (input)="key.set($any($event.target).value)"
+        />
+      </div>
+    }
+  </div>
+  <p class="hint">{{ i18n.t('cph.note.' + cipher()) }}</p>
+  @if (keyMissing()) {
+    <p class="tool-warn" role="status">{{ i18n.t('cph.key.empty') }}</p>
+  }
+
+  <div class="tool-panels">
+    <app-io-panel [label]="i18n.t('cph.in')" inputId="cph-in">
+      <span panel-actions>
+        <button type="button" class="btn small" (click)="input.set('')"><app-icon name="trash" /> {{ i18n.t('cph.clear') }}</button>
+      </span>
+      <textarea
+        id="cph-in"
+        class="io-textarea"
+        rows="8"
+        spellcheck="false"
+        data-testid="cph-in"
+        [placeholder]="i18n.t('cph.in.ph')"
+        [value]="input()"
+        (input)="input.set($any($event.target).value)"
+      ></textarea>
+    </app-io-panel>
+    <app-io-panel [label]="i18n.t('cph.out')" inputId="cph-out">
+      <span panel-actions>
+        <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        <app-send-to from="classic-ciphers" [text]="output()" [disabled]="output() === ''" />
+      </span>
+      <textarea id="cph-out" class="io-textarea" rows="8" readonly spellcheck="false" data-testid="cph-out" [value]="output()"></textarea>
+    </app-io-panel>
+  </div>
+
+  @if (cipher() === 'caesar') {
+    <section class="brute" [attr.aria-label]="i18n.t('cph.brute.title')">
+      <h2 class="eyebrow">{{ i18n.t('cph.brute.title') }}</h2>
+      <p class="hint">{{ i18n.t('cph.brute.lead') }}</p>
+      @if (brute().length) {
+        <ol class="list" data-testid="cph-brute">
+          @for (b of brute(); track b.shift) {
+            <li>
+              <span class="n">{{ i18n.t('cph.brute.shift', { n: b.shift }) }}</span>
+              <span class="txt">{{ b.text }}</span>
+              <button type="button" class="btn small" [attr.aria-label]="i18n.t('cph.brute.use', { n: b.shift })" (click)="useShift(b.shift)">
+                {{ i18n.t('cph.brute.use', { n: b.shift }) }}
+              </button>
+            </li>
+          }
+        </ol>
+      } @else {
+        <p class="hint">{{ i18n.t('cph.brute.empty') }}</p>
+      }
+    </section>
+  }
+</div>
