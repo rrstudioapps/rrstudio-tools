@@ -59,6 +59,7 @@ export const en: Dict = {
   'home.tools': 'Tools',
   'home.filters.label': 'Filter by category',
   'home.filter.all': 'All',
+  'home.filter.fav': 'Favorites',
   'home.search.label': 'Search tools',
   'home.search.ph': 'Search: hash, pdf, iban…',
   'home.results': '{n} tools',

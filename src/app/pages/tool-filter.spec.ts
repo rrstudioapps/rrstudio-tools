@@ -2,7 +2,7 @@
 // © 2026 rrstudio — rrstudio Tools
 import { describe, expect, it } from 'vitest';
 import { CATEGORIES, TOOLS } from '../tools/tools.registry';
-import { categoryFromSlug, categoryFromUrl, filterTools, groupByCategory, normalizeText, searchTerms } from './tool-filter';
+import { categoryFromSlug, categoryFromUrl, filterTools, homeFilterFromUrl, groupByCategory, normalizeText, searchTerms } from './tool-filter';
 
 const texts = (t: { id: string }) => ({ title: `Titolo ${t.id}`, description: 'Descrizione generica' });
 
@@ -97,6 +97,14 @@ describe('categoryFromSlug / categoryFromUrl', () => {
     expect(categoryFromUrl('/?categoria=dati#italia')).toBe('data');
     expect(categoryFromUrl('/?x=1')).toBeNull();
     expect(categoryFromUrl('/')).toBeNull();
+  });
+  it('homeFilterFromUrl riconosce anche i preferiti', () => {
+    expect(homeFilterFromUrl('/?categoria=preferiti')).toBe('fav');
+    expect(homeFilterFromUrl('/en/?category=favorites')).toBe('fav');
+    expect(homeFilterFromUrl('/?categoria=Preferiti#x')).toBe('fav');
+    expect(homeFilterFromUrl('/?categoria=dati')).toBe('data');
+    expect(homeFilterFromUrl('/#preferiti-home')).toBeNull();
+    expect(homeFilterFromUrl('/')).toBeNull();
   });
 });
 

@@ -1085,8 +1085,14 @@ try {
 
       // proporzioni 1:1 e maniglia SE trascinata: il rapporto resta 1:1
       await page.getByRole('button', { name: '1:1', exact: true }).click();
+      // si aspetta l'aggiornamento dei campi (sui runner veloci la lettura immediata vede ancora i valori vecchi)
+      await page
+        .waitForFunction(() => {
+          const v = (id) => Number(document.querySelector(id).value);
+          return Math.abs(v('#crop-w') - v('#crop-h')) <= 1;
+        }, null, { timeout: 5000 })
+        .catch(() => need(false, 'il ritaglio 1:1 non è quadrato'));
       const w0 = Number(await page.inputValue('#crop-w'));
-      need(Math.abs(w0 - Number(await page.inputValue('#crop-h'))) <= 1, 'il ritaglio 1:1 non è quadrato');
       const handle = await page.locator('[data-handle=se]').boundingBox();
       await page.mouse.move(handle.x + handle.width / 2, handle.y + handle.height / 2);
       await page.mouse.down();
@@ -1175,17 +1181,35 @@ try {
       // 1. due preferiti dalle card della home
       const star = (title) => page.getByRole('button', { name: 'Aggiungi ai preferiti: ' + title, exact: true });
       await page.waitForFunction(() => !document.querySelector('app-favorite-button button:disabled'));
+      must((await page.locator('.pills button.pill', { hasText: 'Preferiti' }).count()) === 0, 'filtro Preferiti senza preferiti');
       await star('Base64 Encode/Decode').click();
       await star('Hash e checksum').click();
-      await page.waitForSelector('#fav-h');
-      must((await page.locator('#fav-h').textContent()).includes('2'), 'la sezione preferiti non mostra 2 strumenti');
+      const favCount = (n, msg) =>
+        page
+          .waitForFunction((n) => document.querySelector('#fav-h .cat-count')?.textContent.trim() === String(n), n, { timeout: 5000 })
+          .catch(() => must(false, msg));
+      await favCount(2, 'la sezione preferiti non mostra 2 strumenti');
       // il pulsante sta fuori dal link: nessun elemento interattivo annidato nelle card
       must((await page.locator('a button, a app-favorite-button').count()) === 0, 'pulsante dentro un link');
       // persistenza: dopo il ricaricamento restano premuti
       await page.reload();
-      await page.waitForSelector('#fav-h');
-      must((await page.locator('#fav-h').textContent()).includes('2'), 'i preferiti non sono sopravvissuti al ricaricamento');
+      await favCount(2, 'i preferiti non sono sopravvissuti al ricaricamento');
       must(JSON.parse(await readKey()).favorites.length === 2, 'chiave rrtools.favorites mancante');
+      // filtro "Preferiti" tra le categorie: compare con almeno un preferito e mostra solo quelli
+      const favPill = page.locator('.pills button.pill', { hasText: 'Preferiti' });
+      await favPill.waitFor();
+      await page
+        .waitForFunction(() => [...document.querySelectorAll('.pills .pill')].some((b) => /Preferiti\s*2$/.test(b.textContent.trim())), null, { timeout: 5000 })
+        .catch(() => must(false, 'il filtro Preferiti non conta 2 strumenti'));
+      await favPill.click();
+      await page.waitForURL('**/?categoria=preferiti');
+      await page.waitForSelector('.pill[aria-pressed=true]:has-text("Preferiti")');
+      must((await page.locator('section.cat:not(.fav-sec) .card').count()) === 0, 'con il filtro Preferiti restano le categorie');
+      await favCount(2, 'il filtro Preferiti non mostra i 2 preferiti');
+      await page.reload(); // il filtro sopravvive al ricaricamento (dall'URL)
+      await page.waitForSelector('.pill[aria-pressed=true]:has-text("Preferiti")');
+      await page.locator('.pills button.pill').first().click(); // torna a "Tutti"
+      await page.waitForSelector('.pill[aria-pressed=true]:has-text("Tutti")');
       // la stella nella pagina di uno strumento
       await page.goto(base + '/url-encode/');
       const toolStar = page.getByRole('button', { name: 'Aggiungi ai preferiti', exact: true });

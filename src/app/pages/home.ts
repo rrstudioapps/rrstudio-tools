@@ -7,11 +7,11 @@ import { FavoritesService } from '../core/favorites/favorites.service';
 import { FAVORITES_SLUG } from '../core/i18n/lang-routing';
 import { I18nService } from '../core/i18n/i18n.service';
 import { FavoriteButton } from '../shared/favorite-button';
-import { CATEGORIES, TOOLS, ToolCategory, ToolCategoryId, ToolDefinition } from '../tools/tools.registry';
-import { categoryFromUrl, filterTools, groupByCategory } from './tool-filter';
+import { CATEGORIES, TOOLS, ToolCategory, ToolDefinition } from '../tools/tools.registry';
+import { FAV_FILTER_SLUG, HomeFilter, filterTools, groupByCategory, homeFilterFromUrl } from './tool-filter';
 
 interface Pill {
-  id: ToolCategoryId | null;
+  id: HomeFilter;
   label: string;
   count: number;
 }
@@ -50,7 +50,7 @@ export class Home {
 
   /** Il filtro si applica solo nel browser, dopo l'idratazione: il prerender mostra tutto (SEO). */
   private readonly ready = signal(false);
-  private readonly urlCategory = signal<ToolCategoryId | null>(null);
+  private readonly urlCategory = signal<HomeFilter>(null);
   protected readonly query = signal('');
   protected readonly category = computed(() => (this.ready() ? this.urlCategory() : null));
 
@@ -62,10 +62,27 @@ export class Home {
     }));
   });
 
+  /** Strumenti dell'utente (preferiti + menu personalizzati) che rispettano la ricerca. */
+  private readonly matchIds = computed(() => new Set(this.matches().map((t) => t.id)));
+  protected readonly favList = computed(() => this.favs.favoriteTools().filter((t) => this.matchIds().has(t.id)));
+  protected readonly favGroups = computed(() =>
+    this.favs.groups().map((g) => ({ ...g, tools: g.tools.filter((t) => this.matchIds().has(t.id)) })),
+  );
+  private readonly favCount = computed(
+    () => new Set([...this.favList(), ...this.favGroups().flatMap((g) => g.tools)].map((t) => t.id)).size,
+  );
+  /** Il filtro "Preferiti" compare se l'utente ha almeno un preferito (o un menu non vuoto), o se è già attivo. */
+  private readonly hasFavs = computed(
+    () =>
+      this.favs.ready() &&
+      (this.favs.favoriteTools().length > 0 || this.favs.groups().some((g) => g.tools.length > 0) || this.urlCategory() === 'fav'),
+  );
+
   protected readonly pills = computed<Pill[]>(() => {
     const m = this.matches();
     return [
       { id: null, label: this.i18n.t('home.filter.all'), count: m.length },
+      ...(this.hasFavs() ? [{ id: 'fav' as const, label: this.i18n.t('home.filter.fav'), count: this.favCount() }] : []),
       ...this.shownCategories().map((c) => ({
         id: c.id,
         label: this.i18n.t(c.shortKey),
@@ -76,6 +93,7 @@ export class Home {
 
   protected readonly sections = computed(() => {
     const cat = this.category();
+    if (cat === 'fav') return [];
     return groupByCategory(
       this.matches().filter((t) => cat === null || t.category === cat),
       this.shownCategories(),
@@ -83,10 +101,13 @@ export class Home {
   });
 
   /** Preferiti e menu personalizzati in cima: solo nel browser (mai nel prerender), senza filtri attivi e se non vuoti. */
-  protected readonly showFavs = computed(() => this.favs.ready() && !this.filtering());
+  protected readonly showFavs = computed(() => this.favs.ready() && (!this.filtering() || this.category() === 'fav'));
+  protected readonly favFilter = computed(() => this.category() === 'fav');
   protected readonly favSlug = computed(() => FAVORITES_SLUG[this.i18n.lang()]);
 
-  protected readonly resultCount = computed(() => this.sections().reduce((n, g) => n + g.tools.length, 0));
+  protected readonly resultCount = computed(() =>
+    this.favFilter() ? this.favCount() : this.sections().reduce((n, g) => n + g.tools.length, 0),
+  );
   protected readonly filtering = computed(() => this.category() !== null || this.query().trim() !== '');
   protected readonly resultText = computed(() => {
     if (!this.filtering()) return '';
@@ -102,7 +123,7 @@ export class Home {
       const snap = this.route.snapshot;
       const param = snap.queryParamMap.get('categoria') ?? snap.queryParamMap.get('category');
       const slugUrl = '/?' + (param ? 'categoria=' + param : '') + (snap.fragment ? '#' + snap.fragment : '');
-      this.urlCategory.set(categoryFromUrl(slugUrl));
+      this.urlCategory.set(homeFilterFromUrl(slugUrl));
       this.ready.set(true);
       if (/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) this.modKey.set('⌘');
       // scorciatoie: "/" e Ctrl/⌘+K portano il focus sulla ricerca (non se si sta già scrivendo in un campo)
@@ -120,18 +141,19 @@ export class Home {
       this.destroyRef.onDestroy(() => document.removeEventListener('keydown', onKey));
     });
     // tasto indietro/avanti: il router non vede gli URL scritti con location.go, ci pensiamo noi
-    const sub = this.location.subscribe((e) => this.urlCategory.set(categoryFromUrl(e.url ?? '')));
+    const sub = this.location.subscribe((e) => this.urlCategory.set(homeFilterFromUrl(e.url ?? '')));
     this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 
-  protected select(id: ToolCategoryId | null): void {
+  protected select(id: HomeFilter): void {
     if (id === this.urlCategory()) return;
     this.urlCategory.set(id);
     // location.go aggiunge una voce alla cronologia senza far scattare la navigazione del router
     // (che riporterebbe la pagina in cima a ogni clic sui filtri)
     const cat = CATEGORIES.find((c) => c.id === id);
     // ?categoria=slug nelle pagine italiane, ?category=slug in quelle inglesi
-    const query = !cat ? '' : this.english() ? `category=${cat.slugEn}` : `categoria=${cat.slug}`;
+    const slug = id === 'fav' ? FAV_FILTER_SLUG[this.i18n.lang()] : this.english() ? cat?.slugEn : cat?.slug;
+    const query = !slug ? '' : this.english() ? `category=${slug}` : `categoria=${slug}`;
     this.location.go(this.i18n.link(''), query);
   }
 

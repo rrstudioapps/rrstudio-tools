@@ -72,3 +72,21 @@ export function categoryFromUrl(url: string): ToolCategoryId | null {
   const fromQuery = params?.get('categoria') ?? params?.get('category') ?? null;
   return categoryFromSlug(fromQuery) ?? categoryFromSlug(hash);
 }
+
+/** Filtro della home: una categoria, i preferiti dell'utente ('fav') o tutto (null). */
+export type HomeFilter = ToolCategoryId | 'fav' | null;
+
+/** Slug del filtro preferiti nell'URL della home (?categoria=preferiti, ?category=favorites). */
+export const FAV_FILTER_SLUG = { it: 'preferiti', en: 'favorites' } as const;
+
+/** Come categoryFromUrl, ma riconosce anche il filtro dei preferiti (solo dalla query, non dal fragment). */
+export function homeFilterFromUrl(url: string): HomeFilter {
+  const cat = categoryFromUrl(url);
+  if (cat) return cat;
+  const beforeHash = url.split('#')[0];
+  const q = beforeHash.indexOf('?');
+  if (q === -1) return null;
+  const params = new URLSearchParams(beforeHash.slice(q + 1));
+  const v = (params.get('categoria') ?? params.get('category') ?? '').trim().toLowerCase();
+  return v === FAV_FILTER_SLUG.it || v === FAV_FILTER_SLUG.en ? 'fav' : null;
+}

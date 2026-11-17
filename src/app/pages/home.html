@@ -40,11 +40,11 @@
 </section>
 
 @if (showFavs()) {
-  @if (favs.favoriteTools().length) {
+  @if (favList().length) {
     <section class="container cat fav-sec" id="preferiti-home" aria-labelledby="fav-h">
       <div class="cat-head">
         <h2 class="eyebrow cat-title" id="fav-h">
-          {{ i18n.t('fav.home.title') }} <span class="cat-count">{{ favs.favoriteTools().length }}</span>
+          {{ i18n.t('fav.home.title') }} <span class="cat-count">{{ favList().length }}</span>
         </h2>
         <p class="cat-desc">
           {{ i18n.t('fav.home.desc') }}
@@ -52,13 +52,13 @@
         </p>
       </div>
       <div class="grid tools-grid">
-        @for (tool of favs.favoriteTools(); track tool.id) {
+        @for (tool of favList(); track tool.id) {
           <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: tool }" />
         }
       </div>
     </section>
   }
-  @for (g of favs.groups(); track g.id) {
+  @for (g of favGroups(); track g.id) {
     @if (g.tools.length) {
       <section class="container cat fav-sec" [attr.aria-labelledby]="'fg-' + g.id">
         <div class="cat-head">
@@ -105,7 +105,7 @@
   </section>
 }
 
-@if (sections().length === 0) {
+@if (filtering() && resultCount() === 0) {
   <section class="container empty">
     <p>{{ i18n.t('home.empty') }}</p>
     <button type="button" class="btn" (click)="reset()">{{ i18n.t('home.reset') }}</button>

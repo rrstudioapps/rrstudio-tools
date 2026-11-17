@@ -58,6 +58,7 @@ export const it = {
   'home.tools': 'Strumenti',
   'home.filters.label': 'Filtra per categoria',
   'home.filter.all': 'Tutti',
+  'home.filter.fav': 'Preferiti',
   'home.search.label': 'Cerca uno strumento',
   'home.search.ph': 'Cerca: hash, pdf, iban…',
   'home.results': '{n} strumenti',
