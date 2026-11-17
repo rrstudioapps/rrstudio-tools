@@ -172,6 +172,7 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
 | @types/papaparse | 5.5.2 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
 | axe-core | 4.14.0 | MPL-2.0 | https://github.com/dequelabs/axe-core |
 | jsdom | 31.0.1 | MIT | https://github.com/jsdom/jsdom |
+| lighthouse | 13.6.0 | Apache-2.0 | https://github.com/GoogleChrome/lighthouse |
 | playwright-core | 1.59.1 | Apache-2.0 | https://github.com/microsoft/playwright |
 | prettier | 3.10.1 | MIT | prettier/prettier |
 | typescript | 6.0.3 | Apache-2.0 | https://github.com/microsoft/TypeScript |

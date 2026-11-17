@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="html-entities" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <div class="tool-toolbar">
     <app-segmented [label]="i18n.t('ent.mode')" [options]="modes()" [(value)]="mode" />
     <app-segmented [label]="i18n.t('ent.dir')" [options]="dirs()" [(value)]="dir" />

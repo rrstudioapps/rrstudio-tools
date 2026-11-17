@@ -12,6 +12,9 @@ import { Segmented, SegmentOption } from '../../shared/segmented';
 import { FIND_REPLACE_TIMEOUT_MS, FindReplaceClient, NoWorker, RunTimeout, StaleRun } from './find-replace-client';
 import { DEFAULT_RULE, MAX_RULES, Rule, RuleMode, RunResult, buildRuleRegex, highlightPieces, isActive } from './find-replace-core';
 import { FR_DICTIONARIES } from './find-replace.i18n';
+import { ShareLink } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA, decodeRule, encodeRule } from './find-replace.share';
 
 interface Row extends Rule {
   id: number;
@@ -24,7 +27,7 @@ const PREVIEW_MAX_CHARS = 200_000;
 
 @Component({
   selector: 'app-find-replace',
-  imports: [Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './find-replace.page.html',
   styleUrl: './find-replace.page.scss',
@@ -100,6 +103,21 @@ export class FindReplacePage {
         return '';
     }
   });
+
+  // Link di condivisione: testo e regole nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  protected readonly shareState = (): ShareData => ({ text: this.text(), rules: this.rules().map(encodeRule) });
+
+  protected restoreShared(d: ShareData): void {
+    if (typeof d['text'] === 'string') this.text.set(d['text']);
+    if (Array.isArray(d['rules'])) {
+      const rules = d['rules'].map(decodeRule).filter((r): r is Rule => r !== null);
+      if (rules.length > 0) {
+        this.rules.set(rules.map((r) => ({ ...r, id: this.nextId++ })));
+        this.previewRule.set(0);
+      }
+    }
+  }
 
   constructor() {
     this.i18n.register(FR_DICTIONARIES);

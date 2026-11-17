@@ -11,10 +11,13 @@ import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { UUID_DICTIONARIES } from './uuid-generator.i18n';
 import { IdKind, Inspection, MAX_COUNT, MIN_COUNT, clampCount, formatId, generateIds, inspectId, newState } from './uuid';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './uuid-generator.share';
 
 @Component({
   selector: 'app-uuid-generator',
-  imports: [Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './uuid-generator.page.html',
   styleUrl: './uuid-generator.page.scss',
@@ -77,6 +80,21 @@ export class UuidGeneratorPage {
       local: new Intl.DateTimeFormat(loc, opts).format(date),
     };
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    kind: this.kind,
+    count: this.count,
+    upper: this.upper,
+    hyphens: this.hyphens,
+    braces: this.braces,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(UUID_DICTIONARIES);

@@ -1,0 +1,193 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.jq.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('jq.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="json-query" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <section class="block" aria-labelledby="jq-json-title">
+    <div class="head">
+      <h2 class="eyebrow" id="jq-json-title">{{ i18n.t('jq.json') }}</h2>
+      <span class="examples">
+        @for (ex of examples; track ex.id) {
+          <button type="button" class="btn small" (click)="loadExample(ex.id)"><app-icon name="file" /> {{ i18n.t('jq.example.' + ex.id) }}</button>
+        }
+        <button type="button" class="btn small" [disabled]="!json()" (click)="json.set('')"><app-icon name="trash" /> {{ i18n.t('jq.clear') }}</button>
+      </span>
+    </div>
+    <label class="visually-hidden" for="jq-json">{{ i18n.t('jq.json') }}</label>
+    <textarea
+      id="jq-json"
+      class="io-textarea json-in"
+      spellcheck="false"
+      autocomplete="off"
+      rows="12"
+      wrap="off"
+      data-testid="jq-json"
+      [placeholder]="i18n.t('jq.json.ph')"
+      [attr.aria-invalid]="jsonError() ? 'true' : null"
+      [attr.aria-describedby]="jsonError() ? 'jq-json-err' : null"
+      [value]="json()"
+      (input)="json.set($any($event.target).value)"
+    ></textarea>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (jsonError(); as e) {
+        <div class="tool-error" id="jq-json-err" data-testid="jq-json-error">
+          <p>{{ i18n.t('jq.err.json', { line: e.line, col: e.col }) }}</p>
+          <pre class="ctx" aria-hidden="true">{{ e.ctx }}</pre>
+        </div>
+      }
+    </div>
+  </section>
+
+  <app-segmented [label]="i18n.t('jq.tabs')" [options]="tabs()" [(value)]="tab" />
+
+  @if (tab() === 'query') {
+    <section class="block" aria-labelledby="jq-q-title">
+      <h2 class="eyebrow" id="jq-q-title">{{ i18n.t('jq.expr') }}</h2>
+      <label class="visually-hidden" for="jq-expr">{{ i18n.t('jq.expr') }}</label>
+      <input
+        id="jq-expr"
+        type="text"
+        class="expr mono"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        data-testid="jq-expr"
+        [placeholder]="i18n.t('jq.expr.ph')"
+        [attr.aria-invalid]="exprError() ? 'true' : null"
+        [attr.aria-describedby]="exprError() ? 'jq-expr-err' : null"
+        [value]="expr()"
+        (input)="expr.set($any($event.target).value)"
+      />
+      <div class="chips" role="group" [attr.aria-label]="i18n.t('jq.try')">
+        <span class="hint">{{ i18n.t('jq.try') }}</span>
+        @for (x of exampleExprs(); track x) {
+          <button type="button" class="chip mono" (click)="expr.set(x)">{{ x }}</button>
+        }
+      </div>
+      <div class="tool-status" role="status" aria-live="polite">
+        @if (exprError(); as e) {
+          <div class="tool-error" id="jq-expr-err" data-testid="jq-expr-error">
+            <p>{{ e.text }}</p>
+            <pre class="ctx" aria-hidden="true">{{ e.ctx }}</pre>
+          </div>
+        } @else if (runError()) {
+          <p class="tool-error" data-testid="jq-run-error">{{ runError() }}</p>
+        } @else if (summary()) {
+          <p class="summary" data-testid="jq-summary">{{ summary() }}</p>
+        } @else if (expr().trim() && needJson()) {
+          <p class="hint">{{ i18n.t('jq.needJson') }}</p>
+        }
+      </div>
+      @if (truncated()) {
+        <p class="hint" data-testid="jq-truncated">{{ i18n.t('jq.truncated', { max: maxResults, n: total() }) }}</p>
+      }
+
+      @if (nodes().length) {
+        <div class="cols">
+          <div class="col">
+            <div class="head">
+              <h3 class="eyebrow">{{ i18n.t('jq.values') }}</h3>
+              <span class="examples">
+                <app-copy-button [text]="valuesText()" [label]="i18n.t('jq.copyValues')" />
+                <button type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
+              </span>
+            </div>
+            <label class="visually-hidden" for="jq-values">{{ i18n.t('jq.values') }}</label>
+            <textarea id="jq-values" class="io-textarea out" readonly spellcheck="false" rows="12" wrap="off" data-testid="jq-values" [value]="valuesText()"></textarea>
+          </div>
+          <div class="col">
+            <div class="head">
+              <h3 class="eyebrow">{{ i18n.t('jq.paths') }}</h3>
+              <app-copy-button [text]="pathsText()" [label]="i18n.t('jq.copyPaths')" />
+            </div>
+            <div class="tablewrap" tabindex="0" role="region" [attr.aria-label]="i18n.t('jq.paths')">
+              <table data-testid="jq-paths">
+                <thead>
+                  <tr><th scope="col">{{ i18n.t('jq.path') }}</th><th scope="col">{{ i18n.t('jq.value') }}</th></tr>
+                </thead>
+                <tbody>
+                  @for (r of rows(); track $index) {
+                    <tr><td class="mono">{{ r.path }}</td><td class="mono">{{ r.preview }}</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            @if (total() > maxRows) {
+              <p class="hint">{{ i18n.t('jq.rowsCut', { n: maxRows }) }}</p>
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <section class="tool-info">
+      <div>
+        <h2 class="eyebrow">{{ i18n.t('jq.info.syntax.title') }}</h2>
+        <ul class="syntax mono">
+          <li><code>$</code> {{ i18n.t('jq.syn.root') }}</li>
+          <li><code>.a</code> <code>['a b']</code> {{ i18n.t('jq.syn.name') }}</li>
+          <li><code>[0]</code> <code>[-1]</code> {{ i18n.t('jq.syn.index') }}</li>
+          <li><code>[1:5:2]</code> {{ i18n.t('jq.syn.slice') }}</li>
+          <li><code>*</code> <code>[*]</code> {{ i18n.t('jq.syn.wild') }}</li>
+          <li><code>..a</code> {{ i18n.t('jq.syn.desc') }}</li>
+          <li><code>[?(&#64;.x &gt; 1 &amp;&amp; &#64;.t == 'a')]</code> {{ i18n.t('jq.syn.filter') }}</li>
+          <li><code>=~ /re/i</code> <code>length()</code> <code>count()</code> <code>match()</code> <code>search()</code> {{ i18n.t('jq.syn.fn') }}</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="eyebrow">{{ i18n.t('jq.info.safe.title') }}</h2>
+        <p>{{ i18n.t('jq.info.safe.desc') }}</p>
+      </div>
+      <div>
+        <h2 class="eyebrow">{{ i18n.t('jq.info.priv.title') }}</h2>
+        <p>{{ i18n.t('jq.info.priv.desc') }}</p>
+      </div>
+    </section>
+  }
+
+  @if (tab() === 'ts') {
+    <section class="block" aria-labelledby="jq-ts-title">
+      <h2 class="eyebrow" id="jq-ts-title">{{ i18n.t('jq.ts.title') }}</h2>
+      <div class="row">
+        <label class="lbl" for="jq-root">{{ i18n.t('jq.ts.root') }}</label>
+        <input id="jq-root" type="text" class="root mono" spellcheck="false" autocomplete="off" maxlength="60" [value]="rootName()" (input)="setRootName($any($event.target).value)" />
+        <app-segmented [label]="i18n.t('jq.ts.style')" [options]="styles()" [(value)]="tsStyle" />
+        <label class="check"><input type="checkbox" [checked]="tsExport()" (change)="tsExport.set($any($event.target).checked)" /> {{ i18n.t('jq.ts.export') }}</label>
+      </div>
+      @if (needJson()) {
+        <p class="hint">{{ i18n.t('jq.needJson') }}</p>
+      } @else {
+        <label class="visually-hidden" for="jq-ts-out">{{ i18n.t('jq.ts.title') }}</label>
+        <textarea id="jq-ts-out" class="io-textarea out" readonly spellcheck="false" rows="14" wrap="off" data-testid="jq-ts" [value]="tsText()"></textarea>
+        <div class="tool-toolbar">
+          <app-copy-button [text]="tsText()" [label]="i18n.t('jq.copy')" />
+          <button type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
+        </div>
+        <p class="hint">{{ i18n.t('jq.ts.note') }}</p>
+      }
+    </section>
+  }
+
+  @if (tab() === 'schema') {
+    <section class="block" aria-labelledby="jq-sc-title">
+      <h2 class="eyebrow" id="jq-sc-title">{{ i18n.t('jq.schema.title') }}</h2>
+      @if (needJson()) {
+        <p class="hint">{{ i18n.t('jq.needJson') }}</p>
+      } @else {
+        <label class="visually-hidden" for="jq-sc-out">{{ i18n.t('jq.schema.title') }}</label>
+        <textarea id="jq-sc-out" class="io-textarea out" readonly spellcheck="false" rows="14" wrap="off" data-testid="jq-schema" [value]="schemaText()"></textarea>
+        <div class="tool-toolbar">
+          <app-copy-button [text]="schemaText()" [label]="i18n.t('jq.copy')" />
+          <button type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
+        </div>
+        <p class="hint">{{ i18n.t('jq.schema.note') }}</p>
+      }
+    </section>
+  }
+</div>

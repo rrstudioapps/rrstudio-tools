@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="timezone-converter" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <div class="inputs">
     <div class="field">
       <label for="tz-date">{{ i18n.t('tz.date') }}</label>

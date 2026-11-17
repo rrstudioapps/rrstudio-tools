@@ -277,13 +277,13 @@ select option {
 }
 
 // Comparsa delle sezioni (solo senza preferenza di movimento ridotto)
+/* solo traslazione: con opacity 0 iniziale l'elemento più grande restava invisibile durante l'idratazione
+   e l'LCP su mobile slittava di secondi (misurato con Lighthouse il 17/11/2026) */
 @keyframes rise {
   from {
-    opacity: 0;
     transform: translateY(8px);
   }
   to {
-    opacity: 1;
     transform: none;
   }
 }

@@ -10,12 +10,15 @@ import { Segmented, SegmentOption } from '../../shared/segmented';
 import { textStats } from '../../shared/text-stats';
 import { UrlCodecError, UrlMode, decodeUrl, encodeUrl, parseUrlParts } from './url-codec';
 import { URL_ENCODE_DICTIONARIES } from './url-encode.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './url-encode.share';
 
 type Direction = 'encode' | 'decode';
 
 @Component({
   selector: 'app-url-encode',
-  imports: [Icon, PrivacyNote, Segmented, IoPanel, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './url-encode.page.html',
   styleUrl: './url-encode.page.scss',
@@ -81,6 +84,20 @@ export class UrlEncodePage {
     const s = textStats(text);
     const nf = new Intl.NumberFormat(this.i18n.locale());
     return this.i18n.t('common.counter', { chars: nf.format(s.chars), bytes: nf.format(s.bytes) });
+  }
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    direction: this.direction,
+    scope: this.scope,
+    plus: this.plus,
+    input: this.input,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
   }
 
   constructor() {

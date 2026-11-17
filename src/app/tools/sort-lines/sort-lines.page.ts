@@ -9,13 +9,16 @@ import { IoPanel } from '../../shared/io-panel';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { DedupeMode, Lang, SortMode, processLines } from './sort-lines';
 import { SL_DICTIONARIES } from './sort-lines.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './sort-lines.share';
 
 const MODES: SortMode[] = ['alpha', 'natural', 'length', 'frequency', 'random', 'none'];
 const DEDUPES: DedupeMode[] = ['none', 'exact', 'ignoreCase'];
 
 @Component({
   selector: 'app-sort-lines',
-  imports: [Icon, IoPanel, PrivacyNote, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sort-lines.page.html',
   styleUrl: './sort-lines.page.scss',
@@ -71,6 +74,31 @@ export class SortLinesPage {
     if (r.emptyRemoved) parts.push(this.i18n.t('sl.stats.empty', { n: r.emptyRemoved }));
     return parts.join(' · ');
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    input: this.input,
+    mode: this.mode,
+    reverse: this.reverse,
+    caseSensitive: this.caseSensitive,
+    lang: this.lang,
+    trim: this.trim,
+    removeEmpty: this.removeEmpty,
+    dedupe: this.dedupe,
+    collapseSpaces: this.collapseSpaces,
+    count: this.count,
+    prefix: this.prefix,
+    suffix: this.suffix,
+    numbering: this.numbering,
+    numberStart: this.numberStart,
+    numberSep: this.numberSep,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(SL_DICTIONARIES);

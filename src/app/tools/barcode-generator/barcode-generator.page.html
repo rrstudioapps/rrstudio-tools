@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="barcode-generator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <section class="options" [attr.aria-label]="i18n.t('bc.format')">
     <div class="row">
       <app-segmented [label]="i18n.t('bc.mode')" [options]="modes()" [(value)]="mode" />

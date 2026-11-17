@@ -11,6 +11,9 @@ import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { ConvertResult, DEFAULT_OPTIONS, EXTENSIONS, Format, Indent, convert, formatFromFileName, offsetOf } from './convert';
 import { YAML_JSON_DICTIONARIES } from './yaml-json-converter.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './yaml-json-converter.share';
 
 const MAX_FILE = 5 * 1024 * 1024;
 const FORMAT_LABEL: Record<Format, string> = { yaml: 'YAML', json: 'JSON', toml: 'TOML' };
@@ -29,7 +32,7 @@ interface ErrorInfo {
 
 @Component({
   selector: 'app-yaml-json-converter',
-  imports: [Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './yaml-json-converter.page.html',
   styleUrl: './yaml-json-converter.page.scss',
@@ -92,6 +95,22 @@ export class YamlJsonConverterPage {
   });
   protected readonly inputMeta = computed(() => this.meta(this.input()));
   protected readonly outputMeta = computed(() => this.meta(this.output()));
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    from: this.from,
+    to: this.to,
+    indent: this.indent,
+    sortKeys: this.sortKeys,
+    arrayDocs: this.arrayDocs,
+    input: this.input,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(YAML_JSON_DICTIONARIES);

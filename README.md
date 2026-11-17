@@ -62,6 +62,8 @@ Tables and structured formats.
 | [**YAML / JSON / TOML converter**](https://tools.rr-dev.eu/yaml-json-converter) | Convert between YAML, JSON and TOML in every direction (`yaml` and `smol-toml`), multiple YAML documents, anchors and merge keys, 2/4-space or tab indentation, sorted keys, errors with line and column and a "go to error" button, file upload and download. |
 | [**XML formatter**](https://tools.rr-dev.eu/xml-formatter) | Format or minify XML keeping comments, CDATA, entities and `xml:space="preserve"`; well-formedness checks with line and column errors (plus the browser's DOMParser as second opinion) and a simple XML to JSON conversion. |
 | [**SQL formatter**](https://tools.rr-dev.eu/sql-formatter) | Format or minify SQL (`sql-formatter`) for standard SQL, PostgreSQL, MySQL, MariaDB, SQLite, T-SQL, BigQuery, PL/SQL and more, keyword case and indentation; the minifier never touches strings, quoted names or hints. |
+| [**Fake data generator**](https://tools.rr-dev.eu/fake-data-generator) | 1 to 10,000 rows of made-up test data (names, emails on reserved test domains, Italian phones and addresses, birth dates, UUID, numbers, lorem, colors) with formally valid Italian tax codes, VAT numbers and IBANs (correct check digits, invented bank codes). Optional seed for repeatable output, field order, table preview, CSV (any separator), JSON and SQL `INSERT` export. Chunked generation keeps the page responsive. |
+| [**JSONPath, JSON → TypeScript, JSON Schema**](https://tools.rr-dev.eu/json-query) | A JSONPath playground (RFC 9535 plus Goessner extensions: filters with `&&` `||` `!` `=~`, slices, `..`, `length()`/`count()`/`match()`/`search()`), evaluated without `eval`, with the normalized path of every result and syntax errors with position. Extra tabs turn the same JSON into TypeScript interfaces (union types, optional keys) and a JSON Schema (draft 2020-12). |
 
 ### Images, PDF & codes
 
@@ -107,6 +109,9 @@ Encode, decode and compute.
 | [**chmod calculator**](https://tools.rr-dev.eu/chmod-calculator) | Tick r/w/x for owner, group and others plus setuid, setgid and sticky; octal (3 or 4 digits), symbolic (`rwxr-xr-x`, with s/S/t/T) and the `chmod` command stay in sync. Apply expressions such as `u+x,go-w` to the current permissions, and pick common presets (644, 755, 600…) with an explanation. |
 | [**.htpasswd generator**](https://tools.rr-dev.eu/htpasswd-generator) | `.htpasswd` lines for several users with bcrypt (`$2y$`, chosen cost, computed in a Web Worker), APR1-MD5 or `{SHA}` (the last two flagged as weak), plus a checker that tests a password against an existing line. |
 | [**Certificate decoder**](https://tools.rr-dev.eu/certificate-decoder) | Paste PEM or load a PEM/DER/CRT/CSR file: X.509 certificates (also chains) and PKCS#10 requests with subject, issuer, validity and days to expiry, SANs, key usage, extended key usage, basic constraints, key algorithm and size, serial, SHA-1/SHA-256 fingerprints, SKI/AKI. |
+| [**Meta tag preview**](https://tools.rr-dev.eu/meta-tag-preview) | Paste a page's HTML (or just the `<head>`) or fill in the fields: title, description, canonical, Open Graph, Twitter Card, favicon, robots and hreflang are extracted and shown as generic previews (Google result, Facebook/LinkedIn card, X, WhatsApp/Telegram). Checks for lengths, missing or duplicate tags and relative URLs, plus a generated HTML snippet. No network requests. |
+| [**Sign a PDF**](https://tools.rr-dev.eu/pdf-sign) | Sign a PDF in the browser: draw (mouse, touch, pen), type or upload your signature (optional white-background removal), place and resize it by dragging or with the keyboard on several pages, add a date, download the signed PDF. A graphic signature, not a digital or qualified one. |
+| [**Crop images**](https://tools.rr-dev.eu/image-crop) | Crop with draggable handles or keyboard (free, 1:1, 4:3, 3:2, 16:9, 9:16, 4:5, 35×45 mm ID photo), rotate by 90° or any angle, flip, resize, respect EXIF orientation, export PNG/JPEG/WebP with quality. Metadata is not copied. |
 
 ### Web & design
 
@@ -261,6 +266,22 @@ More tools are coming, with the same rule: nothing leaves your browser.
 
 - Route `/uuid-generator`. UUID v4, UUID v7 (48-bit millisecond timestamp, 12-bit counter, so ids stay sorted within the same millisecond) and ULID (Crockford Base32, monotonic).
 - Tests check format, version, variant, ordering of v7 and ULID, and known vectors. The validator reports version, variant and the embedded date.
+
+### Fake data generator
+
+![Fake data generator](docs/screenshots/fake-data-generator.png)
+
+- Route `/fake-data-generator` (also `/en/fake-data-generator`). Everything is invented: names from short lists, emails only on reserved domains (`example.com`, `.test`), Italian-looking phone numbers, a small built-in list of cities with made-up ZIP codes. The page says clearly that the data is fake and for testing only.
+- The tax code is computed with the real rules (reusing the Codice fiscale tool) on the fake data of the same row; the VAT number and the Italian IBAN reuse the validators' check-digit code, with invented ABI/CAB. Tests validate every generated value with the existing analyzers.
+- A seed (any text) gives the same rows every time; with the seed empty a random one is chosen and shown, so it can be pinned. Generation runs in chunks of 500 rows, so 10,000 rows do not block the UI. Export: CSV (comma, semicolon or tab, RFC 4180 quoting), JSON, SQL `INSERT` (validated table name, escaped quotes). The share link keeps the settings, not the data.
+
+### JSONPath, JSON → TypeScript, JSON Schema
+
+![JSONPath, JSON → TypeScript, JSON Schema](docs/screenshots/json-query.png)
+
+- Route `/json-query` (also `/en/json-query`). The JSONPath engine is a hand-written parser and interpreter (no `eval`, no `new Function`): selectors `$ . [] ['key'] * ..`, negative indexes, slices `[a:b:c]` (RFC 9535 algorithm), unions, filters with `== != < <= > >= && || !`, existence tests, `=~ /regex/flags` and the functions `length`, `count`, `match`, `search`, `value`. Script expressions like `[(@.length-1)]` are not supported (use `[-1]`).
+- Safety: regexes are length-limited and nested quantifiers are rejected, a step budget stops explosive queries, results are capped at 5,000, and own properties only are read (no prototype lookups). Errors report the position in the expression; JSON errors report line and column.
+- Tests follow the examples of Goessner's article and RFC 9535 (slice table, filter semantics), plus the TypeScript generator (PascalCase names, optional keys, unions, name collisions) and the JSON Schema generator.
 
 ### YAML / JSON / TOML converter
 
@@ -470,6 +491,27 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Route `/certificate-decoder` (also `/en/certificate-decoder`). Built on [PKI.js](https://pkijs.org) and [ASN1.js](https://github.com/PeculiarVentures/ASN1.js), loaded on demand. Reads PEM (one or many blocks), base64 without headers, or DER files; private keys are refused with a warning.
 - Tests use fixtures generated with OpenSSL (RSA and EC chains, Ed25519, expired, CSR) and compare serials, SKI/AKI and fingerprints with OpenSSL's output. It does not validate the chain or revocation.
 
+### Meta tag preview
+
+![Meta tag preview](docs/screenshots/meta-tag-preview.png)
+
+- Route `/meta-tag-preview` (also `/en/meta-tag-preview`). The pasted HTML is parsed with `DOMParser`: the resulting document has no browsing context, so no script runs and no image, stylesheet or link is loaded (the e2e test pastes HTML full of external URLs and fails on any network request). Remote `og:image` URLs are never downloaded: the previews show a placeholder with the URL, and a local image can be loaded just for the preview.
+- Previews are generic and approximate (Google result desktop/phone, Facebook/LinkedIn, X summary and large card, WhatsApp/Telegram) and use the same fallbacks the services use (`og:title` → `title`, `twitter:*` → `og:*`). Checks: recommended lengths, missing title/description/`og:image`/canonical, relative or `http://` image URLs, invalid `twitter:card`, `noindex`, duplicate tags, invalid hreflang and missing `x-default`. The snippet generator escapes attribute values and round-trips through the parser (tested). The share link keeps the fields, not the pasted HTML.
+
+### Sign a PDF
+
+![Sign a PDF](docs/screenshots/pdf-sign.png)
+
+- Route `/pdf-sign` (also `/en/pdf-sign`). Pages are rendered with pdf.js (same loader as the PDF tools); the signature is embedded with `pdf-lib` as a transparent PNG. Placements are stored as fractions of the page as seen on screen and converted to PDF coordinates taking the page rotation and CropBox origin into account (unit-tested for the four rotations). Signatures are made by drawing (pointer events, pen pressure, undo), typing (system italic fonts, nothing downloaded) or from an image (optional white-to-transparent threshold, auto-trim).
+- Several signatures and dates on several pages, drag and corner handle or keyboard (arrows, `+`/`-`, `Delete`), "copy to all pages". Password-protected or encrypted PDFs are refused with a clear message. A prominent notice says this is a graphic signature, not a digital or qualified one. The e2e test reads the produced PDF with `pdf-lib` and checks the image is on the right page.
+
+### Crop images
+
+![Crop images](docs/screenshots/image-crop.png)
+
+- Route `/image-crop` (also `/en/image-crop`). Crop rectangle with eight draggable handles and keyboard control (arrows to move, Alt+arrows or `+`/`-` to resize) plus numeric fields; fixed aspect ratios keep the shape from every handle (unit-tested). Rotation is the 90° steps plus a free angle (-45° to 45°) and flips; the enclosing box keeps the whole image, empty corners are transparent (white in JPEG).
+- EXIF orientation is applied on decode and no metadata is copied: the output is redrawn from scratch and exported as PNG, JPEG or WebP (an error is shown if the browser cannot encode WebP). Resizing locks the proportions of the crop. The e2e test checks the dimensions of the downloaded PNG.
+
 ### Password strength checker
 
 ![Password strength checker](docs/screenshots/password-strength-checker.png)
@@ -602,6 +644,10 @@ Every tool page and every home card has a star button; starred tools appear in a
 
 ![Favorites and custom menus](docs/screenshots/favorites.png)
 
+## Share link
+
+Most text and calculator tools (regex tester, diff, formatters, converters, calculators, generators…) have a "Copy link" button: the tool state (input text and options) is compressed (deflate), encoded in base64url and written in the URL hash (`#s=…`, versioned and per tool); opening the link restores it. The hash is never sent to the server, it is read only in the browser after hydration and validated per tool (types and allowed values, decompressed size capped at 256 KB, links over 8,000 characters are refused with a message). The URL is updated only when the button is pressed. Tools with passwords, keys, personal data or files (password generator and checker, TOTP, file encryption, htpasswd, JWT, hashes, certificates, tax code, IBAN/VAT, e-invoice, EXIF, PDF/image tools…) do not have it. The code is in `src/app/shared/share-state.ts` (codec and validation), `share-link.ts` (button) and one `<tool>.share.ts` schema per tool.
+
 ## Privacy
 
 - **Everything runs client-side.** There is no backend: files are read and processed by your browser and are never uploaded.
@@ -670,6 +716,8 @@ rrstudio Tools is free and has no ads. If it is useful to you:
 nel browser. **I tuoi dati restano sul tuo computer:** nessun backend, nessun upload, nessuna chiamata
 a server esterni, nessun cookie, nessun tracciamento né script di analytics.
 
+**Link di condivisione.** Molti strumenti di testo e di calcolo hanno il pulsante «Copia link»: lo stato (testo e opzioni) viene compresso, codificato in base64url e scritto nell'hash dell'URL (`#s=…`); aprendo il link si ritrova. L'hash non va mai al server, si legge solo nel browser e viene validato per ogni strumento (tetto di 256 KB decompressi, link oltre 8.000 caratteri rifiutati con un messaggio). Gli strumenti con password, chiavi, dati personali o file non lo hanno.
+
 **Preferiti e menu personalizzati.** Ogni pagina strumento e ogni card della home ha una stella: gli strumenti scelti compaiono in cima alla home e nel menu «Preferiti» dell'intestazione, insieme ai menu personalizzati. La pagina `/preferiti` (`/en/favorites`, `noindex`, fuori dalla sitemap) permette di creare, rinominare, eliminare e riordinare i menu (trascinamento o pulsanti su/giù da tastiera), aggiungere strumenti con la ricerca, esportare e importare JSON (anteprima, «unisci» o «sostituisci») e creare un link di condivisione con i dati nell'hash (`#d=…`): non viene mai inviato al server e all'apertura chiede conferma. Tutto sta in `localStorage` (chiave `rrtools.favorites`, solo id degli strumenti, nomi e ordine dei menu).
 
 - **Prova online:** [tools.rr-dev.eu](https://tools.rr-dev.eu). Strumenti:
@@ -705,6 +753,10 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   [Cifra e decifra file](https://tools.rr-dev.eu/file-encrypt) (AES-256-GCM), [Generatore di codici a barre](https://tools.rr-dev.eu/barcode-generator),
   [Lettore di codici QR](https://tools.rr-dev.eu/qr-code-reader), [Ordina righe](https://tools.rr-dev.eu/sort-lines),
   [Trova e sostituisci](https://tools.rr-dev.eu/find-replace), [Sintesi vocale](https://tools.rr-dev.eu/text-to-speech) (solo voci locali) e
+  [Generatore di dati finti](https://tools.rr-dev.eu/fake-data-generator) (CF, P.IVA e IBAN formalmente validi, seme, CSV/JSON/SQL),
+  [JSONPath, JSON → TypeScript e JSON Schema](https://tools.rr-dev.eu/json-query),
+  [Anteprima meta tag e Open Graph](https://tools.rr-dev.eu/meta-tag-preview), [Firma PDF](https://tools.rr-dev.eu/pdf-sign) (firma grafica),
+  [Ritaglia e ruota immagini](https://tools.rr-dev.eu/image-crop),
   [Convertitore CSV, JSON ed Excel](https://tools.rr-dev.eu/csv-json-converter), tutti con
   elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build

@@ -1,0 +1,154 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.crop.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('crop.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-file-drop [hint]="i18n.t('crop.drop')" accept="image/*" [multiple]="true" (filesSelected)="onFiles($event)">
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (loading()) {
+        <p class="tool-ok">{{ i18n.t('crop.loading') }}</p>
+      }
+      @if (error()) {
+        <p class="tool-error" role="alert">{{ error() }}</p>
+      }
+      @if (note()) {
+        <p class="tool-ok">{{ note() }}</p>
+      }
+    </div>
+
+    @if (source(); as src) {
+      @if (files().length > 1) {
+        <div class="row">
+          <label class="lbl" for="crop-file">{{ i18n.t('crop.file') }}</label>
+          <select id="crop-file" [value]="current()" (change)="select($any($event.target).value)">
+            @for (f of files(); track $index) {
+              <option [value]="$index" [selected]="$index === current()">{{ $index + 1 }}. {{ f.name }}</option>
+            }
+          </select>
+        </div>
+      }
+      <p class="tool-ok" data-testid="crop-source">{{ i18n.t('crop.source', { name: fileName(), w: src.width, h: src.height }) }}</p>
+
+      <section class="panel" [attr.aria-label]="i18n.t('crop.aspect')">
+        <app-segmented [label]="i18n.t('crop.aspect')" [options]="aspects()" [value]="aspect()" (valueChange)="setAspect($event)" />
+      </section>
+
+      <div class="workspace">
+        <div class="stage-wrap">
+          <div class="stage" [style]="stageStyle()" data-testid="crop-stage">
+            <canvas #preview class="img" role="img" [attr.aria-label]="i18n.t('crop.canvasLabel')"></canvas>
+            <div
+              class="box"
+              data-testid="crop-box"
+              role="group"
+              tabindex="0"
+              [style]="cropStyle()"
+              [attr.aria-label]="i18n.t('crop.boxLabel', { w: rounded().w, h: rounded().h, x: rounded().x, y: rounded().y })"
+              aria-describedby="crop-keys"
+              (pointerdown)="onPointerDown($event, { kind: 'move' })"
+              (pointermove)="onPointerMove($event)"
+              (pointerup)="onPointerUp()"
+              (pointercancel)="onPointerUp()"
+              (keydown)="onKey($event)"
+            >
+              @for (h of handles; track h) {
+                <span
+                  class="handle"
+                  [attr.data-handle]="h"
+                  aria-hidden="true"
+                  (pointerdown)="onPointerDown($event, { kind: 'resize', handle: h })"
+                  (pointermove)="onPointerMove($event)"
+                  (pointerup)="onPointerUp()"
+                  (pointercancel)="onPointerUp()"
+                ></span>
+              }
+            </div>
+          </div>
+          <p class="hint" id="crop-keys">{{ i18n.t('crop.keys') }}</p>
+        </div>
+
+        <div class="side">
+          <section class="panel" [attr.aria-label]="i18n.t('crop.transform')">
+            <h2 class="eyebrow">{{ i18n.t('crop.transform') }}</h2>
+            <div class="row">
+              <button type="button" class="btn small" (click)="turn(-1)"><app-icon name="rotateCcw" /> {{ i18n.t('crop.turnL') }}</button>
+              <button type="button" class="btn small" (click)="turn(1)"><app-icon name="rotateCw" /> {{ i18n.t('crop.turnR') }}</button>
+              <button type="button" class="btn small" [attr.aria-pressed]="flipH()" [class.on]="flipH()" (click)="flipH.set(!flipH())">
+                <app-icon name="swap" /> {{ i18n.t('crop.flipH') }}
+              </button>
+              <button type="button" class="btn small" [attr.aria-pressed]="flipV()" [class.on]="flipV()" (click)="flipV.set(!flipV())">
+                <app-icon name="swap" class="v" /> {{ i18n.t('crop.flipV') }}
+              </button>
+            </div>
+            <div class="row">
+              <label class="lbl" for="crop-tilt">{{ i18n.t('crop.tilt') }}</label>
+              <input id="crop-tilt" type="range" min="-45" max="45" step="0.5" [value]="tilt()" (input)="setTilt($any($event.target).value)" />
+              <output class="mono" for="crop-tilt">{{ tilt() }}°</output>
+              <button type="button" class="btn small" (click)="resetTransform()">{{ i18n.t('crop.reset') }}</button>
+            </div>
+            <p class="hint">{{ i18n.t('crop.angleNow', { a: angleLabel() }) }}</p>
+          </section>
+
+          <section class="panel" [attr.aria-label]="i18n.t('crop.area')">
+            <h2 class="eyebrow">{{ i18n.t('crop.area') }}</h2>
+            <div class="fields">
+              <label>{{ i18n.t('crop.x') }} <input type="number" inputmode="numeric" min="0" [value]="rounded().x" (change)="setField('x', $any($event.target).value, $any($event.target))" /></label>
+              <label>{{ i18n.t('crop.y') }} <input type="number" inputmode="numeric" min="0" [value]="rounded().y" (change)="setField('y', $any($event.target).value, $any($event.target))" /></label>
+              <label>{{ i18n.t('crop.w') }} <input id="crop-w" type="number" inputmode="numeric" min="1" [value]="rounded().w" (change)="setField('w', $any($event.target).value, $any($event.target))" /></label>
+              <label>{{ i18n.t('crop.h') }} <input id="crop-h" type="number" inputmode="numeric" min="1" [value]="rounded().h" (change)="setField('h', $any($event.target).value, $any($event.target))" /></label>
+            </div>
+            <div class="row">
+              <button type="button" class="btn small" (click)="resetCrop()">{{ i18n.t('crop.resetCrop') }}</button>
+            </div>
+          </section>
+
+          <section class="panel" [attr.aria-label]="i18n.t('crop.output')">
+            <h2 class="eyebrow">{{ i18n.t('crop.output') }}</h2>
+            <div class="fields">
+              <label>{{ i18n.t('crop.outW') }} <input id="crop-out-w" type="number" inputmode="numeric" min="1" [placeholder]="'' + rounded().w" [value]="outW()" (input)="onOutW($any($event.target).value)" /></label>
+              <label>{{ i18n.t('crop.outH') }} <input id="crop-out-h" type="number" inputmode="numeric" min="1" [placeholder]="'' + rounded().h" [value]="outH()" (input)="onOutH($any($event.target).value)" /></label>
+            </div>
+            <label class="check"><input type="checkbox" [checked]="lock()" (change)="lock.set($any($event.target).checked)" /> {{ i18n.t('crop.lock') }}</label>
+            <div class="row">
+              <app-segmented [label]="i18n.t('crop.format')" [options]="formats" [(value)]="format" />
+            </div>
+            @if (format() !== 'png') {
+              <div class="row">
+                <label class="lbl" for="crop-quality">{{ i18n.t('crop.quality') }}</label>
+                <input id="crop-quality" type="range" min="10" max="100" [value]="quality()" (input)="quality.set(+$any($event.target).value)" />
+                <output class="mono" for="crop-quality">{{ quality() }}</output>
+              </div>
+            }
+            <p class="tool-ok" data-testid="crop-result" aria-live="polite">{{ i18n.t('crop.result', { w: result().width, h: result().height }) }}</p>
+            <p class="hint">{{ i18n.t('crop.noMeta') }}</p>
+            <div class="row">
+              <button type="button" class="btn primary" data-testid="crop-download" [disabled]="working()" (click)="download()">
+                <app-icon name="download" /> {{ i18n.t('crop.download') }}
+              </button>
+            </div>
+            <p class="tool-ok" role="status" aria-live="polite" data-testid="crop-status">{{ status() }}</p>
+          </section>
+        </div>
+      </div>
+    }
+  </app-file-drop>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('crop.info.keys.title') }}</h2>
+      <p>{{ i18n.t('crop.info.keys.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('crop.info.exif.title') }}</h2>
+      <p>{{ i18n.t('crop.info.exif.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('crop.info.priv.title') }}</h2>
+      <p>{{ i18n.t('crop.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

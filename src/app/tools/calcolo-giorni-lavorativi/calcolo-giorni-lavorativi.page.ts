@@ -21,6 +21,9 @@ import {
   toIso,
   weekdayName,
 } from './workdays';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './calcolo-giorni-lavorativi.share';
 
 type Mode = 'between' | 'add';
 type Dir = 'add' | 'sub';
@@ -33,7 +36,7 @@ interface HolidayRow {
 
 @Component({
   selector: 'app-calcolo-giorni-lavorativi',
-  imports: [PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calcolo-giorni-lavorativi.page.html',
   styleUrl: './calcolo-giorni-lavorativi.page.scss',
@@ -192,6 +195,27 @@ export class CalcoloGiorniLavorativiPage {
     const d = toDayNo(year, e.m, e.d);
     return `${this.i18n.t('wd.easter', { year })}: ${weekdayName(d)} ${e.d}/${e.m}`;
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    startText: this.startText,
+    endText: this.endText,
+    includeEnd: this.includeEnd,
+    daysText: this.daysText,
+    dir: this.dir,
+    excludeSat: this.excludeSat,
+    excludeSun: this.excludeSun,
+    national: this.national,
+    patron: this.patron,
+    custom: this.custom,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(WD_DICTIONARIES);

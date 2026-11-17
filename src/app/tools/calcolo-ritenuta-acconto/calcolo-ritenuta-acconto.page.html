@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="calcolo-ritenuta-acconto" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <p class="disclaimer" role="note">{{ i18n.t('rit.disclaimer') }}</p>
 
   <div class="tool-toolbar">

@@ -83,6 +83,7 @@ const ICONS = {
   sortLines: 'M4 6h9M4 12h6M4 18h3M17 5v14M14 16l3 3 3-3',
   findReplace: 'M10 3a7 7 0 1 0 0 14a7 7 0 0 0 0-14zM21 21l-6-6M7 9h6M11 7l2 2-2 2',
   eye: 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6a3 3 0 0 0 0-6z',
+  crop: 'M6 2v14a2 2 0 0 0 2 2h14M18 22V8a2 2 0 0 0-2-2H2',
   speaker: 'M11 5L6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14',
 } as const;
 

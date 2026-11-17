@@ -2,7 +2,66 @@
 // © 2026 rrstudio — rrstudio Tools
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
+/** Guida "come si usa" e domande frequenti (It): vedi shared/tool-guide.ts. */
+const guideIt = {
+  'guide.qr-code-generator.step.1': 'In «Tipo di QR code» scegli che cosa vuoi codificare: Testo, Link (URL), WiFi, Contatto, Email, SMS o Posizione.',
+  'guide.qr-code-generator.step.2': 'Compila i campi che compaiono: per esempio «Indirizzo web» per un link, oppure «Nome della rete (SSID)», «Password» e «Cifratura» per il WiFi.',
+  'guide.qr-code-generator.step.3': 'Apri «Opzioni» per cambiare «Correzione errori», «Dimensione (pixel)», margine, «Colore del QR» e «Colore dello sfondo», o aggiungere un «Logo al centro».',
+  'guide.qr-code-generator.step.4': 'Controlla l\'«Anteprima»: se il contrasto o il margine sono troppo bassi compare un avviso.',
+  'guide.qr-code-generator.step.5': 'Scarica con «Scarica PNG» o «Scarica SVG», oppure usa «Copia immagine». Prima di stamparlo provalo con il telefono.',
+  'guide.qr-code-generator.q.1': 'Il QR code scade o passa da un server?',
+  'guide.qr-code-generator.a.1':
+    'No. Questi QR code sono statici: il contenuto è scritto nel disegno, non passa da nessun server e non scade mai. Il link o il testo restano leggibili finché il QR è leggibile.',
+  'guide.qr-code-generator.q.2': 'A che cosa serve la correzione errori?',
+  'guide.qr-code-generator.a.2':
+    'Permette di leggere il codice anche se una parte è rovinata o coperta. I livelli sono L (7%), M (15%), Q (25%) e H (30%): più è alta, più il QR ha moduli e risulta più denso. Con un logo al centro il livello viene fissato a H.',
+  'guide.qr-code-generator.q.3': 'Quanto deve essere grande il QR da stampare?',
+  'guide.qr-code-generator.a.3':
+    'Dipende da quanto dovrà essere letto da lontano: più dati contiene, più è fitto e più serve spazio. Per sicurezza prova sempre a leggerlo con il telefono nella dimensione reale in cui lo userai. Il formato SVG si ingrandisce senza perdere nitidezza.',
+  'guide.qr-code-generator.q.4': 'Perché il QR code non si legge?',
+  'guide.qr-code-generator.a.4':
+    'Le cause più comuni sono poco contrasto tra i due colori, colori invertiti (QR più chiaro dello sfondo), un margine inferiore a 4 moduli e un logo troppo grande. Lo strumento mostra un avviso in questi casi.',
+  'guide.qr-code-generator.q.5': 'Come creo un QR code per il WiFi?',
+  'guide.qr-code-generator.a.5':
+    'Scegli «WiFi», scrivi il nome della rete e la password, e seleziona la cifratura (di solito WPA/WPA2/WPA3). Chi lo inquadra con il telefono può collegarsi senza digitare la password.',
+  'guide.qr-code-generator.q.6': 'Il QR code ha una filigrana o serve un account?',
+  'guide.qr-code-generator.a.6':
+    'No: il file che scarichi contiene solo il QR code e non serve alcun account. Prima di stamparne molti, controlla che il contenuto sia corretto e provalo con il telefono.',
+  'guide.qr-code-generator.privacy':
+    'Testo, link, password del WiFi e logo restano nel tuo browser: il QR code viene disegnato sul tuo dispositivo e nulla viene inviato. Se usi il pulsante di condivisione, i dati inseriti finiscono nell\'indirizzo del link, dopo il simbolo #: quella parte non arriva a nessun server, ma la vede chi riceve il link.',
+};
+
+/** Guida "come si usa" e domande frequenti (En): vedi shared/tool-guide.ts. */
+const guideEn = {
+  'guide.qr-code-generator.step.1': 'Under "QR code type" choose what to encode: Text, Link (URL), WiFi, Contact, Email, SMS or Location.',
+  'guide.qr-code-generator.step.2': 'Fill in the fields that appear: for example "Web address" for a link, or "Network name (SSID)", "Password" and "Security" for WiFi.',
+  'guide.qr-code-generator.step.3': 'Open "Options" to change "Error correction", "Size (pixels)", the margin, "QR colour" and "Background colour", or to add a "Logo in the centre".',
+  'guide.qr-code-generator.step.4': 'Check the "Preview": a warning appears if the contrast or the margin is too low.',
+  'guide.qr-code-generator.step.5': 'Download with "Download PNG" or "Download SVG", or use "Copy image". Try it with your phone before printing.',
+  'guide.qr-code-generator.q.1': 'Does the QR code expire or go through a server?',
+  'guide.qr-code-generator.a.1':
+    'No. These QR codes are static: the content is written in the drawing itself, it does not go through any server and it never expires. The link or text keeps working as long as the QR code can be read.',
+  'guide.qr-code-generator.q.2': 'What is error correction for?',
+  'guide.qr-code-generator.a.2':
+    'It lets a scanner read the code even if part of it is damaged or covered. The levels are L (7%), M (15%), Q (25%) and H (30%): the higher the level, the denser the code. With a logo in the centre the level is fixed to H.',
+  'guide.qr-code-generator.q.3': 'How big should a printed QR code be?',
+  'guide.qr-code-generator.a.3':
+    'It depends on how far away it will be scanned: the more data it holds, the denser it is and the more room it needs. Always test it with a phone at the real size you will use. SVG scales up without losing sharpness.',
+  'guide.qr-code-generator.q.4': 'Why can\'t my QR code be read?',
+  'guide.qr-code-generator.a.4':
+    'The usual causes are low contrast between the two colours, inverted colours (a QR code lighter than its background), a margin under 4 modules and an oversized logo. The tool shows a warning in these cases.',
+  'guide.qr-code-generator.q.5': 'How do I make a QR code for WiFi?',
+  'guide.qr-code-generator.a.5':
+    'Choose "WiFi", type the network name and the password, and pick the security type (usually WPA/WPA2/WPA3). Anyone who scans it with a phone can join without typing the password.',
+  'guide.qr-code-generator.q.6': 'Is there a watermark, or do I need an account?',
+  'guide.qr-code-generator.a.6':
+    'No: the file you download contains only the QR code and no account is needed. Before printing many copies, check that the content is right and test it with a phone.',
+  'guide.qr-code-generator.privacy':
+    'Text, links, WiFi passwords and the logo stay in your browser: the QR code is drawn on your device and nothing is sent. If you use the share button, the data you entered goes into the link\'s address after the # sign: that part never reaches a server, but whoever receives the link can see it.',
+};
+
 const it = {
+  ...guideIt,
   'qr.lead':
     'Crea un QR code per testo, link, WiFi, contatto, email, SMS o posizione. Scegli colori, dimensione e logo, poi scarica PNG o SVG. Tutto nel browser, senza account.',
   'qr.type': 'Tipo di QR code',
@@ -80,6 +139,7 @@ const it = {
 };
 
 const en: typeof it = {
+  ...guideEn,
   'qr.lead':
     'Create a QR code for text, links, WiFi, contacts, email, SMS or a location. Pick colours, size and a logo, then download a PNG or SVG. Everything runs in your browser, no account needed.',
   'qr.type': 'QR code type',

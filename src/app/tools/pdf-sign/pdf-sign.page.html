@@ -1,0 +1,243 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.sign.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('sign.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <p class="tool-warn" role="note" data-testid="sign-warning">
+    <strong>{{ i18n.t('sign.warn.title') }}</strong>
+    <span>{{ i18n.t('sign.warn.text') }}</span>
+  </p>
+
+  <app-file-drop [hint]="i18n.t('sign.drop')" accept="application/pdf,.pdf" (fileSelected)="onPdf($event)">
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (loading()) {
+        <p class="tool-ok">{{ i18n.t('sign.loading') }}</p>
+      }
+      @if (error()) {
+        <p class="tool-error" role="alert" data-testid="sign-error">{{ error() }}</p>
+      }
+    </div>
+
+    <!-- 1. la firma -->
+    <section class="panel" [attr.aria-label]="i18n.t('sign.make')">
+      <h2 class="eyebrow">{{ i18n.t('sign.make') }}</h2>
+      <app-segmented [label]="i18n.t('sign.make')" [options]="modes()" [(value)]="mode" />
+
+      @switch (mode()) {
+        @case ('draw') {
+          <p class="hint">{{ i18n.t('sign.draw.hint') }}</p>
+          <canvas
+            #pad
+            class="pad"
+            width="900"
+            height="300"
+            role="img"
+            data-testid="sign-pad"
+            [attr.aria-label]="i18n.t('sign.draw.label')"
+            (pointerdown)="padDown($event)"
+            (pointermove)="padMove($event)"
+            (pointerup)="padUp()"
+            (pointercancel)="padUp()"
+          ></canvas>
+          <div class="row">
+            <label class="lbl" for="sign-color">{{ i18n.t('sign.color') }}</label>
+            <input id="sign-color" class="color" type="color" [value]="ink()" (input)="ink.set($any($event.target).value)" />
+            <label class="lbl" for="sign-thick">{{ i18n.t('sign.thickness') }}</label>
+            <input id="sign-thick" type="range" min="1" max="10" [value]="thickness()" (input)="thickness.set(+$any($event.target).value)" />
+            <output class="mono" for="sign-thick">{{ thickness() }}</output>
+          </div>
+          <div class="row">
+            <button type="button" class="btn small" [disabled]="strokeCount() === 0" (click)="undoStroke()"><app-icon name="rotateCcw" /> {{ i18n.t('sign.undo') }}</button>
+            <button type="button" class="btn small" [disabled]="strokeCount() === 0" (click)="clearPad()"><app-icon name="trash" /> {{ i18n.t('sign.clear') }}</button>
+            <button type="button" class="btn small primary" data-testid="sign-use-draw" (click)="useDrawn()"><app-icon name="plus" /> {{ i18n.t('sign.use') }}</button>
+          </div>
+        }
+        @case ('type') {
+          <div class="row">
+            <label class="lbl" for="sign-text">{{ i18n.t('sign.type.text') }}</label>
+            <input id="sign-text" type="text" class="grow" maxlength="60" autocomplete="off" [value]="typedText()" (input)="typedText.set($any($event.target).value)" />
+            <label class="lbl" for="sign-color2">{{ i18n.t('sign.color') }}</label>
+            <input id="sign-color2" class="color" type="color" [value]="ink()" (input)="ink.set($any($event.target).value)" />
+          </div>
+          <div class="styles" role="radiogroup" [attr.aria-label]="i18n.t('sign.type.style')">
+            @for (s of typedStyles; track s) {
+              <label class="style" [class.on]="typedStyle() === s">
+                <input type="radio" name="sign-style" class="visually-hidden" [checked]="typedStyle() === s" (change)="typedStyle.set(s)" />
+                <span class="sample" [style.font-family]="typedFonts[s]" [style.color]="ink()">{{ typedText().trim() || i18n.t('sign.type.sample') }}</span>
+                <span class="hint">{{ i18n.t('sign.type.' + s) }}</span>
+              </label>
+            }
+          </div>
+          <div class="row">
+            <button type="button" class="btn small primary" data-testid="sign-use-type" (click)="useTyped()"><app-icon name="plus" /> {{ i18n.t('sign.use') }}</button>
+          </div>
+        }
+        @case ('image') {
+          <div class="row">
+            <label class="btn small">
+              <app-icon name="upload" /> {{ i18n.t('sign.image.choose') }}
+              <input class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" data-testid="sign-image-input" (change)="onImage($any($event.target).files[0]); $any($event.target).value = ''" />
+            </label>
+            <span class="hint">{{ imageName() || i18n.t('sign.image.none') }}</span>
+          </div>
+          <div class="row">
+            <label class="check"><input type="checkbox" [checked]="removeBg()" (change)="removeBg.set($any($event.target).checked)" /> {{ i18n.t('sign.image.removeBg') }}</label>
+            @if (removeBg()) {
+              <label class="lbl" for="sign-th">{{ i18n.t('sign.image.threshold') }}</label>
+              <input id="sign-th" type="range" min="60" max="250" [value]="threshold()" (input)="threshold.set(+$any($event.target).value)" />
+              <output class="mono" for="sign-th">{{ threshold() }}</output>
+            }
+          </div>
+          @if (imagePreview(); as prev) {
+            <div class="preview"><img [src]="prev.url" [alt]="i18n.t('sign.image.preview')" data-testid="sign-image-preview" /></div>
+            <div class="row">
+              <button type="button" class="btn small primary" data-testid="sign-use-image" (click)="useImage()"><app-icon name="plus" /> {{ i18n.t('sign.use') }}</button>
+            </div>
+          }
+        }
+      }
+      <div class="tool-status" role="status" aria-live="polite">
+        @if (signError()) {
+          <p class="tool-error">{{ signError() }}</p>
+        }
+      </div>
+
+      @if (signatures().length > 0) {
+        <h3 class="eyebrow">{{ i18n.t('sign.library') }}</h3>
+        <ul class="library" data-testid="sign-library">
+          @for (s of signatures(); track s.id) {
+            <li [class.active]="activeSig() === s.id">
+              <label>
+                <input type="radio" name="sign-active" class="visually-hidden" [checked]="activeSig() === s.id" (change)="activeSig.set(s.id)" />
+                <img [src]="s.url" [alt]="i18n.t('sign.thumb', { n: $index + 1 })" />
+              </label>
+              <button type="button" class="x" [attr.aria-label]="i18n.t('sign.removeSig', { n: $index + 1 })" (click)="removeSignature(s.id)"><app-icon name="close" /></button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <!-- 2. il documento -->
+    @if (pageCount() > 0) {
+      <section class="panel" [attr.aria-label]="i18n.t('sign.place')">
+        <h2 class="eyebrow">{{ i18n.t('sign.place') }}</h2>
+        <p class="tool-ok" data-testid="sign-doc">{{ i18n.t('sign.docInfo', { name: docName(), n: pageCount() }) }}</p>
+        <div class="row">
+          <button type="button" class="btn small" [disabled]="pageIndex() === 0" (click)="goTo(pageIndex() - 1)"><app-icon name="left" /> {{ i18n.t('sign.prev') }}</button>
+          <label class="lbl" for="sign-page">{{ i18n.t('sign.page') }}</label>
+          <input id="sign-page" class="num" type="number" inputmode="numeric" min="1" [max]="pageCount()" [value]="pageIndex() + 1" (change)="onPageInput($any($event.target).value, $any($event.target))" />
+          <span class="mono">/ {{ pageCount() }}</span>
+          <button type="button" class="btn small" [disabled]="pageIndex() >= pageCount() - 1" (click)="goTo(pageIndex() + 1)">{{ i18n.t('sign.next') }} <app-icon name="right" /></button>
+        </div>
+        <div class="row">
+          <button type="button" class="btn small primary" data-testid="sign-add" [disabled]="activeSig() === null" (click)="addSignatureToPage()">
+            <app-icon name="pen" /> {{ i18n.t('sign.add') }}
+          </button>
+          @if (signatures().length === 0) {
+            <span class="hint">{{ i18n.t('sign.addFirst') }}</span>
+          }
+        </div>
+        <div class="row">
+          <app-segmented [label]="i18n.t('sign.date.format')" [options]="dateStyles()" [value]="dateStyle()" (valueChange)="setDateStyle($event)" />
+          <label class="lbl" for="sign-date">{{ i18n.t('sign.date.text') }}</label>
+          <input id="sign-date" type="text" class="grow" maxlength="40" autocomplete="off" [value]="dateText()" (input)="dateText.set($any($event.target).value)" />
+          <button type="button" class="btn small" data-testid="sign-add-date" (click)="addDateToPage()"><app-icon name="calendar" /> {{ i18n.t('sign.date.add') }}</button>
+        </div>
+
+        <div class="stage-wrap">
+          <div class="stage" [style]="stageStyle()" data-testid="sign-stage" (pointerdown)="clearSelection()">
+            <canvas #pageCanvas class="page-img" role="img" [attr.aria-label]="i18n.t('sign.pageLabel', { n: pageIndex() + 1 })"></canvas>
+            @for (p of pagePlacements(); track p.id) {
+              <div
+                class="item"
+                [class.sel]="selected() === p.id"
+                [class.date]="p.kind === 'date'"
+                [attr.data-kind]="p.kind"
+                [attr.data-id]="p.id"
+                role="group"
+                tabindex="0"
+                [attr.aria-label]="itemLabel(p)"
+                aria-describedby="sign-keys"
+                [style.left.%]="p.x * 100"
+                [style.top.%]="p.y * 100"
+                [style.width.%]="p.kind === 'signature' ? p.w * 100 : null"
+                [style.height.%]="p.h * 100"
+                [style.--h]="p.h"
+                (pointerdown)="onItemDown($event, p, 'move')"
+                (pointermove)="onItemMove($event)"
+                (pointerup)="onItemUp()"
+                (pointercancel)="onItemUp()"
+                (focus)="select(p.id)"
+                (keydown)="onItemKey($event, p)"
+              >
+                @if (p.kind === 'signature') {
+                  <img [src]="sigById(p.sigId)?.url" alt="" draggable="false" />
+                } @else {
+                  <span class="txt">{{ p.text }}</span>
+                }
+                <span
+                  class="grip"
+                  aria-hidden="true"
+                  (pointerdown)="onItemDown($event, p, 'resize')"
+                  (pointermove)="onItemMove($event)"
+                  (pointerup)="onItemUp()"
+                  (pointercancel)="onItemUp()"
+                ></span>
+              </div>
+            }
+          </div>
+          <p class="hint" id="sign-keys">{{ i18n.t('sign.keys') }}</p>
+        </div>
+
+        @if (selectedPlacement(); as sp) {
+          <div class="row" role="group" [attr.aria-label]="i18n.t('sign.selected')">
+            <span class="mono">{{ itemLabel(sp) }}</span>
+            <button type="button" class="btn small" (click)="scaleSelected(1 / 1.1)" [attr.aria-label]="i18n.t('sign.smaller')">−</button>
+            <button type="button" class="btn small" (click)="scaleSelected(1.1)" [attr.aria-label]="i18n.t('sign.bigger')">+</button>
+            <button type="button" class="btn small" (click)="copyToAll()">{{ i18n.t('sign.copyAll') }}</button>
+            <button type="button" class="btn small" data-testid="sign-delete" (click)="removePlacement(sp.id)"><app-icon name="trash" /> {{ i18n.t('sign.delete') }}</button>
+          </div>
+        }
+
+        @if (placements().length > 0) {
+          <ul class="items" [attr.aria-label]="i18n.t('sign.items')">
+            @for (p of placements(); track p.id) {
+              <li>
+                <span>{{ itemLabel(p) }}</span>
+                <button type="button" class="btn small" (click)="goTo(p.page); select(p.id)">{{ i18n.t('sign.goto') }}</button>
+                <button type="button" class="x" [attr.aria-label]="i18n.t('sign.deleteItem', { label: itemLabel(p) })" (click)="removePlacement(p.id)"><app-icon name="close" /></button>
+              </li>
+            }
+          </ul>
+        }
+
+        <div class="row">
+          <button type="button" class="btn primary" data-testid="sign-download" [disabled]="placements().length === 0 || working()" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('sign.download') }}
+          </button>
+          <span class="tool-ok" role="status" aria-live="polite" data-testid="sign-status">{{ status() }}</span>
+        </div>
+      </section>
+    }
+  </app-file-drop>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sign.info.graphic.title') }}</h2>
+      <p>{{ i18n.t('sign.info.graphic.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sign.info.legal.title') }}</h2>
+      <p>{{ i18n.t('sign.info.legal.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sign.info.priv.title') }}</h2>
+      <p>{{ i18n.t('sign.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

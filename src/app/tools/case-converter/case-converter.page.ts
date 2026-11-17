@@ -8,12 +8,15 @@ import { IoPanel } from '../../shared/io-panel';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { CASE_IDS, CaseId, convertCase } from './case';
 import { CASE_DICTIONARIES } from './case-converter.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './case-converter.share';
 
 const SAMPLE = 'getHTTPResponse per il nome della rosa\nuser_profile_id: perché è così';
 
 @Component({
   selector: 'app-case-converter',
-  imports: [Icon, IoPanel, PrivacyNote, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './case-converter.page.html',
   styleUrl: './case-converter.page.scss',
@@ -39,6 +42,20 @@ export class CaseConverterPage {
   protected readonly meta = computed(() =>
     this.input() ? this.i18n.t('case.meta', { lines: this.input().split('\n').length, chars: [...this.input()].length }) : '',
   );
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    input: this.input,
+    perLine: this.perLine,
+    keepAcronyms: this.keepAcronyms,
+    stripAccents: this.stripAccents,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(CASE_DICTIONARIES);

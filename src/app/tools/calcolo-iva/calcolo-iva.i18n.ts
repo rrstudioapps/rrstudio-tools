@@ -3,7 +3,37 @@
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
 /** Strumento solo italiano: la versione inglese esiste per completezza del tipo, ma non viene mai mostrata. */
+/** Guida "come si usa" e domande frequenti (It): vedi shared/tool-guide.ts. */
+const guideIt = {
+  'guide.calcolo-iva.step.1': 'In «Che cosa vuoi calcolare» scegli «Aggiungi IVA» se hai l\'imponibile, «Scorpora IVA» se hai il totale con IVA, «Notula / fattura» per una parcella con rivalsa, cassa, ritenuta e bollo, oppure «Dal netto al compenso» se parti dal netto che vuoi incassare.',
+  'guide.calcolo-iva.step.2': 'Scrivi l\'importo nel campo (per esempio 1.000,00): l\'etichetta cambia in base alla modalità scelta.',
+  'guide.calcolo-iva.step.3': 'Scegli l\'«Aliquota IVA». Con «0% (senza IVA)» indica anche la «Natura dell\'operazione senza IVA».',
+  'guide.calcolo-iva.step.4': 'Per una notula, in «Dati della notula» attiva ciò che serve: regime forfettario, rivalsa INPS 4%, cassa previdenziale, ritenuta d\'acconto e bollo da 2 €.',
+  'guide.calcolo-iva.step.5': 'Leggi il «Risultato» riga per riga; in «Da riportare in fattura» trovi le diciture che servono nei casi particolari.',
+  'guide.calcolo-iva.q.1': 'Che differenza c\'è tra aggiungere e scorporare l\'IVA?',
+  'guide.calcolo-iva.a.1':
+    'Aggiungendo parti dall\'imponibile e sommi l\'IVA per avere il totale. Scorporando parti dal totale con IVA inclusa e ricavi imponibile e IVA: con l\'aliquota al 22%, per esempio, 122 euro lordi sono 100 euro di imponibile e 22 di IVA.',
+  'guide.calcolo-iva.q.2': 'Che cos\'è la rivalsa INPS del 4%?',
+  'guide.calcolo-iva.a.2':
+    'È una maggiorazione che il professionista può addebitare in fattura al cliente. Nella modalità «Notula / fattura» lo strumento la somma al compenso e ti fa scegliere se la ritenuta d\'acconto si applica anche su di essa.',
+  'guide.calcolo-iva.q.3': 'Quando serve il bollo da 2 euro?',
+  'guide.calcolo-iva.a.3':
+    'Sulle fatture senza IVA di importo superiore a 77,47 euro, come ricorda la dicitura che lo strumento propone. Puoi scegliere se addebitarlo al cliente o tenerlo a tuo carico: nel secondo caso non viene sommato al totale.',
+  'guide.calcolo-iva.q.4': 'Come tratta il regime forfettario?',
+  'guide.calcolo-iva.a.4':
+    'Attivando «Regime forfettario» il calcolo toglie IVA e ritenuta d\'acconto e ti propone le diciture da riportare in fattura con i riferimenti di legge.',
+  'guide.calcolo-iva.q.5': 'A che cosa serve «Dal netto al compenso»?',
+  'guide.calcolo-iva.a.5':
+    'È il calcolo inverso: indichi quanto vuoi incassare e ottieni il compenso da fatturare. Con gli arrotondamenti al centesimo il netto esatto potrebbe non essere raggiungibile: in quel caso lo strumento mostra il valore più vicino e la differenza.',
+  'guide.calcolo-iva.q.6': 'Posso usarlo come consulenza fiscale?',
+  'guide.calcolo-iva.a.6':
+    'No: è un calcolo indicativo, con aliquote e regole aggiornate al 2026. Per il tuo caso concreto, in particolare per natura dell\'operazione, esenzioni e regime fiscale, verifica con il tuo commercialista.',
+  'guide.calcolo-iva.privacy':
+    'Gli importi restano nel tuo browser e non vengono inviati. Se usi il pulsante di condivisione, i dati inseriti finiscono nell\'indirizzo del link, dopo il simbolo #: quella parte non arriva a nessun server, ma la vede chi riceve il link.',
+};
+
 const it = {
+  ...guideIt,
   'iva.lead':
     'Aggiungi l\'IVA a un imponibile, scorporala da un importo lordo o prepara una notula da professionista con rivalsa INPS, cassa previdenziale, ritenuta d\'acconto e bollo. Arrotondamenti al centesimo.',
   'iva.disclaimer':
@@ -78,7 +108,7 @@ const it = {
   'iva.empty': 'Scrivi un importo per vedere il calcolo.',
 };
 
-const en: typeof it = {
+const en: Omit<typeof it, keyof typeof guideIt> = {
   // Strumento solo italiano (italyOnly): nessuna pagina /en/. Le stesse stringhe, per completezza del tipo.
   ...it,
 };

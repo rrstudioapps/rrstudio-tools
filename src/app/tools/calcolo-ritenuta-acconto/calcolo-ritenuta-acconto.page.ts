@@ -8,6 +8,9 @@ import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { RITENUTA_DICTIONARIES } from './calcolo-ritenuta-acconto.i18n';
 import { RitenutaInput, RitenutaResult, computeRitenuta, solveFromNet } from './ritenuta';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './calcolo-ritenuta-acconto.share';
 
 type Kind = 'occasionale' | 'professionista';
 type Dir = 'gross' | 'net';
@@ -20,7 +23,7 @@ interface Row {
 
 @Component({
   selector: 'app-calcolo-ritenuta-acconto',
-  imports: [PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calcolo-ritenuta-acconto.page.html',
   styleUrl: './calcolo-ritenuta-acconto.page.scss',
@@ -146,6 +149,25 @@ export class CalcoloRitenutaAccontoPage {
     if (n.length) lines.push('', ...n);
     return lines.join('\n');
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    kind: this.kind,
+    dir: this.dir,
+    amountText: this.amountText,
+    ritenutaText: this.ritenutaText,
+    rivalsa: this.rivalsa,
+    ritenutaOnRivalsa: this.ritenutaOnRivalsa,
+    cassaText: this.cassaText,
+    vatText: this.vatText,
+    bolloCharged: this.bolloCharged,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(RITENUTA_DICTIONARIES);

@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="word-counter" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <div class="tool-toolbar">
     <div class="conv" role="group" [attr.aria-label]="i18n.t('wc.convert')">
       @for (c of conversions; track c) {

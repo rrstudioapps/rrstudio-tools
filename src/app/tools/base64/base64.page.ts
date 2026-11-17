@@ -26,6 +26,9 @@ import {
   toDataUrl,
 } from './base64';
 import { BASE64_DICTIONARIES } from './base64.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './base64.share';
 
 type Mode = 'encode' | 'decode';
 
@@ -42,7 +45,7 @@ interface LoadedFile {
 
 @Component({
   selector: 'app-base64',
-  imports: [Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './base64.page.html',
   styleUrl: './base64.page.scss',
@@ -158,6 +161,20 @@ export class Base64Page {
     if (this.errorMessage() || this.isBinary()) return false;
     return this.fullOutput().length > 0;
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    input: this.input,
+    urlSafe: this.urlSafe,
+    asDataUrl: this.asDataUrl,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(BASE64_DICTIONARIES);

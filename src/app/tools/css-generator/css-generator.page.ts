@@ -30,12 +30,15 @@ import {
   updateStop,
 } from './css-gen';
 import { CSSG_DICTIONARIES } from './css-generator.i18n';
+import { ShareLink } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA, decodeShadows, decodeStops, encodeShadows, encodeStops } from './css-generator.share';
 
 type Tab = 'gradient' | 'shadow';
 
 @Component({
   selector: 'app-css-generator',
-  imports: [Icon, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './css-generator.page.html',
   styleUrl: './css-generator.page.scss',
@@ -68,6 +71,43 @@ export class CssGeneratorPage {
   protected readonly barValue = computed(() => gradientValue({ ...this.gradient(), kind: 'linear', angle: 90, repeating: false }));
 
   private dragging: { id: number; bar: HTMLElement } | null = null;
+
+  // Link di condivisione: stato nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  protected readonly shareState = (): ShareData => {
+    const g = this.gradient();
+    return {
+      tab: this.tab(),
+      kind: g.kind,
+      angle: g.angle,
+      shape: g.shape,
+      cx: g.cx,
+      cy: g.cy,
+      repeating: g.repeating,
+      stops: encodeStops(g.stops),
+      shadows: encodeShadows(this.shadows()),
+      shadowBg: this.shadowBg(),
+    };
+  };
+
+  protected restoreShared(d: ShareData): void {
+    const stops = Array.isArray(d['stops']) ? decodeStops(d['stops']) : null;
+    const shadows = Array.isArray(d['shadows']) ? decodeShadows(d['shadows']) : null;
+    this.gradient.update((g) => ({
+      ...g,
+      kind: typeof d['kind'] === 'string' ? (d['kind'] as GradientKind) : g.kind,
+      angle: typeof d['angle'] === 'number' ? d['angle'] : g.angle,
+      shape: typeof d['shape'] === 'string' ? (d['shape'] as RadialShape) : g.shape,
+      cx: typeof d['cx'] === 'number' ? d['cx'] : g.cx,
+      cy: typeof d['cy'] === 'number' ? d['cy'] : g.cy,
+      repeating: typeof d['repeating'] === 'boolean' ? d['repeating'] : g.repeating,
+      stops: stops ?? g.stops,
+    }));
+    if (stops) this.selected.set(stops[Math.min(1, stops.length - 1)].id);
+    if (shadows) this.shadows.set(shadows);
+    if (typeof d['shadowBg'] === 'string') this.shadowBg.set(d['shadowBg'] as 'light' | 'dark');
+    if (typeof d['tab'] === 'string') this.tab.set(d['tab'] as Tab);
+  }
 
   constructor() {
     this.i18n.register(CSSG_DICTIONARIES);

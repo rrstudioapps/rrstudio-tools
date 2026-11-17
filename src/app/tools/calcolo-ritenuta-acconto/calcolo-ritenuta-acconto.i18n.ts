@@ -3,7 +3,37 @@
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
 /** Strumento solo italiano: la versione inglese esiste per completezza del tipo, ma non viene mai mostrata. */
+/** Guida "come si usa" e domande frequenti (It): vedi shared/tool-guide.ts. */
+const guideIt = {
+  'guide.calcolo-ritenuta-acconto.step.1': 'In «Tipo di prestazione» scegli «Prestazione occasionale» oppure «Professionista».',
+  'guide.calcolo-ritenuta-acconto.step.2': 'In «Che cosa conosci» scegli «Dal lordo al netto» se hai il compenso lordo, «Dal netto al lordo» se parti da quanto vuoi incassare.',
+  'guide.calcolo-ritenuta-acconto.step.3': 'Scrivi l\'importo (per esempio 1.000,00) e controlla la «Ritenuta d\'acconto (%)», che si può modificare.',
+  'guide.calcolo-ritenuta-acconto.step.4': 'In «Dati del documento» aggiungi se serve la rivalsa INPS 4%, la cassa previdenziale, l\'aliquota IVA e il bollo da 2 €.',
+  'guide.calcolo-ritenuta-acconto.step.5': 'Nel «Prospetto» trovi ogni riga, dal compenso lordo al «Netto a pagare»; in «Da sapere» ci sono le note sul calcolo.',
+  'guide.calcolo-ritenuta-acconto.q.1': 'Che cos\'è la ritenuta d\'acconto?',
+  'guide.calcolo-ritenuta-acconto.a.1':
+    'È una quota del compenso che chi paga (il sostituto d\'imposta) trattiene e versa al fisco per conto di chi riceve. Chi incassa riceve quindi il compenso lordo meno la ritenuta; lo strumento propone il 20%, ma la percentuale si può cambiare.',
+  'guide.calcolo-ritenuta-acconto.q.2': 'Come si calcola il netto di una prestazione occasionale?',
+  'guide.calcolo-ritenuta-acconto.a.2':
+    'Il netto è il compenso lordo meno la ritenuta. Con un compenso di 1.000 euro e ritenuta al 20% la ritenuta è di 200 euro e il netto a pagare è di 800 euro.',
+  'guide.calcolo-ritenuta-acconto.q.3': 'La ritenuta si calcola anche su rivalsa INPS e cassa previdenziale?',
+  'guide.calcolo-ritenuta-acconto.a.3':
+    'Sulla rivalsa INPS dipende dal caso: lo strumento ti lascia scegliere con «La ritenuta si applica anche alla rivalsa INPS». Sul contributo della cassa previdenziale la ritenuta non si calcola.',
+  'guide.calcolo-ritenuta-acconto.q.4': 'Quando e come si versa la ritenuta?',
+  'guide.calcolo-ritenuta-acconto.a.4':
+    'Con il modello F24, entro il 16 del mese successivo a quello del pagamento: codice tributo 1040 per i professionisti e 1038 per le prestazioni occasionali. Va poi certificata con la Certificazione Unica.',
+  'guide.calcolo-ritenuta-acconto.q.5': 'Che cosa fa «Dal netto al lordo»?',
+  'guide.calcolo-ritenuta-acconto.a.5':
+    'Parte dal netto che vuoi incassare e ricava il compenso lordo da indicare. Con gli arrotondamenti al centesimo il netto esatto potrebbe non essere raggiungibile: lo strumento mostra il più vicino e la differenza.',
+  'guide.calcolo-ritenuta-acconto.q.6': 'È un calcolo che posso considerare definitivo?',
+  'guide.calcolo-ritenuta-acconto.a.6':
+    'No, è un calcolo indicativo e non sostituisce la consulenza fiscale: se hai dubbi su ritenuta, cassa o regime, verifica con il tuo commercialista.',
+  'guide.calcolo-ritenuta-acconto.privacy':
+    'Gli importi restano nel tuo browser e non vengono inviati. Se usi il pulsante di condivisione, i dati inseriti finiscono nell\'indirizzo del link, dopo il simbolo #: quella parte non arriva a nessun server, ma la vede chi riceve il link.',
+};
+
 const it = {
+  ...guideIt,
   'rit.lead':
     'Dal lordo al netto (e dal netto al lordo) di una prestazione occasionale o di una parcella: ritenuta d\'acconto, rivalsa INPS, cassa previdenziale, IVA e bollo da 2 €, con il prospetto riga per riga da copiare.',
   'rit.disclaimer':
@@ -52,7 +82,7 @@ const it = {
   'rit.empty': 'Scrivi un importo per vedere il prospetto.',
 };
 
-const en: typeof it = {
+const en: Omit<typeof it, keyof typeof guideIt> = {
   // Strumento solo italiano (italyOnly): nessuna pagina /en/. Le stesse stringhe, per completezza del tipo.
   ...it,
 };

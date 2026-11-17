@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="css-generator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <div class="tool-toolbar">
     <app-segmented [label]="i18n.t('cssg.tab')" [options]="tabs()" [(value)]="tab" />
   </div>

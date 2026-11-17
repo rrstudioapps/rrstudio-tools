@@ -21,6 +21,9 @@ import {
   toBase,
   twosComplement,
 } from './base';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './number-base-converter.share';
 
 type InBase = '2' | '8' | '10' | '16' | 'custom';
 
@@ -34,7 +37,7 @@ const MAX_EXACT_SHOWN = 80;
 
 @Component({
   selector: 'app-number-base-converter',
-  imports: [CopyButton, PrivacyNote, Segmented],
+  imports: [ShareLink, CopyButton, PrivacyNote, Segmented],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './number-base-converter.page.html',
   styleUrl: './number-base-converter.page.scss',
@@ -198,6 +201,25 @@ export class NumberBaseConverterPage {
     if (Number.isNaN(d.value)) return 'NaN';
     if (Object.is(d.value, -0)) return '-0';
     return String(d.value);
+  }
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    input: this.input,
+    inBase: this.inBase,
+    customIn: this.customIn,
+    customOut: this.customOut,
+    upper: this.upper,
+    group: this.group,
+    width: this.width,
+    floatKind: this.floatKind,
+    floatText: this.floatText,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
   }
 
   constructor() {

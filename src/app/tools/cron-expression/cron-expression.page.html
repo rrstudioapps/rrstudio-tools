@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="cron-expression" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <section class="expr" [attr.aria-label]="i18n.t('cron.expr')">
     <label class="eyebrow" for="cron-expr">{{ i18n.t('cron.expr') }}</label>
     <div class="expr-row">

@@ -9,12 +9,15 @@ import { Segmented, SegmentOption } from '../../shared/segmented';
 import { formatMoney, parseMoney } from '../calcolo-iva/iva';
 import { MUTUO_DICTIONARIES } from './calcolo-rata-mutuo.i18n';
 import { MAX_CAPITAL_CENTS, MortgageResult, PERIODICITY_MONTHS, Periodicity, computeMortgage, parseRate, parseWhole, scheduleToCsv } from './mutuo';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './calcolo-rata-mutuo.share';
 
 const PAGE_SIZE = 24;
 
 @Component({
   selector: 'app-calcolo-rata-mutuo',
-  imports: [Icon, PrivacyNote, Segmented],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calcolo-rata-mutuo.page.html',
   styleUrl: './calcolo-rata-mutuo.page.scss',
@@ -75,6 +78,21 @@ export class CalcoloRataMutuoPage {
     if (!r || !rows.length) return '';
     return this.i18n.t('mutuo.page', { from: rows[0].n, to: rows[rows.length - 1].n, total: r.periods });
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    capitalText: this.capitalText,
+    tanText: this.tanText,
+    yearsText: this.yearsText,
+    monthsText: this.monthsText,
+    periodicity: this.periodicity,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(MUTUO_DICTIONARIES);

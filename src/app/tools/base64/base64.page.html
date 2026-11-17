@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="base64" [schema]="shareSchema" [state]="shareState" [disabled]="file() !== null" (restored)="restoreShared($event)" />
+
   <div class="tool-toolbar">
     <app-segmented [label]="i18n.t('b64.mode')" [options]="modes()" [value]="mode()" (valueChange)="setMode($event)" />
     <label class="check">

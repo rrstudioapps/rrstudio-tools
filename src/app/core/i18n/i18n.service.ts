@@ -55,6 +55,14 @@ export class I18nService {
     if (!this.extra().includes(dicts)) this.extra.update((list) => [...list, dicts]);
   }
 
+  /** Vero se la chiave esiste nei dizionari (principale o dei tool registrati) per la lingua corrente. */
+  has(key: string): boolean {
+    const lang = this.lang();
+    const base: Dictionary = lang === 'it' ? it : en;
+    if (base[key] !== undefined) return true;
+    return this.extra().some((d) => d[lang][key] !== undefined);
+  }
+
   /** Traduce una chiave, con segnaposto {nome}. Legge i signal: reattivo nei template. */
   t(key: string, params?: Record<string, string | number>): string {
     const lang = this.lang();

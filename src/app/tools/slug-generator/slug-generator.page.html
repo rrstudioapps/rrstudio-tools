@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="slug-generator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <section class="options">
     <div class="tool-toolbar">
       <app-segmented [label]="i18n.t('slug.mode')" [options]="modes()" [(value)]="mode" />

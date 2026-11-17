@@ -8,7 +8,7 @@ import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, PDFName, StandardFonts, decodePDFRawStream, rgb } from 'pdf-lib';
 
 const HOST = process.env.HOST ?? '127.0.0.1';
 const PORT = 4377;
@@ -598,6 +598,54 @@ try {
       await page.waitForSelector('[data-testid=uuid-date]');
     },
   });
+  await shot('fake-data-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/fake-data-generator/',
+    setup: async (page) => {
+      await page.waitForSelector('[data-testid=fake-table] tbody tr');
+      await page.fill('#fake-seed', 'demo');
+      for (const name of ['Codice fiscale', 'Partita IVA', 'IBAN']) {
+        await page.getByRole('button', { name, exact: false }).filter({ hasText: name }).first().click();
+      }
+      await page.fill('#fake-count', '12');
+      await page.locator('#fake-count').dispatchEvent('change');
+      await page.getByRole('button', { name: 'SQL INSERT' }).click();
+      await page.waitForFunction(() => document.querySelectorAll('[data-testid=fake-table] tbody tr').length === 12);
+      await page.waitForFunction(() => /INSERT INTO/.test(document.querySelector('[data-testid=fake-sample]')?.value ?? ''));
+      // e2e: stesso seme, stesso primo valore dopo una nuova generazione; avviso sempre visibile
+      const first = await page.locator('[data-testid=fake-table] tbody tr').first().innerText();
+      await page.getByRole('button', { name: 'Genera di nuovo' }).click();
+      await page.waitForTimeout(300);
+      const again = await page.locator('[data-testid=fake-table] tbody tr').first().innerText();
+      if (first !== again) throw new Error('il seme non rende riproducibili i dati');
+      await page.waitForSelector('[data-testid=fake-warning]');
+    },
+  });
+  await shot('json-query.png', {
+    width: 1280,
+    dark: false,
+    path: '/json-query/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio: libreria' }).click();
+      await page.fill('#jq-expr', "$..book[?(@.category == 'fiction' && @.price > 10)].title");
+      await page.waitForSelector('[data-testid=jq-summary]');
+      const summary = await page.locator('[data-testid=jq-summary]').innerText();
+      if (!/2 risultati/.test(summary)) throw new Error('risultati inattesi: ' + summary);
+      // errore con posizione
+      await page.fill('#jq-expr', '$.store.book[?(@.price >]');
+      await page.waitForSelector('[data-testid=jq-expr-error]');
+      await page.fill('#jq-expr', "$..book[?(@.category == 'fiction' && @.price > 10)].title");
+      await page.waitForSelector('[data-testid=jq-paths] tbody tr');
+      // schede TypeScript e JSON Schema
+      await page.getByRole('button', { name: 'JSON → TypeScript' }).click();
+      await page.waitForFunction(() => /interface/.test(document.querySelector('[data-testid=jq-ts]')?.value ?? ''));
+      await page.getByRole('button', { name: 'JSON → JSON Schema' }).click();
+      await page.waitForFunction(() => /2020-12/.test(document.querySelector('[data-testid=jq-schema]')?.value ?? ''));
+      await page.getByRole('button', { name: 'JSONPath', exact: true }).click();
+      await page.waitForSelector('[data-testid=jq-values]');
+    },
+  });
   await shot('timestamp-converter.png', {
     width: 1280,
     dark: false,
@@ -870,6 +918,249 @@ try {
     },
   });
 
+  // ---- Firma PDF, ritaglio immagini, anteprima meta tag (verificano anche il risultato scaricato) ----
+  const need = (cond, msg) => {
+    if (!cond) throw new Error(msg);
+  };
+  const downloadBuffer = async (page, click) => {
+    const [dl] = await Promise.all([page.waitForEvent('download'), click()]);
+    const chunks = [];
+    for await (const c of await dl.createReadStream()) chunks.push(c);
+    return { name: dl.suggestedFilename(), buffer: Buffer.concat(chunks) };
+  };
+  const jpegSize = (b) => {
+    for (let i = 2; i + 9 < b.length; ) {
+      if (b[i] !== 0xff) return null;
+      const m = b[i + 1];
+      if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return { width: b.readUInt16BE(i + 7), height: b.readUInt16BE(i + 5) };
+      i += 2 + b.readUInt16BE(i + 2);
+    }
+    return null;
+  };
+  // PNG di prova con uno scarabocchio scuro su fondo bianco (firma "fotografata")
+  const scribblePng = (page) =>
+    page.evaluate(async () => {
+      const c = document.createElement('canvas');
+      c.width = 600;
+      c.height = 240;
+      const g = c.getContext('2d');
+      g.fillStyle = '#fff';
+      g.fillRect(0, 0, 600, 240);
+      g.strokeStyle = '#1b1b4b';
+      g.lineWidth = 8;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.moveTo(60, 160);
+      for (let x = 60; x < 540; x += 30) g.lineTo(x + 15, x % 60 ? 70 : 170);
+      g.stroke();
+      const blob = await new Promise((r) => c.toBlob(r, 'image/png'));
+      const bytes = new Uint8Array(await blob.arrayBuffer());
+      let s = '';
+      for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+      return btoa(s);
+    });
+  await shot('pdf-sign.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-sign/',
+    setup: async (page) => {
+      need(await page.locator('[data-testid=sign-warning]').isVisible(), 'avviso sulla firma grafica non visibile');
+      // PDF cifrato: errore chiaro e nessun documento caricato
+      const enc = await PDFDocument.create();
+      enc.addPage();
+      enc.context.trailerInfo.Encrypt = enc.context.register(enc.context.obj({ Filter: 'Standard' }));
+      await page.setInputFiles('app-file-drop input[type=file]', [{ name: 'cifrato.pdf', mimeType: 'application/pdf', buffer: Buffer.from(await enc.save()) }]);
+      await page.locator('[data-testid=sign-error]', { hasText: /cifrat|protett/i }).waitFor();
+      need((await page.locator('[data-testid=sign-doc]').count()) === 0, 'un PDF cifrato è stato caricato');
+      // PDF vero: 3 pagine (la terza è orizzontale)
+      const pdf = await makePdf('Contratto di esempio', 'Contratto', [[0.18, 0.43, 0.62], [0.7, 0.33, 0.16]], 3);
+      await page.setInputFiles('app-file-drop input[type=file]', [{ name: 'contratto.pdf', mimeType: 'application/pdf', buffer: pdf }]);
+      await page.locator('[data-testid=sign-doc]').waitFor();
+      await page.waitForFunction(() => document.querySelector('[data-testid=sign-stage] canvas')?.width > 100);
+      need((await page.locator('[data-testid=sign-error]').count()) === 0, 'errore rimasto dopo un PDF valido');
+
+      // 1. firma disegnata con il mouse
+      const pad = await page.locator('[data-testid=sign-pad]').boundingBox();
+      await page.mouse.move(pad.x + pad.width * 0.1, pad.y + pad.height * 0.6);
+      await page.mouse.down();
+      for (let i = 1; i <= 12; i++) await page.mouse.move(pad.x + pad.width * (0.1 + i * 0.07), pad.y + pad.height * (i % 2 ? 0.25 : 0.75), { steps: 4 });
+      await page.mouse.up();
+      await page.locator('[data-testid=sign-use-draw]').click();
+      await page.locator('[data-testid=sign-library] li').first().waitFor();
+      // 2. pagina 2: firma, trascinata e poi spostata con la tastiera
+      await page.getByRole('button', { name: 'Successiva' }).click();
+      await page.locator('[data-testid=sign-add]').click();
+      const sig = page.locator('.item[data-kind=signature]');
+      await sig.waitFor();
+      const stageBox = () => page.locator('[data-testid=sign-stage]').boundingBox();
+      const itemBox = () => sig.boundingBox();
+      await sig.scrollIntoViewIfNeeded();
+      const before = await itemBox();
+      await page.mouse.move(before.x + before.width / 2, before.y + before.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(before.x + before.width / 2 - 120, before.y + before.height / 2 - 160, { steps: 6 });
+      await page.mouse.up();
+      await page.waitForTimeout(200);
+      const dragged = await itemBox();
+      need(Math.abs(dragged.x - (before.x - 120)) < 3 && Math.abs(dragged.y - (before.y - 160)) < 3, 'il trascinamento non ha spostato la firma');
+      await sig.focus();
+      for (let i = 0; i < 4; i++) await page.keyboard.press('ArrowRight');
+      await page.keyboard.press('+');
+      await page.waitForTimeout(200);
+      const keyed = await itemBox();
+      need(keyed.x > dragged.x + 2 && keyed.width > dragged.width, 'le frecce o + non hanno agito');
+      // 3. data sulla stessa pagina
+      await page.locator('[data-testid=sign-add-date]').click();
+      await page.locator('.item[data-kind=date]').waitFor();
+      // 4. firma digitata sulla pagina 3
+      await page.getByRole('button', { name: 'Scrivi', exact: true }).click();
+      await page.fill('#sign-text', 'Mario Rossi');
+      await page.locator('[data-testid=sign-use-type]').click();
+      await page.waitForFunction(() => document.querySelectorAll('[data-testid=sign-library] li').length === 2);
+      await page.getByRole('button', { name: 'Successiva' }).click();
+      await page.locator('[data-testid=sign-add]').click();
+      await page.locator('.item[data-kind=signature]').waitFor();
+      // 5. firma da immagine con sfondo bianco rimosso, sulla pagina 1
+      await page.getByRole('button', { name: 'Da immagine', exact: true }).click();
+      await page.setInputFiles('[data-testid=sign-image-input]', [{ name: 'firma.png', mimeType: 'image/png', buffer: Buffer.from(await scribblePng(page), 'base64') }]);
+      await page.locator('[data-testid=sign-image-preview]').waitFor();
+      await page.locator('[data-testid=sign-use-image]').click();
+      await page.waitForFunction(() => document.querySelectorAll('[data-testid=sign-library] li').length === 3);
+      await page.fill('#sign-page', '1');
+      await page.locator('#sign-page').dispatchEvent('change');
+      await page.locator('[data-testid=sign-add]').click();
+      await page.locator('.item[data-kind=signature]').waitFor();
+      // torna alla pagina 2 per leggere dove sta la firma trascinata
+      await page.fill('#sign-page', '2');
+      await page.locator('#sign-page').dispatchEvent('change');
+      await page.locator('.item[data-kind=date]').waitFor();
+      const st = await stageBox();
+      const final = await itemBox();
+      const frac = { x: (final.x - st.x) / st.width, y: (final.y - st.y) / st.height, w: final.width / st.width, h: final.height / st.height };
+
+      // 6. il PDF scaricato contiene davvero le immagini, nella pagina giusta e nel punto giusto
+      const out = await downloadBuffer(page, () => page.locator('[data-testid=sign-download]').click());
+      need(out.name === 'contratto-firmato.pdf', 'nome del file inatteso: ' + out.name);
+      const doc = await PDFDocument.load(out.buffer);
+      need(doc.getPageCount() === 3, 'il PDF firmato non ha 3 pagine');
+      const xobjects = (i) => {
+        const xo = doc.getPage(i).node.Resources()?.lookup(PDFName.of('XObject'));
+        return xo ? xo.entries().length : 0;
+      };
+      need(xobjects(0) === 1 && xobjects(1) === 1 && xobjects(2) === 1, `immagini per pagina: ${[0, 1, 2].map(xobjects)} (attese 1,1,1)`);
+      need(!!doc.getPage(1).node.Resources()?.lookup(PDFName.of('Font')), 'la data non è nella pagina 2');
+      const contents = doc.getPage(1).node.Contents();
+      const parts = (contents.asArray ? contents.asArray() : [contents]).map((r) => Buffer.from(decodePDFRawStream(doc.context.lookup(r)).decode()).toString('latin1'));
+      const text = parts.join('\n');
+      const lastDo = text.lastIndexOf(' Do');
+      need(lastDo > 0, 'operatore Do non trovato nella pagina 2');
+      const cms = [...text.slice(0, lastDo).matchAll(/q\n1 0 0 1 ([-\d.]+) ([-\d.]+) cm/g)];
+      const cm = cms[cms.length - 1];
+      const { width: pw, height: ph } = doc.getPage(1).getSize();
+      const gotX = Number(cm[1]);
+      const gotY = Number(cm[2]);
+      const wantX = frac.x * pw;
+      const wantY = ph - (frac.y + frac.h) * ph;
+      need(Math.abs(gotX - wantX) < 1.5 && Math.abs(gotY - wantY) < 1.5, `posizione della firma nel PDF (${gotX}, ${gotY}) diversa da quella a schermo (${wantX.toFixed(1)}, ${wantY.toFixed(1)})`);
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('image-crop.png', {
+    width: 1280,
+    dark: false,
+    path: '/image-crop/',
+    setup: async (page) => {
+      const [photo] = await drawImages(page);
+      // orientamento EXIF 6 (ruotata di 90°): lo strumento deve mostrarla già dritta, cioè con i lati scambiati
+      const rotated = Buffer.from(exifJpeg(photo.buffer));
+      const at = rotated.indexOf(Buffer.from([0x12, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00]));
+      need(at > 0, 'voce Orientation non trovata nel JPEG di prova');
+      rotated[at + 8] = 6;
+      await page.setInputFiles('input[type=file]', [{ name: 'montagna.jpg', mimeType: 'image/jpeg', buffer: rotated }]);
+      await page.locator('[data-testid=crop-source]', { hasText: '1067×1600' }).waitFor();
+      // ritorna all'immagine normale per le prove di ritaglio
+      await page.setInputFiles('input[type=file]', [{ name: 'montagna.jpg', mimeType: 'image/jpeg', buffer: photo.buffer }]);
+      await page.locator('[data-testid=crop-source]', { hasText: '1600×1067' }).waitFor();
+      await page.waitForFunction(() => document.querySelector('[data-testid=crop-stage] canvas')?.width > 100);
+
+      // proporzioni 1:1 e maniglia SE trascinata: il rapporto resta 1:1
+      await page.getByRole('button', { name: '1:1', exact: true }).click();
+      const w0 = Number(await page.inputValue('#crop-w'));
+      need(Math.abs(w0 - Number(await page.inputValue('#crop-h'))) <= 1, 'il ritaglio 1:1 non è quadrato');
+      const handle = await page.locator('[data-handle=se]').boundingBox();
+      await page.mouse.move(handle.x + handle.width / 2, handle.y + handle.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(handle.x + handle.width / 2 - 60, handle.y + handle.height / 2 - 20, { steps: 5 });
+      await page.mouse.up();
+      const w1 = Number(await page.inputValue('#crop-w'));
+      const h1 = Number(await page.inputValue('#crop-h'));
+      need(w1 < w0 && Math.abs(w1 - h1) <= 1, `la maniglia non ha ridotto il ritaglio mantenendo 1:1 (${w0} → ${w1}×${h1})`);
+      // tastiera: le frecce spostano l'area
+      const label = () => page.locator('[data-testid=crop-box]').getAttribute('aria-label');
+      const l0 = await label();
+      await page.locator('[data-testid=crop-box]').focus();
+      await page.keyboard.press('ArrowLeft');
+      await page.waitForTimeout(200);
+      need((await label()) !== l0, 'le frecce non hanno spostato il ritaglio');
+      // rotazione di 90° a destra e ridimensionamento a 300 px di larghezza
+      await page.getByRole('button', { name: '90° a destra' }).click();
+      await page.getByRole('button', { name: 'Ripristina il ritaglio' }).click();
+      await page.fill('#crop-out-w', '300');
+      await page.locator('[data-testid=crop-result]', { hasText: /^Risultato: 300×\d+ px$/ }).waitFor();
+      const png = await downloadBuffer(page, () => page.locator('[data-testid=crop-download]').click());
+      need(png.name === 'montagna-ritaglio.png', 'nome file inatteso: ' + png.name);
+      need(png.buffer.readUInt32BE(16) === 300, 'larghezza del PNG ≠ 300');
+      const crop = await page.locator('[data-testid=crop-result]').textContent();
+      need(png.buffer.readUInt32BE(20) === Number(/×(\d+)/.exec(crop)[1]), 'altezza del PNG diversa dal risultato annunciato');
+      // foto tessera 35×45 in JPEG, 350 px di larghezza → 350×450
+      await page.getByRole('button', { name: 'Foto tessera 35×45' }).click();
+      await page.fill('#crop-out-w', '350');
+      await page.locator('[data-testid=crop-result]', { hasText: 'Risultato: 350×450 px' }).waitFor();
+      await page.getByRole('button', { name: 'JPEG', exact: true }).click();
+      const jpg = await downloadBuffer(page, () => page.locator('[data-testid=crop-download]').click());
+      const dims = jpegSize(jpg.buffer);
+      need(dims && dims.width === 350 && dims.height === 450, 'dimensioni del JPEG: ' + JSON.stringify(dims));
+      need(!jpg.buffer.includes(Buffer.from('Exif')), 'il JPEG ritagliato contiene ancora metadati EXIF');
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('meta-tag-preview.png', {
+    width: 1280,
+    dark: false,
+    path: '/meta-tag-preview/',
+    setup: async (page) => {
+      // HTML pieno di risorse esterne: non deve partire nessuna richiesta (shot() le segnala come errori)
+      const external = [];
+      page.on('request', (r) => !/^(blob:|data:)/.test(r.url()) && !r.url().startsWith(base) && external.push(r.url()));
+      await page.fill(
+        '#meta-html',
+        `<html lang="en"><head><title>Prova</title>
+<link rel="stylesheet" href="https://cdn.tracker.test/x.css"><link rel="icon" href="https://cdn.tracker.test/f.png">
+<script src="https://cdn.tracker.test/a.js"></script>
+<meta property="og:image" content="https://cdn.tracker.test/og.png"><meta name="twitter:image" content="https://cdn.tracker.test/tw.png">
+</head><body><img src="https://cdn.tracker.test/pixel.gif"><iframe src="https://cdn.tracker.test/f"></iframe><video poster="https://cdn.tracker.test/p.jpg"></video></body></html>`,
+      );
+      await page.locator('[data-testid=meta-parsed]', { hasText: /Letti \d+ campi/ }).waitFor();
+      await page.locator('[data-testid=meta-placeholder]').first().waitFor();
+      need((await page.locator('[data-testid=meta-placeholder]').first().textContent()).includes('https://cdn.tracker.test/og.png'), 'il segnaposto non mostra l\'URL di og:image');
+      need((await page.locator('[data-testid=meta-checks] li[data-code=descMissing]').count()) === 1, 'avviso description mancante assente');
+      need((await page.locator('[data-testid=meta-checks] li[data-code=ogTitleMissing]').count()) === 1, 'avviso og:title mancante assente');
+      need((await page.locator('img[src^="http"]').count()) === 0, 'un\'immagine remota è finita nella pagina');
+      await page.waitForTimeout(500);
+      need(external.length === 0, 'richieste di rete da HTML incollato: ' + external.join(', '));
+      // modifica di un campo → controllo "titolo lungo" e snippet
+      await page.fill('#meta-f-title', 'Un titolo decisamente troppo lungo per comparire per intero in un risultato di ricerca di Google');
+      await page.locator('[data-testid=meta-checks] li[data-code=titleLong]').waitFor();
+      need((await page.inputValue('[data-testid=meta-snippet]')).includes('<title>Un titolo decisamente'), 'lo snippet non riflette il titolo');
+      // esempio completo e immagine locale per l'anteprima
+      await page.getByRole('button', { name: 'Carica un esempio' }).click();
+      await page.setInputFiles('[data-testid=meta-image-input]', [{ name: 'og.png', mimeType: 'image/png', buffer: Buffer.from(await scribblePng(page), 'base64') }]);
+      await page.locator('[data-testid=meta-local-img]').first().waitFor();
+      need(external.length === 0, 'richieste di rete dopo l\'esempio: ' + external.join(', '));
+      await page.waitForTimeout(300);
+    },
+  });
+
   // Preferiti e menu personalizzati: due stelle dalla home, un menu, esportazione, cancellazione e reimport da link.
   // Lo screenshot finale è quello della pagina di gestione con dati d'esempio.
   const must = (cond, msg) => {
@@ -967,6 +1258,161 @@ try {
       await page.waitForTimeout(300);
     },
   });
+
+  // Link di condivisione ("Copia link"): lo stato sta nell'hash. Solo in --check (niente screenshot):
+  // si imposta uno stato, si preme il pulsante, si legge l'indirizzo da location (non dagli appunti)
+  // e si apre in una pagina nuova, dove stato e risultato devono essere ripristinati.
+  const shareCase = async (name, path, setup, snapshot) => {
+    if (!CHECK) return;
+    const prefix = `[share ${name}] `;
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'it-IT' });
+    const watch = (pg) => {
+      pg.setDefaultTimeout(20000);
+      pg.on('request', (r) => !/^(blob:|data:)/.test(r.url()) && !r.url().startsWith(base) && errors.push(prefix + 'richiesta esterna: ' + r.url()));
+      pg.on('console', (m) => m.type() === 'error' && errors.push(prefix + m.text()));
+      pg.on('pageerror', (e) => errors.push(prefix + e.message));
+    };
+    try {
+      const page = await ctx.newPage();
+      watch(page);
+      await page.goto(base + path);
+      await page.waitForTimeout(900);
+      await setup(page);
+      const before = JSON.stringify(await snapshot(page));
+      must(!(await page.evaluate(() => location.hash)), 'l\'hash cambia prima di premere il pulsante');
+      await page.getByRole('button', { name: 'Copia link' }).click();
+      await page.waitForFunction(() => location.hash.startsWith('#s='));
+      const url = page.url();
+      must(url.length <= 8000, 'link troppo lungo: ' + url.length);
+      await page.getByRole('button', { name: 'Link copiato' }).waitFor();
+      const page2 = await ctx.newPage();
+      watch(page2);
+      await page2.goto(url);
+      // il ripristino è asincrono (fflate si carica a richiesta): si aspetta che lo stato coincida
+      let after = '';
+      for (let i = 0; i < 50; i++) {
+        await page2.waitForTimeout(100);
+        after = JSON.stringify(await snapshot(page2));
+        if (after === before) break;
+      }
+      must(after === before, `stato non ripristinato\n  atteso:   ${before.slice(0, 300)}\n  ottenuto: ${after.slice(0, 300)}`);
+      // nessun messaggio d'errore sul link valido
+      must(!(await page2.locator('[data-testid=share-status]').textContent()).trim(), 'messaggio inatteso su un link valido');
+      // un link tagliato: messaggio discreto, pagina che continua a funzionare
+      if (name === 'regex-tester') {
+        const page3 = await ctx.newPage();
+        watch(page3);
+        await page3.goto(url.slice(0, -12));
+        await page3.locator('[data-testid=share-status]', { hasText: 'non è valido' }).waitFor();
+        await page3.fill('#rx-pattern', 'a+');
+        await page3.fill('#rx-text', 'caaandy');
+        await page3.waitForSelector('[data-testid=rx-matches]');
+        const bad = await ctx.newPage();
+        watch(bad);
+        await bad.goto(base + '/regex-tester/#s=non-base64!!!!xx');
+        await bad.locator('[data-testid=share-status]', { hasText: 'non è valido' }).waitFor();
+      }
+    } catch (e) {
+      errors.push(prefix + 'interazione fallita: ' + e.message.split('\n').slice(0, 3).join(' | '));
+    }
+    await ctx.close();
+  };
+  const val = (page, sel) => page.locator(sel).first().evaluate((el) => el.value ?? el.textContent.trim());
+  const txt = (page, sel) => page.locator(sel).first().evaluate((el) => el.textContent.replace(/\s+/g, ' ').trim());
+
+  await shareCase(
+    'regex-tester',
+    '/regex-tester/',
+    async (page) => {
+      await page.fill('#rx-pattern', '(\\d{4})-(\\d{2})');
+      await page.fill('#rx-text', 'Date: 2026-11 e 2027-01. È già così.');
+      await page.fill('#rx-repl', '$2/$1');
+      await page.waitForSelector('[data-testid=rx-matches]');
+      await page.waitForTimeout(400);
+    },
+    async (page) => [await val(page, '#rx-pattern'), await val(page, '#rx-text'), await val(page, '#rx-repl'), await txt(page, '[data-testid=rx-count]'), await txt(page, '[data-testid=rx-replaced]').catch(() => '')],
+  );
+  await shareCase(
+    'text-diff',
+    '/text-diff/',
+    async (page) => {
+      await page.fill('#diff-a', 'prima riga\nseconda riga\nterza');
+      await page.fill('#diff-b', 'prima riga\nseconda RIGA modificata\nterza\nquarta');
+      await page.waitForSelector('table.diff');
+    },
+    async (page) => [await val(page, '#diff-a'), await val(page, '#diff-b'), await txt(page, '[data-testid=diff-summary]')],
+  );
+  await shareCase(
+    'json-formatter',
+    '/json-formatter/',
+    async (page) => {
+      await page.fill('#json-in', '{"nome":"Zoë","b":[1,2,{"c":null}],"a":true}');
+      await page.waitForTimeout(500);
+    },
+    async (page) => [await val(page, '#json-in'), await val(page, '#json-out')],
+  );
+  await shareCase(
+    'cron-expression',
+    '/cron-expression/',
+    async (page) => {
+      await page.fill('#cron-expr', '30 8 * * 1');
+      await page.waitForSelector('[data-testid=cron-runs]');
+    },
+    async (page) => [await val(page, '#cron-expr'), await txt(page, '[data-testid=cron-description]')],
+  );
+  await shareCase(
+    'css-generator',
+    '/css-generator/',
+    async (page) => {
+      await page.getByRole('button', { name: 'Tramonto' }).click();
+      await page.getByRole('button', { name: 'Aggiungi stop' }).click();
+      await page.waitForSelector('[data-testid=cssg-code]');
+    },
+    async (page) => [await txt(page, '[data-testid=cssg-code]')],
+  );
+  await shareCase(
+    'calcolo-rata-mutuo',
+    '/calcolo-rata-mutuo/',
+    async (page) => {
+      await page.fill('#mutuo-capital', '150.000');
+      await page.fill('#mutuo-tan', '3,25');
+      await page.fill('#mutuo-years', '25');
+      await page.waitForSelector('[data-testid=mutuo-table]');
+    },
+    async (page) => [await val(page, '#mutuo-capital'), await val(page, '#mutuo-tan'), await val(page, '#mutuo-years'), await txt(page, '[data-testid=mutuo-stats]')],
+  );
+  await shareCase(
+    'find-replace',
+    '/find-replace/',
+    async (page) => {
+      await page.getByRole('button', { name: 'Carica un esempio' }).click();
+      await page.waitForSelector('[data-testid=fr-preview] mark');
+      await page.waitForTimeout(400);
+    },
+    async (page) => [await val(page, '[data-testid=fr-text]'), await val(page, '[data-testid=fr-find]'), await val(page, '[data-testid=fr-replace]'), await val(page, '[data-testid=fr-out]')],
+  );
+  await shareCase(
+    'unit-converter',
+    '/unit-converter/',
+    async (page) => {
+      await page.fill('#uc-value', '42,195');
+      await page.selectOption('#uc-from', { index: 3 });
+      await page.selectOption('#uc-to', { index: 5 });
+      await page.waitForSelector('[data-testid=uc-table]');
+    },
+    async (page) => [await val(page, '#uc-value'), await val(page, '#uc-from'), await val(page, '#uc-to'), await txt(page, '[data-testid=uc-table]')],
+  );
+  await shareCase(
+    'meta-tag-preview',
+    '/meta-tag-preview/',
+    async (page) => {
+      await page.fill('#meta-f-title', 'Titolo di prova per il link');
+      await page.fill('#meta-f-description', 'Una descrizione "con virgolette" & simboli <speciali>.');
+      await page.fill('#meta-f-ogImage', 'https://example.com/og.png');
+      await page.locator('[data-testid=meta-checks] li[data-code=ogImageMissing]').waitFor({ state: 'detached' });
+    },
+    async (page) => [await val(page, '#meta-f-title'), await val(page, '#meta-f-description'), await val(page, '#meta-f-ogImage'), await val(page, '[data-testid=meta-snippet]')],
+  );
 } finally {
   clearTimeout(watchdog);
   await browser.close();

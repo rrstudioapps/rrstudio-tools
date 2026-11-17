@@ -8,6 +8,9 @@ import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { PCT_DICTIONARIES } from './percentage-calculator.i18n';
 import { PctResult, applyPercent, percentChange, percentOf, reversePercent, whatPercent } from './percentage';
+import { ShareLink } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './percentage-calculator.share';
 
 type CardId = 'of' | 'is' | 'change' | 'apply' | 'reverse';
 type Dir = 'add' | 'sub';
@@ -39,7 +42,7 @@ const CARDS: readonly Card[] = [
 
 @Component({
   selector: 'app-percentage-calculator',
-  imports: [PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './percentage-calculator.page.html',
   styleUrl: './percentage-calculator.page.scss',
@@ -57,6 +60,34 @@ export class PercentageCalculatorPage {
     reverse: ['', ''],
   });
   protected readonly modes = signal<Record<'apply' | 'reverse', Dir>>({ apply: 'sub', reverse: 'sub' });
+
+  // Link di condivisione: i campi di tutte le schede nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  protected readonly shareState = (): ShareData => {
+    const out: ShareData = { applyDir: this.modes().apply, reverseDir: this.modes().reverse };
+    for (const c of CARDS) {
+      const [a, b] = this.values()[c.id];
+      out[`${c.id}A`] = a;
+      out[`${c.id}B`] = b;
+    }
+    return out;
+  };
+
+  protected restoreShared(d: ShareData): void {
+    this.values.update((v) => {
+      const next = { ...v };
+      for (const c of CARDS) {
+        const a = d[`${c.id}A`];
+        const b = d[`${c.id}B`];
+        next[c.id] = [typeof a === 'string' ? a : v[c.id][0], typeof b === 'string' ? b : v[c.id][1]];
+      }
+      return next;
+    });
+    this.modes.update((m) => ({
+      apply: d['applyDir'] === 'add' || d['applyDir'] === 'sub' ? d['applyDir'] : m.apply,
+      reverse: d['reverseDir'] === 'add' || d['reverseDir'] === 'sub' ? d['reverseDir'] : m.reverse,
+    }));
+  }
 
   constructor() {
     this.i18n.register(PCT_DICTIONARIES);

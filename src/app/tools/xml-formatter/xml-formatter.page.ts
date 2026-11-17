@@ -12,6 +12,9 @@ import { Segmented, SegmentOption } from '../../shared/segmented';
 import { FormatOptions, XmlError, domCheck, formatXml, minifyXml, xmlToJson } from './xml';
 import { XML_DICTIONARIES } from './xml-formatter.i18n';
 import { offsetOf } from '../yaml-json-converter/convert';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './xml-formatter.share';
 
 type Mode = 'format' | 'minify' | 'json';
 type IndentChoice = '2' | '4' | 'tab';
@@ -22,7 +25,7 @@ const SAMPLE =
 
 @Component({
   selector: 'app-xml-formatter',
-  imports: [Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton, FileDrop],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './xml-formatter.page.html',
   styleUrl: './xml-formatter.page.scss',
@@ -91,6 +94,20 @@ export class XmlFormatterPage {
   });
   protected readonly inputMeta = computed(() => this.meta(this.input()));
   protected readonly outputMeta = computed(() => this.meta(this.output()));
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    indent: this.indent,
+    keepComments: this.keepComments,
+    input: this.input,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(XML_DICTIONARIES);

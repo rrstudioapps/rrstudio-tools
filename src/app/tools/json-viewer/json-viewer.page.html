@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="json-viewer" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <div class="tool-toolbar">
     <!-- selettore a mano (non app-segmented): se il passaggio al testo/albero viene rifiutato per un errore, deve restare dov'è -->
     <div class="seg" role="group" [attr.aria-label]="i18n.t('jv.view')">

@@ -22,6 +22,9 @@ import {
   usesOrRule,
 } from './cron';
 import { CRON_DICTIONARIES } from './cron-expression.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './cron-expression.share';
 
 type Tz = 'local' | 'utc';
 type Lang = 'it' | 'en';
@@ -49,7 +52,7 @@ interface RunRow {
 
 @Component({
   selector: 'app-cron-expression',
-  imports: [Icon, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './cron-expression.page.html',
   styleUrl: './cron-expression.page.scss',
@@ -172,6 +175,20 @@ export class CronExpressionPage {
     return this.i18n.t('cron.runs.from', { when });
   });
   protected readonly listText = computed(() => this.rows().map((r) => `${r.n}. ${r.when}`).join('\n'));
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    expression: this.expression,
+    count: this.count,
+    tz: this.tz,
+    descLang: this.descLang,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(CRON_DICTIONARIES);

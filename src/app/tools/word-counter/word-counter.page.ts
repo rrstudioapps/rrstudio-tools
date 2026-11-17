@@ -23,6 +23,9 @@ import {
   words,
 } from './text-count';
 import { WC_DICTIONARIES } from './word-counter.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './word-counter.share';
 
 const CONVERSIONS: readonly Conversion[] = ['upper', 'lower', 'title', 'sentence', 'invert', 'spaces', 'blank'];
 /** Oltre questa lunghezza i conteggi si aggiornano con un breve ritardo mentre si scrive. */
@@ -45,7 +48,7 @@ interface LimitRow {
 
 @Component({
   selector: 'app-word-counter',
-  imports: [Icon, PrivacyNote, Segmented, IoPanel, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './word-counter.page.html',
   styleUrl: './word-counter.page.scss',
@@ -137,6 +140,19 @@ export class WordCounterPage {
     const l = this.frequent().lang;
     return this.stop() === 'auto' && l && !this.empty() ? this.i18n.t('wc.freq.detected', { lang: this.i18n.t('wc.lang.' + l) }) : '';
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    text: this.text,
+    stop: this.stop,
+    customLimit: this.customLimit,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(WC_DICTIONARIES);

@@ -2,12 +2,29 @@
 // © 2026 rrstudio — rrstudio Tools
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import type { EChartsCoreOption } from 'echarts/core';
-import { NgxEchartsDirective } from 'ngx-echarts';
+import { BarChart, LineChart, PieChart } from 'echarts/charts';
+import { GridComponent, LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components';
+import * as echarts from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
+
+// Solo i moduli ECharts necessari (tree-shaking)
+echarts.use([
+  LineChart,
+  BarChart,
+  PieChart,
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+  TitleComponent,
+  CanvasRenderer,
+]);
 
 /** Wrapper di ngx-echarts. Va usato solo nel browser (i dati arrivano da un file caricato). */
 @Component({
   selector: 'app-chart',
   imports: [NgxEchartsDirective],
+  providers: [provideEchartsCore({ echarts })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<div
     class="chart"

@@ -1,0 +1,192 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.meta.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('meta.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+  <p class="hint" role="note">{{ i18n.t('meta.noNetwork') }}</p>
+
+  <app-share-link toolId="meta-tag-preview" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <app-io-panel [label]="i18n.t('meta.html')" inputId="meta-html">
+    <span panel-actions>
+      <button type="button" class="btn small" data-testid="meta-sample" (click)="loadSample()">{{ i18n.t('meta.sample') }}</button>
+      <button type="button" class="btn small" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('meta.clear') }}</button>
+    </span>
+    <textarea
+      id="meta-html"
+      class="io-textarea html"
+      rows="9"
+      spellcheck="false"
+      wrap="off"
+      data-testid="meta-html"
+      [placeholder]="i18n.t('meta.html.ph')"
+      [value]="html()"
+      (input)="onHtml($any($event.target).value)"
+    ></textarea>
+  </app-io-panel>
+  <p class="tool-ok" role="status" aria-live="polite" data-testid="meta-parsed">{{ parsedStatus() }}</p>
+
+  <section class="panel" [attr.aria-label]="i18n.t('meta.fields')">
+    <h2 class="eyebrow">{{ i18n.t('meta.fields') }}</h2>
+    <p class="hint">{{ i18n.t('meta.fields.hint') }}</p>
+    <div class="groups">
+      @for (g of groups; track g.id) {
+        <fieldset class="group">
+          <legend>{{ i18n.t('meta.group.' + g.id) }}</legend>
+          @for (f of g.fields; track f.key) {
+            <div class="field">
+              <label [for]="'meta-f-' + f.key">
+                {{ i18n.t('meta.f.' + f.key) }}
+                @if (f.count) {
+                  <span class="count mono">{{ len(f.key) }}</span>
+                }
+              </label>
+              @if (f.long) {
+                <textarea [id]="'meta-f-' + f.key" rows="3" [value]="fields()[f.key]" (input)="setField(f.key, $any($event.target).value)"></textarea>
+              } @else {
+                <input [id]="'meta-f-' + f.key" type="text" autocomplete="off" spellcheck="false" [value]="fields()[f.key]" (input)="setField(f.key, $any($event.target).value)" />
+              }
+            </div>
+          }
+        </fieldset>
+      }
+    </div>
+    <div class="row">
+      <label class="btn small">
+        <app-icon name="image" /> {{ i18n.t('meta.localImage') }}
+        <input class="visually-hidden" type="file" accept="image/*" data-testid="meta-image-input" (change)="onImage($any($event.target).files[0]); $any($event.target).value = ''" />
+      </label>
+      @if (localImage()) {
+        <button type="button" class="btn small" (click)="removeLocalImage()">{{ i18n.t('meta.localImage.remove') }}</button>
+      }
+      <span class="hint">{{ i18n.t('meta.localImage.hint') }}</span>
+    </div>
+  </section>
+
+  <!-- segnaposto dell'immagine: mai una richiesta di rete -->
+  <ng-template #img let-kind="kind">
+    @if (localImage()) {
+      <img class="pic" [src]="localImage()" alt="" data-testid="meta-local-img" />
+    } @else if (imageUrl(kind)) {
+      <div class="pic ph" data-testid="meta-placeholder">
+        <app-icon name="image" />
+        <span class="ph-url">{{ imageUrl(kind) }}</span>
+        <span class="ph-note">{{ i18n.t('meta.ph.remote') }}</span>
+      </div>
+    } @else {
+      <div class="pic ph" data-testid="meta-noimage">
+        <app-icon name="image" />
+        <span class="ph-note">{{ i18n.t('meta.ph.none') }}</span>
+      </div>
+    }
+  </ng-template>
+
+  <section class="panel" [attr.aria-label]="i18n.t('meta.previews')">
+    <h2 class="eyebrow">{{ i18n.t('meta.previews') }}</h2>
+    <p class="hint">{{ i18n.t('meta.previews.hint') }}</p>
+    <div class="previews">
+      <figure class="prev" data-testid="meta-google">
+        <figcaption class="eyebrow">{{ i18n.t('meta.p.google') }}</figcaption>
+        <app-segmented [label]="i18n.t('meta.device')" [options]="devices()" [(value)]="device" />
+        <div class="serp" [class.mobile]="device() === 'mobile'">
+          <div class="site">
+            <span class="fav" aria-hidden="true">{{ google().letter }}</span>
+            <span class="site-text">
+              <span class="site-name">{{ google().name }}</span>
+              <span class="site-url">{{ google().host }}@if (google().path) { › {{ google().path }} }</span>
+            </span>
+          </div>
+          <div class="serp-title">{{ google().title }}</div>
+          @if (google().description) {
+            <div class="serp-desc">{{ google().description }}</div>
+          }
+        </div>
+      </figure>
+
+      <figure class="prev" data-testid="meta-facebook">
+        <figcaption class="eyebrow">{{ i18n.t('meta.p.facebook') }}</figcaption>
+        <div class="fb">
+          <ng-container *ngTemplateOutlet="img; context: { kind: 'og' }" />
+          <div class="fb-body">
+            <div class="fb-host">{{ facebook().host }}</div>
+            <div class="fb-title">{{ facebook().title }}</div>
+            @if (facebook().description) {
+              <div class="fb-desc">{{ facebook().description }}</div>
+            }
+          </div>
+        </div>
+      </figure>
+
+      <figure class="prev" data-testid="meta-twitter">
+        <figcaption class="eyebrow">{{ i18n.t('meta.p.twitter') }}</figcaption>
+        <div class="tw" [class.large]="twitter().card === 'summary_large_image'">
+          <ng-container *ngTemplateOutlet="img; context: { kind: 'tw' }" />
+          <div class="tw-body">
+            <div class="tw-host">{{ twitter().host }}</div>
+            <div class="tw-title">{{ twitter().title }}</div>
+            @if (twitter().description) {
+              <div class="tw-desc">{{ twitter().description }}</div>
+            }
+          </div>
+        </div>
+        <span class="hint">{{ i18n.t(twitter().card === 'summary_large_image' ? 'meta.tw.large' : 'meta.tw.small') }}</span>
+      </figure>
+
+      <figure class="prev" data-testid="meta-chat">
+        <figcaption class="eyebrow">{{ i18n.t('meta.p.chat') }}</figcaption>
+        <div class="chat">
+          <div class="bubble">
+            <div class="chat-card">
+              <ng-container *ngTemplateOutlet="img; context: { kind: 'og' }" />
+              <div class="chat-body">
+                <div class="chat-title">{{ chat().title }}</div>
+                @if (chat().description) {
+                  <div class="chat-desc">{{ chat().description }}</div>
+                }
+                <div class="chat-host">{{ chat().host }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="panel" [attr.aria-label]="i18n.t('meta.checks')">
+    <h2 class="eyebrow">{{ i18n.t('meta.checks') }}</h2>
+    <p class="tool-ok" data-testid="meta-summary" role="status" aria-live="polite">
+      {{ i18n.t('meta.summary', { e: summary().error, w: summary().warn, i: summary().info, o: summary().ok }) }}
+    </p>
+    <ul class="checks" data-testid="meta-checks">
+      @for (c of checks(); track $index) {
+        <li [attr.data-level]="c.level" [attr.data-code]="c.code">
+          <span class="badge" [attr.data-level]="c.level">{{ i18n.t(levelKey(c)) }}</span>
+          <span>{{ i18n.t('meta.check.' + c.code, c.params) }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <app-io-panel [label]="i18n.t('meta.snippet')" inputId="meta-snippet">
+    <span panel-actions><app-copy-button [text]="snippet()" [disabled]="!snippet()" /></span>
+    <textarea id="meta-snippet" class="io-textarea html" readonly rows="10" spellcheck="false" wrap="off" data-testid="meta-snippet" [value]="snippet()"></textarea>
+  </app-io-panel>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('meta.info.preview.title') }}</h2>
+      <p>{{ i18n.t('meta.info.preview.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('meta.info.checks.title') }}</h2>
+      <p>{{ i18n.t('meta.info.checks.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('meta.info.priv.title') }}</h2>
+      <p>{{ i18n.t('meta.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

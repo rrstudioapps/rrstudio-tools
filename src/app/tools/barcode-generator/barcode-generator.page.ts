@@ -11,13 +11,16 @@ import { BarcodeError, BarcodeFormat, FORMATS, MAX_BULK, MAX_LENGTH, Normalized,
 import { BC_DICTIONARIES } from './barcode-generator.i18n';
 import { BarcodeStyle, DEFAULT_STYLE, renderPng, renderSvg } from './barcode-render';
 import { bindSvgPreview } from '../../shared/svg-preview';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './barcode-generator.share';
 
 type Mode = 'single' | 'bulk';
 type BulkKind = 'svg' | 'png';
 
 @Component({
   selector: 'app-barcode-generator',
-  imports: [Icon, PrivacyNote, Segmented],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './barcode-generator.page.html',
   styleUrl: './barcode-generator.page.scss',
@@ -102,6 +105,30 @@ export class BarcodeGeneratorPage {
   );
 
   private seq = 0;
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    format: this.format,
+    text: this.text,
+    barWidth: this.barWidth,
+    height: this.height,
+    showText: this.showText,
+    fontSize: this.fontSize,
+    margin: this.margin,
+    fg: this.fg,
+    bg: this.bg,
+    mod43: this.mod43,
+    pngScale: this.pngScale,
+    bulkText: this.bulkText,
+    bulkKind: this.bulkKind,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(BC_DICTIONARIES);

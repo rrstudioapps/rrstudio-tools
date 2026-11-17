@@ -10,6 +10,9 @@ import { EMPTY_FIELDS, QR_TYPES, QrFields, QrType, WifiSecurity, buildPayload, p
 import { MAX_LOGO_FRACTION, MIN_LOGO_FRACTION, RenderOptions, contrastIssue, contrastRatio, drawToCanvas, toSvg } from './qr-render';
 import { QR_DICTIONARIES } from './qr-code.i18n';
 import { bindSvgPreview } from '../../shared/svg-preview';
+import { ShareLink } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARED_FIELDS, SHARE_SCHEMA, fieldsFromShare } from './qr-code.share';
 
 const MAX_LOGO_BYTES = 5 * 1024 * 1024;
 /** Il logo viene ridotto a questo lato massimo prima di entrare nell'SVG (mantiene leggero il file). */
@@ -26,7 +29,7 @@ interface Logo {
 
 @Component({
   selector: 'app-qr-code',
-  imports: [Icon, PrivacyNote],
+  imports: [ShareLink, Icon, PrivacyNote],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './qr-code.page.html',
   styleUrl: './qr-code.page.scss',
@@ -107,6 +110,39 @@ export class QrCodePage {
     return this.i18n.t('qr.info', { version: qr.version, modules: qr.size, ecl: qr.ecl, bytes: new Intl.NumberFormat(this.i18n.locale()).format(bytes) });
   });
 
+
+  // Link di condivisione: tipo, campi (senza password Wi-Fi) e stile nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  protected readonly shareState = (): ShareData => {
+    const f = this.fields();
+    const out: ShareData = {
+      type: this.type(),
+      wifiSecurity: f.wifiSecurity,
+      wifiHidden: f.wifiHidden,
+      ecl: this.ecl(),
+      size: this.size(),
+      margin: this.margin(),
+      fg: this.fg(),
+      bg: this.bg(),
+    };
+    for (const k of SHARED_FIELDS) out[k] = f[k];
+    return out;
+  };
+
+  protected restoreShared(d: ShareData): void {
+    this.fields.update((f) => ({
+      ...f,
+      ...fieldsFromShare(d),
+      wifiSecurity: typeof d['wifiSecurity'] === 'string' ? (d['wifiSecurity'] as WifiSecurity) : f.wifiSecurity,
+      wifiHidden: typeof d['wifiHidden'] === 'boolean' ? d['wifiHidden'] : f.wifiHidden,
+    }));
+    if (typeof d['type'] === 'string') this.type.set(d['type'] as QrType);
+    if (typeof d['ecl'] === 'string') this.ecl.set(d['ecl'] as Ecl);
+    if (typeof d['size'] === 'number') this.size.set(d['size']);
+    if (typeof d['margin'] === 'number') this.margin.set(d['margin']);
+    if (typeof d['fg'] === 'string') this.fg.set(d['fg']);
+    if (typeof d['bg'] === 'string') this.bg.set(d['bg']);
+  }
 
   constructor() {
     this.i18n.register(QR_DICTIONARIES);

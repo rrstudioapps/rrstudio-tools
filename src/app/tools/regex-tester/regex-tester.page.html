@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="regex-tester" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <section class="pattern-box" [attr.aria-label]="i18n.t('rx.pattern')">
     <div class="p-head">
       <label class="eyebrow" for="rx-pattern">{{ i18n.t('rx.pattern') }}</label>

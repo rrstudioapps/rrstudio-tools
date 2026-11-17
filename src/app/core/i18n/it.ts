@@ -10,6 +10,9 @@ export const it = {
   'nav.theme.toLight': 'Passa al tema chiaro',
   'nav.theme.toDark': 'Passa al tema scuro',
 
+  'guide.how': 'Come si usa',
+  'guide.faq': 'Domande frequenti',
+  'guide.privacy': 'Privacy',
   'privacy.headline': 'I tuoi dati restano sul tuo computer',
   'privacy.short': 'I file vengono elaborati nel browser e non vengono mai caricati.',
 
@@ -119,6 +122,11 @@ export const it = {
   'common.clear': 'Cancella',
   'common.swap': 'Inverti',
   'common.chooseFile': 'Scegli un file',
+  'share.copy': 'Copia link',
+  'share.note': 'Il contenuto sta nel link: chi lo riceve lo vede. Non viene inviato al nostro server.',
+  'share.copied': 'Link copiato',
+  'share.invalid': 'Il link non è valido o è stato tagliato: lo strumento resta com\'è.',
+  'share.toolarge': 'Il contenuto è troppo grande per stare in un link.',
   'common.counter': '{chars} caratteri · {bytes} byte',
 
   'tool.base64.title': 'Base64 Encode/Decode',
@@ -293,6 +301,39 @@ export const it = {
   'seo.uuid.title': 'Generatore UUID v4, v7 e ULID online | rrstudio Tools',
   'seo.uuid.desc':
     'Genera UUID v4, UUID v7 con timestamp e ULID, da 1 a 1000, in maiuscolo o minuscolo, e valida un UUID per leggerne versione e data. Tutto nel browser.',
+
+  'tool.sign.title': 'Firma PDF online',
+  'tool.sign.desc':
+    'Firma un PDF nel browser: disegna, scrivi o carica la tua firma, posizionala sulle pagine con una data e scarica il PDF firmato. Firma grafica, senza caricare nulla.',
+  'seo.sign.title': 'Firma PDF online gratis, senza caricare il file | rrstudio Tools',
+  'seo.sign.desc':
+    'Firma un PDF online: disegna la firma con mouse o dito, digitala o caricala da un\'immagine, posizionala su più pagine con la data. Il file resta nel tuo browser. Firma grafica, non digitale.',
+  'tool.crop.title': 'Ritaglia e ruota immagini',
+  'tool.crop.desc':
+    'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',
+  'seo.crop.title': 'Ritaglia, ruota e ridimensiona immagini online | rrstudio Tools',
+  'seo.crop.desc':
+    'Ritaglia foto online con proporzioni 1:1, 4:3, 16:9 o foto tessera 35×45, ruota di 90° o di un angolo libero, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP. Nel browser, senza metadati.',
+  'tool.meta.title': 'Anteprima meta tag e Open Graph',
+  'tool.meta.desc':
+    'Incolla l\'HTML di una pagina e vedi l\'anteprima su Google, Facebook, LinkedIn, X e WhatsApp, con controlli su title, description, Open Graph e Twitter Card.',
+  'seo.meta.title': 'Anteprima meta tag, Open Graph e Twitter Card online | rrstudio Tools',
+  'seo.meta.desc':
+    'Controlla title, description, canonical, Open Graph e Twitter Card di una pagina: anteprime di Google, Facebook, LinkedIn, X e WhatsApp, avvisi sulle lunghezze e snippet HTML. Senza richieste di rete.',
+
+  'tool.fake.title': 'Generatore di dati finti',
+  'tool.fake.desc':
+    'Dati di prova finti e realistici: nomi, e-mail, indirizzi, codice fiscale, partita IVA e IBAN formalmente validi. Da 1 a 10.000 righe, con seme riproducibile, in CSV, JSON o SQL.',
+  'seo.fake.title': 'Generatore di dati finti online: CSV, JSON e SQL | rrstudio Tools',
+  'seo.fake.desc':
+    'Genera dati di prova italiani finti: nome, cognome, e-mail su domini di test, telefono, indirizzo, codice fiscale, partita IVA e IBAN validi nel formato. Con seme, fino a 10.000 righe. Tutto nel browser.',
+
+  'tool.jq.title': 'JSONPath, JSON → TypeScript e JSON Schema',
+  'tool.jq.desc':
+    'Interroga un JSON con espressioni JSONPath (filtri, slice, ricerca ricorsiva) e ricavane interfacce TypeScript e JSON Schema.',
+  'seo.jq.title': 'JSONPath online, JSON in TypeScript e JSON Schema | rrstudio Tools',
+  'seo.jq.desc':
+    'Prova espressioni JSONPath su un JSON con filtri, slice e percorsi dei risultati, e genera interfacce TypeScript o uno JSON Schema (draft 2020-12). Tutto nel browser.',
 
   'tool.yj.title': 'Convertitore YAML, JSON e TOML',
   'tool.yj.desc':

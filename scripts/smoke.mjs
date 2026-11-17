@@ -2,7 +2,8 @@
 // © 2026 rrstudio — rrstudio Tools
 // Smoke test E2E di tutte le pagine (home, privacy, preferiti, strumenti; IT e /en/) servendo dist/rrstudio-tools/browser.
 // Per ogni pagina, a 360 e 1280 px: nessun errore in console, nessuno scorrimento orizzontale,
-// axe-core senza violazioni critical/serious in tema chiaro e scuro.
+// axe-core senza violazioni critical/serious in tema chiaro e scuro, dati strutturati JSON-LD coerenti
+// (un WebApplication per strumento, FAQPage uguale alle domande visibili, niente sulle altre pagine).
 // Uso: npm run build && npm run smoke   (serve Chromium di Playwright; CHROMIUM_PATH se non lo trova)
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
@@ -34,6 +35,7 @@ if (!tools.length || tools.some((t) => !t.path)) {
   console.error('Impossibile leggere il registry degli strumenti');
   process.exit(1);
 }
+const toolPaths = new Set(tools.map((t) => t.path));
 const pages = ['/', '/privacy/', '/preferiti/'];
 const pagesEn = ['/en/', '/en/privacy/', '/en/favorites/'];
 for (const t of tools) {
@@ -97,6 +99,77 @@ async function runAxe(page, p, label) {
   return out;
 }
 
+// JSON-LD della pagina viva: ogni script deve essere JSON valido e di un tipo solo una volta
+async function checkJsonLd(page, p) {
+  const isTool = toolPaths.has(p.replace(/^\/en\//, '').replace(/^\/|\/$/g, ''));
+  const r = await page.evaluate(() => ({
+    scripts: [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => s.textContent ?? ''),
+    visible: [...document.querySelectorAll('app-tool-guide details')].map((d) => [
+      d.querySelector('summary')?.textContent?.trim(),
+      d.querySelector('p')?.textContent?.trim(),
+    ]),
+  }));
+  const out = [];
+  const types = [];
+  let faq = null;
+  for (const t of r.scripts) {
+    try {
+      const d = JSON.parse(t);
+      types.push(d['@type']);
+      if (d['@type'] === 'FAQPage') faq = d.mainEntity.map((q) => [q.name, q.acceptedAnswer.text]);
+    } catch {
+      out.push('JSON-LD non valido');
+    }
+  }
+  if (new Set(types).size !== types.length) out.push('JSON-LD duplicato: ' + types.join(','));
+  const expected = isTool ? ['WebApplication', ...(r.visible.length ? ['FAQPage'] : [])] : [];
+  if ([...types].sort().join() !== expected.sort().join()) out.push(`JSON-LD: atteso [${expected}], trovato [${types}]`);
+  if (faq && JSON.stringify(faq) !== JSON.stringify(r.visible)) out.push('FAQPage diversa dalle domande visibili');
+  return out;
+}
+
+// Controlli sull'HTML prerenderizzato (senza JavaScript) e sulla navigazione lato client
+async function checkPrerenderAndNavigation() {
+  const out = [];
+  for (const p of ['/codice-fiscale/', '/en/word-counter/']) {
+    const html = await (await fetch(base + p)).text();
+    const blocks = [...html.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+    const types = blocks.map((b) => {
+      try {
+        return JSON.parse(b)['@type'];
+      } catch {
+        return 'non valido';
+      }
+    });
+    if (types.sort().join() !== 'FAQPage,WebApplication') out.push(`${p}: JSON-LD prerenderizzato [${types}]`);
+    if (!html.includes('<app-tool-guide') || !/<details/.test(html)) out.push(`${p}: guida assente nell'HTML prerenderizzato`);
+  }
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+  const page = await ctx.newPage();
+  page.setDefaultTimeout(20000);
+  try {
+    await page.goto(base + '/word-counter/', { waitUntil: 'networkidle' });
+    const count = () => page.locator('script[type="application/ld+json"]').count();
+    if ((await count()) !== 2) out.push('navigazione: attesi 2 JSON-LD sulla prima pagina');
+    // home (via link interno): nessun JSON-LD
+    await page.locator('app-header a[href="/"]').first().click();
+    await page.waitForURL(base + '/');
+    if ((await count()) !== 0) out.push('navigazione: JSON-LD rimasti sulla home');
+    // un altro strumento con guida (link interno della home): esattamente un WebApplication e un FAQPage
+    await page.locator('a[href="/json-formatter"], a[href="/json-formatter/"]').first().click();
+    await page.waitForURL(/json-formatter/);
+    await page.waitForSelector('app-tool-guide details');
+    const types = await page.evaluate(() =>
+      [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent)['@type']).sort().join(),
+    );
+    if (types !== 'FAQPage,WebApplication') out.push(`navigazione: JSON-LD dopo il secondo strumento [${types}]`);
+  } catch (e) {
+    out.push('navigazione: ' + e.message.split('\n')[0]);
+  }
+  await ctx.close();
+  return out;
+}
+
 let problems = 0;
 let checks = 0;
 try {
@@ -136,6 +209,7 @@ try {
           return { page: document.documentElement.scrollWidth > w, els: els.slice(0, 4) };
         });
         if (overflow.page || overflow.els.length) issues.push(`overflow: ${overflow.page ? 'pagina ' : ''}${overflow.els.join(' | ')}`);
+        issues.push(...(await checkJsonLd(page, p)));
         await page.addScriptTag({ content: axeSrc });
         issues.push(...(await runAxe(page, p, 'chiaro')));
         // tema scuro: attributo sul <html> più preferenza del sistema
@@ -152,6 +226,15 @@ try {
         for (const i of [...new Set(issues)]) console.log('      ' + i);
       }
       await ctx.close();
+    }
+  }
+  // HTML prerenderizzato e navigazione client-side (solo nella corsa completa o se si limita agli strumenti coinvolti)
+  if (!only || only.some((o) => ['codice-fiscale', 'word-counter', 'json-formatter', 'jsonld'].some((k) => o.includes(k)))) {
+    const nav = await checkPrerenderAndNavigation();
+    if (nav.length) {
+      problems++;
+      console.log('KO  JSON-LD prerender e navigazione');
+      nav.forEach((i) => console.log('      ' + i));
     }
   }
 } finally {

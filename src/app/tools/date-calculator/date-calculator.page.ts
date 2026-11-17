@@ -8,6 +8,9 @@ import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { DC_DICTIONARIES } from './date-calculator.i18n';
 import { Ymd, addInterval, computeAge, dateDifference, formatIso, isLeapYear, parseIso, ymdToUtcMs } from './dates';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './date-calculator.share';
 
 type Mode = 'diff' | 'add' | 'age';
 type Dir = 'plus' | 'minus';
@@ -27,7 +30,7 @@ function parseCount(text: string): number | null {
 
 @Component({
   selector: 'app-date-calculator',
-  imports: [CopyButton, PrivacyNote, Segmented],
+  imports: [ShareLink, CopyButton, PrivacyNote, Segmented],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './date-calculator.page.html',
   styleUrl: './date-calculator.page.scss',
@@ -60,6 +63,28 @@ export class DateCalculatorPage {
     { value: 'plus', label: this.i18n.t('dc.add.plus') },
     { value: 'minus', label: this.i18n.t('dc.add.minus') },
   ]);
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    diffFrom: this.diffFrom,
+    diffTo: this.diffTo,
+    inclusive: this.inclusive,
+    addDate: this.addDate,
+    dir: this.dir,
+    years: this.years,
+    months: this.months,
+    weeks: this.weeks,
+    days: this.days,
+    birth: this.birth,
+    ref: this.ref,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(DC_DICTIONARIES);

@@ -11,6 +11,9 @@ import { Segmented, SegmentOption } from '../../shared/segmented';
 import { formatBytes, textStats } from '../../shared/text-stats';
 import { JSON_FORMATTER_DICTIONARIES } from './json-formatter.i18n';
 import { Indent, JsonToken, formatJson, jsonStats, minifyJson, parseJson, tokenizeJson } from './json-tools';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './json-formatter.share';
 
 type Action = 'format' | 'minify';
 type IndentChoice = '2' | '4' | 'tab';
@@ -29,7 +32,7 @@ const SAMPLE =
 
 @Component({
   selector: 'app-json-formatter',
-  imports: [Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, FileDrop],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './json-formatter.page.html',
   styleUrl: './json-formatter.page.scss',
@@ -126,6 +129,20 @@ export class JsonFormatterPage {
     const nf = new Intl.NumberFormat(this.i18n.locale());
     return this.i18n.t('common.counter', { chars: nf.format(s.chars), bytes: nf.format(s.bytes) });
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    input: this.input,
+    action: this.action,
+    indent: this.indent,
+    sortKeys: this.sortKeys,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(JSON_FORMATTER_DICTIONARIES);

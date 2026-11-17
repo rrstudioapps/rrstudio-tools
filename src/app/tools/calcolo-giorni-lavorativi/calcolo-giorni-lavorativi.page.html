@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="calcolo-giorni-lavorativi" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <p class="disclaimer" role="note">{{ i18n.t('wd.disclaimer') }}</p>
 
   <div class="tool-toolbar">

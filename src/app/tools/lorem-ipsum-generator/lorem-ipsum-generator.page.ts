@@ -11,10 +11,13 @@ import { PrivacyNote } from '../../shared/privacy-note';
 import { Format, LIMITS, Unit, clampCount, generateLorem, randomSeed, textStats } from './lorem';
 import { LOREM_DICTIONARIES } from './lorem-ipsum-generator.i18n';
 import { Segmented, SegmentOption } from '../../shared/segmented';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './lorem-ipsum-generator.share';
 
 @Component({
   selector: 'app-lorem-ipsum-generator',
-  imports: [Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './lorem-ipsum-generator.page.html',
   styleUrl: './lorem-ipsum-generator.page.scss',
@@ -53,6 +56,24 @@ export class LoremIpsumGeneratorPage {
     const s = textStats(t);
     return this.i18n.t('lorem.meta', { words: s.words, chars: s.chars });
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    unit: this.unit,
+    count: this.count,
+    classic: this.classic,
+    format: this.format,
+    seedInput: this.seedInput,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+    // il numero deve stare nei limiti dell'unità scelta
+    const lim = LIMITS[this.unit()];
+    this.count.set(Math.min(lim.max, Math.max(lim.min, this.count())));
+  }
 
   constructor() {
     this.i18n.register(LOREM_DICTIONARIES);

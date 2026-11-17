@@ -2,7 +2,66 @@
 // © 2026 rrstudio — rrstudio Tools
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
+/** Guida "come si usa" e domande frequenti (It): vedi shared/tool-guide.ts. */
+const guideIt = {
+  'guide.images-to-pdf.step.1': 'Verifica che in «Modalità» sia selezionato «Immagini → PDF».',
+  'guide.images-to-pdf.step.2': 'Trascina le immagini (JPG, PNG o WebP) nell\'area di caricamento, oppure scegli i file.',
+  'guide.images-to-pdf.step.3': 'Riordina le miniature trascinandole, oppure usa i pulsanti per spostarle o rimuoverle: l\'ordine delle miniature è quello delle pagine.',
+  'guide.images-to-pdf.step.4': 'In «Impostazioni del PDF» scegli «Formato pagina» (A4, Letter o «Adatta all\'immagine»), «Orientamento», «Margini», «Immagini per pagina» e «Qualità».',
+  'guide.images-to-pdf.step.5': 'Premi «Crea il PDF e scarica».',
+  'guide.images-to-pdf.q.1': 'Come unisco più foto in un solo PDF?',
+  'guide.images-to-pdf.a.1':
+    'Caricale insieme, mettile nell\'ordine voluto e premi «Crea il PDF e scarica»: ogni immagine diventa una pagina, oppure più immagini per pagina se lo imposti.',
+  'guide.images-to-pdf.q.2': 'Quali formati posso usare?',
+  'guide.images-to-pdf.a.2':
+    'JPG, PNG e WebP. I file HEIC (le foto di alcuni telefoni) non sono supportati dal browser: esporta la foto in JPG e riprova.',
+  'guide.images-to-pdf.q.3': 'Come evito che il PDF diventi enorme?',
+  'guide.images-to-pdf.a.3':
+    'Abbassa la «Qualità»: con 100 JPG e PNG restano come erano, senza perdita; sotto 100 vengono ricodificate in JPEG e il file pesa meno.',
+  'guide.images-to-pdf.q.4': 'Le foto scattate in verticale escono girate?',
+  'guide.images-to-pdf.a.4':
+    'No: l\'orientamento delle foto (EXIF) viene rispettato. Con «Orientamento» su «Automatico» e un foglio A4 o Letter, la pagina segue l\'orientamento prevalente delle immagini.',
+  'guide.images-to-pdf.q.5': 'Posso fare il contrario, da PDF a immagini?',
+  'guide.images-to-pdf.a.5':
+    'Sì: cambia «Modalità» in «PDF → immagini», scegli le pagine e la risoluzione e scarica le immagini una per una o in uno ZIP.',
+  'guide.images-to-pdf.q.6': 'Ci sono limiti?',
+  'guide.images-to-pdf.a.6':
+    'Fino a 100 immagini per volta e 50 MB per immagine. I file in più o non supportati vengono saltati e lo strumento te lo segnala.',
+  'guide.images-to-pdf.privacy':
+    'Né le immagini né i PDF vengono caricati da nessuna parte: l\'elaborazione avviene nel tuo browser, quindi puoi usare anche documenti scansionati e riservati.',
+};
+
+/** Guida "come si usa" e domande frequenti (En): vedi shared/tool-guide.ts. */
+const guideEn = {
+  'guide.images-to-pdf.step.1': 'Check that "Mode" is set to "Images → PDF".',
+  'guide.images-to-pdf.step.2': 'Drop your images (JPG, PNG or WebP) on the upload area, or choose the files.',
+  'guide.images-to-pdf.step.3': 'Reorder the thumbnails by dragging them, or use the buttons to move or remove them: the order of the thumbnails is the order of the pages.',
+  'guide.images-to-pdf.step.4': 'Under "PDF settings" choose the "Page size" (A4, Letter or "Fit to image"), "Orientation", "Margins", "Images per page" and "Quality".',
+  'guide.images-to-pdf.step.5': 'Press "Create PDF and download".',
+  'guide.images-to-pdf.q.1': 'How do I combine several photos into one PDF?',
+  'guide.images-to-pdf.a.1':
+    'Load them together, put them in the order you want and press "Create PDF and download": each image becomes a page, or several images per page if you set it that way.',
+  'guide.images-to-pdf.q.2': 'Which formats can I use?',
+  'guide.images-to-pdf.a.2':
+    'JPG, PNG and WebP. HEIC files (the photos of some phones) are not supported by the browser: export the photo as JPG and try again.',
+  'guide.images-to-pdf.q.3': 'How do I keep the PDF from getting huge?',
+  'guide.images-to-pdf.a.3':
+    'Lower the "Quality": at 100, JPG and PNG stay as they were, with no loss; below 100 they are re-encoded as JPEG and the file is lighter.',
+  'guide.images-to-pdf.q.4': 'Do portrait photos come out rotated?',
+  'guide.images-to-pdf.a.4':
+    'No: the photo orientation (EXIF) is respected. With "Orientation" on "Automatic" and an A4 or Letter page, the page follows the prevailing orientation of the images.',
+  'guide.images-to-pdf.q.5': 'Can I do the opposite, PDF to images?',
+  'guide.images-to-pdf.a.5':
+    'Yes: switch "Mode" to "PDF → images", choose the pages and the resolution and download the images one by one or as a ZIP.',
+  'guide.images-to-pdf.q.6': 'Are there limits?',
+  'guide.images-to-pdf.a.6':
+    'Up to 100 images at a time and 50 MB per image. Extra or unsupported files are skipped and the tool tells you.',
+  'guide.images-to-pdf.privacy':
+    'Neither images nor PDFs are uploaded anywhere: processing happens in your browser, so you can use scanned and confidential documents.',
+};
+
 const it = {
+  ...guideIt,
   'ip.mode': 'Modalità',
   'ip.mode.toPdf': 'Immagini → PDF',
   'ip.mode.toImages': 'PDF → immagini',
@@ -103,6 +162,7 @@ const it = {
 };
 
 const en: typeof it = {
+  ...guideEn,
   'ip.mode': 'Mode',
   'ip.mode.toPdf': 'Images → PDF',
   'ip.mode.toImages': 'PDF → images',

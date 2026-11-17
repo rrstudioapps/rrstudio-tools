@@ -12,13 +12,16 @@ import { FLAGS, MatchInfo, RegexResult, buildRegex, highlightPieces } from './re
 import { EXAMPLES, RegexExample } from './regex-examples';
 import { explainPattern } from './regex-explain';
 import { RX_DICTIONARIES } from './regex-tester.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './regex-tester.share';
 
 type Status = 'idle' | 'busy' | 'timeout' | 'noworker';
 const DEBOUNCE_MS = 150;
 
 @Component({
   selector: 'app-regex-tester',
-  imports: [Icon, PrivacyNote, IoPanel, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, IoPanel, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './regex-tester.page.html',
   styleUrl: './regex-tester.page.scss',
@@ -65,6 +68,20 @@ export class RegexTesterPage {
     return n === 0 ? this.i18n.t('rx.count.none') : n === 1 ? this.i18n.t('rx.count.one') : this.i18n.t('rx.count', { n: f.format(n) });
   });
   protected readonly timeoutText = computed(() => this.i18n.t('rx.timeout', { s: this.timeoutSeconds }));
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    pattern: this.pattern,
+    flags: this.flags,
+    text: this.text,
+    replacement: this.replacement,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(RX_DICTIONARIES);

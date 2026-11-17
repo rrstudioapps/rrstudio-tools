@@ -2,7 +2,38 @@
 // © 2026 rrstudio — rrstudio Tools
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
+/** Guida "come si usa" e domande frequenti (It): vedi shared/tool-guide.ts. */
+const guideIt = {
+  'guide.codice-fiscale.step.1': 'In «Cosa vuoi fare» lascia selezionato «Calcola».',
+  'guide.codice-fiscale.step.2': 'Scrivi «Cognome» e «Nome» come sono sui documenti: spazi, apostrofi e accenti li gestisce lo strumento; se hai più nomi o cognomi scrivili tutti.',
+  'guide.codice-fiscale.step.3': 'Scegli il «Sesso» e la «Data di nascita».',
+  'guide.codice-fiscale.step.4': 'Indica il «Luogo di nascita»: «Comune italiano» (scrivi il nome e scegli dall\'elenco), «Stato estero» oppure «Inserisco il codice» se conosci già il codice catastale.',
+  'guide.codice-fiscale.step.5': 'Il risultato compare in «Codice fiscale calcolato»: con «Copia il codice fiscale» lo copi, e sotto vedi da dove viene ogni parte.',
+  'guide.codice-fiscale.step.6': 'Per controllare un codice che hai già passa a «Verifica e decodifica» e incollalo: lo strumento dice se è formalmente valido e che cosa contiene.',
+  'guide.codice-fiscale.q.1': 'Il codice calcolato è quello ufficiale?',
+  'guide.codice-fiscale.a.1':
+    'Non è detto. È il codice teorico che si ottiene con le regole ufficiali. Quello vero lo assegna l\'Agenzia delle Entrate e, in caso di omocodia, può essere diverso: per un uso ufficiale fai riferimento al codice riportato sulla tua tessera sanitaria.',
+  'guide.codice-fiscale.q.2': 'Come si ricava il codice fiscale?',
+  'guide.codice-fiscale.a.2':
+    'Ha 16 caratteri: 3 dal cognome, 3 dal nome, 2 cifre per l\'anno di nascita, una lettera per il mese, 2 cifre per il giorno (più 40 per le donne), 4 caratteri per il codice catastale del luogo di nascita e un carattere di controllo calcolato sui 15 precedenti.',
+  'guide.codice-fiscale.q.3': 'Perché per il nome si usano consonanti diverse da quelle del cognome?',
+  'guide.codice-fiscale.a.3':
+    'Per il cognome si prendono le prime tre consonanti. Per il nome, se le consonanti sono quattro o più, si prendono la prima, la terza e la quarta. Se non bastano si completa con le vocali e, in ultimo, con la lettera X.',
+  'guide.codice-fiscale.q.4': 'Che cos\'è l\'omocodia?',
+  'guide.codice-fiscale.a.4':
+    'Se due persone risultassero con lo stesso codice, l\'Agenzia delle Entrate ne modifica uno sostituendo, a partire da destra, alcune cifre con le lettere L M N P Q R S T U V. Lo strumento mostra i codici alternativi possibili, ma non può sapere se a te ne è stato assegnato uno.',
+  'guide.codice-fiscale.q.5': 'Che cosa controlla «Verifica e decodifica»?',
+  'guide.codice-fiscale.a.5':
+    'Lunghezza, caratteri ammessi, data di nascita esistente, luogo e carattere di controllo, e ti dice dove c\'è un errore. Non contatta nessun servizio: non può dire se il codice esiste davvero né a chi appartiene.',
+  'guide.codice-fiscale.q.6': 'Non trovo il mio comune o il mio Stato nell\'elenco: che cosa faccio?',
+  'guide.codice-fiscale.a.6':
+    'L\'elenco comprende i comuni attuali e quelli soppressi (dati ISTAT) e gli Stati esteri (tabella ANPR). Se non lo trovi scegli «Inserisco il codice» e scrivi il codice catastale: una lettera e tre cifre, con la Z iniziale per gli Stati esteri.',
+  'guide.codice-fiscale.privacy':
+    'Cognome, nome e data di nascita restano nel tuo browser: nessun dato personale viene inviato o salvato. L\'elenco dei luoghi è un file di questo sito, caricato solo quando serve.',
+};
+
 const it = {
+  ...guideIt,
   'cf.lead':
     'Calcola il codice fiscale di una persona fisica dai suoi dati anagrafici, oppure incolla un codice per controllare se è formalmente valido e vedere cosa contiene. Tutto avviene nel tuo browser.',
   'cf.privacy.personal': 'Nessun dato personale viene inviato o salvato.',
@@ -140,7 +171,7 @@ const it = {
   'cf.credits.link': 'Fonte e licenza',
 };
 
-const en: typeof it = {
+const en: Omit<typeof it, keyof typeof guideIt> = {
   'cf.lead':
     'Calculate the codice fiscale (Italian tax code) of a person from their personal details, or paste a code to check whether it is formally valid and see what it contains. Everything happens in your browser.',
   'cf.privacy.personal': 'No personal data is sent or stored.',

@@ -2,7 +2,66 @@
 // © 2026 rrstudio — rrstudio Tools
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
+/** Guida "come si usa" e domande frequenti (It): vedi shared/tool-guide.ts. */
+const guideIt = {
+  'guide.password-generator.step.1': 'In «Tipo» scegli «Password» (caratteri casuali) oppure «Passphrase» (parole casuali, più facili da ricordare).',
+  'guide.password-generator.step.2': 'Per una password imposta la «Lunghezza» e i «Caratteri da usare»: minuscole, maiuscole, numeri e simboli. «Escludi caratteri ambigui» toglie quelli facili da confondere, come 0 e O.',
+  'guide.password-generator.step.3': 'Per una passphrase scegli il numero di parole, il «Separatore» e, se vuoi, «Iniziale maiuscola» e «Aggiungi un numero (0-99)».',
+  'guide.password-generator.step.4': 'Premi «Genera» per una nuova scelta (oppure Ctrl + Invio) e «Copia» per metterla negli appunti. Con «Genera 10» ottieni una lista da cui scegliere.',
+  'guide.password-generator.step.5': 'Guarda l\'«Entropia» e la barra di robustezza: più i bit sono alti, più è difficile da indovinare.',
+  'guide.password-generator.q.1': 'Le password generate sono davvero casuali?',
+  'guide.password-generator.a.1':
+    'Ogni scelta usa crypto.getRandomValues, il generatore casuale crittografico del browser, con un campionamento che evita distorsioni verso alcuni caratteri. Non usa Math.random.',
+  'guide.password-generator.q.2': 'Che cos\'è l\'entropia e quanta ne serve?',
+  'guide.password-generator.a.2':
+    'L\'entropia, in bit, misura quante possibilità ci sono: ogni bit in più raddoppia i tentativi necessari per indovinare la password. Più è alta meglio è; per un account importante conviene una password lunga e unica, meglio se gestita da un gestore di password.',
+  'guide.password-generator.q.3': 'Meglio una password o una passphrase?',
+  'guide.password-generator.a.3':
+    'Una passphrase di parole casuali è più facile da ricordare e da digitare, a parità di robustezza. Una password di caratteri casuali è più compatta ma si ricorda solo con un gestore di password.',
+  'guide.password-generator.q.4': 'Da dove vengono le parole delle passphrase?',
+  'guide.password-generator.a.4':
+    'Dalla EFF Large Wordlist for Passphrases della Electronic Frontier Foundation: 7776 parole, circa 12,9 bit per parola, licenza CC BY 3.0 US.',
+  'guide.password-generator.q.5': 'La password che genero viene salvata?',
+  'guide.password-generator.a.5':
+    'No: esiste solo in questa pagina. Non viene salvata nemmeno nel localStorage, non finisce nell\'indirizzo e sparisce ricaricando la pagina.',
+  'guide.password-generator.q.6': 'Che tempo di cracking indica lo strumento?',
+  'guide.password-generator.a.6':
+    'Il tempo medio per indovinarla a 10^10 tentativi al secondo, un\'ipotesi indicativa: i tempi reali dipendono da come la password è protetta dal servizio.',
+  'guide.password-generator.privacy':
+    'Le password vengono generate sul tuo dispositivo: nulla viene inviato, salvato o inserito nell\'indirizzo della pagina.',
+};
+
+/** Guida "come si usa" e domande frequenti (En): vedi shared/tool-guide.ts. */
+const guideEn = {
+  'guide.password-generator.step.1': 'Under "Type" choose "Password" (random characters) or "Passphrase" (random words, easier to remember).',
+  'guide.password-generator.step.2': 'For a password set the "Length" and the "Characters to use": lowercase, uppercase, numbers and symbols. "Exclude ambiguous characters" removes look-alikes such as 0 and O.',
+  'guide.password-generator.step.3': 'For a passphrase choose the number of words, the "Separator" and, if you like, "Capitalize each word" and "Add a number (0-99)".',
+  'guide.password-generator.step.4': 'Press "Generate" for a new one (or Ctrl + Enter) and "Copy" to put it on the clipboard. "Generate 10" gives you a list to choose from.',
+  'guide.password-generator.step.5': 'Look at the "Entropy" and the strength bar: the more bits, the harder it is to guess.',
+  'guide.password-generator.q.1': 'Are the generated passwords really random?',
+  'guide.password-generator.a.1':
+    'Every choice uses crypto.getRandomValues, the browser\'s cryptographic random generator, with sampling that avoids any bias towards some characters. It does not use Math.random.',
+  'guide.password-generator.q.2': 'What is entropy and how much do I need?',
+  'guide.password-generator.a.2':
+    'Entropy, in bits, measures how many possibilities there are: each extra bit doubles the guesses needed. Higher is better; for an important account use a long, unique password, ideally kept in a password manager.',
+  'guide.password-generator.q.3': 'Password or passphrase?',
+  'guide.password-generator.a.3':
+    'A passphrase of random words is easier to remember and type at the same strength. A password of random characters is more compact but realistically needs a password manager.',
+  'guide.password-generator.q.4': 'Where do the passphrase words come from?',
+  'guide.password-generator.a.4':
+    'From the EFF Large Wordlist for Passphrases by the Electronic Frontier Foundation: 7776 words, about 12.9 bits per word, CC BY 3.0 US licence.',
+  'guide.password-generator.q.5': 'Is the password I generate saved?',
+  'guide.password-generator.a.5':
+    'No: it only exists on this page. It is not saved, not even in localStorage, it does not end up in the URL and it disappears when you reload.',
+  'guide.password-generator.q.6': 'What does the cracking time mean?',
+  'guide.password-generator.a.6':
+    'It is the average time to guess it at 10^10 attempts per second, a rough assumption: real times depend on how the service protects the password.',
+  'guide.password-generator.privacy':
+    'Passwords are generated on your device: nothing is sent, saved or put in the page address.',
+};
+
 const it = {
+  ...guideIt,
   'pw.lead':
     'Password casuali e passphrase facili da ricordare, generate nel tuo browser con la crittografia del sistema. Nulla viene salvato o inviato.',
   'pw.mode': 'Tipo',
@@ -68,6 +127,7 @@ const it = {
 };
 
 const en: typeof it = {
+  ...guideEn,
   'pw.lead':
     'Random passwords and memorable passphrases, generated in your browser with the system\'s cryptography. Nothing is stored or sent.',
   'pw.mode': 'Type',

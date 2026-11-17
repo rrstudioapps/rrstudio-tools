@@ -11,6 +11,9 @@ export const en: Dict = {
   'nav.theme.toLight': 'Switch to light theme',
   'nav.theme.toDark': 'Switch to dark theme',
 
+  'guide.how': 'How to use it',
+  'guide.faq': 'Frequently asked questions',
+  'guide.privacy': 'Privacy',
   'privacy.headline': 'Your data stays on your computer',
   'privacy.short': 'Files are processed in your browser and are never uploaded.',
 
@@ -120,6 +123,11 @@ export const en: Dict = {
   'common.clear': 'Clear',
   'common.swap': 'Swap',
   'common.chooseFile': 'Choose a file',
+  'share.copy': 'Copy link',
+  'share.note': 'The content is in the link: whoever gets it can see it. It is not sent to our server.',
+  'share.copied': 'Link copied',
+  'share.invalid': 'The link is not valid or was cut short: the tool was left as it is.',
+  'share.toolarge': 'The content is too large to fit in a link.',
   'common.counter': '{chars} characters · {bytes} bytes',
 
   'tool.base64.title': 'Base64 Encode/Decode',
@@ -294,6 +302,39 @@ export const en: Dict = {
   'seo.uuid.title': 'UUID v4, v7 and ULID generator | rrstudio Tools',
   'seo.uuid.desc':
     'Generate UUID v4, UUID v7 with timestamp and ULID, from 1 to 1000, in upper or lower case, and validate a UUID to read its version and date. In your browser.',
+
+  'tool.sign.title': 'Sign a PDF online',
+  'tool.sign.desc':
+    'Sign a PDF in your browser: draw, type or upload your signature, place it on the pages with a date and download the signed PDF. A graphic signature, nothing uploaded.',
+  'seo.sign.title': 'Sign a PDF online for free, without uploading it | rrstudio Tools',
+  'seo.sign.desc':
+    'Sign a PDF online: draw your signature with a mouse or finger, type it or upload it from an image, place it on several pages with the date. The file stays in your browser. Graphic signature, not digital.',
+  'tool.crop.title': 'Crop and rotate images',
+  'tool.crop.desc':
+    'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',
+  'seo.crop.title': 'Crop, rotate and resize images online | rrstudio Tools',
+  'seo.crop.desc':
+    'Crop photos online with 1:1, 4:3, 16:9 or 35×45 ID photo ratios, rotate by 90° or any angle, flip, resize and export as PNG, JPEG or WebP. In your browser, metadata stripped.',
+  'tool.meta.title': 'Meta tag and Open Graph preview',
+  'tool.meta.desc':
+    'Paste a page\'s HTML and preview it on Google, Facebook, LinkedIn, X and WhatsApp, with checks on title, description, Open Graph and Twitter Card.',
+  'seo.meta.title': 'Meta tag, Open Graph and Twitter Card preview online | rrstudio Tools',
+  'seo.meta.desc':
+    'Check a page\'s title, description, canonical, Open Graph and Twitter Card: Google, Facebook, LinkedIn, X and WhatsApp previews, length warnings and an HTML snippet. No network requests.',
+
+  'tool.fake.title': 'Fake data generator',
+  'tool.fake.desc':
+    'Fake but realistic test data: names, emails, addresses, formally valid Italian tax codes, VAT numbers and IBANs. 1 to 10,000 rows, with a repeatable seed, as CSV, JSON or SQL.',
+  'seo.fake.title': 'Online fake data generator: CSV, JSON and SQL | rrstudio Tools',
+  'seo.fake.desc':
+    'Generate fake Italian test data: first and last name, email on test domains, phone, address, and format-valid tax code, VAT number and IBAN. With a seed, up to 10,000 rows. All in your browser.',
+
+  'tool.jq.title': 'JSONPath, JSON to TypeScript and JSON Schema',
+  'tool.jq.desc':
+    'Query a JSON with JSONPath expressions (filters, slices, recursive search) and derive TypeScript interfaces and a JSON Schema from it.',
+  'seo.jq.title': 'Online JSONPath, JSON to TypeScript and JSON Schema | rrstudio Tools',
+  'seo.jq.desc':
+    'Try JSONPath expressions on a JSON with filters, slices and result paths, and generate TypeScript interfaces or a JSON Schema (draft 2020-12). All in your browser.',
 
   'tool.yj.title': 'YAML, JSON and TOML converter',
   'tool.yj.desc':

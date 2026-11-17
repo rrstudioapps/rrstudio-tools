@@ -10,6 +10,9 @@ import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { MAX_LENGTH_LIMIT, Separator, SlugOptions, StopLang, clampMaxLength, generateBulk, generateSlug } from './slug';
 import { SLUG_DICTIONARIES } from './slug-generator.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './slug-generator.share';
 
 type Mode = 'single' | 'bulk';
 
@@ -20,7 +23,7 @@ const SAMPLES: Record<Mode, string> = {
 
 @Component({
   selector: 'app-slug-generator',
-  imports: [Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './slug-generator.page.html',
   styleUrl: './slug-generator.page.scss',
@@ -66,6 +69,23 @@ export class SlugGeneratorPage {
     if (out === '') return '';
     return this.mode() === 'bulk' ? this.i18n.t('slug.meta.bulk', { n: out.split('\n').length }) : this.i18n.t('slug.meta', { n: out.length });
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    separator: this.separator,
+    lowercase: this.lowercase,
+    maxLength: this.maxLength,
+    stopWords: this.stopWords,
+    unique: this.unique,
+    input: this.input,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(SLUG_DICTIONARIES);

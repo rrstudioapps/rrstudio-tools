@@ -33,6 +33,8 @@ jobs:
         run: npm run e2e
       - name: PWA (service worker, offline use, update)
         run: npm run pwa-check
+      - name: Lighthouse (accessibility, SEO, best practices, performance thresholds)
+        run: npm run lighthouse
       - name: Check prerendered pages
         run: |
           test -f dist/rrstudio-tools/browser/index.html

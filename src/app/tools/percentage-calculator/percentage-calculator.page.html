@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="percentage-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <div class="cards">
     @for (c of cards; track c.id) {
       <section class="card" [attr.aria-labelledby]="'pct-h-' + c.id">

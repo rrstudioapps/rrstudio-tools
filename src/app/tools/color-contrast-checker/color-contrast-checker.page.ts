@@ -24,6 +24,9 @@ import {
   toOklchString,
   toRgbString,
 } from './color';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './color-contrast-checker.share';
 
 interface Conversion {
   key: string;
@@ -41,7 +44,7 @@ interface SuggestionView {
 
 @Component({
   selector: 'app-color-contrast-checker',
-  imports: [Icon, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './color-contrast-checker.page.html',
   styleUrl: './color-contrast-checker.page.scss',
@@ -126,6 +129,19 @@ export class ColorContrastCheckerPage {
       { key: 'hsl', label: 'HSL', value: toHslString(c) },
       { key: 'oklch', label: 'OKLCH', value: toOklchString(c) },
     ];
+  }
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    fgText: this.fgText,
+    bgText: this.bgText,
+    editSide: this.editSide,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
   }
 
   constructor() {

@@ -7,7 +7,10 @@ import { formatNumber, parseDecimal } from '../../shared/decimal';
 import { Icon } from '../../shared/icon';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { UC_DICTIONARIES } from './unit-converter.i18n';
-import { CATEGORIES, CategoryId, Unit, UnitHit, convert, getCategory, normalize, searchUnits } from './units';
+import { CATEGORIES, CategoryId, Unit, UnitHit, convert, findUnit, getCategory, normalize, searchUnits } from './units';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './unit-converter.share';
 
 interface TableRow {
   unit: Unit;
@@ -18,7 +21,7 @@ interface TableRow {
 
 @Component({
   selector: 'app-unit-converter',
-  imports: [CopyButton, Icon, PrivacyNote],
+  imports: [ShareLink, CopyButton, Icon, PrivacyNote],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './unit-converter.page.html',
   styleUrl: './unit-converter.page.scss',
@@ -75,6 +78,24 @@ export class UnitConverterPage {
   protected readonly fromUnit = computed(() => this.units().find((x) => x.id === this.from())!);
   protected readonly toUnit = computed(() => this.units().find((x) => x.id === this.to())!);
   protected readonly note = computed(() => (['data', 'time', 'volume'].includes(this.category()) ? 'uc.note.' + this.category() : ''));
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    category: this.category,
+    valueText: this.valueText,
+    from: this.from,
+    to: this.to,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+    // le unità devono appartenere alla categoria: altrimenti si usano quelle di partenza
+    const cat = getCategory(this.category());
+    if (!findUnit(cat.id, this.from())) this.from.set(cat.defaultFrom);
+    if (!findUnit(cat.id, this.to())) this.to.set(cat.defaultTo);
+  }
 
   constructor() {
     this.i18n.register(UC_DICTIONARIES);

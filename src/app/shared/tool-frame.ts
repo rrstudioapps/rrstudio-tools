@@ -3,14 +3,16 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { FavoriteButton } from './favorite-button';
+import { ToolGuide } from './tool-guide';
 
 /**
  * Cornice comune delle pagine strumento (route padre di ogni tool): mostra la stella dei preferiti
- * nell'angolo dell'intestazione senza toccare i template dei singoli strumenti. L'id arriva da `data.toolId`.
+ * nell'angolo dell'intestazione e, sotto lo strumento, la guida "come si usa" + FAQ se lo strumento ne ha una
+ * (vedi tool-guide.ts), senza toccare i template dei singoli strumenti. L'id arriva da `data.toolId`.
  */
 @Component({
   selector: 'app-tool-frame',
-  imports: [RouterOutlet, FavoriteButton],
+  imports: [RouterOutlet, FavoriteButton, ToolGuide],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="slot">
@@ -19,6 +21,7 @@ import { FavoriteButton } from './favorite-button';
       </div>
     </div>
     <router-outlet />
+    <app-tool-guide [toolId]="toolId" />
   `,
   styles: `
     :host {

@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="find-replace" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <app-io-panel [label]="i18n.t('fr.text')" inputId="fr-text">
     <span panel-actions>
       <button type="button" class="btn small" (click)="loadExample()">{{ i18n.t('fr.example') }}</button>

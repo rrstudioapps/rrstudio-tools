@@ -41,6 +41,8 @@ Thanks for your interest in rrstudio Tools! / Grazie per l'interesse verso rrstu
 
 ## Development / Sviluppo
 
+Lighthouse thresholds (`scripts/lighthouse.mjs`, mobile and desktop presets, sample of 11 pages, also run in CI): accessibility = 100, SEO = 100 (except `noindex` pages), best practices >= 95, performance >= 60 on mobile and >= 85 on desktop. Performance floors are deliberately well below the measured scores (mobile 78-96, desktop 95-100) because simulated throttling is noisy on busy machines; they catch real regressions, not decimals. `LH_RUNS=3` takes the median of three runs, `LH_ONLY=privacy,json` filters pages, `LH_REPORT=1` prints the numbers without failing.
+
 ```sh
 npm ci
 npm start            # dev server
@@ -49,5 +51,6 @@ npm run build        # ng build + scripts/build-sw.mjs (writes sw.js): static bu
 npm run smoke        # after a build: every page (IT/EN, 360 and 1280 px) for console errors, horizontal scroll, axe (light and dark)
 npm run e2e          # after a build: runs the tool interactions of the screenshot script without writing files
 npm run pwa-check    # after a build: service worker, offline navigation, offline page, update message
+npm run lighthouse   # after a build: Lighthouse (mobile and desktop) on 11 sample pages, fails below the thresholds
 npm run pwa-icons    # regenerates the PWA icons in public/ from favicon.svg
 ```

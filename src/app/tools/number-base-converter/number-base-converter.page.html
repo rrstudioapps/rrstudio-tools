@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="number-base-converter" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <!-- Conversione di base -->
   <section class="block" aria-labelledby="nb-conv-h">
     <h2 class="eyebrow" id="nb-conv-h">{{ i18n.t('nb.conv.title') }}</h2>

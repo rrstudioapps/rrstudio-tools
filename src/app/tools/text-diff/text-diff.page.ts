@@ -13,6 +13,9 @@ import { textStats } from '../../shared/text-stats';
 import { DiffClient, StaleDiff } from './diff-client';
 import { DEFAULT_OPTIONS, DiffModel, DiffOptions, Row, Seg, toUnifiedDiff } from './diff-core';
 import { DIFF_DICTIONARIES } from './text-diff.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './text-diff.share';
 
 type View = 'side' | 'inline';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -32,7 +35,7 @@ type Shown<T> = { fold: false; line: T; first: boolean } | { fold: true; id: num
 
 @Component({
   selector: 'app-text-diff',
-  imports: [Icon, PrivacyNote, Segmented, IoPanel, CopyButton, NgTemplateOutlet],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './text-diff.page.html',
   styleUrl: './text-diff.page.scss',
@@ -133,6 +136,24 @@ export class TextDiffPage {
   protected readonly positionText = computed(() =>
     this.current() >= 0 ? this.i18n.t('diff.position', { n: this.current() + 1, total: this.groups() }) : '',
   );
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    textA: this.textA,
+    textB: this.textB,
+    ignoreWs: this.ignoreWs,
+    ignoreCase: this.ignoreCase,
+    ignoreBlank: this.ignoreBlank,
+    granularity: this.granularity,
+    view: this.view,
+    collapse: this.collapse,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(DIFF_DICTIONARIES);

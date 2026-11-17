@@ -2,7 +2,66 @@
 // © 2026 rrstudio — rrstudio Tools
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
+/** Guida "come si usa" e domande frequenti (It): vedi shared/tool-guide.ts. */
+const guideIt = {
+  'guide.pdf-tools.step.1': 'Trascina uno o più PDF nell\'area di caricamento, oppure scegli i file. Compare una griglia con le miniature delle pagine.',
+  'guide.pdf-tools.step.2': 'Riordina le pagine trascinandole, oppure usa i pulsanti di ogni pagina per ruotarla, spostarla o eliminarla; «Ruota tutte» ruota l\'intero documento.',
+  'guide.pdf-tools.step.3': 'Per unire, usa «Unisci e scarica»: le pagine escono nell\'ordine della griglia, anche se vengono da più file.',
+  'guide.pdf-tools.step.4': 'Per estrarre, seleziona le pagine che ti servono (o «Seleziona tutte») e premi «Estrai selezionate».',
+  'guide.pdf-tools.step.5': 'Per dividere, apri «Dividi», scegli «Ogni pagina», «Ogni N pagine» oppure «Per intervalli» (per esempio 1-3, 5, 8-10) e premi «Dividi e scarica». Se i file sono più d\'uno ricevi uno ZIP.',
+  'guide.pdf-tools.q.1': 'Come unisco più PDF in uno solo?',
+  'guide.pdf-tools.a.1':
+    'Carica tutti i file insieme, mettili nell\'ordine voluto trascinando le pagine e premi «Unisci e scarica». Puoi anche eliminare le pagine che non vuoi prima di unire.',
+  'guide.pdf-tools.q.2': 'Come estraggo solo alcune pagine?',
+  'guide.pdf-tools.a.2':
+    'Seleziona le pagine nella griglia e premi «Estrai selezionate»: ottieni un nuovo PDF con quelle pagine, nell\'ordine in cui sono nella griglia.',
+  'guide.pdf-tools.q.3': 'Come scrivo gli intervalli per dividere un PDF?',
+  'guide.pdf-tools.a.3':
+    'Con numeri e trattini separati da virgole, per esempio 1-3, 5, 8-10. Ogni intervallo diventa un file. Le pagine sono numerate come nella griglia e lo strumento segnala gli intervalli non validi.',
+  'guide.pdf-tools.q.4': 'Posso aprire un PDF protetto da password?',
+  'guide.pdf-tools.a.4':
+    'No: un file protetto da password non può essere letto e viene saltato con un avviso. Togli la protezione con il programma con cui l\'hai creato e riprova.',
+  'guide.pdf-tools.q.5': 'Cambia la qualità del PDF?',
+  'guide.pdf-tools.a.5':
+    'Unire, estrarre, ruotare e dividere non ricodificano il contenuto: le pagine vengono copiate nel nuovo file così come sono.',
+  'guide.pdf-tools.q.6': 'Ci sono limiti?',
+  'guide.pdf-tools.a.6':
+    'Fino a 20 file per volta e 100 MB per file. I file oltre il limite, danneggiati o che non sono PDF vengono saltati e lo strumento te lo segnala.',
+  'guide.pdf-tools.privacy':
+    'I PDF non vengono caricati da nessuna parte: l\'elaborazione avviene nel tuo browser, quindi va bene anche per contratti e documenti riservati.',
+};
+
+/** Guida "come si usa" e domande frequenti (En): vedi shared/tool-guide.ts. */
+const guideEn = {
+  'guide.pdf-tools.step.1': 'Drop one or more PDFs on the upload area, or choose the files. A grid of page thumbnails appears.',
+  'guide.pdf-tools.step.2': 'Reorder pages by dragging them, or use each page\'s buttons to rotate, move or delete it; "Rotate all" turns the whole document.',
+  'guide.pdf-tools.step.3': 'To merge, press "Merge and download": the pages come out in the grid\'s order, even if they come from several files.',
+  'guide.pdf-tools.step.4': 'To extract, select the pages you need (or "Select all") and press "Extract selected".',
+  'guide.pdf-tools.step.5': 'To split, open "Split", choose "Every page", "Every N pages" or "By ranges" (for example 1-3, 5, 8-10) and press "Split and download". If there is more than one file you get a ZIP.',
+  'guide.pdf-tools.q.1': 'How do I merge several PDFs into one?',
+  'guide.pdf-tools.a.1':
+    'Load all the files together, put the pages in the order you want by dragging and press "Merge and download". You can also delete pages you do not want before merging.',
+  'guide.pdf-tools.q.2': 'How do I extract only some pages?',
+  'guide.pdf-tools.a.2':
+    'Select the pages in the grid and press "Extract selected": you get a new PDF with those pages, in the order they have in the grid.',
+  'guide.pdf-tools.q.3': 'How do I write page ranges to split a PDF?',
+  'guide.pdf-tools.a.3':
+    'With numbers and hyphens separated by commas, for example 1-3, 5, 8-10. Each range becomes one file. Pages are numbered as in the grid and the tool flags invalid ranges.',
+  'guide.pdf-tools.q.4': 'Can I open a password-protected PDF?',
+  'guide.pdf-tools.a.4':
+    'No: a password-protected file cannot be read and is skipped with a warning. Remove the protection with the program that created it and try again.',
+  'guide.pdf-tools.q.5': 'Does the PDF quality change?',
+  'guide.pdf-tools.a.5':
+    'Merging, extracting, rotating and splitting do not re-encode the content: pages are copied into the new file as they are.',
+  'guide.pdf-tools.q.6': 'Are there limits?',
+  'guide.pdf-tools.a.6':
+    'Up to 20 files at a time and 100 MB per file. Files over the limit, damaged or not PDFs are skipped and the tool tells you.',
+  'guide.pdf-tools.privacy':
+    'PDFs are not uploaded anywhere: processing happens in your browser, so it is fine for contracts and confidential documents.',
+};
+
 const it = {
+  ...guideIt,
   'pdf.lead':
     'Unisci più PDF in uno, estrai le pagine che ti servono, dividi un documento in più file e ruota o riordina le pagine, tutto da una griglia di miniature.',
   'pdf.confidential': 'I PDF non vengono caricati da nessuna parte: utile per contratti e documenti riservati.',
@@ -81,6 +140,7 @@ const it = {
 };
 
 const en: typeof it = {
+  ...guideEn,
   'pdf.lead':
     'Merge several PDFs into one, extract the pages you need, split a document into several files, and rotate or reorder pages, all from one grid of thumbnails.',
   'pdf.confidential': 'Your PDFs are not uploaded anywhere: handy for contracts and confidential documents.',

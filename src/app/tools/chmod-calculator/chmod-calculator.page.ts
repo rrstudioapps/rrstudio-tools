@@ -27,12 +27,15 @@ import {
   toSymbolic,
 } from './chmod';
 import { CHMOD_DICTIONARIES } from './chmod-calculator.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './chmod-calculator.share';
 
 type Field = 'octal' | 'symbolic';
 
 @Component({
   selector: 'app-chmod-calculator',
-  imports: [PrivacyNote, CopyButton],
+  imports: [ShareLink, PrivacyNote, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chmod-calculator.page.html',
   styleUrl: './chmod-calculator.page.scss',
@@ -97,6 +100,22 @@ export class ChmodCalculatorPage {
     const r = this.exprResult();
     return r && !r.ok ? this.errorText(r) : '';
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    path: this.path,
+    recursive: this.recursive,
+    expr: this.expr,
+    exprDir: this.exprDir,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+    this.draft.set(null);
+  }
 
   constructor() {
     this.i18n.register(CHMOD_DICTIONARIES);

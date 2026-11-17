@@ -64,7 +64,10 @@
     <div class="capture" #capture>
       <h2 class="dash-title">{{ store.title() }}</h2>
       <app-kpi-cards />
-      <app-charts-panel (timeInit)="setTime($event)" (catInit)="setCat($event)" />
+      <!-- ECharts (~500 KB) si scarica solo quando c'è un dataset da mostrare -->
+      @defer (on immediate) {
+        <app-charts-panel (timeInit)="setTime($event)" (catInit)="setCat($event)" />
+      }
     </div>
 
     <app-data-table />

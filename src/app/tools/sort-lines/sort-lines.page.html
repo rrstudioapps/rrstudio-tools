@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="sort-lines" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <div class="groups">
     <fieldset class="group">
       <legend class="eyebrow">{{ i18n.t('sl.sort.title') }}</legend>

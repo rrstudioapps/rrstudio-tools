@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="css-unit-converter" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <section class="block" aria-labelledby="cssu-ctx-h">
     <h2 class="eyebrow" id="cssu-ctx-h">{{ i18n.t('cssu.ctx.title') }}</h2>
     <div class="fields">

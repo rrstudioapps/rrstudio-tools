@@ -22,6 +22,9 @@ import {
   parsePercent,
   solveCompenso,
 } from './iva';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './calcolo-iva.share';
 
 type Mode = 'add' | 'extract' | 'invoice' | 'reverse';
 type CassaChoice = 'none' | '200' | '400' | '500' | 'custom';
@@ -35,7 +38,7 @@ interface Row {
 
 @Component({
   selector: 'app-calcolo-iva',
-  imports: [PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calcolo-iva.page.html',
   styleUrl: './calcolo-iva.page.scss',
@@ -183,6 +186,27 @@ export class CalcoloIvaPage {
   });
 
   protected readonly bolloCents = BOLLO_CENTS;
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    amountText: this.amountText,
+    vatBp: this.vatBp,
+    nature: this.nature,
+    forfettario: this.forfettario,
+    rivalsa: this.rivalsa,
+    cassa: this.cassa,
+    cassaCustom: this.cassaCustom,
+    cassaVat: this.cassaVat,
+    ritenuta: this.ritenuta,
+    bolloCharged: this.bolloCharged,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(IVA_DICTIONARIES);

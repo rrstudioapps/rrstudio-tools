@@ -26,6 +26,9 @@ import { buildHtmlDocument, documentTitle } from './markdown-export';
 import { FormatAction, applyFormat } from './markdown-format';
 import { renderMarkdown } from './markdown';
 import { sanitizeDom } from './markdown-sanitize';
+import { ShareLink } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './markdown-editor.share';
 
 const DRAFT_KEY = 'rrstudio.markdown-editor.draft';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -43,7 +46,7 @@ const ACTIONS: readonly { id: FormatAction; icon: 'type' | 'link' | 'code' | 'ta
 
 @Component({
   selector: 'app-markdown-editor',
-  imports: [Icon, PrivacyNote],
+  imports: [ShareLink, Icon, PrivacyNote],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // stili senza incapsulamento: servono anche all'HTML dell'anteprima, inserito con innerHTML, e alla stampa
   encapsulation: ViewEncapsulation.None,
@@ -92,6 +95,18 @@ export class MarkdownEditorPage {
     });
   });
 
+  // Link di condivisione: il testo nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  protected readonly shareState = (): ShareData => ({ text: this.text() });
+  /** Testo arrivato da un link: finché non viene modificato non sostituisce la bozza salvata di chi lo apre. */
+  private linkedText: string | null = null;
+
+  protected restoreShared(d: ShareData): void {
+    if (typeof d['text'] !== 'string') return;
+    this.linkedText = d['text'];
+    this.text.set(d['text']);
+  }
+
   constructor() {
     this.i18n.register(MD_DICTIONARIES);
 
@@ -115,7 +130,7 @@ export class MarkdownEditorPage {
     });
     effect((onCleanup) => {
       const t = this.text();
-      if (!this.isBrowser || !this.restored) return;
+      if (!this.isBrowser || !this.restored || t === this.linkedText) return;
       const id = setTimeout(() => this.saveDraft(t), 400);
       onCleanup(() => clearTimeout(id));
     });

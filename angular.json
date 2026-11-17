@@ -86,7 +86,8 @@
               "pako",
               "jsqr",
               "jsbarcode",
-              "cronstrue/i18n",
+              "cronstrue",
+              "cronstrue/locales/it",
               "nearley"
             ]
           },

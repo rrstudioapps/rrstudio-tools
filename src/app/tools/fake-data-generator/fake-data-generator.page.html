@@ -1,0 +1,175 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.fake.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('fake.lead') }}</p>
+  </header>
+
+  <p class="warn" role="note" data-testid="fake-warning">
+    <app-icon name="shield" />
+    <span>{{ i18n.t('fake.warning') }}</span>
+  </p>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="fake-data-generator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <section class="block" aria-labelledby="fake-fields-title">
+    <h2 class="eyebrow" id="fake-fields-title">{{ i18n.t('fake.fields') }}</h2>
+    <ol class="chosen" data-testid="fake-chosen">
+      @for (f of fields(); track f; let i = $index; let first = $first; let last = $last) {
+        <li>
+          <span class="name">{{ label(f) }}</span>
+          <code class="col">{{ f }}</code>
+          <span class="acts">
+            <button type="button" class="btn small icon-btn" [disabled]="first" [attr.aria-label]="i18n.t('fake.up', { name: label(f) })" (click)="move(i, -1)"><app-icon name="up" /></button>
+            <button type="button" class="btn small icon-btn" [disabled]="last" [attr.aria-label]="i18n.t('fake.down', { name: label(f) })" (click)="move(i, 1)"><app-icon name="down" /></button>
+            <button type="button" class="btn small icon-btn" [attr.aria-label]="i18n.t('fake.remove', { name: label(f) })" (click)="remove(f)"><app-icon name="close" /></button>
+          </span>
+        </li>
+      }
+    </ol>
+    @if (!fields().length) {
+      <p class="tool-error" role="alert">{{ i18n.t('fake.err.fields') }}</p>
+    }
+    @if (unusedFields().length) {
+      <div class="adders" role="group" [attr.aria-label]="i18n.t('fake.add')">
+        <span class="hint">{{ i18n.t('fake.add') }}</span>
+        @for (f of unusedFields(); track f) {
+          <button type="button" class="btn small" (click)="add(f)"><app-icon name="plus" /> {{ label(f) }}</button>
+        }
+      </div>
+    }
+    <div class="row">
+      <button type="button" class="btn small" (click)="selectAll()">{{ i18n.t('fake.all') }}</button>
+      <button type="button" class="btn small" [disabled]="!fields().length" (click)="selectNone()">{{ i18n.t('fake.none') }}</button>
+    </div>
+  </section>
+
+  <section class="options" [attr.aria-label]="i18n.t('fake.options')">
+    <div class="row">
+      <label class="lbl" for="fake-count">{{ i18n.t('fake.count', { min: minRows, max: maxRows }) }}</label>
+      <input id="fake-count" type="number" class="num" inputmode="numeric" [min]="minRows" [max]="maxRows" [value]="count()"
+        (change)="setCount($any($event.target).value); $any($event.target).value = count()" />
+      <label class="lbl" for="fake-seed">{{ i18n.t('fake.seed') }}</label>
+      <input id="fake-seed" type="text" class="seed mono" spellcheck="false" autocomplete="off" maxlength="100"
+        [placeholder]="i18n.t('fake.seed.ph')" [value]="seed()" (input)="seed.set($any($event.target).value)" />
+    </div>
+    <div class="row">
+      <span class="hint" data-testid="fake-seed-used">{{ i18n.t('fake.seed.used') }}: <code class="mono">{{ usedSeed() }}</code></span>
+      @if (!seed().trim() && usedSeed()) {
+        <button type="button" class="btn small" (click)="keepSeed()">{{ i18n.t('fake.seed.keep') }}</button>
+      }
+    </div>
+    @if (hasBirth()) {
+      <div class="row">
+        <label class="lbl" for="fake-from">{{ i18n.t('fake.birthFrom') }}</label>
+        <input id="fake-from" type="date" [value]="birthFrom()" (input)="birthFrom.set($any($event.target).value)" />
+        <label class="lbl" for="fake-to">{{ i18n.t('fake.birthTo') }}</label>
+        <input id="fake-to" type="date" [value]="birthTo()" (input)="birthTo.set($any($event.target).value)" />
+      </div>
+    }
+    @if (hasNumber()) {
+      <div class="row">
+        <label class="lbl" for="fake-nmin">{{ i18n.t('fake.numMin') }}</label>
+        <input id="fake-nmin" type="text" class="num" inputmode="decimal" [value]="numberMin()"
+          (change)="setNum('min', $any($event.target).value); $any($event.target).value = numberMin()" />
+        <label class="lbl" for="fake-nmax">{{ i18n.t('fake.numMax') }}</label>
+        <input id="fake-nmax" type="text" class="num" inputmode="decimal" [value]="numberMax()"
+          (change)="setNum('max', $any($event.target).value); $any($event.target).value = numberMax()" />
+        <label class="lbl" for="fake-ndec">{{ i18n.t('fake.numDec') }}</label>
+        <input id="fake-ndec" type="number" class="num small" min="0" max="4" [value]="numberDecimals()"
+          (change)="setDecimals($any($event.target).value); $any($event.target).value = numberDecimals()" />
+      </div>
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (error() && fields().length) {
+        <p class="tool-error" data-testid="fake-error">{{ i18n.t('fake.err.' + error()) }}</p>
+      }
+    </div>
+  </section>
+
+  <div class="tool-toolbar">
+    <button type="button" class="btn primary" [disabled]="!fields().length" (click)="regenerate()">
+      <app-icon name="refresh" /> {{ i18n.t('fake.generate') }}
+    </button>
+    @if (busy()) {
+      <span class="hint" role="status">{{ i18n.t('fake.busy', { done: progress(), n: count() }) }}</span>
+    }
+  </div>
+
+  @if (previewData().length) {
+    <section class="block" aria-labelledby="fake-prev-title">
+      <h2 class="eyebrow" id="fake-prev-title">{{ i18n.t('fake.preview') }}</h2>
+      <p class="hint" aria-live="polite" data-testid="fake-meta">{{ meta() }}</p>
+      <div class="tablewrap" tabindex="0" role="region" [attr.aria-label]="i18n.t('fake.preview')">
+        <table data-testid="fake-table">
+          <thead>
+            <tr>
+              <th scope="col" class="idx">#</th>
+              @for (f of rowsFields(); track f) {
+                <th scope="col">{{ label(f) }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of previewData(); track $index; let n = $index) {
+              <tr>
+                <th scope="row" class="idx">{{ n + 1 }}</th>
+                @for (c of row; track $index) {
+                  <td>{{ cellText(c) }}</td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="fake-exp-title">
+      <h2 class="eyebrow" id="fake-exp-title">{{ i18n.t('fake.export') }}</h2>
+      <div class="row">
+        <app-segmented [label]="i18n.t('fake.format')" [options]="formats()" [(value)]="format" />
+        @if (format() === 'csv') {
+          <label class="lbl" for="fake-sep">{{ i18n.t('fake.sep') }}</label>
+          <select id="fake-sep" [value]="sep()" (change)="onSep($any($event.target).value)">
+            <option value=",">{{ i18n.t('fake.sep.comma') }}</option>
+            <option value=";">{{ i18n.t('fake.sep.semi') }}</option>
+            <option value="&#9;">{{ i18n.t('fake.sep.tab') }}</option>
+          </select>
+        }
+        @if (format() === 'sql') {
+          <label class="lbl" for="fake-table">{{ i18n.t('fake.table') }}</label>
+          <input id="fake-table" type="text" class="table-in mono" spellcheck="false" autocomplete="off" maxlength="127"
+            [attr.aria-invalid]="tableError() ? 'true' : null" [value]="table()" (input)="table.set($any($event.target).value)" />
+        }
+      </div>
+      @if (tableError()) {
+        <p class="tool-error" role="alert" data-testid="fake-table-error">{{ i18n.t('fake.err.table') }}</p>
+      }
+      <label class="visually-hidden" for="fake-sample">{{ i18n.t('fake.sample') }}</label>
+      <textarea id="fake-sample" class="io-textarea sample" readonly spellcheck="false" rows="5" wrap="off" data-testid="fake-sample" [value]="sample()"></textarea>
+      <div class="tool-toolbar">
+        <app-copy-button [text]="text()" [label]="i18n.t('fake.copyAll')" [disabled]="!text()" />
+        <button type="button" class="btn small" [disabled]="!text()" (click)="download()">
+          <app-icon name="download" /> {{ i18n.t('fake.download') }}
+        </button>
+      </div>
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fake.info.valid.title') }}</h2>
+      <p>{{ i18n.t('fake.info.valid.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fake.info.seed.title') }}</h2>
+      <p>{{ i18n.t('fake.info.seed.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fake.info.phone.title') }}</h2>
+      <p>{{ i18n.t('fake.info.phone.desc') }}</p>
+    </div>
+  </section>
+</div>

@@ -21,6 +21,9 @@ import {
   zoneShortName,
   zonedToInstant,
 } from './timezones';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './timezone-converter.share';
 
 interface ZoneCard {
   zone: string;
@@ -39,7 +42,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 @Component({
   selector: 'app-timezone-converter',
-  imports: [CopyButton, Icon, PrivacyNote],
+  imports: [ShareLink, CopyButton, Icon, PrivacyNote],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './timezone-converter.page.html',
   styleUrl: './timezone-converter.page.scss',
@@ -54,6 +57,20 @@ export class TimezoneConverterPage {
   protected readonly dateText = signal('');
   protected readonly timeText = signal('');
   protected readonly query = signal('');
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    zones: this.zones,
+    source: this.source,
+    dateText: this.dateText,
+    timeText: this.timeText,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(TZ_DICTIONARIES);

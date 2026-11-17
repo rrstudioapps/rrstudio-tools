@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="calcolo-rata-mutuo" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <p class="disclaimer" role="note">{{ i18n.t('mutuo.disclaimer') }}</p>
 
   <div class="mutuo-layout">

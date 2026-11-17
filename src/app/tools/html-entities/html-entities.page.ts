@@ -21,6 +21,9 @@ import {
   unescapeJs,
 } from './entities';
 import { ENTITIES_DICTIONARIES } from './html-entities.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './html-entities.share';
 
 type Mode = 'html' | 'js' | 'json' | 'url';
 type Dir = 'encode' | 'decode';
@@ -40,7 +43,7 @@ interface Outcome {
 
 @Component({
   selector: 'app-html-entities',
-  imports: [Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './html-entities.page.html',
   styleUrl: './html-entities.page.scss',
@@ -123,6 +126,25 @@ export class HtmlEntitiesPage {
     if (this.dir() === 'decode' && (mode === 'js' || mode === 'json')) parts.push(this.i18n.t('ent.hint.unquote'));
     return parts.join(' ');
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    mode: this.mode,
+    dir: this.dir,
+    scope: this.scope,
+    format: this.format,
+    quote: this.quote,
+    asciiOnly: this.asciiOnly,
+    jsonQuotes: this.jsonQuotes,
+    plus: this.plus,
+    input: this.input,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(ENTITIES_DICTIONARIES);

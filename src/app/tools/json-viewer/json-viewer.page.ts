@@ -23,6 +23,9 @@ import {
   MoreRow, NodeRow, PAGE_SIZE, TreeRow, expandToLevel, flattenTree, remapExpanded, revealPath,
 } from './json-tree';
 import { JSON_VIEWER_DICTIONARIES } from './json-viewer.i18n';
+import { ShareLink } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './json-viewer.share';
 
 type View = 'tree' | 'text';
 type EditMode = 'value' | 'key';
@@ -82,7 +85,7 @@ type WindowRow = { i: number; id: string; node: NodeRow; more: null } | { i: num
 
 @Component({
   selector: 'app-json-viewer',
-  imports: [Icon, PrivacyNote, FileDrop, CopyButton, NgTemplateOutlet],
+  imports: [ShareLink, Icon, PrivacyNote, FileDrop, CopyButton, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './json-viewer.page.html',
   styleUrl: './json-viewer.page.scss',
@@ -285,6 +288,25 @@ export class JsonViewerPage {
     { value: 'tree', label: this.i18n.t('jv.view.tree') },
     { value: 'text', label: this.i18n.t('jv.view.text') },
   ]);
+
+  // Link di condivisione: documento in forma compatta + vista (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  protected readonly shareState = (): ShareData => ({
+    text: this.view() === 'tree' && this.hasDoc() ? minifyJson(this.root(), false) : this.text(),
+    view: this.view(),
+  });
+
+  protected restoreShared(data: ShareData): void {
+    if (typeof data['text'] !== 'string') return;
+    this.edit.set(null);
+    this.notice.set(null);
+    this.fileError.set(null);
+    this.parseError.set(null);
+    this.text.set(data['text']);
+    this.textDirty = true;
+    this.view.set('text');
+    if (data['view'] === 'tree') this.commitText();
+  }
 
   constructor() {
     this.i18n.register(JSON_VIEWER_DICTIONARIES);

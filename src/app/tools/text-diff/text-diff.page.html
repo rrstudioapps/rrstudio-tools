@@ -7,6 +7,8 @@
 
   <app-privacy-note />
 
+  <app-share-link toolId="text-diff" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
   <div class="tool-toolbar">
     <fieldset class="opts" [attr.aria-label]="i18n.t('diff.opts')">
       <label class="check"><input type="checkbox" [checked]="ignoreWs()" (change)="ignoreWs.set($any($event.target).checked)" /> {{ i18n.t('diff.ignoreWs') }}</label>

@@ -7,6 +7,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { I18nService, Lang } from '../i18n/i18n.service';
 import { Alternate, hasOgImage, hreflangLinks, publicUrl } from '../i18n/lang-routing';
 import { SITE_URL } from '../links';
+import { TOOLS } from '../../tools/tools.registry';
 
 /** Dati SEO di una route (chiavi i18n), da mettere in `data.seo`. */
 export interface SeoData {
@@ -24,19 +25,22 @@ export class SeoService {
   private readonly doc = inject(DOCUMENT);
   private readonly i18n = inject(I18nService);
 
-  private readonly current = signal<SeoData | null>(null);
+  private readonly current = signal<{ seo: SeoData; toolId: string | null } | null>(null);
 
   constructor() {
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
-        const seo = this.findSeo(this.router.routerState.snapshot.root);
-        if (seo) this.current.set(seo);
+        const root = this.router.routerState.snapshot.root;
+        const seo = this.findSeo(root);
+        if (seo) this.current.set({ seo, toolId: this.findToolId(root) });
       }
     });
     // Si riapplica anche al cambio lingua
     effect(() => {
       const c = this.current();
-      if (c) this.apply(c, this.i18n.slug(), this.i18n.lang());
+      if (!c) return;
+      this.apply(c.seo, this.i18n.slug(), this.i18n.lang());
+      this.applyAppData(c.toolId, c.seo, this.i18n.slug(), this.i18n.lang());
     });
   }
 
@@ -44,6 +48,57 @@ export class SeoService {
     let found: SeoData | null = (snap.data['seo'] as SeoData | undefined) ?? null;
     for (const child of snap.children) found = this.findSeo(child) ?? found;
     return found;
+  }
+
+  private findToolId(snap: ActivatedRouteSnapshot): string | null {
+    let found = (snap.data['toolId'] as string | undefined) ?? null;
+    for (const child of snap.children) found = this.findToolId(child) ?? found;
+    return found;
+  }
+
+  /** JSON-LD WebApplication delle sole pagine strumento (nelle altre pagine viene tolto). */
+  private applyAppData(toolId: string | null, seo: SeoData, slug: string, lang: Lang): void {
+    const tool = toolId ? TOOLS.find((t) => t.id === toolId) : undefined;
+    if (!tool) {
+      this.setJsonLd('webapp', null);
+      return;
+    }
+    const category = tool.category === 'dev' ? 'DeveloperApplication' : tool.category === 'media' ? 'MultimediaApplication' : 'UtilitiesApplication';
+    this.setJsonLd('webapp', {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: this.i18n.t(tool.titleKey),
+      description: this.i18n.t(seo.descriptionKey),
+      url: publicUrl(slug, lang),
+      applicationCategory: category,
+      operatingSystem: 'Any',
+      browserRequirements: 'Requires JavaScript',
+      isAccessibleForFree: true,
+      inLanguage: lang,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+    });
+  }
+
+  /**
+   * Inserisce (o sostituisce) uno script JSON-LD identificato da `id`; con `null` lo toglie.
+   * Un solo script per id: niente duplicati navigando tra le pagine né ripetendo l'applicazione.
+   */
+  setJsonLd(id: string, data: object | null): void {
+    const domId = `ld-${id}`;
+    const head = this.doc.head;
+    const existing = head.querySelector<HTMLScriptElement>(`script[type="application/ld+json"]#${domId}`);
+    if (!data) {
+      existing?.remove();
+      return;
+    }
+    const script = existing ?? this.doc.createElement('script');
+    if (!existing) {
+      script.setAttribute('type', 'application/ld+json');
+      script.setAttribute('id', domId);
+      head.appendChild(script);
+    }
+    // "<" in forma di escape: il testo non può chiudere lo script
+    script.textContent = JSON.stringify(data).replace(/</g, '\\u003c');
   }
 
   private apply(seo: SeoData, slug: string, lang: Lang): void {

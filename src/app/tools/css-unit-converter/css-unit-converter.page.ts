@@ -24,12 +24,15 @@ import {
   validContext,
 } from './css-units';
 import { CSSU_DICTIONARIES } from './css-unit-converter.i18n';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './css-unit-converter.share';
 
 type Direction = 'px-rem' | 'px-em' | 'rem-px';
 
 @Component({
   selector: 'app-css-unit-converter',
-  imports: [Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './css-unit-converter.page.html',
   styleUrl: './css-unit-converter.page.scss',
@@ -104,6 +107,28 @@ export class CssUnitConverterPage {
     if (!b) return '';
     return b.count ? this.i18n.t('cssu.block.count', { n: b.count }) : this.i18n.t('cssu.block.none');
   });
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    rootText: this.rootText,
+    parentText: this.parentText,
+    vwText: this.vwText,
+    vhText: this.vhText,
+    valueText: this.valueText,
+    from: this.from,
+    quickTo: this.quickTo,
+    cssIn: this.cssIn,
+    direction: this.direction,
+    hairline: this.hairline,
+    media: this.media,
+    decimals: this.decimals,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(CSSU_DICTIONARIES);

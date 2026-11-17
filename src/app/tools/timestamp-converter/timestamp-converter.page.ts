@@ -26,6 +26,9 @@ import {
   parseTimestamp,
   timeZoneList,
 } from './timestamp';
+import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
+import type { ShareData } from '../../shared/share-state';
+import { SHARE_SCHEMA } from './timestamp-converter.share';
 
 interface OutRow {
   key: string;
@@ -35,7 +38,7 @@ interface OutRow {
 
 @Component({
   selector: 'app-timestamp-converter',
-  imports: [Icon, IoPanel, PrivacyNote, CopyButton],
+  imports: [ShareLink, Icon, IoPanel, PrivacyNote, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './timestamp-converter.page.html',
   styleUrl: './timestamp-converter.page.scss',
@@ -55,6 +58,21 @@ export class TimestampConverterPage {
   protected readonly tsInput = signal('');
   protected readonly dateInput = signal('');
   protected readonly batchInput = signal('');
+
+  // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
+  protected readonly shareSchema = SHARE_SCHEMA;
+  private readonly shared = {
+    tz: this.tz,
+    unit: this.unit,
+    tsInput: this.tsInput,
+    dateInput: this.dateInput,
+    batchInput: this.batchInput,
+  };
+  protected readonly shareState = (): ShareData => snapshotShare(this.shared);
+
+  protected restoreShared(data: ShareData): void {
+    applyShare(data, this.shared);
+  }
 
   constructor() {
     this.i18n.register(TIMESTAMP_DICTIONARIES);

@@ -1,0 +1,142 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  .eyebrow {
+    margin: 0;
+  }
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+.examples {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+.lbl,
+.check {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.json-in,
+.out {
+  min-height: 200px;
+  white-space: pre;
+  overflow: auto;
+  font-family: var(--mono);
+}
+.expr {
+  width: 100%;
+  min-width: 0;
+}
+.root {
+  width: 160px;
+  max-width: 100%;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.chip {
+  padding: 2px var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: start;
+  &:hover {
+    border-color: var(--accent);
+  }
+}
+.summary {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.ctx {
+  margin: var(--space-1) 0 0;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  white-space: pre;
+  overflow-x: auto;
+}
+.cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  @media (max-width: 800px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.tablewrap {
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  table {
+    border-collapse: collapse;
+    min-width: 100%;
+    font-size: var(--fs-xs);
+  }
+  th,
+  td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--line);
+    text-align: start;
+    vertical-align: top;
+  }
+  td {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+  }
+}
+.syntax {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--fs-xs);
+  code {
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+}

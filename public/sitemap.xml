@@ -634,6 +634,30 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/htpasswd-generator"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/fake-data-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/fake-data-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/fake-data-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/fake-data-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/fake-data-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/fake-data-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/fake-data-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/fake-data-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/json-query</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-query"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-query"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-query"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/json-query</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-query"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-query"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-query"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/certificate-decoder</loc>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/certificate-decoder"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/certificate-decoder"/>
@@ -644,6 +668,42 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/certificate-decoder"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/certificate-decoder"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/certificate-decoder"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/pdf-sign</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-sign"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-sign"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-sign"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/pdf-sign</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-sign"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-sign"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-sign"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/image-crop</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-crop"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-crop"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-crop"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/image-crop</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-crop"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-crop"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-crop"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/meta-tag-preview</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/meta-tag-preview"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/meta-tag-preview</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/meta-tag-preview"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/privacy</loc>
