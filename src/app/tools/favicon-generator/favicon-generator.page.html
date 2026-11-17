@@ -1,0 +1,178 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.fav.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('fav.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="layout">
+    <div class="controls">
+      <section class="block" aria-labelledby="fav-src-h">
+        <h2 class="eyebrow" id="fav-src-h">{{ i18n.t('fav.source') }}</h2>
+        <app-segmented [label]="i18n.t('fav.source')" [options]="kinds()" [(value)]="kind" />
+
+        @if (kind() === 'text') {
+          <div class="fields">
+            <div class="field grow">
+              <label for="fav-text">{{ i18n.t('fav.text') }}</label>
+              <input id="fav-text" type="text" class="mono" autocomplete="off" spellcheck="false" [value]="text()" (input)="text.set($any($event.target).value)" />
+            </div>
+            <div class="field inline">
+              <label for="fav-tc">{{ i18n.t('fav.text.color') }}</label>
+              <input id="fav-tc" type="color" [value]="textColor()" (input)="setColor(textColor, $any($event.target).value)" />
+            </div>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <label for="fav-font">{{ i18n.t('fav.font') }}</label>
+              <select id="fav-font" [value]="font()" (change)="font.set($any($event.target).value)">
+                <option value="sans" [selected]="font() === 'sans'">{{ i18n.t('fav.font.sans') }}</option>
+                <option value="serif" [selected]="font() === 'serif'">{{ i18n.t('fav.font.serif') }}</option>
+                <option value="mono" [selected]="font() === 'mono'">{{ i18n.t('fav.font.mono') }}</option>
+              </select>
+            </div>
+            <label class="check"><input type="checkbox" [checked]="bold()" (change)="bold.set($any($event.target).checked)" /> {{ i18n.t('fav.bold') }}</label>
+          </div>
+        } @else {
+          <app-file-drop [hint]="i18n.t('fav.drop')" accept="image/png,image/jpeg,image/svg+xml,image/webp,image/gif,.svg" (fileSelected)="onFile($event)">
+            <p class="hint" aria-live="polite">
+              @if (image(); as im) {
+                {{ i18n.t('fav.image.loaded', { name: imageName(), w: im.width, h: im.height }) }}
+              } @else {
+                {{ i18n.t('fav.image.none') }}
+              }
+            </p>
+          </app-file-drop>
+          <div class="tool-status" role="status" aria-live="polite">
+            @if (imageError()) {
+              <p class="tool-error">{{ imageError() }}</p>
+            }
+          </div>
+          <div class="fields">
+            <app-segmented [label]="i18n.t('fav.fit')" [options]="fits()" [(value)]="fit" />
+            <div class="field">
+              <label for="fav-zoom">{{ i18n.t('fav.zoom') }}</label>
+              <input id="fav-zoom" type="range" min="1" max="4" step="0.1" [value]="zoom()" [attr.aria-valuetext]="zoom() + '×'" (input)="setNumber(zoom, $any($event.target).value, 1, 4)" />
+            </div>
+          </div>
+        }
+      </section>
+
+      <section class="block" aria-labelledby="fav-style-h">
+        <h2 class="eyebrow" id="fav-style-h">{{ i18n.t('fav.style') }}</h2>
+        <div class="fields">
+          <div class="field inline">
+            <label for="fav-bg">{{ i18n.t('fav.bg') }}</label>
+            <input id="fav-bg" type="color" [value]="bg()" [disabled]="transparent()" (input)="setColor(bg, $any($event.target).value)" />
+          </div>
+          <label class="check"><input type="checkbox" [checked]="transparent()" (change)="transparent.set($any($event.target).checked)" /> {{ i18n.t('fav.transparent') }}</label>
+        </div>
+        <div class="fields">
+          <app-segmented [label]="i18n.t('fav.shape')" [options]="shapes()" [(value)]="shape" />
+        </div>
+        <div class="field">
+          <label for="fav-pad">{{ i18n.t('fav.padding') }}: {{ padding() }}</label>
+          <input id="fav-pad" type="range" min="0" max="40" step="1" [value]="padding()" (input)="setNumber(padding, $any($event.target).value, 0, 40)" />
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="fav-site-h">
+        <h2 class="eyebrow" id="fav-site-h">{{ i18n.t('fav.site') }}</h2>
+        <div class="fields">
+          <div class="field grow">
+            <label for="fav-name">{{ i18n.t('fav.site.name') }}</label>
+            <input id="fav-name" type="text" autocomplete="off" [value]="siteName()" (input)="siteName.set($any($event.target).value)" />
+          </div>
+          <div class="field">
+            <label for="fav-short">{{ i18n.t('fav.site.short') }}</label>
+            <input id="fav-short" type="text" autocomplete="off" maxlength="16" [value]="shortName()" (input)="shortName.set($any($event.target).value)" />
+          </div>
+        </div>
+        <div class="fields">
+          <div class="field inline">
+            <label for="fav-theme">{{ i18n.t('fav.site.theme') }}</label>
+            <input id="fav-theme" type="color" [value]="themeColor()" (input)="setColor(themeColor, $any($event.target).value)" />
+          </div>
+          <div class="field inline">
+            <label for="fav-appbg">{{ i18n.t('fav.site.bg') }}</label>
+            <input id="fav-appbg" type="color" [value]="appBg()" (input)="setColor(appBg, $any($event.target).value)" />
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="side">
+      <section class="block" aria-labelledby="fav-prev-h">
+        <h2 class="eyebrow" id="fav-prev-h">{{ i18n.t('fav.preview') }}</h2>
+        @if (previews().length) {
+          <div class="sizes" data-testid="fav-previews">
+            @for (p of previews(); track p.size) {
+              <figure>
+                <div class="swatch">
+                  <img [src]="p.url" [width]="p.size === 180 ? 96 : p.size" [height]="p.size === 180 ? 96 : p.size" [alt]="i18n.t('fav.preview.alt', { n: p.size })" />
+                </div>
+                <figcaption class="mono">{{ i18n.t('fav.preview.size', { n: p.size }) }}</figcaption>
+              </figure>
+            }
+          </div>
+          <div class="tab" aria-hidden="true">
+            <img [src]="previews()[0].url" width="16" height="16" alt="" />
+            <span>{{ siteName() }}</span>
+          </div>
+          <p class="hint">{{ i18n.t('fav.preview.tab') }}</p>
+        }
+        <div class="tool-toolbar">
+          <button type="button" class="btn primary" [disabled]="!canBuild() || busy()" (click)="downloadZip()">
+            <app-icon name="download" /> {{ i18n.t('fav.zip') }}
+          </button>
+          <button type="button" class="btn small" [disabled]="!canBuild() || busy()" (click)="downloadIco()">{{ i18n.t('fav.ico.only') }}</button>
+        </div>
+        <div class="tool-status" role="status" aria-live="polite">
+          @if (busy()) {
+            <p class="tool-ok">{{ i18n.t('fav.working') }}</p>
+          }
+          @if (error()) {
+            <p class="tool-error">{{ error() }}</p>
+          }
+        </div>
+        <h3 class="eyebrow sub">{{ i18n.t('fav.files') }}</h3>
+        <ul class="filelist">
+          <li>{{ i18n.t('fav.files.ico') }}</li>
+          <li>{{ i18n.t('fav.files.png') }}</li>
+          <li>{{ i18n.t('fav.files.manifest') }}</li>
+          <li>{{ i18n.t('fav.files.readme') }}</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <section class="block" aria-labelledby="fav-snip-h">
+    <div class="head">
+      <h2 class="eyebrow" id="fav-snip-h">{{ i18n.t('fav.snippet') }}</h2>
+      <app-copy-button [text]="snippet()" [label]="i18n.t('fav.snippet.copy')" />
+    </div>
+    <pre class="code mono" data-testid="fav-snippet" tabindex="0">{{ snippet() }}</pre>
+    <div class="head">
+      <h2 class="eyebrow" id="fav-man-h">{{ i18n.t('fav.manifest') }}</h2>
+      <app-copy-button [text]="manifest()" [label]="i18n.t('fav.manifest.copy')" />
+    </div>
+    <pre class="code mono" tabindex="0" aria-labelledby="fav-man-h">{{ manifest() }}</pre>
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fav.info.size.title') }}</h2>
+      <p>{{ i18n.t('fav.info.size.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fav.info.tips.title') }}</h2>
+      <p>{{ i18n.t('fav.info.tips.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fav.info.priv.title') }}</h2>
+      <p>{{ i18n.t('fav.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

@@ -61,7 +61,16 @@ describe('URL ↔ lingua', () => {
   it('gli strumenti italyOnly sono esattamente quelli della categoria Italia', () => {
     const italy = TOOLS.filter((t) => t.category === 'italy').map((t) => t.id).sort();
     expect(TOOLS.filter((t) => t.italyOnly).map((t) => t.id).sort()).toEqual(italy);
-    expect(italy).toEqual(['calcolo-giorni-lavorativi', 'calcolo-iva', 'codice-fiscale', 'fattura-elettronica', 'iban-partita-iva']);
+    expect(italy).toEqual([
+      'calcolo-giorni-lavorativi',
+      'calcolo-iva',
+      'calcolo-rata-mutuo',
+      'calcolo-ritenuta-acconto',
+      'codice-fiscale',
+      'fattura-elettronica',
+      'iban-partita-iva',
+      'numeri-in-lettere',
+    ]);
     expect(new Set(CATEGORIES.map((c) => c.slugEn)).size).toBe(CATEGORIES.length);
   });
 });

@@ -1,0 +1,244 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.nb.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('nb.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <!-- Conversione di base -->
+  <section class="block" aria-labelledby="nb-conv-h">
+    <h2 class="eyebrow" id="nb-conv-h">{{ i18n.t('nb.conv.title') }}</h2>
+    <div class="conv-inputs">
+      <div class="field grow">
+        <label for="nb-input">{{ i18n.t('nb.input') }}</label>
+        <input
+          id="nb-input"
+          type="text"
+          class="mono"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [placeholder]="i18n.t('nb.input.ph')"
+          [value]="input()"
+          [attr.aria-invalid]="error() !== ''"
+          [attr.aria-describedby]="error() ? 'nb-err' : null"
+          (input)="input.set($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <span class="label" id="nb-inbase-l">{{ i18n.t('nb.inbase') }}</span>
+        <app-segmented [label]="i18n.t('nb.inbase')" [options]="inBases()" [value]="inBase()" (valueChange)="setInBase($event)" />
+      </div>
+      @if (inBase() === 'custom') {
+        <div class="field narrow">
+          <label for="nb-custom">{{ i18n.t('nb.custom') }}</label>
+          <input id="nb-custom" type="text" inputmode="numeric" autocomplete="off" [value]="customIn()" [attr.aria-invalid]="customInError()" (input)="customIn.set($any($event.target).value)" />
+        </div>
+      }
+    </div>
+    @if (customInError()) {
+      <p class="tool-error">{{ i18n.t('nb.custom.err') }}</p>
+    }
+    @if (error()) {
+      <p id="nb-err" class="tool-error">{{ error() }}</p>
+    }
+    <div class="opts">
+      <label class="check"><input type="checkbox" [checked]="upper()" (change)="upper.set($any($event.target).checked)" /> {{ i18n.t('nb.upper') }}</label>
+      <label class="check"><input type="checkbox" [checked]="group()" (change)="group.set($any($event.target).checked)" /> {{ i18n.t('nb.group') }}</label>
+      <div class="field narrow inline">
+        <label for="nb-out-custom">{{ i18n.t('nb.outcustom') }}</label>
+        <input id="nb-out-custom" type="text" inputmode="numeric" autocomplete="off" [value]="customOut()" [attr.aria-invalid]="customOutError()" (input)="customOut.set($any($event.target).value)" />
+      </div>
+    </div>
+    @if (customOutError()) {
+      <p class="tool-error">{{ i18n.t('nb.custom.err') }}</p>
+    }
+
+    <div aria-live="polite">
+      @if (rows().length) {
+        <table class="rows" data-testid="nb-rows">
+          <tbody>
+            @for (r of rows(); track r.key) {
+              <tr>
+                <th scope="row">{{ r.label }}</th>
+                <td class="val">{{ r.text }}</td>
+                <td class="c"><app-copy-button [text]="plain(r.text)" [compact]="true" [ariaLabel]="i18n.t('nb.copy', { name: r.label })" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else if (!error()) {
+        <p class="empty">{{ i18n.t('nb.empty') }}</p>
+      }
+    </div>
+  </section>
+
+  <!-- Complemento a due -->
+  <section class="block" aria-labelledby="nb-twos-h">
+    <h2 class="eyebrow" id="nb-twos-h">{{ i18n.t('nb.twos.title') }}</h2>
+    <div class="field">
+      <span class="label">{{ i18n.t('nb.twos.width') }}</span>
+      <app-segmented [label]="i18n.t('nb.twos.width')" [options]="widthOptions()" [value]="'' + width()" (valueChange)="setWidth($event)" />
+    </div>
+    <div aria-live="polite">
+      @if (twos(); as t) {
+        @if (t.ok) {
+          <table class="rows" data-testid="nb-twos">
+            <tbody>
+              <tr>
+                <th scope="row">{{ i18n.t('nb.twos.bits') }}</th>
+                <td class="val">{{ groupedBits(t.value.bits) }}</td>
+                <td class="c"><app-copy-button [text]="t.value.bits" [compact]="true" [ariaLabel]="i18n.t('nb.copy', { name: i18n.t('nb.twos.bits') })" /></td>
+              </tr>
+              <tr>
+                <th scope="row">{{ i18n.t('nb.twos.hex') }}</th>
+                <td class="val">{{ t.value.hex }}</td>
+                <td class="c"><app-copy-button [text]="t.value.hex" [compact]="true" [ariaLabel]="i18n.t('nb.copy', { name: i18n.t('nb.twos.hex') })" /></td>
+              </tr>
+              <tr>
+                <th scope="row">{{ i18n.t('nb.twos.unsigned') }}</th>
+                <td class="val">{{ t.value.unsigned.toString() }}</td>
+                <td class="c"></td>
+              </tr>
+              <tr>
+                <th scope="row">{{ i18n.t('nb.twos.signed') }}</th>
+                <td class="val">{{ t.value.signed.toString() }}</td>
+                <td class="c"></td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="hint">{{ i18n.t('nb.twos.range', { width: width(), min: t.value.min.toString(), max: t.value.max.toString() }) }}</p>
+        } @else {
+          <p class="tool-error">{{ twosError() }}</p>
+        }
+      } @else {
+        <p class="empty">{{ i18n.t('nb.twos.empty') }}</p>
+      }
+    </div>
+
+    @if (bytes().length) {
+      <h3 class="eyebrow sub">{{ i18n.t('nb.bits.title') }}</h3>
+      <div class="bitview" role="img" [attr.aria-label]="i18n.t('nb.bits.aria', { width: width(), bits: twos()?.ok ? groupedBits($any(twos()).value.bits) : '' })" data-testid="nb-bits">
+        @for (byte of bytes(); track byte.n) {
+          <div class="byte" aria-hidden="true">
+            <span class="byte-name">{{ i18n.t('nb.bits.byte', { n: byte.n }) }}</span>
+            <div class="cells">
+              @for (b of byte.bits; track b.index) {
+                <span class="bit" [class.one]="b.v === '1'" [class.sign]="b.sign" [attr.title]="b.sign ? 'bit ' + b.index + ' · ' + i18n.t('nb.bits.sign') : 'bit ' + b.index">
+                  <span class="bv">{{ b.v }}</span>
+                  <span class="bi">{{ b.index }}</span>
+                </span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- IEEE-754 -->
+  <section class="block" aria-labelledby="nb-float-h">
+    <h2 class="eyebrow" id="nb-float-h">{{ i18n.t('nb.float.title') }}</h2>
+    <div class="conv-inputs">
+      <div class="field">
+        <span class="label">{{ i18n.t('nb.float.kind') }}</span>
+        <app-segmented [label]="i18n.t('nb.float.kind')" [options]="floatKinds()" [(value)]="floatKind" />
+      </div>
+      <div class="field grow">
+        <label for="nb-float">{{ i18n.t('nb.float.input') }}</label>
+        <input
+          id="nb-float"
+          type="text"
+          class="mono"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [placeholder]="i18n.t('nb.float.ph')"
+          [value]="floatText()"
+          [attr.aria-invalid]="floatError() !== ''"
+          [attr.aria-describedby]="floatError() ? 'nb-float-err' : 'nb-float-hint'"
+          (input)="floatText.set($any($event.target).value)"
+        />
+      </div>
+    </div>
+    <p id="nb-float-hint" class="hint">{{ i18n.t('nb.float.hint') }}</p>
+    @if (floatError()) {
+      <p id="nb-float-err" class="tool-error">{{ floatError() }}</p>
+    }
+
+    <div aria-live="polite">
+      @if (float(); as f) {
+        <div class="fields" data-testid="nb-float">
+          <div class="fld">
+            <span class="fld-label">{{ i18n.t('nb.float.sign') }}</span>
+            <span class="fld-bits">{{ f.d.signBits }}</span>
+          </div>
+          <div class="fld">
+            <span class="fld-label">{{ i18n.t('nb.float.exp', { n: layout().expBits }) }}</span>
+            <span class="fld-bits">{{ f.d.expBitsStr }}</span>
+          </div>
+          <div class="fld grow">
+            <span class="fld-label">{{ i18n.t('nb.float.mant', { n: layout().mantBits }) }}</span>
+            <span class="fld-bits">{{ f.d.mantBitsStr }}</span>
+          </div>
+        </div>
+        <table class="rows">
+          <tbody>
+            <tr>
+              <th scope="row">{{ i18n.t('nb.float.hex') }}</th>
+              <td class="val">0x{{ f.d.hex }}</td>
+              <td class="c"><app-copy-button [text]="'0x' + f.d.hex" [compact]="true" [ariaLabel]="i18n.t('nb.copy', { name: i18n.t('nb.float.hex') })" /></td>
+            </tr>
+            <tr>
+              <th scope="row">{{ i18n.t('nb.float.class') }}</th>
+              <td class="val">{{ i18n.t('nb.float.class.' + f.d.cls) }}</td>
+              <td class="c"></td>
+            </tr>
+            <tr>
+              <th scope="row">{{ i18n.t('nb.float.signValue') }}</th>
+              <td class="val">{{ f.d.sign ? i18n.t('nb.float.negative') : i18n.t('nb.float.positive') }}</td>
+              <td class="c"></td>
+            </tr>
+            <tr>
+              <th scope="row">{{ i18n.t('nb.float.expRaw') }}</th>
+              <td class="val">{{ f.d.exponent }}</td>
+              <td class="c"></td>
+            </tr>
+            @if (f.d.unbiased !== null) {
+              <tr>
+                <th scope="row">{{ i18n.t('nb.float.expReal', { bias: layout().bias }) }}</th>
+                <td class="val">{{ f.d.unbiased }}</td>
+                <td class="c"></td>
+              </tr>
+            }
+            <tr>
+              <th scope="row">{{ i18n.t('nb.float.mantRaw') }}</th>
+              <td class="val">{{ f.d.mantissa.toString() }}</td>
+              <td class="c"></td>
+            </tr>
+            <tr>
+              <th scope="row">{{ i18n.t('nb.float.value') }}</th>
+              <td class="val">{{ valueText(f.d) }}</td>
+              <td class="c"><app-copy-button [text]="valueText(f.d)" [compact]="true" [ariaLabel]="i18n.t('nb.copy', { name: i18n.t('nb.float.value') })" /></td>
+            </tr>
+            <tr>
+              <th scope="row">{{ i18n.t('nb.float.exact') }}</th>
+              <td class="val">{{ exactShown() }}</td>
+              <td class="c"><app-copy-button [text]="f.d.exact" [compact]="true" [ariaLabel]="i18n.t('nb.copy', { name: i18n.t('nb.float.exact') })" /></td>
+            </tr>
+          </tbody>
+        </table>
+        @if (exactLongNote()) {
+          <p class="hint">{{ exactLongNote() }}</p>
+        }
+        @for (n of f.notes; track n) {
+          <p class="hint">{{ n }}</p>
+        }
+      } @else if (!floatError()) {
+        <p class="empty">{{ i18n.t('nb.float.empty') }}</p>
+      }
+    </div>
+  </section>
+</div>

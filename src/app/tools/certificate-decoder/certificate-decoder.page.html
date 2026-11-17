@@ -1,0 +1,200 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.cert.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('cert.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-file-drop [hint]="i18n.t('cert.drop')" accept=".pem,.crt,.cer,.der,.csr,.req,.txt" (fileSelected)="onFile($event)">
+    <app-io-panel [label]="i18n.t('cert.in')" inputId="cert-in" [meta]="fileName() ? i18n.t('cert.file', { name: fileName() }) : ''">
+      <span panel-actions>
+        <button type="button" class="btn small" [disabled]="!text() && !fileName()" (click)="clear()">
+          <app-icon name="trash" /> {{ i18n.t('cert.clear') }}
+        </button>
+      </span>
+      <textarea
+        id="cert-in"
+        class="io-textarea"
+        rows="9"
+        spellcheck="false"
+        autocomplete="off"
+        wrap="off"
+        [placeholder]="i18n.t('cert.in.ph')"
+        [value]="text()"
+        [attr.aria-invalid]="errorText() ? 'true' : null"
+        [attr.aria-describedby]="errorText() ? 'cert-err' : null"
+        (input)="onText($any($event.target).value)"
+      ></textarea>
+    </app-io-panel>
+  </app-file-drop>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (errorText()) {
+      <p class="tool-error" id="cert-err" data-testid="cert-error">{{ errorText() }}</p>
+    }
+  </div>
+
+  @if (hasChain()) {
+    <p class="hint">{{ i18n.t('cert.chain.note') }}</p>
+  }
+
+  @for (item of items(); track $index; let n = $index) {
+    <section class="card" [attr.aria-labelledby]="'cert-h-' + n" [attr.data-testid]="'cert-item-' + n">
+      <header class="card-head">
+        <h2 class="eyebrow" [id]="'cert-h-' + n">{{ itemTitle(item, n) }}</h2>
+        @if (item.kind !== 'error') {
+          <p class="cn">{{ commonName(item) }}</p>
+        }
+        @if (asCert(item); as c) {
+          <p class="status" [class.bad]="c.validity.status !== 'valid'" data-testid="cert-status">
+            <app-icon [name]="c.validity.status === 'valid' ? 'check' : 'close'" />
+            <strong>{{ i18n.t('cert.status.' + c.validity.status) }}</strong>
+            <span>· {{ daysText(c.validity) }}</span>
+          </p>
+        }
+      </header>
+
+      @if (item.kind === 'error') {
+        <p class="tool-error">{{ errorMessage(item) }}</p>
+      } @else {
+        <dl class="facts">
+          <ng-container *ngTemplateOutlet="row; context: { label: i18n.t('cert.f.subject'), value: item.subject.text, entries: item.subject.entries }" />
+          @if (asCert(item); as c) {
+            <ng-container *ngTemplateOutlet="row; context: { label: i18n.t('cert.f.issuer'), value: c.issuer.text, note: c.selfSigned ? i18n.t('cert.f.selfSigned') : '' }" />
+            <div class="wide">
+              <dt class="eyebrow">{{ i18n.t('cert.f.validity') }}</dt>
+              <dd class="mono">{{ i18n.t('cert.f.notBefore') }}: {{ formatDate(c.validity.notBefore) }}</dd>
+              <dd class="mono">{{ i18n.t('cert.f.notAfter') }}: {{ formatDate(c.validity.notAfter) }}</dd>
+              <dd class="sub">{{ i18n.t('cert.days.total', { n: c.validity.totalDays }) }}</dd>
+            </div>
+            <ng-container *ngTemplateOutlet="row; context: { label: i18n.t('cert.f.serial'), value: c.serial, copy: true }" />
+          }
+          @if (asCsr(item); as r) {
+            <div class="wide">
+              <dt class="eyebrow">{{ i18n.t('cert.f.csrSig') }}</dt>
+              <dd [class.badtext]="r.signatureValid === false" data-testid="cert-csr-sig">{{ csrSigText(r.signatureValid) }}</dd>
+            </div>
+          }
+          <div>
+            <dt class="eyebrow">{{ i18n.t('cert.f.version') }}</dt>
+            <dd class="mono">{{ item.version }}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow">{{ i18n.t('cert.f.signature') }}</dt>
+            <dd class="mono">
+              {{ item.signature.name }}
+              @if (item.signature.weak) {
+                <span class="tag">{{ i18n.t('cert.f.signature.weak') }}</span>
+              }
+            </dd>
+          </div>
+          <div>
+            <dt class="eyebrow">{{ i18n.t('cert.f.key') }}</dt>
+            <dd class="mono" data-testid="cert-key">{{ keyText(item.key) }}</dd>
+          </div>
+          <div class="wide">
+            <dt class="eyebrow">{{ i18n.t('cert.f.san') }}</dt>
+            @if (item.san.length) {
+              <dd>
+                <ul class="plain" data-testid="cert-san">
+                  @for (s of item.san; track $index) {
+                    <li><span class="k mono">{{ sanLabel(s) }}</span> <span class="mono wrap">{{ s.value }}</span></li>
+                  }
+                </ul>
+              </dd>
+            } @else {
+              <dd class="sub">{{ i18n.t('cert.f.san.none') }}</dd>
+            }
+          </div>
+          <div>
+            <dt class="eyebrow">{{ i18n.t('cert.f.keyUsage') }}</dt>
+            <dd class="mono">{{ item.keyUsage.length ? item.keyUsage.join(', ') : i18n.t('cert.none') }}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow">{{ i18n.t('cert.f.eku') }}</dt>
+            <dd class="mono">
+              @if (item.extendedKeyUsage.length) {
+                @for (e of item.extendedKeyUsage; track e.oid; let last = $last) {
+                  <span [attr.title]="e.oid">{{ e.name }}</span>{{ last ? '' : ', ' }}
+                }
+              } @else {
+                {{ i18n.t('cert.none') }}
+              }
+            </dd>
+          </div>
+          @if (item.basicConstraints) {
+            <div class="wide">
+              <dt class="eyebrow">{{ i18n.t('cert.f.bc') }}</dt>
+              <dd>{{ bcText(item) }}</dd>
+            </div>
+          }
+          @if (item.ski) {
+            <ng-container *ngTemplateOutlet="row; context: { label: i18n.t('cert.f.ski'), value: item.ski, copy: true }" />
+          }
+          @if (asCert(item); as c) {
+            @if (c.aki) {
+              <ng-container *ngTemplateOutlet="row; context: { label: i18n.t('cert.f.aki'), value: c.aki, copy: true }" />
+            }
+          }
+          <ng-container *ngTemplateOutlet="row; context: { label: i18n.t('cert.f.fp') + ' · ' + i18n.t('cert.f.fp.sha256'), value: item.fingerprints.sha256, copy: true, testid: 'cert-sha256' }" />
+          <ng-container *ngTemplateOutlet="row; context: { label: i18n.t('cert.f.fp') + ' · ' + i18n.t('cert.f.fp.sha1'), value: item.fingerprints.sha1, copy: true, testid: 'cert-sha1' }" />
+          @if (item.extensions.length) {
+            <div class="wide">
+              <dt class="eyebrow">{{ i18n.t('cert.f.ext') }}</dt>
+              <dd class="mono">
+                @for (e of item.extensions; track $index; let last = $last) {
+                  <span [attr.title]="e.oid">{{ e.name }}{{ e.critical ? ' (' + i18n.t('cert.f.ext.critical') + ')' : '' }}</span>{{ last ? '' : ', ' }}
+                }
+              </dd>
+            </div>
+          }
+          <div>
+            <dt class="eyebrow">{{ i18n.t('cert.f.size') }}</dt>
+            <dd class="mono">{{ sizeText(item.size) }}</dd>
+          </div>
+        </dl>
+      }
+    </section>
+  }
+
+  <ng-template #row let-label="label" let-value="value" let-entries="entries" let-note="note" let-copy="copy" let-testid="testid">
+    <div class="wide">
+      <dt class="eyebrow">{{ label }}</dt>
+      <dd class="with-copy">
+        <span class="mono wrap" [attr.data-testid]="testid">{{ value }}</span>
+        @if (copy) {
+          <app-copy-button [text]="value" [compact]="true" [ariaLabel]="i18n.t('cert.copy', { nome: label })" />
+        }
+      </dd>
+      @if (entries && entries.length > 1) {
+        <dd>
+          <ul class="plain entries">
+            @for (e of entries; track $index) {
+              <li><span class="k mono">{{ e.label }}</span> <span class="wrap">{{ e.value }}</span></li>
+            }
+          </ul>
+        </dd>
+      }
+      @if (note) {
+        <dd class="sub">{{ note }}</dd>
+      }
+    </div>
+  </ng-template>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cert.info.what.title') }}</h2>
+      <p>{{ i18n.t('cert.info.what.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cert.info.verify.title') }}</h2>
+      <p>{{ i18n.t('cert.info.verify.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cert.info.priv.title') }}</h2>
+      <p>{{ i18n.t('cert.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

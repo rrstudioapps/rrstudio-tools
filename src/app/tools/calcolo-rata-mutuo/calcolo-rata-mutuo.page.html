@@ -1,0 +1,143 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.mutuo.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('mutuo.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <p class="disclaimer" role="note">{{ i18n.t('mutuo.disclaimer') }}</p>
+
+  <div class="mutuo-layout">
+    <div class="controls">
+      <div class="field">
+        <label for="mutuo-capital">{{ i18n.t('mutuo.capital') }}</label>
+        <input
+          id="mutuo-capital"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          [placeholder]="i18n.t('mutuo.capital.ph')"
+          [value]="capitalText()"
+          [attr.aria-invalid]="capitalError()"
+          (input)="capitalText.set($any($event.target).value)"
+        />
+        @if (capitalError()) {
+          <p class="tool-error">{{ i18n.t('mutuo.capital.err') }}</p>
+        }
+      </div>
+      <div class="field">
+        <label for="mutuo-tan">{{ i18n.t('mutuo.tan') }}</label>
+        <input
+          id="mutuo-tan"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          placeholder="3,25"
+          [value]="tanText()"
+          [attr.aria-invalid]="tanError()"
+          (input)="tanText.set($any($event.target).value)"
+        />
+        @if (tanError()) {
+          <p class="tool-error">{{ i18n.t('mutuo.tan.err') }}</p>
+        }
+      </div>
+      <fieldset class="options">
+        <legend class="eyebrow">{{ i18n.t('mutuo.duration') }}</legend>
+        <div class="row2">
+          <div class="field">
+            <label for="mutuo-years">{{ i18n.t('mutuo.years') }}</label>
+            <input id="mutuo-years" type="text" inputmode="numeric" autocomplete="off" [value]="yearsText()" [attr.aria-invalid]="durationError() !== null" (input)="yearsText.set($any($event.target).value)" />
+          </div>
+          <div class="field">
+            <label for="mutuo-months">{{ i18n.t('mutuo.months') }}</label>
+            <input id="mutuo-months" type="text" inputmode="numeric" autocomplete="off" [value]="monthsText()" [attr.aria-invalid]="durationError() !== null" (input)="monthsText.set($any($event.target).value)" />
+          </div>
+        </div>
+        @if (durationError(); as e) {
+          <p class="tool-error">{{ i18n.t('mutuo.' + e + '.err') }}</p>
+        }
+        <div class="field">
+          <span class="label">{{ i18n.t('mutuo.period') }}</span>
+          <app-segmented [label]="i18n.t('mutuo.period')" [options]="periods()" [(value)]="periodicity" />
+        </div>
+      </fieldset>
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('mutuo.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('mutuo.summary') }}</h2>
+      @if (result(); as r) {
+        <dl class="stats" data-testid="mutuo-stats">
+          <div class="big">
+            <dt>{{ i18n.t('mutuo.payment') }}</dt>
+            <dd>{{ money(r.payment) }} €</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('mutuo.count') }}</dt>
+            <dd>{{ r.periods }}</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('mutuo.interest') }}</dt>
+            <dd>{{ money(r.totalInterest) }} €</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('mutuo.total') }}</dt>
+            <dd>{{ money(r.totalPaid) }} €</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('mutuo.rate') }}</dt>
+            <dd>{{ rate(r.periodicRate) }}</dd>
+          </div>
+        </dl>
+      } @else {
+        <p class="empty">{{ i18n.t('mutuo.empty') }}</p>
+      }
+    </section>
+  </div>
+
+  @if (result(); as r) {
+    <section class="plan" [attr.aria-label]="i18n.t('mutuo.plan')">
+      <div class="plan-head">
+        <h2 class="eyebrow">{{ i18n.t('mutuo.plan') }}</h2>
+        <button type="button" class="btn small" (click)="download()">
+          <app-icon name="download" /> {{ i18n.t('mutuo.csv') }}
+        </button>
+      </div>
+      <div class="table-wrap">
+        <table class="plan-table" data-testid="mutuo-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('mutuo.col.n') }}</th>
+              <th scope="col">{{ i18n.t('mutuo.col.payment') }}</th>
+              <th scope="col">{{ i18n.t('mutuo.col.interest') }}</th>
+              <th scope="col">{{ i18n.t('mutuo.col.principal') }}</th>
+              <th scope="col">{{ i18n.t('mutuo.col.balance') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.n) {
+              <tr>
+                <td>{{ row.n }}</td>
+                <td>{{ money(row.payment) }}</td>
+                <td>{{ money(row.interest) }}</td>
+                <td>{{ money(row.principal) }}</td>
+                <td>{{ money(row.balance) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button type="button" class="btn small" [disabled]="currentPage() === 0" (click)="go(-1)">
+          <app-icon name="left" /> {{ i18n.t('mutuo.prev') }}
+        </button>
+        <span aria-live="polite">{{ pageInfo() }}</span>
+        <button type="button" class="btn small" [disabled]="currentPage() >= pageCount() - 1" (click)="go(1)">
+          {{ i18n.t('mutuo.next') }} <app-icon name="right" />
+        </button>
+      </div>
+      <p class="hint">{{ i18n.t('mutuo.lastNote') }}</p>
+    </section>
+  }
+</div>

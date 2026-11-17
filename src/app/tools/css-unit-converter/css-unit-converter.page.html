@@ -1,0 +1,151 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.cssu.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('cssu.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="block" aria-labelledby="cssu-ctx-h">
+    <h2 class="eyebrow" id="cssu-ctx-h">{{ i18n.t('cssu.ctx.title') }}</h2>
+    <div class="fields">
+      <div class="field">
+        <label for="cssu-root">{{ i18n.t('cssu.ctx.root') }}</label>
+        <input id="cssu-root" type="text" inputmode="decimal" autocomplete="off" [value]="rootText()" [attr.aria-invalid]="ctxOk() ? null : 'true'" (input)="rootText.set($any($event.target).value)" />
+        <span class="hint">{{ i18n.t('cssu.ctx.root.hint') }}</span>
+      </div>
+      <div class="field">
+        <label for="cssu-parent">{{ i18n.t('cssu.ctx.parent') }}</label>
+        <input id="cssu-parent" type="text" inputmode="decimal" autocomplete="off" [value]="parentText()" [attr.aria-invalid]="ctxOk() ? null : 'true'" (input)="parentText.set($any($event.target).value)" />
+        <span class="hint">{{ i18n.t('cssu.ctx.parent.hint') }}</span>
+      </div>
+      <div class="field">
+        <label for="cssu-vw">{{ i18n.t('cssu.ctx.vw') }}</label>
+        <input id="cssu-vw" type="text" inputmode="decimal" autocomplete="off" [value]="vwText()" [attr.aria-invalid]="ctxOk() ? null : 'true'" (input)="vwText.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="cssu-vh">{{ i18n.t('cssu.ctx.vh') }}</label>
+        <input id="cssu-vh" type="text" inputmode="decimal" autocomplete="off" [value]="vhText()" [attr.aria-invalid]="ctxOk() ? null : 'true'" (input)="vhText.set($any($event.target).value)" />
+      </div>
+    </div>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (!ctxOk()) {
+        <p class="tool-error">{{ i18n.t('cssu.ctx.err') }}</p>
+      }
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="cssu-conv-h">
+    <h2 class="eyebrow" id="cssu-conv-h">{{ i18n.t('cssu.conv.title') }}</h2>
+    <div class="fields">
+      <div class="field">
+        <label for="cssu-value">{{ i18n.t('cssu.value') }}</label>
+        <input
+          id="cssu-value"
+          type="text"
+          class="mono"
+          inputmode="decimal"
+          autocomplete="off"
+          [value]="valueText()"
+          [attr.aria-invalid]="valueOk() ? null : 'true'"
+          [attr.aria-describedby]="valueOk() ? null : 'cssu-value-err'"
+          (input)="valueText.set($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="cssu-from">{{ i18n.t('cssu.from') }}</label>
+        <select id="cssu-from" [value]="from()" (change)="from.set($any($event.target).value)">
+          @for (u of units; track u) {
+            <option [value]="u" [selected]="u === from()">{{ i18n.t('cssu.unit.' + u) }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (!valueOk()) {
+        <p class="tool-error" id="cssu-value-err">{{ i18n.t('cssu.value.err') }}</p>
+      }
+    </div>
+    @if (rows().length) {
+      <table class="rows" data-testid="cssu-rows" [attr.aria-label]="i18n.t('cssu.results')">
+        <tbody>
+          @for (r of rows(); track r.unit) {
+            <tr [class.cur]="r.current">
+              <th scope="row">{{ r.label }}</th>
+              <td class="val mono">{{ r.number }}</td>
+              <td class="c">
+                <app-copy-button [text]="r.css" [compact]="true" [ariaLabel]="i18n.t('cssu.copy', { valore: r.css })" />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  <section class="block" aria-labelledby="cssu-quick-h">
+    <div class="head">
+      <h2 class="eyebrow" id="cssu-quick-h">{{ i18n.t('cssu.quick.title', { unita: quickTo() }) }}</h2>
+      <app-segmented [label]="i18n.t('cssu.quick.target')" [options]="quickOptions()" [(value)]="quickTo" />
+    </div>
+    @if (quick().length) {
+      <div class="quick" data-testid="cssu-quick">
+        @for (q of quick(); track q.px) {
+          <div class="cell"><span class="px mono">{{ q.px }}px</span><span class="mono">{{ q.text }}{{ quickTo() }}</span></div>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="block" aria-labelledby="cssu-block-h">
+    <h2 class="eyebrow" id="cssu-block-h">{{ i18n.t('cssu.block.title') }}</h2>
+    <p class="desc">{{ i18n.t('cssu.block.desc') }}</p>
+    <div class="fields">
+      <app-segmented [label]="i18n.t('cssu.block.dir')" [options]="directions()" [(value)]="direction" />
+      <label class="check"><input type="checkbox" [checked]="hairline()" (change)="hairline.set($any($event.target).checked)" /> {{ i18n.t('cssu.block.hairline') }}</label>
+      <label class="check"><input type="checkbox" [checked]="media()" (change)="media.set($any($event.target).checked)" /> {{ i18n.t('cssu.block.media') }}</label>
+      <div class="field inline">
+        <label for="cssu-dec">{{ i18n.t('cssu.block.decimals') }}</label>
+        <input id="cssu-dec" type="number" min="0" max="8" [value]="decimals()" (change)="setDecimals($any($event.target).value); $any($event.target).value = decimals()" />
+      </div>
+    </div>
+    <div class="tool-panels">
+      <app-io-panel [label]="i18n.t('cssu.block.in')" inputId="cssu-in">
+        <textarea
+          id="cssu-in"
+          class="io-textarea"
+          spellcheck="false"
+          wrap="off"
+          [placeholder]="i18n.t('cssu.block.ph')"
+          [value]="cssIn()"
+          (input)="cssIn.set($any($event.target).value)"
+        ></textarea>
+      </app-io-panel>
+      <app-io-panel [label]="i18n.t('cssu.block.out')" inputId="cssu-out" [meta]="blockMeta()">
+        <span panel-actions>
+          <app-copy-button [text]="block()?.css ?? ''" [label]="i18n.t('cssu.block.copy')" [disabled]="!block()" />
+          <button type="button" class="btn small" [disabled]="!block()" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('cssu.block.download') }}
+          </button>
+        </span>
+        <textarea id="cssu-out" class="io-textarea" readonly spellcheck="false" wrap="off" data-testid="cssu-out" [value]="block()?.css ?? ''"></textarea>
+      </app-io-panel>
+    </div>
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cssu.info.how.title') }}</h2>
+      <p>{{ i18n.t('cssu.info.how.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cssu.info.rem.title') }}</h2>
+      <p>{{ i18n.t('cssu.info.rem.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cssu.info.priv.title') }}</h2>
+      <p>{{ i18n.t('cssu.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

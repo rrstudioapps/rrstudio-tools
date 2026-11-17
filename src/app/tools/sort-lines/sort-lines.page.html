@@ -1,0 +1,117 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.sl.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('sl.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="groups">
+    <fieldset class="group">
+      <legend class="eyebrow">{{ i18n.t('sl.sort.title') }}</legend>
+      <div class="field">
+        <label class="lbl" for="sl-mode">{{ i18n.t('sl.mode') }}</label>
+        <select id="sl-mode" [value]="mode()" (change)="mode.set($any($event.target).value)" data-testid="sl-mode">
+          @for (m of modes; track m) {
+            <option [value]="m" [selected]="m === mode()">{{ i18n.t('sl.mode.' + m) }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="lbl" for="sl-lang">{{ i18n.t('sl.lang') }}</label>
+        <select id="sl-lang" [value]="lang()" (change)="lang.set($any($event.target).value)">
+          <option value="it" [selected]="lang() === 'it'">{{ i18n.t('sl.lang.it') }}</option>
+          <option value="en" [selected]="lang() === 'en'">{{ i18n.t('sl.lang.en') }}</option>
+        </select>
+      </div>
+      <label class="check"><input type="checkbox" [checked]="reverse()" (change)="reverse.set($any($event.target).checked)" /> {{ i18n.t('sl.reverse') }}</label>
+      <label class="check"><input type="checkbox" [checked]="caseSensitive()" (change)="caseSensitive.set($any($event.target).checked)" /> {{ i18n.t('sl.case') }}</label>
+      @if (mode() === 'random') {
+        <button type="button" class="btn small" (click)="shuffleTick.set(shuffleTick() + 1)"><app-icon name="refresh" /> {{ i18n.t('sl.shuffle') }}</button>
+      }
+    </fieldset>
+
+    <fieldset class="group">
+      <legend class="eyebrow">{{ i18n.t('sl.clean.title') }}</legend>
+      <label class="check"><input type="checkbox" [checked]="trim()" (change)="trim.set($any($event.target).checked)" /> {{ i18n.t('sl.trim') }}</label>
+      <label class="check"><input type="checkbox" [checked]="removeEmpty()" (change)="removeEmpty.set($any($event.target).checked)" /> {{ i18n.t('sl.empty') }}</label>
+      <div class="field">
+        <label class="lbl" for="sl-dedupe">{{ i18n.t('sl.dedupe') }}</label>
+        <select id="sl-dedupe" [value]="dedupe()" (change)="dedupe.set($any($event.target).value)" data-testid="sl-dedupe">
+          @for (d of dedupes; track d) {
+            <option [value]="d" [selected]="d === dedupe()">{{ i18n.t('sl.dedupe.' + d) }}</option>
+          }
+        </select>
+      </div>
+      <label class="check"><input type="checkbox" [checked]="collapseSpaces()" (change)="collapseSpaces.set($any($event.target).checked)" /> {{ i18n.t('sl.collapse') }}</label>
+      <label class="check"><input type="checkbox" [checked]="count()" (change)="count.set($any($event.target).checked)" data-testid="sl-count" /> {{ i18n.t('sl.count') }}</label>
+    </fieldset>
+
+    <fieldset class="group">
+      <legend class="eyebrow">{{ i18n.t('sl.extra.title') }}</legend>
+      <div class="field">
+        <label class="lbl" for="sl-prefix">{{ i18n.t('sl.prefix') }}</label>
+        <input id="sl-prefix" type="text" class="mono" spellcheck="false" autocomplete="off" [value]="prefix()" (input)="prefix.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label class="lbl" for="sl-suffix">{{ i18n.t('sl.suffix') }}</label>
+        <input id="sl-suffix" type="text" class="mono" spellcheck="false" autocomplete="off" [value]="suffix()" (input)="suffix.set($any($event.target).value)" />
+      </div>
+      <label class="check"><input type="checkbox" [checked]="numbering()" (change)="numbering.set($any($event.target).checked)" /> {{ i18n.t('sl.numbering') }}</label>
+      @if (numbering()) {
+        <div class="inline">
+          <div class="field">
+            <label class="lbl" for="sl-start">{{ i18n.t('sl.numberStart') }}</label>
+            <input id="sl-start" type="number" class="num" [value]="numberStart()" (change)="numberStart.set(num($any($event.target).value))" />
+          </div>
+          <div class="field">
+            <label class="lbl" for="sl-sep">{{ i18n.t('sl.numberSep') }}</label>
+            <input id="sl-sep" type="text" class="num mono" spellcheck="false" autocomplete="off" [value]="numberSep()" (input)="numberSep.set($any($event.target).value)" />
+          </div>
+        </div>
+      }
+    </fieldset>
+  </div>
+
+  <div class="tool-panels">
+    <app-io-panel [label]="i18n.t('sl.in')" inputId="sl-in">
+      <span panel-actions>
+        <button type="button" class="btn small" [disabled]="!input()" (click)="input.set('')">{{ i18n.t('sl.clear') }}</button>
+      </span>
+      <textarea
+        id="sl-in"
+        class="io-textarea"
+        spellcheck="false"
+        wrap="off"
+        [placeholder]="i18n.t('sl.in.ph')"
+        [value]="input()"
+        (input)="input.set($any($event.target).value)"
+        data-testid="sl-in"
+      ></textarea>
+    </app-io-panel>
+    <app-io-panel [label]="i18n.t('sl.out')" inputId="sl-out" [meta]="stats()">
+      <span panel-actions>
+        <app-copy-button [text]="output()" [disabled]="!output()" />
+        <button type="button" class="btn small" [disabled]="!output()" (click)="download()"><app-icon name="download" /> {{ i18n.t('sl.download') }}</button>
+        <button type="button" class="btn small" [disabled]="!output()" (click)="useAsInput()"><app-icon name="swap" /> {{ i18n.t('sl.use') }}</button>
+      </span>
+      <textarea id="sl-out" class="io-textarea" readonly spellcheck="false" wrap="off" [value]="output()" aria-live="polite" data-testid="sl-out"></textarea>
+    </app-io-panel>
+  </div>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sl.info.order.title') }}</h2>
+      <p>{{ i18n.t('sl.info.order.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sl.info.collate.title') }}</h2>
+      <p>{{ i18n.t('sl.info.collate.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sl.info.priv.title') }}</h2>
+      <p>{{ i18n.t('sl.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

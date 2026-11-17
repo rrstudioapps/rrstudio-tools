@@ -1,0 +1,128 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.uc.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('uc.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="cats" role="group" [attr.aria-label]="i18n.t('uc.category')">
+    @for (c of categories; track c.id) {
+      <button type="button" class="chip" [class.on]="category() === c.id" [attr.aria-pressed]="category() === c.id" (click)="setCategory(c.id)">
+        {{ i18n.t('uc.cat.' + c.id) }}
+      </button>
+    }
+  </div>
+
+  <div class="conv">
+    <div class="field value">
+      <label for="uc-value">{{ i18n.t('uc.value') }}</label>
+      <input
+        id="uc-value"
+        type="text"
+        inputmode="decimal"
+        autocomplete="off"
+        [placeholder]="i18n.t('uc.value.ph')"
+        [value]="valueText()"
+        [attr.aria-invalid]="valueError()"
+        [attr.aria-describedby]="valueError() ? 'uc-value-err' : null"
+        (input)="valueText.set($any($event.target).value)"
+      />
+    </div>
+    <div class="field">
+      <label for="uc-from">{{ i18n.t('uc.from') }}</label>
+      <select id="uc-from" [value]="from()" (change)="from.set($any($event.target).value)">
+        @for (u of units(); track u.id) {
+          <option [value]="u.id" [selected]="u.id === from()">{{ u.symbol }} · {{ unitName(category(), u) }}</option>
+        }
+      </select>
+    </div>
+    <button type="button" class="btn small swap" [attr.aria-label]="i18n.t('uc.swap')" [attr.title]="i18n.t('uc.swap')" (click)="swap()">
+      <app-icon name="swap" />
+    </button>
+    <div class="field">
+      <label for="uc-to">{{ i18n.t('uc.to') }}</label>
+      <select id="uc-to" [value]="to()" (change)="to.set($any($event.target).value)">
+        @for (u of units(); track u.id) {
+          <option [value]="u.id" [selected]="u.id === to()">{{ u.symbol }} · {{ unitName(category(), u) }}</option>
+        }
+      </select>
+    </div>
+  </div>
+  @if (valueError()) {
+    <p id="uc-value-err" class="tool-error">{{ i18n.t('uc.value.err') }}</p>
+  }
+
+  <section class="result" [attr.aria-label]="i18n.t('uc.result')" aria-live="polite">
+    @if (main(); as m) {
+      @if (m.error) {
+        <p class="tool-error">{{ m.error }}</p>
+      } @else {
+        <p class="big" data-testid="uc-result">
+          <span class="num">{{ valueText().trim() }} {{ fromUnit().symbol }}</span>
+          <span class="eq">=</span>
+          <span class="num strong">{{ m.text }} {{ toUnit().symbol }}</span>
+        </p>
+        <app-copy-button [text]="m.text" />
+      }
+    } @else {
+      <p class="empty">{{ i18n.t('uc.empty') }}</p>
+    }
+  </section>
+
+  <section class="search">
+    <label for="uc-search" class="eyebrow">{{ i18n.t('uc.search') }}</label>
+    <input id="uc-search" type="search" autocomplete="off" [placeholder]="i18n.t('uc.search.ph')" [value]="query()" (input)="query.set($any($event.target).value)" />
+    @if (searching()) {
+      <div aria-live="polite">
+        @if (hits().length) {
+          <ul class="hits" [attr.aria-label]="i18n.t('uc.search.hits')">
+            @for (h of hits(); track h.category + h.unit.id) {
+              <li>
+                <button type="button" class="chip" (click)="useHit(h)">
+                  {{ h.unit.symbol }} · {{ unitName(h.category, h.unit) }}
+                  <span class="cat">{{ i18n.t('uc.cat.' + h.category) }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="empty">{{ i18n.t('uc.search.none') }}</p>
+        }
+      </div>
+    }
+  </section>
+
+  @if (table().length) {
+    <section class="table-section">
+      <h2 class="eyebrow">{{ i18n.t('uc.table', { value: valueText().trim(), unit: fromUnit().symbol }) }}</h2>
+      <div class="table-wrap">
+        <table class="conv-table" data-testid="uc-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('uc.table.unit') }}</th>
+              <th scope="col" class="r">{{ i18n.t('uc.table.value') }}</th>
+              <th scope="col"><span class="visually-hidden">{{ i18n.t('common.copy') }}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of table(); track r.unit.id) {
+              <tr [class.cur]="r.unit.id === to()">
+                <th scope="row">
+                  <span class="sym">{{ r.unit.symbol }}</span>
+                  <span class="nm">{{ unitName(category(), r.unit) }}</span>
+                </th>
+                <td class="r">{{ r.text }}</td>
+                <td class="c"><app-copy-button [text]="r.plain" [compact]="true" [ariaLabel]="i18n.t('uc.copy', { unit: r.unit.symbol })" /></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+  @if (note()) {
+    <p class="note">{{ i18n.t(note()) }}</p>
+  }
+</div>

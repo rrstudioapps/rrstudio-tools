@@ -1,0 +1,103 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.ent.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ent.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('ent.mode')" [options]="modes()" [(value)]="mode" />
+    <app-segmented [label]="i18n.t('ent.dir')" [options]="dirs()" [(value)]="dir" />
+    <button type="button" class="btn small" (click)="swap()">
+      <app-icon name="swap" /> {{ i18n.t('ent.swap') }}
+    </button>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()">
+      <app-icon name="code" /> {{ i18n.t('ent.sample') }}
+    </button>
+    <button type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <div class="tool-toolbar">
+    @if (mode() === 'html' && dir() === 'encode') {
+      <app-segmented [label]="i18n.t('ent.scope')" [options]="scopes()" [(value)]="scope" />
+      <app-segmented [label]="i18n.t('ent.format')" [options]="formats()" [(value)]="format" />
+    }
+    @if (mode() === 'js' && dir() === 'encode') {
+      <app-segmented [label]="i18n.t('ent.quote')" [options]="quotes()" [(value)]="quote" />
+    }
+    @if (mode() === 'json' && dir() === 'encode') {
+      <label class="check"><input type="checkbox" [checked]="jsonQuotes()" (change)="jsonQuotes.set($any($event.target).checked)" /> {{ i18n.t('ent.jsonQuotes') }}</label>
+    }
+    @if ((mode() === 'js' || mode() === 'json') && dir() === 'encode') {
+      <label class="check"><input type="checkbox" [checked]="asciiOnly()" (change)="asciiOnly.set($any($event.target).checked)" /> {{ i18n.t('ent.ascii') }}</label>
+    }
+    @if (mode() === 'url') {
+      <label class="check"><input type="checkbox" [checked]="plus()" (change)="plus.set($any($event.target).checked)" /> {{ i18n.t('ent.plus') }}</label>
+    }
+    @if (hint()) {
+      <span class="hint">{{ hint() }}</span>
+    }
+  </div>
+
+  <div class="tool-panels">
+    <app-io-panel [label]="i18n.t('ent.in')" inputId="ent-in" [meta]="inputMeta()">
+      <textarea
+        id="ent-in"
+        class="io-textarea"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        [placeholder]="i18n.t('ent.ph')"
+        [attr.aria-invalid]="error() ? 'true' : null"
+        [attr.aria-describedby]="error() ? 'ent-status' : null"
+        [value]="input()"
+        (input)="onInput($event)"
+      ></textarea>
+    </app-io-panel>
+
+    <app-io-panel [label]="i18n.t('ent.out')" inputId="ent-out" [meta]="outputMeta()">
+      <span panel-actions>
+        <app-copy-button [text]="output()" [disabled]="output() === ''" />
+      </span>
+      <textarea
+        id="ent-out"
+        class="io-textarea"
+        readonly
+        spellcheck="false"
+        data-testid="ent-out"
+        [placeholder]="i18n.t('ent.empty')"
+        [value]="output()"
+      ></textarea>
+    </app-io-panel>
+  </div>
+
+  <div class="tool-status" id="ent-status" role="status" aria-live="polite">
+    @if (error()) {
+      <p class="tool-error" data-testid="ent-error"><strong>{{ i18n.t('ent.err.title') }}.</strong> {{ error() }}</p>
+    } @else {
+      @for (n of notes(); track $index) {
+        <p class="tool-ok">{{ n }}</p>
+      }
+    }
+  </div>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ent.info.html.title') }}</h2>
+      <p>{{ i18n.t('ent.info.html.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ent.info.js.title') }}</h2>
+      <p>{{ i18n.t('ent.info.js.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('ent.info.priv.title') }}</h2>
+      <p>{{ i18n.t('ent.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

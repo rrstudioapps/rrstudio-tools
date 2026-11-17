@@ -1,0 +1,79 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.nl-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .nl-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 0;
+  > label {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+  input[type='text'],
+  select {
+    width: 100%;
+  }
+  input[aria-invalid='true'] {
+    border-style: dashed;
+    border-color: var(--ink);
+  }
+}
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.words {
+  margin: 0;
+  font-size: var(--fs-lg, 1.25rem);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.hint,
+.empty {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}
+.rules {
+  ul {
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-5);
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  li + li {
+    margin-top: var(--space-1);
+  }
+}

@@ -1,0 +1,99 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.sql.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('sql.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('sql.mode')" [options]="modes()" [(value)]="mode" />
+    <label class="field">
+      <span class="lbl">{{ i18n.t('sql.dialect') }}</span>
+      <select id="sql-dialect" [value]="dialect()" (change)="onDialect($event)">
+        @for (d of dialects; track d.id) {
+          <option [value]="d.id" [selected]="d.id === dialect()">{{ d.label }}</option>
+        }
+      </select>
+    </label>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()">
+      <app-icon name="code" /> {{ i18n.t('sql.sample') }}
+    </button>
+    <button type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  @if (mode() === 'format') {
+    <div class="tool-toolbar">
+      <app-segmented [label]="i18n.t('sql.case')" [options]="cases()" [(value)]="keywordCase" />
+      <app-segmented [label]="i18n.t('sql.indent')" [options]="indents()" [(value)]="indent" />
+    </div>
+  }
+
+  <app-file-drop [hint]="i18n.t('sql.drop')" accept=".sql,text/plain,application/sql" (fileSelected)="onFile($event)">
+    <div class="tool-panels">
+      <app-io-panel [label]="i18n.t('sql.in')" inputId="sql-in" [meta]="inputMeta()">
+        <textarea
+          id="sql-in"
+          class="io-textarea"
+          wrap="off"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('sql.ph')"
+          [attr.aria-invalid]="errorText() ? 'true' : null"
+          [attr.aria-describedby]="errorText() ? 'sql-status' : null"
+          [value]="input()"
+          (input)="onInput($event)"
+        ></textarea>
+      </app-io-panel>
+
+      <app-io-panel [label]="i18n.t('sql.out')" inputId="sql-out" [meta]="outputMeta()">
+        <span panel-actions>
+          <button type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('sql.download') }}
+          </button>
+          <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        </span>
+        <textarea
+          id="sql-out"
+          class="io-textarea"
+          readonly
+          wrap="off"
+          spellcheck="false"
+          data-testid="sql-out"
+          [placeholder]="i18n.t('sql.empty')"
+          [value]="output()"
+        ></textarea>
+      </app-io-panel>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" id="sql-status" role="status" aria-live="polite">
+    @if (errorText()) {
+      <p class="tool-error" data-testid="sql-error">
+        <strong>{{ i18n.t('sql.err.title') }}.</strong> {{ errorText() }} {{ i18n.t('sql.err.hint') }}
+      </p>
+    } @else if (note()) {
+      <p class="tool-ok">{{ note() }}</p>
+    }
+  </div>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sql.info.fmt.title') }}</h2>
+      <p>{{ i18n.t('sql.info.fmt.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sql.info.min.title') }}</h2>
+      <p>{{ i18n.t('sql.info.min.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('sql.info.priv.title') }}</h2>
+      <p>{{ i18n.t('sql.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,239 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.cssg.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('cssg.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('cssg.tab')" [options]="tabs()" [(value)]="tab" />
+  </div>
+
+  <div class="layout">
+    <div class="controls">
+      @if (tab() === 'gradient') {
+        <section class="block" aria-labelledby="cssg-g-h">
+          <h2 class="eyebrow" id="cssg-g-h">{{ i18n.t('cssg.tab.gradient') }}</h2>
+          <div class="fields">
+            <app-segmented [label]="i18n.t('cssg.g.kind')" [options]="kinds()" [value]="gradient().kind" (valueChange)="setKind($event)" />
+            <label class="check"><input type="checkbox" [checked]="gradient().repeating" (change)="patch({ repeating: $any($event.target).checked })" /> {{ i18n.t('cssg.g.repeating') }}</label>
+          </div>
+          <div class="fields">
+            @if (gradient().kind !== 'radial') {
+              <div class="field">
+                <label for="cssg-angle">{{ gradient().kind === 'conic' ? i18n.t('cssg.g.angle.conic') : i18n.t('cssg.g.angle') }}</label>
+                <div class="pair">
+                  <input type="range" min="0" max="360" step="1" [value]="gradient().angle" [attr.aria-label]="i18n.t('cssg.g.angle')" (input)="setNumber('angle', $any($event.target).value, 0, 360)" />
+                  <input id="cssg-angle" type="number" min="0" max="360" [value]="gradient().angle" (change)="setNumber('angle', $any($event.target).value, 0, 360)" />
+                </div>
+              </div>
+            }
+            @if (gradient().kind === 'radial') {
+              <div class="field">
+                <label for="cssg-shape">{{ i18n.t('cssg.g.shape') }}</label>
+                <select id="cssg-shape" [value]="gradient().shape" (change)="setShape($any($event.target).value)">
+                  <option value="circle" [selected]="gradient().shape === 'circle'">{{ i18n.t('cssg.g.circle') }}</option>
+                  <option value="ellipse" [selected]="gradient().shape === 'ellipse'">{{ i18n.t('cssg.g.ellipse') }}</option>
+                </select>
+              </div>
+            }
+            @if (gradient().kind !== 'linear') {
+              <div class="field">
+                <label for="cssg-cx">{{ i18n.t('cssg.g.cx') }}</label>
+                <input id="cssg-cx" type="number" min="0" max="100" [value]="gradient().cx" (change)="setNumber('cx', $any($event.target).value, 0, 100)" />
+              </div>
+              <div class="field">
+                <label for="cssg-cy">{{ i18n.t('cssg.g.cy') }}</label>
+                <input id="cssg-cy" type="number" min="0" max="100" [value]="gradient().cy" (change)="setNumber('cy', $any($event.target).value, 0, 100)" />
+              </div>
+            }
+          </div>
+
+          <div class="barwrap">
+            <span class="eyebrow" id="cssg-bar-l">{{ i18n.t('cssg.g.bar') }}</span>
+            <div class="bar" role="group" aria-labelledby="cssg-bar-l" [style.background]="barValue()" (dblclick)="onBarDblClick($event)">
+              @for (s of gradient().stops; track s.id; let i = $index) {
+                <button
+                  type="button"
+                  class="handle"
+                  role="slider"
+                  [class.sel]="selected() === s.id"
+                  [style.left.%]="s.pos"
+                  [style.--c]="s.color"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  [attr.aria-valuenow]="s.pos"
+                  [attr.aria-label]="i18n.t('cssg.g.stop.aria', { n: i + 1, pos: s.pos })"
+                  [attr.data-testid]="'cssg-handle-' + (i + 1)"
+                  (pointerdown)="onHandleDown($event, s.id)"
+                  (pointermove)="onHandleMove($event)"
+                  (pointerup)="onHandleUp()"
+                  (pointercancel)="onHandleUp()"
+                  (focus)="selected.set(s.id)"
+                  (keydown)="onHandleKey($event, s.id)"
+                ></button>
+              }
+            </div>
+            <span class="hint">{{ i18n.t('cssg.g.bar.hint') }}</span>
+          </div>
+
+          <h3 class="eyebrow sub">{{ i18n.t('cssg.g.stops') }}</h3>
+          <ul class="stops">
+            @for (s of gradient().stops; track s.id; let i = $index) {
+              <li [class.sel]="selected() === s.id">
+                <span class="n mono">{{ i + 1 }}</span>
+                <input
+                  type="color"
+                  [value]="s.color"
+                  [attr.aria-label]="i18n.t('cssg.g.color') + ' ' + i18n.t('cssg.g.stop', { n: i + 1 })"
+                  (input)="setStopColor(s.id, $any($event.target).value)"
+                />
+                <input
+                  type="text"
+                  class="hex mono"
+                  maxlength="7"
+                  spellcheck="false"
+                  autocomplete="off"
+                  [value]="s.color"
+                  [attr.aria-label]="i18n.t('cssg.g.hex') + ' ' + i18n.t('cssg.g.stop', { n: i + 1 })"
+                  (change)="setStopColor(s.id, $any($event.target).value); $any($event.target).value = s.color"
+                />
+                <input
+                  type="number"
+                  class="narrow"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  [value]="s.alpha"
+                  [attr.aria-label]="i18n.t('cssg.g.alpha') + ' ' + i18n.t('cssg.g.stop', { n: i + 1 })"
+                  (change)="setStopNumber(s.id, 'alpha', $any($event.target).value)"
+                />
+                <input
+                  type="number"
+                  class="narrow"
+                  min="0"
+                  max="100"
+                  step="1"
+                  [value]="s.pos"
+                  [attr.aria-label]="i18n.t('cssg.g.pos') + ' ' + i18n.t('cssg.g.stop', { n: i + 1 })"
+                  (change)="setStopNumber(s.id, 'pos', $any($event.target).value)"
+                />
+                <button type="button" class="btn small compact" [disabled]="gradient().stops.length <= minStops" [attr.aria-label]="i18n.t('cssg.g.remove', { n: i + 1 })" (click)="removeStop(s.id)">
+                  <app-icon name="trash" />
+                </button>
+              </li>
+            }
+          </ul>
+          <p class="hint cols">{{ i18n.t('cssg.g.color') }} · {{ i18n.t('cssg.g.hex') }} · {{ i18n.t('cssg.g.alpha') }} · {{ i18n.t('cssg.g.pos') }}</p>
+          <div class="tool-toolbar">
+            <button type="button" class="btn small" [disabled]="gradient().stops.length >= maxStops" (click)="addStop()">
+              <app-icon name="plus" /> {{ i18n.t('cssg.g.add') }}
+            </button>
+            @if (gradient().stops.length >= maxStops) {
+              <span class="hint">{{ i18n.t('cssg.g.max') }}</span>
+            }
+          </div>
+          <div class="presets">
+            <span class="eyebrow">{{ i18n.t('cssg.presets') }}</span>
+            @for (p of gradientPresets; track p.id; let i = $index) {
+              <button type="button" class="btn small" (click)="applyGradientPreset(i)">{{ i18n.t('cssg.preset.' + p.id) }}</button>
+            }
+          </div>
+        </section>
+      } @else {
+        <section class="block" aria-labelledby="cssg-s-h">
+          <h2 class="eyebrow" id="cssg-s-h">{{ i18n.t('cssg.s.layers') }}</h2>
+          @for (s of shadows(); track s.id; let i = $index) {
+            <fieldset class="layer">
+              <legend class="eyebrow">{{ i18n.t('cssg.s.layer', { n: i + 1 }) }}</legend>
+              <div class="fields">
+                <div class="field">
+                  <label [for]="'cssg-x-' + s.id">{{ i18n.t('cssg.s.x') }}</label>
+                  <input [id]="'cssg-x-' + s.id" type="number" [value]="s.x" (change)="setShadowNumber(s.id, 'x', $any($event.target).value)" />
+                </div>
+                <div class="field">
+                  <label [for]="'cssg-y-' + s.id">{{ i18n.t('cssg.s.y') }}</label>
+                  <input [id]="'cssg-y-' + s.id" type="number" [value]="s.y" (change)="setShadowNumber(s.id, 'y', $any($event.target).value)" />
+                </div>
+                <div class="field">
+                  <label [for]="'cssg-b-' + s.id">{{ i18n.t('cssg.s.blur') }}</label>
+                  <input [id]="'cssg-b-' + s.id" type="number" min="0" [value]="s.blur" (change)="setShadowNumber(s.id, 'blur', $any($event.target).value)" />
+                </div>
+                <div class="field">
+                  <label [for]="'cssg-sp-' + s.id">{{ i18n.t('cssg.s.spread') }}</label>
+                  <input [id]="'cssg-sp-' + s.id" type="number" [value]="s.spread" (change)="setShadowNumber(s.id, 'spread', $any($event.target).value)" />
+                </div>
+              </div>
+              <div class="fields">
+                <div class="field inline">
+                  <label [for]="'cssg-c-' + s.id">{{ i18n.t('cssg.s.color') }}</label>
+                  <input [id]="'cssg-c-' + s.id" type="color" [value]="s.color" (input)="setShadowColor(s.id, $any($event.target).value)" />
+                </div>
+                <div class="field">
+                  <label [for]="'cssg-a-' + s.id">{{ i18n.t('cssg.s.alpha') }}</label>
+                  <input [id]="'cssg-a-' + s.id" type="number" min="0" max="1" step="0.05" [value]="s.alpha" (change)="setShadowNumber(s.id, 'alpha', $any($event.target).value)" />
+                </div>
+                <label class="check"><input type="checkbox" [checked]="s.inset" (change)="setShadowInset(s.id, $any($event.target).checked)" /> {{ i18n.t('cssg.s.inset') }}</label>
+                <button type="button" class="btn small" [attr.aria-label]="i18n.t('cssg.s.remove', { n: i + 1 })" (click)="removeShadow(s.id)">
+                  <app-icon name="trash" /> {{ i18n.t('cssg.s.remove', { n: i + 1 }) }}
+                </button>
+              </div>
+            </fieldset>
+          }
+          <div class="tool-toolbar">
+            <button type="button" class="btn small" [disabled]="shadows().length >= maxShadows" (click)="addShadow()">
+              <app-icon name="plus" /> {{ i18n.t('cssg.s.add') }}
+            </button>
+            @if (shadows().length >= maxShadows) {
+              <span class="hint">{{ i18n.t('cssg.s.max') }}</span>
+            }
+          </div>
+          <div class="presets">
+            <span class="eyebrow">{{ i18n.t('cssg.presets') }}</span>
+            @for (p of shadowPresets; track p.id; let i = $index) {
+              <button type="button" class="btn small" (click)="applyShadowPreset(i)">{{ i18n.t('cssg.preset.' + p.id) }}</button>
+            }
+          </div>
+        </section>
+      }
+    </div>
+
+    <div class="side">
+      <section class="block" aria-labelledby="cssg-prev-h">
+        <h2 class="eyebrow" id="cssg-prev-h">{{ i18n.t('cssg.preview') }}</h2>
+        @if (tab() === 'gradient') {
+          <div class="preview" data-testid="cssg-preview" role="img" [attr.aria-label]="i18n.t('cssg.preview')" [style.background]="gradientValue()"></div>
+        } @else {
+          <app-segmented [label]="i18n.t('cssg.s.bg')" [options]="bgOptions()" [(value)]="shadowBg" />
+          <div class="stage" [class.dark]="shadowBg() === 'dark'">
+            <div class="box" data-testid="cssg-preview" role="img" [attr.aria-label]="i18n.t('cssg.preview')" [style.box-shadow]="shadowInline()"></div>
+          </div>
+        }
+      </section>
+      <section class="block" aria-labelledby="cssg-code-h">
+        <div class="head">
+          <h2 class="eyebrow" id="cssg-code-h">{{ i18n.t('cssg.css') }}</h2>
+          <app-copy-button [text]="tab() === 'gradient' ? gradientCode() : shadowCode()" [label]="i18n.t('cssg.copy')" />
+        </div>
+        <pre class="code mono" data-testid="cssg-code" tabindex="0">{{ tab() === 'gradient' ? gradientCode() : shadowCode() }}</pre>
+      </section>
+    </div>
+  </div>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cssg.info.stops.title') }}</h2>
+      <p>{{ i18n.t('cssg.info.stops.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cssg.info.browser.title') }}</h2>
+      <p>{{ i18n.t('cssg.info.browser.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cssg.info.priv.title') }}</h2>
+      <p>{{ i18n.t('cssg.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,174 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.totp.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('totp.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="field" [attr.aria-label]="i18n.t('totp.secret')">
+    <label class="eyebrow" for="totp-secret">{{ i18n.t('totp.secret') }}</label>
+    <div class="row">
+      <input
+        id="totp-secret"
+        type="text"
+        class="grow mono"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
+        aria-describedby="totp-secret-hint"
+        [attr.aria-invalid]="secretError() ? 'true' : null"
+        [placeholder]="i18n.t('totp.secret.ph')"
+        [value]="secretText()"
+        (input)="onSecret($event)"
+        data-testid="totp-secret"
+      />
+      <button type="button" class="btn small" (click)="generate()"><app-icon name="refresh" /> {{ i18n.t('totp.generate') }}</button>
+      <button type="button" class="btn small" [disabled]="!secretText()" (click)="clear()">{{ i18n.t('totp.clear') }}</button>
+    </div>
+    <p class="hint" id="totp-secret-hint">{{ i18n.t('totp.secret.hint') }}</p>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (secretError()) {
+        <p class="tool-error" data-testid="totp-error">{{ secretError() }}</p>
+      } @else if (imported()) {
+        <p class="tool-ok">{{ i18n.t('totp.imported') }}</p>
+      }
+    </div>
+  </section>
+
+  <section class="options" [attr.aria-label]="i18n.t('totp.options')">
+    <div class="row">
+      <span class="lbl" id="totp-alg-lbl">{{ i18n.t('totp.algorithm') }}</span>
+      <app-segmented [label]="i18n.t('totp.algorithm')" [options]="algorithms()" [(value)]="algorithm" />
+      <span class="lbl">{{ i18n.t('totp.digits') }}</span>
+      <app-segmented [label]="i18n.t('totp.digits')" [options]="digitOptions" [(value)]="digits" />
+      <label class="lbl" for="totp-period">{{ i18n.t('totp.period') }}</label>
+      <input
+        id="totp-period"
+        type="number"
+        class="num"
+        inputmode="numeric"
+        [min]="minPeriod"
+        [max]="maxPeriod"
+        [value]="period()"
+        (change)="setPeriod($any($event.target).value); $any($event.target).value = period()"
+      />
+    </div>
+    <div class="row">
+      <div class="col">
+        <label class="lbl" for="totp-label">{{ i18n.t('totp.label') }}</label>
+        <input id="totp-label" type="text" autocomplete="off" [value]="label()" (input)="label.set($any($event.target).value)" />
+      </div>
+      <div class="col">
+        <label class="lbl" for="totp-issuer">{{ i18n.t('totp.issuer') }}</label>
+        <input id="totp-issuer" type="text" autocomplete="off" [value]="issuer()" (input)="issuer.set($any($event.target).value)" />
+      </div>
+    </div>
+    <p class="hint">{{ i18n.t('totp.compat') }}</p>
+  </section>
+
+  @if (validSecret()) {
+    <section class="codes" aria-labelledby="totp-cur-title">
+      <h2 class="eyebrow" id="totp-cur-title">{{ i18n.t('totp.current') }}</h2>
+      <div class="current">
+        <output class="code mono" data-testid="totp-code" [attr.aria-label]="i18n.t('totp.current')">{{ currentShown() }}</output>
+        <app-copy-button [text]="current()" [disabled]="!current()" />
+      </div>
+      <div
+        class="meter"
+        role="progressbar"
+        aria-valuemin="0"
+        [attr.aria-valuemax]="period()"
+        [attr.aria-valuenow]="remaining()"
+        [attr.aria-label]="i18n.t('totp.countdown')"
+        [attr.aria-valuetext]="remainingText()"
+      >
+        <span [style.width.%]="remainingPercent()"></span>
+      </div>
+      <p class="tool-ok" data-testid="totp-remaining">{{ remainingText() }}</p>
+      <dl class="around">
+        <div>
+          <dt class="eyebrow">{{ i18n.t('totp.previous') }}</dt>
+          <dd class="mono" data-testid="totp-prev">{{ shown(neighbours()?.previous) }}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow">{{ i18n.t('totp.next') }}</dt>
+          <dd class="mono" data-testid="totp-next">{{ shown(neighbours()?.next) }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="verify" aria-labelledby="totp-verify-title">
+      <h2 class="eyebrow" id="totp-verify-title">{{ i18n.t('totp.verify.title') }}</h2>
+      <p class="desc">{{ i18n.t('totp.verify.desc') }}</p>
+      <div class="row">
+        <label class="visually-hidden" for="totp-verify-code">{{ i18n.t('totp.verify.code') }}</label>
+        <input
+          id="totp-verify-code"
+          type="text"
+          class="mono"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          [placeholder]="i18n.t('totp.verify.code')"
+          [value]="verifyCode()"
+          (input)="verifyCode.set($any($event.target).value)"
+          data-testid="totp-verify-code"
+        />
+        <label class="lbl" for="totp-window">{{ i18n.t('totp.verify.window') }}</label>
+        <select id="totp-window" [value]="window()" (change)="setWindow($any($event.target).value)">
+          @for (w of windows; track w) {
+            <option [value]="w" [selected]="w === window()">{{ w }}</option>
+          }
+        </select>
+      </div>
+      <div class="tool-status" role="status" aria-live="polite">
+        @if (verifyMessage()) {
+          <p [class.tool-ok]="verifyResult()?.ok" [class.tool-error]="!verifyResult()?.ok" data-testid="totp-verify-result">
+            {{ verifyResult()?.ok ? '✓ ' : '✗ ' }}{{ verifyMessage() }}
+          </p>
+        }
+      </div>
+    </section>
+
+    @if (uri()) {
+      <section class="qr" aria-labelledby="totp-qr-title">
+        <h2 class="eyebrow" id="totp-qr-title">{{ i18n.t('totp.qr.title') }}</h2>
+        <p class="tool-warn" role="note">
+          <span>{{ i18n.t('totp.qr.warn') }}</span>
+        </p>
+        <div class="qr-body">
+          @if (previewUrl(); as url) {
+            <img class="qr-img" [src]="url" [alt]="i18n.t('totp.qr.alt')" width="220" height="220" data-testid="totp-qr" />
+          }
+          <div class="uri">
+            <span class="eyebrow">{{ i18n.t('totp.qr.uri') }}</span>
+            <code class="mono" data-testid="totp-uri">{{ uri() }}</code>
+            <div class="row">
+              <app-copy-button [text]="uri()" [label]="i18n.t('totp.qr.uri')" />
+              <button type="button" class="btn small" (click)="downloadQr()"><app-icon name="download" /> {{ i18n.t('totp.qr.download') }}</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+  } @else if (!secretText()) {
+    <p class="empty">{{ i18n.t('totp.empty') }}</p>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('totp.info.how.title') }}</h2>
+      <p>{{ i18n.t('totp.info.how.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('totp.info.test.title') }}</h2>
+      <p>{{ i18n.t('totp.info.test.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('totp.info.priv.title') }}</h2>
+      <p>{{ i18n.t('totp.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

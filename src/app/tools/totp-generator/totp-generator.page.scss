@@ -1,0 +1,105 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.field,
+.options,
+.codes,
+.verify,
+.qr {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.options {
+  padding-block: var(--space-4);
+  border-block: 1px solid var(--line);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.grow {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+.lbl {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.num {
+  width: 96px;
+}
+.hint,
+.desc {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.desc {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.empty {
+  margin: 0;
+  color: var(--muted);
+}
+.current {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+.code {
+  font-size: clamp(2rem, 8vw, 3rem);
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+}
+.around {
+  display: flex;
+  gap: var(--space-6);
+  margin: 0;
+  dd {
+    margin: var(--space-1) 0 0;
+    font-size: var(--fs-lg);
+    letter-spacing: 0.06em;
+    color: var(--ink-2);
+  }
+}
+.qr-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+.qr-img {
+  width: 220px;
+  height: 220px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  image-rendering: pixelated;
+}
+.uri {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1 1 260px;
+  min-width: 0;
+  code {
+    overflow-wrap: anywhere;
+    font-size: var(--fs-sm);
+    padding: var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+  }
+}

@@ -44,7 +44,7 @@ export const en: Dict = {
   'cat.dev.title': 'Developers',
   'cat.dev.desc': 'Encode, decode and compute: small workbench tools.',
   'cat.security.title': 'Security',
-  'cat.security.desc': 'Strong passwords and photo metadata: your privacy, handled in the browser.',
+  'cat.security.desc': 'Strong passwords, two-factor codes, encrypted files and photo metadata: your privacy, handled in the browser.',
   'cat.italy.title': 'Italy: tax & banking',
   'cat.italy.desc': 'Codice fiscale, IBAN, VAT number, VAT calculator, working days and e-invoices: calculate, verify and read.',
   'home.italy.lead': 'Tools for Italy (in Italian):',
@@ -53,6 +53,9 @@ export const en: Dict = {
   'home.italy.fattura-elettronica': 'fattura elettronica',
   'home.italy.calcolo-iva': 'VAT & withholding calculator',
   'home.italy.calcolo-giorni-lavorativi': 'working days calculator',
+  'home.italy.calcolo-ritenuta-acconto': 'withholding tax calculator',
+  'home.italy.calcolo-rata-mutuo': 'mortgage payment calculator',
+  'home.italy.numeri-in-lettere': 'numbers in words',
   'home.open': 'Open the tool',
   'home.soon.badge': 'Coming soon',
   'home.soon.title': 'More tools coming soon',
@@ -253,6 +256,62 @@ export const en: Dict = {
   'seo.uuid.desc':
     'Generate UUID v4, UUID v7 with timestamp and ULID, from 1 to 1000, in upper or lower case, and validate a UUID to read its version and date. In your browser.',
 
+  'tool.yj.title': 'YAML, JSON and TOML converter',
+  'tool.yj.desc':
+    'Convert between YAML, JSON and TOML in every direction, with multiple YAML documents, a choice of indentation and errors with line and column.',
+  'seo.yj.title': 'YAML JSON TOML converter online | rrstudio Tools',
+  'seo.yj.desc':
+    'Convert YAML to JSON, JSON to YAML and TOML in every direction: multiple documents, indentation, errors with line and column. In your browser, nothing is sent.',
+
+  'tool.xml.title': 'XML formatter and minifier',
+  'tool.xml.desc':
+    'Format or minify XML with the indentation you want, check it is well-formed and, if needed, convert it to JSON. Comments and CDATA are kept.',
+  'seo.xml.title': 'Format, minify and validate XML online | rrstudio Tools',
+  'seo.xml.desc':
+    'Format and minify XML, check well-formedness with errors by line and column, keep comments and CDATA and convert to JSON. Everything runs in your browser.',
+
+  'tool.sql.title': 'SQL formatter',
+  'tool.sql.desc':
+    'Format or minify an SQL query, choosing the dialect (PostgreSQL, MySQL, SQLite, SQL Server, BigQuery…), keyword case and indentation.',
+  'seo.sql.title': 'SQL formatter online (PostgreSQL, MySQL, SQLite) | rrstudio Tools',
+  'seo.sql.desc':
+    'Format and minify SQL queries for PostgreSQL, MySQL, MariaDB, SQLite, SQL Server, BigQuery and other dialects, with keyword case and indentation of your choice. In your browser.',
+
+  'tool.ent.title': 'HTML entities and escaping',
+  'tool.ent.desc':
+    'Encode and decode HTML entities (named, decimal, hexadecimal) and escape text for JavaScript strings, JSON and URL components.',
+  'seo.ent.title': 'HTML entities encoder and decoder online | rrstudio Tools',
+  'seo.ent.desc':
+    'Encode and decode HTML entities, escape and unescape JavaScript, JSON and URL strings. Decoding never interprets markup. Everything runs in your browser.',
+
+  'tool.case.title': 'Text case converter',
+  'tool.case.desc':
+    'Convert text to camelCase, snake_case, kebab-case, Title Case (English and Italian), uppercase, lowercase and more, line by line if you like.',
+  'seo.case.title': 'camelCase, snake_case, Title Case and uppercase converter | rrstudio Tools',
+  'seo.case.desc':
+    'Convert text to camelCase, PascalCase, snake_case, kebab-case, Title Case with English and Italian rules, uppercase and lowercase, line by line. In your browser.',
+
+  'tool.slug.title': 'Slug generator',
+  'tool.slug.desc':
+    'Turn titles into URL slugs: transliterated accents, a separator of your choice, a maximum length that never splits words, and stop words.',
+  'seo.slug.title': 'URL slug generator online | rrstudio Tools',
+  'seo.slug.desc':
+    'Generate URL slugs from titles and sentences: transliterated accents, separator and length of your choice, Italian and English stop words, in bulk too. In your browser.',
+
+  'tool.lorem.title': 'Lorem ipsum generator',
+  'tool.lorem.desc':
+    'Generate Lorem ipsum placeholder text as paragraphs, sentences or words, as text or HTML, with an optional seed for repeatable results.',
+  'seo.lorem.title': 'Lorem ipsum generator online | rrstudio Tools',
+  'seo.lorem.desc':
+    'Generate Lorem ipsum as paragraphs, sentences or words, as text or HTML with p tags, with an optional seed to always get the same text. Everything runs in your browser.',
+
+  'tool.cron.title': 'Cron expressions',
+  'tool.cron.desc':
+    'Explain a cron expression in plain words (Italian and English), validate it and compute the next runs in your time zone or in UTC.',
+  'seo.cron.title': 'Cron expression explainer and next runs online | rrstudio Tools',
+  'seo.cron.desc':
+    'Read a cron expression in English or Italian, validate the syntax with clear errors and see the next runs in local time or UTC, with seconds and aliases.',
+
   'tool.ts.title': 'Unix timestamp converter',
   'tool.ts.desc':
     'Convert Unix timestamps to dates and back: seconds, milliseconds, microseconds and nanoseconds, time zones, ISO 8601, RFC 2822 and relative time.',
@@ -266,6 +325,167 @@ export const en: Dict = {
   'seo.cc.title': 'WCAG color contrast checker (AA, AAA) | rrstudio Tools',
   'seo.cc.desc':
     'Calculate the contrast ratio between text and background and check AA and AAA for normal and large text and graphics. Accepts HEX, rgb, hsl and suggests a fix.',
+
+  'tool.rit.title': 'Withholding tax calculator (Italy)',
+  'tool.rit.desc':
+    'Gross to net and net to gross for Italian occasional services and freelancer fees: withholding tax, INPS surcharge, pension fund, VAT and stamp duty, with a copyable statement.',
+  'seo.rit.title': 'Italian withholding tax calculator, gross and net | rrstudio Tools',
+  'seo.rit.desc':
+    'Calculate the 20% Italian withholding tax (ritenuta d\'acconto) on an occasional service or a fee: gross to net and back, with INPS surcharge, pension fund, VAT and 2 euro stamp duty.',
+
+  'tool.mutuo.title': 'Mortgage payment calculator (Italy)',
+  'tool.mutuo.desc':
+    'Payment, total interest and a French amortization schedule from principal, nominal rate (TAN) and term. Monthly, quarterly or half-yearly payments, with CSV export.',
+  'seo.mutuo.title': 'Mortgage payment and amortization schedule | rrstudio Tools',
+  'seo.mutuo.desc':
+    'Calculate the payment of a mortgage with French amortization from principal, nominal rate and term, the total interest and the full schedule, downloadable as CSV.',
+
+  'tool.nl.title': 'Numbers in words (Italian)',
+  'tool.nl.desc':
+    'Write a number out in correct Italian, with decimals and negatives, up to billions. Cheque mode with the cents as digits.',
+  'seo.nl.title': 'Numbers in Italian words, cheque amounts | rrstudio Tools',
+  'seo.nl.desc':
+    'Convert a number to correct Italian words (ventuno, centottanta, ventitré, milleuno), with decimals, negatives and cheque amounts such as "cento/50".',
+
+  'tool.pct.title': 'Percentage calculator',
+  'tool.pct.desc':
+    'X% of Y, what percentage it is, percentage change between two values, discount or markup and reverse percentage: five calculations on one page.',
+  'seo.pct.title': 'Online percentage calculator | rrstudio Tools',
+  'seo.pct.desc':
+    'Calculate the percentage of a number, the percentage change between two values, a discount or markup and the value before a discount. Instant results, in your browser.',
+
+  'tool.uc.title': 'Unit converter',
+  'tool.uc.desc':
+    'Length, mass, temperature, area, volume, speed, time, digital data, pressure and energy, with unit search and a table of all conversions.',
+  'seo.uc.title': 'Online unit converter | rrstudio Tools',
+  'seo.uc.desc':
+    'Convert lengths, weights, temperatures, areas, volumes, speeds, times, bytes (KB and KiB), pressures and energies. Search for a unit and see every conversion together.',
+
+  'tool.dc.title': 'Date and age calculator',
+  'tool.dc.desc':
+    'Difference between two dates in years, months and days, add or subtract days, weeks, months and years, work out an exact age and the days to the next birthday.',
+  'seo.dc.title': 'Date difference, age and days calculator | rrstudio Tools',
+  'seo.dc.desc':
+    'Calculate the difference between two dates, add or subtract days, months and years, and find an exact age and the days left to a birthday. Handles month ends and leap years.',
+
+  'tool.tz.title': 'Time zone converter',
+  'tool.tz.desc':
+    'Convert a time between IANA time zones worldwide and compare several at once, with daylight saving and search by city. Uses only your browser.',
+  'seo.tz.title': 'Time zone and daylight saving converter | rrstudio Tools',
+  'seo.tz.desc':
+    'Convert a time between time zones (Rome, New York, Tokyo and all the others) and compare several cities at once, with daylight saving handled. Nothing is sent anywhere.',
+
+  'tool.nb.title': 'Number base converter',
+  'tool.nb.desc':
+    'Binary, octal, decimal, hexadecimal and bases 2 to 36 with BigInt, two\'s complement, bit view and IEEE-754 float32 and float64 encoding.',
+  'seo.nb.title': 'Binary, hex and IEEE-754 converter | rrstudio Tools',
+  'seo.nb.desc':
+    'Convert numbers between binary, octal, decimal, hexadecimal and bases 2-36, see the two\'s complement at 8, 16, 32 and 64 bits and decode or encode float32 and float64.',
+
+  'tool.pws.title': 'Password strength checker',
+  'tool.pws.desc':
+    'See how strong a password is: score, time to guess it, entropy and suggestions. No online check.',
+  'seo.pws.title': 'Online password strength checker | rrstudio Tools',
+  'seo.pws.desc':
+    'Rate a password with zxcvbn: a 0 to 4 score, time to crack in several scenarios, entropy and advice. Everything in the browser, with no online lookups.',
+
+  'tool.totp.title': 'TOTP generator (2FA)',
+  'tool.totp.desc':
+    'Generate the time-based two-factor codes from a Base32 secret or an otpauth URI, verify them and create the QR.',
+  'seo.totp.title': 'Online TOTP 2FA code generator | rrstudio Tools',
+  'seo.totp.desc':
+    'Generate and verify TOTP codes (RFC 6238) with SHA-1, SHA-256 or SHA-512, a countdown and an otpauth QR. Everything in the browser.',
+
+  'tool.fenc.title': 'Encrypt and decrypt files',
+  'tool.fenc.desc':
+    'Encrypt files and text with a passphrase (AES-256-GCM, PBKDF2) and decrypt them when needed. Everything in the browser.',
+  'seo.fenc.title': 'Encrypt and decrypt files with a password online | rrstudio Tools',
+  'seo.fenc.desc':
+    'Protect files and text with AES-256-GCM and a passphrase (PBKDF2-SHA256, 600,000 iterations). Documented format, everything in the browser, no upload.',
+
+  'tool.bc.title': 'Barcode generator',
+  'tool.bc.desc':
+    'EAN-13, EAN-8, UPC-A, Code 128, Code 39, ITF-14 and more, with check digit; download SVG or PNG, or create many codes in a ZIP.',
+  'seo.bc.title': 'EAN, UPC and Code 128 barcode generator | rrstudio Tools',
+  'seo.bc.desc':
+    'Create EAN-13, EAN-8, UPC-A, Code 128, Code 39 and ITF-14 barcodes with the check digit computed, download SVG or PNG and generate a ZIP in bulk.',
+
+  'tool.qrr.title': 'QR code reader',
+  'tool.qrr.desc':
+    'Read a QR from an image or with the camera and see what it contains (link, Wi-Fi, contact…) without opening anything.',
+  'seo.qrr.title': 'Online QR code reader from image and camera | rrstudio Tools',
+  'seo.qrr.desc':
+    'Read a QR code from an image or the camera: it recognises addresses, Wi-Fi, vCards and text and shows them safely, with warnings about suspicious links.',
+
+  'tool.sl.title': 'Sort lines',
+  'tool.sl.desc':
+    'Sort a list alphabetically, naturally or by length; remove duplicates and blank lines, count occurrences and number lines.',
+  'seo.sl.title': 'Sort text lines and remove duplicates online | rrstudio Tools',
+  'seo.sl.desc':
+    'Sort lines alphabetically (Italian and English), naturally, by length or randomly; remove duplicates and blank lines, count occurrences, add a prefix and numbering.',
+
+  'tool.fr.title': 'Find and replace',
+  'tool.fr.desc':
+    'Search and replace in text with plain text or regex, several rules in sequence and a preview of the matches.',
+  'seo.fr.title': 'Online find and replace with regex | rrstudio Tools',
+  'seo.fr.desc':
+    'Find and replace in a text in plain mode or with regex (flags g, i, m, s, u and groups), with several rules in sequence, a highlighted preview and protection from slow regexes.',
+
+  'tool.tts.title': 'Text to speech',
+  'tool.tts.desc':
+    'Have a text read aloud with the voices installed on your device: choose voice, speed and pitch. Local voices only.',
+  'seo.tts.title': 'Online text to speech: read a text aloud | rrstudio Tools',
+  'seo.tts.desc':
+    'Read a text aloud with the browser speech synthesis: voice, language, speed, pitch, volume, pause and a highlighted sentence. It uses local voices only: no text goes to external servers.',
+
+  'tool.chmod.title': 'chmod calculator',
+  'tool.chmod.desc':
+    'Tick Unix permissions and get octal, symbolic form and the chmod command; apply expressions like u+x,go-w and pick from the most common permissions.',
+  'seo.chmod.title': 'chmod calculator online: octal and symbolic | rrstudio Tools',
+  'seo.chmod.desc':
+    'Work out chmod permissions with r/w/x checkboxes for owner, group and others, plus setuid, setgid and sticky. Convert octal and symbolic and copy the command.',
+
+  'tool.cssu.title': 'CSS unit converter',
+  'tool.cssu.desc':
+    'Convert px, rem, em, pt, %, vw, vh, cm, mm and inches with your own root font size and viewport; paste CSS to turn every px into rem.',
+  'seo.cssu.title': 'px to rem and em converter for CSS | rrstudio Tools',
+  'seo.cssu.desc':
+    'Convert px to rem, em, pt, vw and other CSS units, with a quick px-to-rem table and bulk conversion of a whole stylesheet. Everything in your browser.',
+
+  'tool.cssg.title': 'CSS generator: gradients and shadows',
+  'tool.cssg.desc':
+    'Build linear, radial and conic gradients or multi-layer box-shadows, with a live preview and ready-to-copy CSS code.',
+  'seo.cssg.title': 'CSS gradient and box-shadow generator online | rrstudio Tools',
+  'seo.cssg.desc':
+    'Create linear-gradient, radial-gradient, conic-gradient and box-shadow with live preview, draggable stops, opacity and multiple shadows. Copy the CSS.',
+
+  'tool.svgo.title': 'SVG optimizer',
+  'tool.svgo.desc':
+    'Shrink SVG files with SVGO: choose precision, metadata and comments, compare before and after, side-by-side preview and a ZIP for many files.',
+  'seo.svgo.title': 'Online SVG optimizer with SVGO | rrstudio Tools',
+  'seo.svgo.desc':
+    'Compress and optimize SVG files in your browser with SVGO: several files at once, size comparison, safe preview and ZIP download. Nothing is uploaded.',
+
+  'tool.fav.title': 'Favicon generator',
+  'tool.fav.desc':
+    'From an image or from a letter or emoji, get favicon.ico, PNGs at 16, 32, 180, 192 and 512, site.webmanifest and the HTML lines, in a single ZIP.',
+  'seo.fav.title': 'Online favicon generator: ICO, PNG and manifest | rrstudio Tools',
+  'seo.fav.desc':
+    'Create favicon.ico, apple-touch-icon, Android icons and site.webmanifest from a PNG, JPG or SVG image, or from text and emoji. All in your browser, download a ZIP.',
+
+  'tool.ht.title': '.htpasswd generator',
+  'tool.ht.desc':
+    'Generate .htpasswd lines with bcrypt, APR1-MD5 or SHA1 for several users, and check whether an existing line matches a password.',
+  'seo.ht.title': 'Online .htpasswd generator: bcrypt, APR1, SHA1 | rrstudio Tools',
+  'seo.ht.desc':
+    'Create the .htpasswd file for Apache and Nginx with bcrypt ($2y$), APR1-MD5 or SHA1 and check an existing line. The calculation runs in your browser, passwords stay here.',
+
+  'tool.cert.title': 'Certificate decoder',
+  'tool.cert.desc':
+    'Read X.509 certificates and CSRs in PEM or DER: subject, issuer, expiry, SANs, key usages, SHA-1 and SHA-256 fingerprints, chains included.',
+  'seo.cert.title': 'Online SSL/TLS certificate and CSR decoder | rrstudio Tools',
+  'seo.cert.desc':
+    'Paste a PEM certificate or a CSR and read subject, issuer, days to expiry, SANs, algorithm, key size and fingerprints. All in your browser.',
 
   'seo.privacy.title': 'Privacy notice | rrstudio Tools',
   'seo.privacy.desc':

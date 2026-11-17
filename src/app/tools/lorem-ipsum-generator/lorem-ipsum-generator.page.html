@@ -1,0 +1,90 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.lorem.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('lorem.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="options" [attr.aria-label]="i18n.t('lorem.unit')">
+    <div class="row">
+      <app-segmented [label]="i18n.t('lorem.unit')" [options]="units()" [value]="unit()" (valueChange)="setUnit($event)" />
+      <label class="field">
+        <span class="lbl">{{ i18n.t('lorem.count') }}</span>
+        <input
+          id="lorem-count"
+          type="number"
+          class="num"
+          inputmode="numeric"
+          [min]="range().min"
+          [max]="range().max"
+          [value]="count()"
+          (change)="setCount($event)"
+        />
+        <span class="hint">{{ i18n.t('lorem.count.range', { min: range().min, max: range().max }) }}</span>
+      </label>
+      <app-segmented [label]="i18n.t('lorem.format')" [options]="formats()" [(value)]="format" />
+    </div>
+    <div class="row">
+      <label class="check"><input type="checkbox" [checked]="classic()" (change)="classic.set($any($event.target).checked)" /> {{ i18n.t('lorem.classic') }}</label>
+      <label class="field">
+        <span class="lbl">{{ i18n.t('lorem.seed') }}</span>
+        <input
+          id="lorem-seed"
+          type="text"
+          class="seed"
+          spellcheck="false"
+          autocomplete="off"
+          [placeholder]="i18n.t('lorem.seed.ph')"
+          [value]="seedInput()"
+          (input)="onSeed($event)"
+        />
+      </label>
+    </div>
+  </section>
+
+  <div class="tool-toolbar">
+    <button type="button" class="btn primary" (click)="generate()">
+      <app-icon name="refresh" /> {{ i18n.t('lorem.generate') }}
+    </button>
+    <app-copy-button [text]="text()" [disabled]="!text()" />
+    <button type="button" class="btn small" [disabled]="!text()" (click)="download()">
+      <app-icon name="download" /> {{ i18n.t('lorem.download') }}
+    </button>
+    <span class="hint">{{ i18n.t('lorem.shortcut') }}</span>
+  </div>
+
+  <app-io-panel [label]="i18n.t('lorem.out')" inputId="lorem-out" [meta]="meta()">
+    <textarea
+      id="lorem-out"
+      class="io-textarea out"
+      readonly
+      spellcheck="false"
+      data-testid="lorem-out"
+      [value]="text()"
+    ></textarea>
+  </app-io-panel>
+
+  <p class="hint" aria-live="polite" data-testid="lorem-seed-info">
+    @if (seed()) {
+      {{ fixedSeed() ? i18n.t('lorem.seed.fixed') : i18n.t('lorem.seed.used', { seed: seed() }) }}
+    }
+    {{ i18n.t('lorem.seed.hint') }}
+  </p>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('lorem.info.what.title') }}</h2>
+      <p>{{ i18n.t('lorem.info.what.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('lorem.info.seed.title') }}</h2>
+      <p>{{ i18n.t('lorem.info.seed.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('lorem.info.priv.title') }}</h2>
+      <p>{{ i18n.t('lorem.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

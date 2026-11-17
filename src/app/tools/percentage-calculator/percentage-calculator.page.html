@@ -1,0 +1,65 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.pct.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('pct.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="cards">
+    @for (c of cards; track c.id) {
+      <section class="card" [attr.aria-labelledby]="'pct-h-' + c.id">
+        <h2 class="card-title" [id]="'pct-h-' + c.id">{{ i18n.t('pct.' + c.id + '.title') }}</h2>
+        @if (c.hasMode) {
+          <app-segmented
+            [label]="i18n.t('pct.' + c.id + '.mode')"
+            [options]="modeOptions($any(c.id))"
+            [value]="modeOf(c.id)"
+            (valueChange)="setMode($any(c.id), $event)"
+          />
+        }
+        <div class="pair">
+          <div class="field">
+            <label [for]="'pct-' + c.id + '-a'">{{ i18n.t('pct.' + c.id + '.a') }}</label>
+            <input
+              [id]="'pct-' + c.id + '-a'"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="c.ph[0]"
+              [value]="values()[c.id][0]"
+              [attr.aria-invalid]="view(c.id).bad[0]"
+              [attr.aria-describedby]="'pct-out-' + c.id"
+              (input)="setValue(c.id, 0, $any($event.target).value)"
+            />
+          </div>
+          <div class="field">
+            <label [for]="'pct-' + c.id + '-b'">{{ i18n.t('pct.' + c.id + '.b') }}</label>
+            <input
+              [id]="'pct-' + c.id + '-b'"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="c.ph[1]"
+              [value]="values()[c.id][1]"
+              [attr.aria-invalid]="view(c.id).bad[1]"
+              [attr.aria-describedby]="'pct-out-' + c.id"
+              (input)="setValue(c.id, 1, $any($event.target).value)"
+            />
+          </div>
+        </div>
+        <div class="out" [id]="'pct-out-' + c.id" aria-live="polite" [attr.data-testid]="'pct-out-' + c.id">
+          @if (view(c.id).error) {
+            <p class="tool-error">{{ view(c.id).error }}</p>
+          } @else if (view(c.id).text) {
+            <p class="answer">{{ view(c.id).text }}</p>
+            <app-copy-button [text]="view(c.id).text" [label]="i18n.t('pct.copy')" />
+          } @else {
+            <p class="empty">{{ i18n.t('pct.empty') }}</p>
+          }
+        </div>
+      </section>
+    }
+  </div>
+</div>

@@ -1,0 +1,232 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .side {
+    order: -1;
+  }
+}
+.controls,
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.side {
+  position: sticky;
+  top: var(--space-4);
+}
+@media (max-width: 900px) {
+  .side {
+    position: static;
+  }
+}
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  h2,
+  h3 {
+    margin: 0;
+  }
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.hint {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin: 0;
+}
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-4);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  flex: 1 1 130px;
+  > label {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+  &.inline {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  input[type='number'] {
+    width: 100%;
+  }
+}
+.pair {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  input[type='range'] {
+    flex: 1;
+    min-width: 0;
+    accent-color: var(--ink);
+  }
+  input[type='number'] {
+    width: 80px;
+  }
+}
+.barwrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.bar {
+  position: relative;
+  height: 36px;
+  margin: 0 10px 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  touch-action: none;
+}
+.handle {
+  position: absolute;
+  top: 100%;
+  width: 20px;
+  height: 26px;
+  margin: 2px 0 0 -10px;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  background: var(--c);
+  cursor: ew-resize;
+  touch-action: none;
+  &.sel {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  &:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+.barwrap {
+  .hint {
+    margin-top: 0;
+  }
+}
+.stops {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    &.sel {
+      border-color: var(--ink);
+    }
+  }
+  .n {
+    width: 18px;
+    color: var(--muted);
+    font-size: var(--fs-xs);
+  }
+  input[type='color'] {
+    width: 40px;
+    height: 32px;
+    padding: 2px;
+    cursor: pointer;
+  }
+  .hex {
+    width: 92px;
+  }
+  .narrow {
+    width: 76px;
+  }
+}
+.cols {
+  margin-top: calc(var(--space-1) * -1);
+}
+.btn.compact {
+  width: 32px;
+  padding: 0;
+}
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.layer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  min-width: 0;
+  legend {
+    padding-inline: var(--space-2);
+  }
+}
+.preview {
+  height: 220px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.stage {
+  display: grid;
+  place-items: center;
+  height: 240px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #f4f4f5;
+  &.dark {
+    background: #18181b;
+  }
+  .box {
+    width: 130px;
+    height: 130px;
+    border-radius: 12px;
+    background: #ffffff;
+  }
+  &.dark .box {
+    background: #27272a;
+  }
+}
+.code {
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

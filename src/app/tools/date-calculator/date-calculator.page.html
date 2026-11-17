@@ -1,0 +1,123 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.dc.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('dc.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('dc.mode')" [options]="modes()" [(value)]="mode" />
+  </div>
+
+  <div class="dc-layout">
+    <div class="controls">
+      @switch (mode()) {
+        @case ('diff') {
+          <div class="field">
+            <label for="dc-from">{{ i18n.t('dc.diff.from') }}</label>
+            <div class="date-row">
+              <input id="dc-from" type="date" min="0001-01-01" max="9999-12-31" [value]="diffFrom()" [attr.aria-invalid]="bad(diffFrom())" (input)="diffFrom.set($any($event.target).value)" />
+              <button type="button" class="btn small" (click)="setToday('diffFrom')">{{ i18n.t('dc.today') }}</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="dc-to">{{ i18n.t('dc.diff.to') }}</label>
+            <div class="date-row">
+              <input id="dc-to" type="date" min="0001-01-01" max="9999-12-31" [value]="diffTo()" [attr.aria-invalid]="bad(diffTo())" (input)="diffTo.set($any($event.target).value)" />
+              <button type="button" class="btn small" (click)="setToday('diffTo')">{{ i18n.t('dc.today') }}</button>
+            </div>
+          </div>
+          <label class="check">
+            <input type="checkbox" [checked]="inclusive()" (change)="inclusive.set($any($event.target).checked)" />
+            {{ i18n.t('dc.diff.inclusive') }}
+          </label>
+          @if (bad(diffFrom()) || bad(diffTo())) {
+            <p class="tool-error">{{ i18n.t('dc.date.err') }}</p>
+          }
+        }
+        @case ('add') {
+          <div class="field">
+            <label for="dc-add-date">{{ i18n.t('dc.add.date') }}</label>
+            <div class="date-row">
+              <input id="dc-add-date" type="date" min="0001-01-01" max="9999-12-31" [value]="addDate()" [attr.aria-invalid]="bad(addDate())" (input)="addDate.set($any($event.target).value)" />
+              <button type="button" class="btn small" (click)="setToday('addDate')">{{ i18n.t('dc.today') }}</button>
+            </div>
+          </div>
+          <app-segmented [label]="i18n.t('dc.add.dir')" [options]="dirs()" [(value)]="dir" />
+          <div class="counts">
+            <div class="field">
+              <label for="dc-years">{{ i18n.t('dc.add.years') }}</label>
+              <input id="dc-years" type="text" inputmode="numeric" autocomplete="off" placeholder="0" [value]="years()" (input)="years.set($any($event.target).value)" />
+            </div>
+            <div class="field">
+              <label for="dc-months">{{ i18n.t('dc.add.months') }}</label>
+              <input id="dc-months" type="text" inputmode="numeric" autocomplete="off" placeholder="0" [value]="months()" (input)="months.set($any($event.target).value)" />
+            </div>
+            <div class="field">
+              <label for="dc-weeks">{{ i18n.t('dc.add.weeks') }}</label>
+              <input id="dc-weeks" type="text" inputmode="numeric" autocomplete="off" placeholder="0" [value]="weeks()" (input)="weeks.set($any($event.target).value)" />
+            </div>
+            <div class="field">
+              <label for="dc-days">{{ i18n.t('dc.add.days') }}</label>
+              <input id="dc-days" type="text" inputmode="numeric" autocomplete="off" placeholder="0" [value]="days()" (input)="days.set($any($event.target).value)" />
+            </div>
+          </div>
+          @if (bad(addDate())) {
+            <p class="tool-error">{{ i18n.t('dc.date.err') }}</p>
+          }
+          @if (countsBad()) {
+            <p class="tool-error">{{ i18n.t('dc.add.num.err') }}</p>
+          }
+        }
+        @case ('age') {
+          <div class="field">
+            <label for="dc-birth">{{ i18n.t('dc.age.birth') }}</label>
+            <div class="date-row">
+              <input id="dc-birth" type="date" min="0001-01-01" max="9999-12-31" [value]="birth()" [attr.aria-invalid]="bad(birth())" (input)="birth.set($any($event.target).value)" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="dc-ref">{{ i18n.t('dc.age.ref') }}</label>
+            <div class="date-row">
+              <input id="dc-ref" type="date" min="0001-01-01" max="9999-12-31" [value]="ref()" [attr.aria-invalid]="bad(ref())" (input)="ref.set($any($event.target).value)" />
+              <button type="button" class="btn small" (click)="setToday('ref')">{{ i18n.t('dc.today') }}</button>
+            </div>
+          </div>
+          @if (bad(birth()) || bad(ref())) {
+            <p class="tool-error">{{ i18n.t('dc.date.err') }}</p>
+          }
+        }
+      }
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('dc.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('dc.result') }}</h2>
+      @if (result(); as r) {
+        @if (r.error) {
+          <p class="tool-error">{{ r.error }}</p>
+        } @else {
+          <table class="sum" data-testid="dc-table">
+            <tbody>
+              @for (l of r.lines; track $index) {
+                <tr [class.strong]="l.strong">
+                  <th scope="row">{{ l.label }}</th>
+                  <td>{{ l.value }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          @for (n of r.notes; track n) {
+            <p class="hint">{{ n }}</p>
+          }
+          <div class="actions">
+            <app-copy-button [text]="copyText()" [label]="i18n.t('dc.copy')" />
+          </div>
+        }
+      } @else {
+        <p class="empty">{{ i18n.t('dc.empty') }}</p>
+      }
+    </section>
+  </div>
+</div>

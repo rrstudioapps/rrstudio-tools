@@ -83,7 +83,11 @@
               "rgbcolor",
               "canvg",
               "core-js",
-              "pako"
+              "pako",
+              "jsqr",
+              "jsbarcode",
+              "cronstrue/i18n",
+              "nearley"
             ]
           },
           "configurations": {

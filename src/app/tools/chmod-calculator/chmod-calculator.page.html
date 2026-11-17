@@ -1,0 +1,223 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.chmod.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('chmod.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="grid">
+    <section class="block" aria-labelledby="chmod-matrix-h">
+      <h2 class="eyebrow" id="chmod-matrix-h">{{ i18n.t('chmod.matrix.title') }}</h2>
+      <div class="scroll">
+        <table class="matrix">
+          <caption class="visually-hidden">{{ i18n.t('chmod.matrix.caption') }}</caption>
+          <thead>
+            <tr>
+              <td></td>
+              @for (b of bits; track b) {
+                <th scope="col">{{ i18n.t('chmod.bit.' + b) }}</th>
+              }
+              <th scope="col">{{ i18n.t('chmod.digit') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of classes; track c) {
+              <tr>
+                <th scope="row">{{ i18n.t('chmod.class.' + c) }}</th>
+                @for (b of bits; track b) {
+                  <td>
+                    <input
+                      type="checkbox"
+                      [attr.data-testid]="'chmod-' + c + '-' + b"
+                      [checked]="has(c, b)"
+                      [attr.aria-label]="bitLabel(c, b)"
+                      (change)="toggle(c, b, $any($event.target).checked)"
+                    />
+                  </td>
+                }
+                <td class="digit mono">{{ digit(c) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <fieldset class="specials">
+        <legend class="eyebrow">{{ i18n.t('chmod.special.title') }}</legend>
+        @for (s of specials; track s) {
+          <div class="special">
+            <label class="check">
+              <input
+                type="checkbox"
+                [attr.data-testid]="'chmod-' + s"
+                [checked]="hasSpecialBit(s)"
+                [attr.aria-describedby]="'chmod-' + s + '-hint'"
+                (change)="toggleSpecial(s, $any($event.target).checked)"
+              />
+              {{ i18n.t('chmod.special.' + s) }}
+            </label>
+            <span class="hint" [id]="'chmod-' + s + '-hint'">{{ i18n.t('chmod.special.' + s + '.hint') }}</span>
+          </div>
+        }
+      </fieldset>
+    </section>
+
+    <section class="block" aria-labelledby="chmod-result-h">
+      <h2 class="eyebrow" id="chmod-result-h">{{ i18n.t('chmod.result.title') }}</h2>
+      <div class="fields">
+        <div class="field">
+          <label for="chmod-octal">{{ i18n.t('chmod.octal') }}</label>
+          <input
+            id="chmod-octal"
+            type="text"
+            class="mono big"
+            inputmode="numeric"
+            autocomplete="off"
+            spellcheck="false"
+            maxlength="6"
+            [value]="octalText()"
+            [attr.aria-invalid]="octalError() ? 'true' : null"
+            [attr.aria-describedby]="octalError() ? 'chmod-octal-err' : 'chmod-octal-hint'"
+            (input)="onOctal($any($event.target).value)"
+          />
+          <span class="hint" id="chmod-octal-hint">{{ i18n.t('chmod.octal.hint') }}</span>
+        </div>
+        <div class="field">
+          <label for="chmod-symbolic">{{ i18n.t('chmod.symbolic') }}</label>
+          <input
+            id="chmod-symbolic"
+            type="text"
+            class="mono big"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            maxlength="12"
+            [value]="symbolicText()"
+            [attr.aria-invalid]="symbolicError() ? 'true' : null"
+            [attr.aria-describedby]="symbolicError() ? 'chmod-sym-err' : 'chmod-sym-hint'"
+            (input)="onSymbolic($any($event.target).value)"
+          />
+          <span class="hint" id="chmod-sym-hint">{{ i18n.t('chmod.symbolic.hint') }}</span>
+        </div>
+      </div>
+      <div class="tool-status" role="status" aria-live="polite">
+        @if (octalError()) {
+          <p class="tool-error" id="chmod-octal-err">{{ octalError() }}</p>
+        }
+        @if (symbolicError()) {
+          <p class="tool-error" id="chmod-sym-err">{{ symbolicError() }}</p>
+        }
+      </div>
+
+      <div class="fields">
+        <div class="field grow">
+          <label for="chmod-path">{{ i18n.t('chmod.path') }}</label>
+          <input id="chmod-path" type="text" class="mono" autocomplete="off" spellcheck="false" [value]="path()" (input)="path.set($any($event.target).value)" />
+        </div>
+        <label class="check"><input type="checkbox" [checked]="recursive()" (change)="recursive.set($any($event.target).checked)" /> {{ i18n.t('chmod.recursive') }}</label>
+      </div>
+
+      <div class="cmd">
+        <span class="eyebrow">{{ i18n.t('chmod.command') }}</span>
+        <div class="cmd-row">
+          <code class="mono" data-testid="chmod-command">{{ command() }}</code>
+          <app-copy-button [text]="command()" [compact]="true" [ariaLabel]="i18n.t('chmod.command')" />
+        </div>
+      </div>
+      <div class="cmd">
+        <span class="eyebrow">{{ i18n.t('chmod.command.symbolic') }}</span>
+        <div class="cmd-row">
+          <code class="mono" data-testid="chmod-command-sym">{{ commandSymbolic() }}</code>
+          <app-copy-button [text]="commandSymbolic()" [compact]="true" [ariaLabel]="i18n.t('chmod.command.symbolic')" />
+        </div>
+      </div>
+
+      <div class="summary" aria-live="polite">
+        <span class="eyebrow">{{ i18n.t('chmod.summary') }}</span>
+        <ul>
+          @for (line of summary(); track $index) {
+            <li>{{ line }}</li>
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <section class="block" aria-labelledby="chmod-expr-h">
+    <h2 class="eyebrow" id="chmod-expr-h">{{ i18n.t('chmod.expr.title') }}</h2>
+    <p class="desc">{{ i18n.t('chmod.expr.desc') }}</p>
+    <div class="fields">
+      <div class="field grow">
+        <label for="chmod-expr">{{ i18n.t('chmod.expr.in') }}</label>
+        <input
+          id="chmod-expr"
+          type="text"
+          class="mono"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [placeholder]="i18n.t('chmod.expr.ph')"
+          [value]="expr()"
+          [attr.aria-invalid]="exprError() ? 'true' : null"
+          [attr.aria-describedby]="exprError() ? 'chmod-expr-err' : null"
+          (input)="expr.set($any($event.target).value)"
+          (keydown.enter)="applyExpression()"
+        />
+      </div>
+      <label class="check"><input type="checkbox" [checked]="exprDir()" (change)="exprDir.set($any($event.target).checked)" /> {{ i18n.t('chmod.expr.dir') }}</label>
+    </div>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (exprError()) {
+        <p class="tool-error" id="chmod-expr-err">{{ exprError() }}</p>
+      }
+      @if (exprPreview(); as p) {
+        <p class="tool-ok" data-testid="chmod-expr-result">
+          {{ i18n.t('chmod.expr.result', { ottale: formatOctal(p.mode), simbolico: formatSymbolic(p.mode) }) }}
+        </p>
+      }
+    </div>
+    <div class="tool-toolbar">
+      <button type="button" class="btn primary" [disabled]="!exprPreview()" (click)="applyExpression()">{{ i18n.t('chmod.expr.apply') }}</button>
+      <span class="hint">{{ i18n.t('chmod.expr.umask') }}</span>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="chmod-presets-h">
+    <h2 class="eyebrow" id="chmod-presets-h">{{ i18n.t('chmod.presets.title') }}</h2>
+    <ul class="presets">
+      @for (p of presets; track p.id) {
+        <li [class.on]="currentPreset()?.id === p.id">
+          <button
+            type="button"
+            class="btn small mono"
+            [attr.aria-pressed]="currentPreset()?.id === p.id"
+            [attr.aria-label]="i18n.t('chmod.presets.pick', { id: p.id })"
+            [attr.data-testid]="'chmod-preset-' + p.id"
+            (click)="setMode(p.mode)"
+          >
+            {{ p.id }}
+          </button>
+          <span class="sym mono">{{ formatSymbolic(p.mode) }}</span>
+          <span class="pdesc">{{ presetDescription(p.id) }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('chmod.info.what.title') }}</h2>
+      <p>{{ i18n.t('chmod.info.what.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('chmod.info.dir.title') }}</h2>
+      <p>{{ i18n.t('chmod.info.dir.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('chmod.info.priv.title') }}</h2>
+      <p>{{ i18n.t('chmod.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

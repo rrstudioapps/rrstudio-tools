@@ -1,0 +1,70 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.case.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('case.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-io-panel [label]="i18n.t('case.in')" inputId="case-in" [meta]="meta()">
+    <span panel-actions>
+      <button type="button" class="btn small" (click)="loadSample()">
+        <app-icon name="type" /> {{ i18n.t('case.sample') }}
+      </button>
+      <button type="button" class="btn small" [disabled]="input() === ''" (click)="clear()">
+        <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+      </button>
+    </span>
+    <textarea
+      id="case-in"
+      class="io-textarea"
+      spellcheck="false"
+      autocomplete="off"
+      autocapitalize="off"
+      [placeholder]="i18n.t('case.ph')"
+      [value]="input()"
+      (input)="onInput($event)"
+    ></textarea>
+  </app-io-panel>
+
+  <div class="tool-toolbar">
+    <label class="check"><input type="checkbox" [checked]="perLine()" (change)="perLine.set($any($event.target).checked)" /> {{ i18n.t('case.perLine') }}</label>
+    <label class="check"><input type="checkbox" [checked]="keepAcronyms()" (change)="keepAcronyms.set($any($event.target).checked)" /> {{ i18n.t('case.acronyms') }}</label>
+    <label class="check"><input type="checkbox" [checked]="stripAccents()" (change)="stripAccents.set($any($event.target).checked)" /> {{ i18n.t('case.accents') }}</label>
+  </div>
+  <p class="hint">{{ i18n.t('case.hint.perLine') }}</p>
+
+  <section class="results" [attr.aria-label]="i18n.t('case.results')" aria-live="polite">
+    @if (results().length === 0) {
+      <p class="empty">{{ i18n.t('case.empty') }}</p>
+    } @else {
+      <ul class="cards">
+        @for (r of results(); track r.id) {
+          <li class="card" [attr.data-testid]="'case-' + r.id">
+            <div class="head">
+              <h2 class="eyebrow">{{ r.name }}</h2>
+              <app-copy-button [text]="r.value" [compact]="true" [ariaLabel]="i18n.t('case.copy', { name: r.name })" />
+            </div>
+            <pre class="res" tabindex="0">{{ r.value }}</pre>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('case.info.split.title') }}</h2>
+      <p>{{ i18n.t('case.info.split.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('case.info.title.title') }}</h2>
+      <p>{{ i18n.t('case.info.title.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('case.info.priv.title') }}</h2>
+      <p>{{ i18n.t('case.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

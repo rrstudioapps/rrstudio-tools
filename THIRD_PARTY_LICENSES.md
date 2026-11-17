@@ -22,46 +22,85 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
 | **@angular/ssr** | 22.2.7 | MIT | https://github.com/angular/angular-cli |
 | **@fontsource-variable/inter-tight** | 5.3.0 | OFL-1.1 | https://github.com/fontsource/font-files |
 | **@fontsource/jetbrains-mono** | 5.3.0 | OFL-1.1 | https://github.com/fontsource/font-files |
+| **@zxcvbn-ts/core** | 4.2.0 | MIT | https://github.com/zxcvbn-ts/zxcvbn |
+| **@zxcvbn-ts/language-common** | 4.1.3 | MIT | https://github.com/zxcvbn-ts/zxcvbn |
+| **@zxcvbn-ts/language-en** | 4.1.1 | MIT | https://github.com/zxcvbn-ts/zxcvbn |
+| **@zxcvbn-ts/language-it** | 4.1.1 | MIT | https://github.com/zxcvbn-ts/zxcvbn |
+| **asn1js** | 4.0.0 | BSD-3-Clause | https://github.com/PeculiarVentures/ASN1.js |
+| **bcryptjs** | 3.0.3 | BSD-3-Clause | https://github.com/dcodeIO/bcrypt.js |
+| **cronstrue** | 3.38.0 | MIT | https://github.com/bradymholt/cRonstrue |
 | **echarts** | 6.1.0 | Apache-2.0 | https://github.com/apache/echarts |
 | **fflate** | 0.8.3 | MIT | https://github.com/101arrowz/fflate |
 | **html2canvas** | 1.4.1 | MIT | https://github.com/niklasvh/html2canvas |
+| **jsbarcode** | 3.12.3 | MIT | https://github.com/lindell/JsBarcode |
 | **jspdf** | 4.2.1 | MIT | https://github.com/parallax/jsPDF |
+| **jsqr** | 1.4.0 | Apache-2.0 | https://github.com/cozmo/jsQR |
 | **ngx-echarts** | 22.0.0 | MIT | https://github.com/xieziyu/ngx-echarts |
 | **papaparse** | 5.7.1 | MIT | https://github.com/mholt/PapaParse |
 | **pdf-lib** | 1.17.1 | MIT | https://github.com/Hopding/pdf-lib |
 | **pdfjs-dist** | 6.5.438 | Apache-2.0 | https://github.com/mozilla/pdf.js |
+| **pkijs** | 4.0.1 | BSD-3-Clause | https://github.com/PeculiarVentures/PKI.js |
 | **rxjs** | 7.8.2 | Apache-2.0 | https://github.com/reactivex/rxjs |
+| **smol-toml** | 1.9.1 | BSD-3-Clause | github:squirrelchat/smol-toml |
+| **sql-formatter** | 15.9.0 | MIT | https://github.com/sql-formatter-org/sql-formatter |
+| **svgo** | 4.1.0 | MIT | git://github.com/svg/svgo |
 | **tslib** | 2.9.1 | 0BSD | https://github.com/Microsoft/tslib |
 | **tslib** | 2.3.0 | 0BSD | https://github.com/Microsoft/tslib |
 | **tslib** | 1.14.1 | 0BSD | https://github.com/Microsoft/tslib |
 | **xlsx** | 0.20.3 | Apache-2.0 | https://git.sheetjs.com/SheetJS/sheetjs |
+| **yaml** | 2.9.1 | ISC | github:eemeli/yaml |
 | @babel/runtime | 7.29.14 | MIT | https://github.com/babel/babel |
 | @napi-rs/canvas | 1.1.1 | MIT | https://github.com/Brooooooklyn/canvas |
 | @napi-rs/canvas-linux-arm64-gnu | 1.1.1 | MIT | https://github.com/Brooooooklyn/canvas |
+| @noble/hashes | 2.4.0 | MIT | https://github.com/paulmillr/noble-hashes |
 | @pdf-lib/standard-fonts | 1.0.0 | MIT | https://github.com/Hopding/standard-fonts |
 | @pdf-lib/upng | 1.0.1 | MIT | https://github.com/Hopding/upng |
+| @peculiar/utils | 4.1.0 | MIT | https://github.com/PeculiarVentures/pvtsutils |
 | @standard-schema/spec | 1.1.0 | MIT | https://github.com/standard-schema/standard-schema |
 | @types/pako | 2.0.4 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
 | @types/raf | 3.4.3 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
 | @types/trusted-types | 2.0.7 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
+| @zxcvbn-ts/dictionary-compression | 3.0.1 | MIT | https://github.com/zxcvbn-ts/dictionary-compression |
+| argparse | 2.0.1 | Python-2.0 | nodeca/argparse |
 | base64-arraybuffer | 1.0.2 | MIT | https://github.com/niklasvh/base64-arraybuffer |
 | beasties | 0.5.4 | Apache-2.0 | https://github.com/danielroe/beasties |
+| boolbase | 1.0.0 | ISC | https://github.com/fb55/boolbase |
 | boolbase | 2.0.0 | ISC | https://github.com/fb55/boolbase |
+| bytestreamjs | 3.0.0 | BSD-3-Clause | https://github.com/PeculiarVentures/ByteStream.js |
 | canvg | 3.0.11 | MIT | https://github.com/canvg/canvg |
+| commander | 11.1.0 | MIT | https://github.com/tj/commander.js |
+| commander | 2.20.3 | MIT | https://github.com/tj/commander.js |
 | core-js | 3.51.0 | MIT | https://github.com/zloirock/core-js |
 | css-line-break | 2.1.0 | MIT | ssh://git@github.com/niklasvh/css-line-break |
+| css-select | 6.0.0 | BSD-2-Clause | git://github.com/fb55/css-select |
 | css-select | 7.0.0 | BSD-2-Clause | git://github.com/fb55/css-select |
+| css-tree | 3.2.1 | MIT | csstree/csstree |
+| css-tree | 2.2.1 | MIT | csstree/csstree |
+| css-what | 7.0.0 | BSD-2-Clause | https://github.com/fb55/css-what |
 | css-what | 8.0.0 | BSD-2-Clause | https://github.com/fb55/css-what |
+| csso | 5.0.5 | MIT | css/csso |
+| discontinuous-range | 1.0.0 | MIT | https://github.com/dtudury/discontinuous-range |
 | dom-serializer | 3.1.1 | MIT | git://github.com/cheeriojs/dom-serializer |
+| dom-serializer | 2.0.0 | MIT | git://github.com/cheeriojs/dom-serializer |
 | domelementtype | 3.0.0 | BSD-2-Clause | git://github.com/fb55/domelementtype |
+| domelementtype | 2.3.0 | BSD-2-Clause | git://github.com/fb55/domelementtype |
 | domhandler | 6.0.1 | BSD-2-Clause | git://github.com/fb55/domhandler |
+| domhandler | 5.0.3 | BSD-2-Clause | git://github.com/fb55/domhandler |
 | dompurify | 3.4.18 | (MPL-2.0 OR Apache-2.0) | git://github.com/cure53/DOMPurify |
+| domutils | 3.2.2 | BSD-2-Clause | git://github.com/fb55/domutils |
 | domutils | 4.0.2 | BSD-2-Clause | git://github.com/fb55/domutils |
 | entities | 8.1.0 | BSD-2-Clause | https://github.com/fb55/entities |
+| entities | 4.5.0 | BSD-2-Clause | git://github.com/fb55/entities |
 | fast-png | 6.4.0 | MIT | https://github.com/image-js/fast-png |
+| fastest-levenshtein | 1.0.16 | MIT | https://github.com/ka-weihe/fastest-levenshtein |
 | htmlparser2 | 12.0.0 | MIT | git://github.com/fb55/htmlparser2 |
 | iobuffer | 5.4.0 | MIT | https://github.com/image-js/iobuffer |
+| mdn-data | 2.27.1 | CC0-1.0 | https://github.com/mdn/data |
+| mdn-data | 2.0.28 | CC0-1.0 | https://github.com/mdn/data |
+| moo | 0.5.3 | BSD-3-Clause | https://github.com/tjvr/moo |
 | nanoid | 3.3.20 | MIT | ai/nanoid |
+| nearley | 2.20.1 | MIT | https://github.com/hardmath123/nearley |
+| nth-check | 2.1.1 | BSD-2-Clause | https://github.com/fb55/nth-check |
 | nth-check | 3.0.1 | BSD-2-Clause | https://github.com/fb55/nth-check |
 | pako | 1.0.11 | (MIT AND Zlib) | nodeca/pako |
 | pako | 2.2.0 | (MIT AND Zlib) | nodeca/pako |
@@ -71,8 +110,12 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
 | postcss-media-query-parser | 0.2.3 | MIT | https://github.com/dryoma/postcss-media-query-parser |
 | postcss-safe-parser | 7.1.0 | MIT | postcss/postcss-safe-parser |
 | raf | 3.4.1 | MIT | git://github.com/chrisdickinson/raf |
+| railroad-diagrams | 1.0.0 | CC0-1.0 | https://github.com/tabatkins/railroad-diagrams |
+| randexp | 0.4.6 | MIT | git://github.com/fent/randexp.js |
 | regenerator-runtime | 0.13.11 | MIT | https://github.com/facebook/regenerator/tree/main/packages/runtime |
+| ret | 0.1.15 | MIT | git://github.com/fent/ret.js |
 | rgbcolor | 1.0.1 | MIT OR SEE LICENSE IN FEEL-FREE.md | https://github.com/yetzt/node-rgbcolor |
+| sax | 1.6.1 | BlueOak-1.0.0 | ssh://git@github.com/isaacs/sax-js |
 | source-map-js | 1.2.2 | BSD-3-Clause | 7rulnik/source-map-js |
 | stackblur-canvas | 2.7.0 | MIT | https://github.com/flozz/StackBlur |
 | svg-pathdata | 6.0.3 | MIT | https://github.com/nfroidure/svg-pathdata |
@@ -105,7 +148,13 @@ rrstudio Tools usa i componenti open source elencati qui sotto, ognuno con la su
   [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (https://www.istat.it/note-legali/). Changes: only
   the name, cadastral code and province abbreviation are kept, as compact JSON
   (`public/data/luoghi.json`, same origin, regenerated by `scripts/update-places.mjs`); the historical
-  province codes 001-099 also feed `vat-offices.ts`. / Dati ISTAT (CC BY 4.0), rielaborati in formato compatto.
+  province codes 001-099 also feed `vat-offices.ts`. Suppressed municipalities come from the public ISTAT SITUAS
+  report 128 (https://situas-servizi.istat.it/publish/reportspooljson?pfun=128), same licence. / Dati ISTAT
+  (CC BY 4.0), rielaborati in formato compatto; comuni soppressi dal report SITUAS 128.
+- **ANPR** (Anagrafe nazionale della popolazione residente, Ministero dell'Interno), table of foreign states
+  `tab_Stati_Esteri.xlsx` (https://github.com/italia/anpr), licensed
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Changes: only the ISTAT name and the cadastral
+  code (Z...) are kept. / Stati esteri con codice Z dalla tabella ANPR (CC BY 4.0).
 - **IBAN lengths and formats** follow the public IBAN Registry of SWIFT (ISO 13616); the **codice fiscale**
   rules are those of the DM 23 December 1976; the IBAN mod-97, the Italian CIN and the partita IVA check
   digit are original TypeScript implementations of public algorithms: no third-party code.

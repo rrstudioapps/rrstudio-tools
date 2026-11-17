@@ -29,9 +29,12 @@ export interface SegmentOption<T extends string> {
   styles: `
     :host {
       display: inline-flex;
+      max-width: 100%;
     }
     .seg {
       display: inline-flex;
+      flex-wrap: wrap;
+      max-width: 100%;
       border: 1px solid var(--line);
       border-radius: var(--radius-pill);
       padding: 2px;

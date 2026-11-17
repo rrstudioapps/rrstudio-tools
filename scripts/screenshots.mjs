@@ -418,6 +418,100 @@ try {
       await page.waitForSelector('[data-testid=iva-table]');
     },
   });
+  await shot('calcolo-ritenuta-acconto.png', {
+    width: 1280,
+    dark: false,
+    path: '/calcolo-ritenuta-acconto/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Professionista', exact: true }).click();
+      await page.fill('#rit-amount', '1.000,00');
+      await page.fill('#rit-cassa', '4');
+      await page.waitForSelector('[data-testid=rit-table]');
+    },
+  });
+  await shot('calcolo-rata-mutuo.png', {
+    width: 1280,
+    dark: false,
+    path: '/calcolo-rata-mutuo/',
+    setup: async (page) => {
+      await page.fill('#mutuo-capital', '150.000');
+      await page.fill('#mutuo-tan', '3,25');
+      await page.fill('#mutuo-years', '25');
+      await page.waitForSelector('[data-testid=mutuo-table]');
+    },
+  });
+  await shot('numeri-in-lettere.png', {
+    width: 1280,
+    dark: false,
+    path: '/numeri-in-lettere/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Assegno / importo', exact: true }).click();
+      await page.fill('#nl-input', '1.234,56');
+      await page.getByLabel('Aggiungi «euro» davanti').check();
+      await page.waitForSelector('[data-testid=nl-result]');
+    },
+  });
+  await shot('percentage-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/percentage-calculator/',
+    setup: async (page) => {
+      const fill = async (id, a, b) => {
+        await page.fill(`#pct-${id}-a`, a);
+        await page.fill(`#pct-${id}-b`, b);
+      };
+      await fill('of', '22', '1250');
+      await fill('is', '45', '180');
+      await fill('change', '80', '100');
+      await fill('apply', '250', '15');
+      await fill('reverse', '85', '15');
+      await page.waitForSelector('[data-testid=pct-out-reverse] .answer');
+    },
+  });
+  await shot('unit-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/unit-converter/',
+    setup: async (page) => {
+      await page.fill('#uc-value', '42,195');
+      await page.waitForSelector('[data-testid=uc-table]');
+    },
+  });
+  await shot('date-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/date-calculator/',
+    setup: async (page) => {
+      await page.fill('#dc-from', '2020-02-29');
+      await page.fill('#dc-to', '2026-11-16');
+      await page.waitForSelector('[data-testid=dc-table]');
+    },
+  });
+  await shot('timezone-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/timezone-converter/',
+    setup: async (page) => {
+      // data e ora si impostano dopo l'idratazione: si aspettano le schede e poi si scrive
+      await page.waitForSelector('[data-testid=tz-cards]');
+      await page.fill('#tz-date', '2026-11-16');
+      await page.fill('#tz-time', '09:30');
+      await page.fill('#tz-search', 'Sydney');
+      await page.getByRole('button', { name: /Aggiungi Sydney/ }).click();
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('number-base-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/number-base-converter/',
+    setup: async (page) => {
+      await page.fill('#nb-input', '-42');
+      await page.fill('#nb-float', '0,1');
+      await page.waitForSelector('[data-testid=nb-float]');
+      await page.waitForSelector('[data-testid=nb-bits]');
+    },
+  });
   await shot('text-diff.png', {
     width: 1280,
     dark: false,
@@ -513,6 +607,257 @@ try {
     path: '/color-contrast-checker/',
     setup: async (page) => {
       await page.waitForSelector('[data-testid=cc-ratio]');
+    },
+  });
+  await shot('yaml-json-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/yaml-json-converter/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('[data-testid=yj-out]');
+    },
+  });
+  await shot('xml-formatter.png', {
+    width: 1280,
+    dark: false,
+    path: '/xml-formatter/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=xml-out]')?.value.includes('\n'));
+    },
+  });
+  await shot('sql-formatter.png', {
+    width: 1280,
+    dark: false,
+    path: '/sql-formatter/',
+    setup: async (page) => {
+      await page.selectOption('#sql-dialect', 'postgresql');
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=sql-out]')?.value.includes('SELECT'));
+    },
+  });
+  await shot('html-entities.png', {
+    width: 1280,
+    dark: false,
+    path: '/html-entities/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=ent-out]')?.value.includes('&'));
+    },
+  });
+  await shot('case-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/case-converter/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('[data-testid=case-snake]');
+    },
+  });
+  await shot('slug-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/slug-generator/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=slug-out]')?.value.length > 0);
+    },
+  });
+  await shot('lorem-ipsum-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/lorem-ipsum-generator/',
+    setup: async (page) => {
+      await page.fill('#lorem-seed', 'rrstudio');
+      await page.waitForFunction(() => document.querySelector('[data-testid=lorem-out]')?.value.startsWith('Lorem ipsum'));
+    },
+  });
+  await shot('cron-expression.png', {
+    width: 1280,
+    dark: false,
+    path: '/cron-expression/',
+    setup: async (page) => {
+      await page.fill('#cron-expr', '*/15 9-17 * * 1-5');
+      await page.waitForSelector('[data-testid=cron-runs]');
+    },
+  });
+  await shot('chmod-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/chmod-calculator/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Usa 755' }).click();
+      await page.fill('#chmod-expr', 'g+w,o-x');
+      await page.waitForSelector('[data-testid=chmod-expr-result]');
+    },
+  });
+  await shot('css-unit-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/css-unit-converter/',
+    setup: async (page) => {
+      await page.fill('#cssu-value', '24');
+      await page.fill('#cssu-in', '.card {\n  padding: 24px 16px;\n  margin: 0 auto 8px;\n  font-size: 14px;\n  border: 1px solid #ccc;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);\n}\n@media (min-width: 768px) {\n  .card { padding: 32px; }\n}\n');
+      await page.waitForFunction(() => document.querySelector('[data-testid=cssu-out]')?.value.includes('rem'));
+    },
+  });
+  await shot('css-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/css-generator/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Tramonto' }).click();
+      await page.getByRole('button', { name: 'Aggiungi stop' }).click();
+      await page.waitForSelector('[data-testid=cssg-code]');
+    },
+  });
+  await shot('svg-optimizer.png', {
+    width: 1280,
+    dark: false,
+    path: '/svg-optimizer/',
+    setup: async (page) => {
+      await page.fill('#svgo-paste', "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- Generator: Illustrator 27.0 -->\n<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" width=\"64\" height=\"64\">\n  <metadata>editor data that nobody needs</metadata>\n  <title>Logo</title>\n  <g id=\"Livello_1\">\n    <circle cx=\"32.000000\" cy=\"32.000000\" r=\"28.500000\" fill=\"#6366F1\" stroke=\"#000000\" stroke-width=\"1.000000\"/>\n    <path d=\"M 20.123456 34.654321 L 28.987654 43.111111 L 45.555555 22.222222\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"5.000000\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n  </g>\n</svg>\n");
+      await page.getByRole('button', { name: 'Ottimizza il codice incollato' }).click();
+      await page.waitForSelector('[data-testid=svgo-after]');
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('favicon-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/favicon-generator/',
+    setup: async (page) => {
+      await page.fill('#fav-name', 'Il mio sito');
+      await page.fill('#fav-short', 'Sito');
+      await page.waitForSelector('[data-testid=fav-previews]');
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('htpasswd-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/htpasswd-generator/',
+    setup: async (page) => {
+      await page.fill('#ht-cost', '6');
+      await page.locator('#ht-cost').dispatchEvent('change');
+      await page.fill('#ht-user-1', 'mario');
+      await page.fill('#ht-pw-1', 'una-password-lunga-e-casuale');
+      await page.getByRole('button', { name: 'Aggiungi utente' }).click();
+      await page.fill('#ht-user-2', 'giulia');
+      await page.fill('#ht-pw-2', 'un-altra-password');
+      await page.getByRole('button', { name: 'Genera', exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=ht-out]')?.value.split('\n').length === 2);
+    },
+  });
+  await shot('certificate-decoder.png', {
+    width: 1280,
+    dark: false,
+    path: '/certificate-decoder/',
+    setup: async (page) => {
+      await page.fill('#cert-in', "-----BEGIN CERTIFICATE-----\nMIIEDTCCAvWgAwIBAgIUfyC3V5lv3ljF/1wkogHIaIherScwDQYJKoZIhvcNAQEL\nBQAwQTELMAkGA1UEBhMCSVQxGDAWBgNVBAoMD0VzZW1waW8gVGVzdCBDQTEYMBYG\nA1UEAwwPRXNlbXBpbyBSb290IENBMCAXDTI2MTExNzA1NTI0MloYDzIxMjYxMDI0\nMDU1MjQyWjBjMQswCQYDVQQGEwJJVDESMBAGA1UECAwJTG9tYmFyZGlhMQ8wDQYD\nVQQHDAZNaWxhbm8xFDASBgNVBAoMC0VzZW1waW8gU3JsMRkwFwYDVQQDDBB3d3cu\nZXNlbXBpby50ZXN0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAufaV\nR5ZLiBU8DqVZhWafAs5B+1OmtioWLGFKs+JqXA6PtZrkq9OU6LVrBCSFqG9azSBZ\n6BIMhddJkGUiND5n8m+goEzEM0zNIWwICkLAfG2cWAM40X28Z0jTnT50M0AgVQP9\n+hrnm4jl2zErJ08chIAId2gLgbgkRyZx/UF9VrMsIw1FmKLo3rBfkHKf+JAP+61x\nzd366smlN8vpynhIgTqbsW77hSFSKzmj5Ifr0FT1Wg7FcGYuyq5mf429pC5G5F62\nTv1KrwnBD6hh67lxppu4gVDiT3fqFXcEyosh5FbJLSC01M8BdsD4tGt41+tixtQ+\nNbhjup7SH3jGrG/pNQIDAQABo4HYMIHVMFkGA1UdEQRSMFCCEHd3dy5lc2VtcGlv\nLnRlc3SCDGVzZW1waW8udGVzdIcEwAACCoERaW5mb0Blc2VtcGlvLnRlc3SGFWh0\ndHBzOi8vZXNlbXBpby50ZXN0LzAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYI\nKwYBBQUHAwEGCCsGAQUFBwMCMAkGA1UdEwQCMAAwHQYDVR0OBBYEFBSff/tLoe9D\n0vhQ39aiT4ijIb7IMB8GA1UdIwQYMBaAFGNBlJcieMCAKIqEyhsxaYbtq0aHMA0G\nCSqGSIb3DQEBCwUAA4IBAQBLch6w7zRfNFDedmmD/SunpASomCpcqEAmYwRon1go\nX9dN7DtPOXukikJMy33wHgW1XMrHq+bc6Q1NvOLCJezVAQdZHvHFuZJchikivNci\nvM/a6JEUlLyqjT4/XZAzDJoZuGyLF8XBgvSx1IrMtB+FR/wJpxK2n35Zc6dYvaN0\nU4oW9KBhzGWhKQhVjAa0E9p3I6OB/WxQMsod+b09QUWnfXyUoIbFw9I+MCQpejOx\nO3nl5O6A6zZVRZhmBuuFMAgVLOUP+FH0+1YDvjb6U24f8sTF0GWm9fAzsdTgqV8z\nCGyDq5gCwtOeWlFmG0GOykQyveW4ItdfJQQ3cO7IKz7I\n-----END CERTIFICATE-----\n-----BEGIN CERTIFICATE-----\nMIIDeDCCAmCgAwIBAgIUZYp5F1F1ianL1tW3CrVSsWeTBgQwDQYJKoZIhvcNAQEL\nBQAwQTELMAkGA1UEBhMCSVQxGDAWBgNVBAoMD0VzZW1waW8gVGVzdCBDQTEYMBYG\nA1UEAwwPRXNlbXBpbyBSb290IENBMCAXDTI2MTExNzA1NTI0MVoYDzIxMjYxMDI0\nMDU1MjQxWjBBMQswCQYDVQQGEwJJVDEYMBYGA1UECgwPRXNlbXBpbyBUZXN0IENB\nMRgwFgYDVQQDDA9Fc2VtcGlvIFJvb3QgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IB\nDwAwggEKAoIBAQC1N3cjhtmhLRO3JOmo9Wn/HaQwxuh3ywAbZybVFiD7Re9dZ/D6\n4cRNYb3H21RfxgT6ErL+T7weJ3YLCWha4QfeU6J56rtthEky4mjizlm120Yssl7o\nNoSzHga7iPwSKfQAgkLqgTMf2ib8F4miVyRgkkiLGAO2Nzl4Gbpe2Gyo1IsldIEm\nQMJzvBsgxBrB3lSKf1q999SkiiPUdp7nCXBTUqg0p1t+WAqipOI0aFx5BBUWY1Hj\nHImnSxqcyGsjl7+zQj+8uj7OGX0Ao2T5PovGJ4Bu2B09XTD9I7XfEcegqFp7oS/0\n3HvqZjVZROdd8cjyImFuDrxVXBeDUCMhDS8NAgMBAAGjZjBkMB0GA1UdDgQWBBRj\nQZSXInjAgCiKhMobMWmG7atGhzAfBgNVHSMEGDAWgBRjQZSXInjAgCiKhMobMWmG\n7atGhzASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG\n9w0BAQsFAAOCAQEAb8lZATQCAnBIDa2TjpbchD8meg+GdYHa2uka+D8bE+4iHN3v\nZ5L4x711bkr0EvPrJkIw1DuqeG0R6AWgTx/9Stsg6LzxznEh2GHcVu72ZC64HqdI\nYu8OSCc/a1fhoFnD6mfAFZwpwEW7Y/2TYL4AYXDRv/QKRVHEsRmnAMf36vrnnn67\nhlj7RlVQqXW1Elm22uDUYHsRo/ljggM7e2UcHrDhb5EBbIiWieOzwAvlHFHezJkb\n4k1kCWBxvzsyOaIw+LJvxnoAfb3Ay5qnM2DQ0BTWp/nZBIi0Ni1JYo/3oRJ+VWdj\nlABdaTi/QnoLNGh+JLuSZi4yNxgTEQHuOK4TEA==\n-----END CERTIFICATE-----\n");
+      await page.waitForSelector('[data-testid=cert-status]');
+    },
+  });
+  await shot('password-strength-checker.png', {
+    width: 1280,
+    dark: false,
+    path: '/password-strength-checker/',
+    setup: async (page) => {
+      await page.fill('#pws-input', 'Roma1990!');
+      await page.getByRole('button', { name: 'Mostra la password' }).click();
+      await page.waitForSelector('[data-testid=pws-crack]');
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('totp-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/totp-generator/',
+    setup: async (page) => {
+      await page.fill('#totp-secret', 'JBSWY3DPEHPK3PXP');
+      await page.fill('#totp-label', 'mario@example.com');
+      await page.fill('#totp-issuer', 'Esempio');
+      await page.waitForFunction(() => /\d/.test(document.querySelector('[data-testid=totp-code]')?.textContent ?? ''));
+      const code = ((await page.textContent('[data-testid=totp-code]')) ?? '').replace(/\s/g, '');
+      await page.fill('#totp-verify-code', code);
+      await page.waitForSelector('[data-testid=totp-verify-result]');
+      await page.waitForSelector('[data-testid=totp-qr]');
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('file-encrypt.png', {
+    width: 1280,
+    dark: false,
+    path: '/file-encrypt/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Testo', exact: true }).click();
+      await page.fill('#fe-pass', 'una passphrase lunga e difficile');
+      await page.fill('#fe-pass2', 'una passphrase lunga e difficile');
+      await page.fill('#fe-text', 'Messaggio riservato: ci vediamo domani alle 18:30.');
+      await page.locator('[data-testid=fe-run]').click();
+      await page.waitForFunction(() => (document.querySelector('[data-testid=fe-out]')?.value ?? '').length > 20);
+    },
+  });
+  await shot('barcode-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/barcode-generator/',
+    setup: async (page) => {
+      await page.fill('[data-testid=bc-text]', '400638133393');
+      await page.waitForSelector('[data-testid=bc-preview]');
+      await page.waitForSelector('[data-testid=bc-check]');
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('qr-code-reader.png', {
+    width: 1280,
+    dark: false,
+    path: '/qr-code-reader/',
+    setup: async (page) => {
+      // il QR da leggere viene creato con il generatore QR dello stesso sito e scaricato come PNG
+      const gen = await page.context().newPage();
+      await gen.goto(base + '/qr-code-generator/');
+      await gen.fill('#qr-url', 'https://example.com/ciao?da=qr');
+      await gen.waitForSelector('[data-testid=qr-preview]');
+      const [download] = await Promise.all([gen.waitForEvent('download'), gen.getByRole('button', { name: /PNG/ }).first().click()]);
+      const stream = await download.createReadStream();
+      const chunks = [];
+      for await (const c of stream) chunks.push(c);
+      await gen.close();
+      await page.setInputFiles('input[type=file]', [{ name: 'qr.png', mimeType: 'image/png', buffer: Buffer.concat(chunks) }]);
+      await page.waitForSelector('[data-testid=qrr-result]');
+    },
+  });
+  await shot('sort-lines.png', {
+    width: 1280,
+    dark: false,
+    path: '/sort-lines/',
+    setup: async (page) => {
+      await page.fill('#sl-in', 'mela\nPera\nbanana\nmela\n\nalbicocca\nbanana\nmela\nciliegia\nPera');
+      await page.selectOption('#sl-mode', 'frequency');
+      await page.selectOption('#sl-dedupe', 'ignoreCase');
+      await page.locator('[data-testid=sl-count]').check();
+      await page.waitForFunction(() => (document.querySelector('[data-testid=sl-out]')?.value ?? '').includes('3×'));
+    },
+  });
+  await shot('find-replace.png', {
+    width: 1280,
+    dark: false,
+    path: '/find-replace/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Carica un esempio' }).click();
+      await page.waitForSelector('[data-testid=fr-preview] mark');
+      await page.waitForTimeout(300);
+    },
+  });
+  await shot('text-to-speech.png', {
+    width: 1280,
+    dark: false,
+    path: '/text-to-speech/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Testo di esempio' }).click();
+      await page.waitForTimeout(1800); // il browser carica le voci locali (se ce ne sono)
     },
   });
 } finally {

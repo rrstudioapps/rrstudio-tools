@@ -1,0 +1,99 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.tz.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('tz.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="inputs">
+    <div class="field">
+      <label for="tz-date">{{ i18n.t('tz.date') }}</label>
+      <input id="tz-date" type="date" min="0001-01-01" max="9999-12-31" [value]="dateText()" [attr.aria-invalid]="inputError()" (input)="dateText.set($any($event.target).value)" />
+    </div>
+    <div class="field">
+      <label for="tz-time">{{ i18n.t('tz.time') }}</label>
+      <input id="tz-time" type="time" [value]="timeText()" [attr.aria-invalid]="inputError()" (input)="timeText.set($any($event.target).value)" />
+    </div>
+    <button type="button" class="btn small" (click)="setNow()">
+      <app-icon name="clock" /> {{ i18n.t('tz.now') }}
+    </button>
+    <p class="src" aria-live="polite">
+      <span class="eyebrow">{{ i18n.t('tz.source') }}</span>
+      {{ zoneLabel(source()) }}
+    </p>
+  </div>
+  @if (inputError()) {
+    <p class="tool-error">{{ i18n.t('tz.input.err') }}</p>
+  }
+  <div aria-live="polite">
+    @if (warning()) {
+      <p class="tool-warn">{{ warning() }}</p>
+    }
+  </div>
+
+  <section class="add">
+    <label for="tz-search" class="eyebrow">{{ i18n.t('tz.add') }}</label>
+    <input id="tz-search" type="search" autocomplete="off" [placeholder]="i18n.t('tz.add.ph')" [value]="query()" (input)="query.set($any($event.target).value)" />
+    @if (searching()) {
+      <div aria-live="polite">
+        @if (hits().length) {
+          <ul class="hits">
+            @for (z of hits(); track z) {
+              <li>
+                <button type="button" class="chip" [attr.aria-label]="i18n.t('tz.add.btn', { zone: zoneLabel(z) })" (click)="addZone(z)">
+                  <app-icon name="plus" /> {{ zoneLabel(z) }}
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="empty">{{ i18n.t('tz.add.none') }}</p>
+        }
+      </div>
+    }
+  </section>
+
+  <section [attr.aria-label]="i18n.t('tz.results')">
+    @if (cards().length) {
+      <div class="grid" data-testid="tz-cards">
+        @for (c of cards(); track c.zone) {
+          <article class="zone" [class.is-source]="c.isSource">
+            <header class="zone-head">
+              <h2 class="city">{{ c.city }}</h2>
+              @if (c.isSource) {
+                <span class="badge">{{ i18n.t('tz.source') }}</span>
+              }
+            </header>
+            <p class="region">{{ c.region }}</p>
+            <p class="time">{{ c.time }}</p>
+            <p class="date">{{ c.date }} · {{ c.dayDiff }}</p>
+            <p class="meta">
+              <span [attr.title]="i18n.t('tz.offset')">{{ c.offset }}</span>
+              @if (c.abbr) {
+                <span>{{ c.abbr }}</span>
+              }
+              <span class="badge" [class.dst]="c.dst">{{ c.dst ? i18n.t('tz.dst') : i18n.t('tz.std') }}</span>
+            </p>
+            <div class="zone-actions">
+              @if (!c.isSource) {
+                <button type="button" class="btn small" [attr.aria-label]="i18n.t('tz.useSource.aria', { zone: c.city })" (click)="useAsSource(c.zone)">{{ i18n.t('tz.useSource') }}</button>
+              }
+              @if (cards().length > 1) {
+                <button type="button" class="btn small" [attr.aria-label]="i18n.t('tz.remove.aria', { zone: c.city })" (click)="removeZone(c.zone)">
+                  <app-icon name="close" /> {{ i18n.t('tz.remove') }}
+                </button>
+              }
+            </div>
+          </article>
+        }
+      </div>
+      <div class="actions">
+        <app-copy-button [text]="copyText()" [label]="i18n.t('tz.copy')" />
+      </div>
+    } @else {
+      <p class="empty">{{ i18n.t('tz.empty') }}</p>
+    }
+  </section>
+</div>

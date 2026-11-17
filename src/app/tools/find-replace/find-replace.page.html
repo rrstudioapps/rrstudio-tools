@@ -1,0 +1,142 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.fr.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('fr.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-io-panel [label]="i18n.t('fr.text')" inputId="fr-text">
+    <span panel-actions>
+      <button type="button" class="btn small" (click)="loadExample()">{{ i18n.t('fr.example') }}</button>
+      <button type="button" class="btn small" [disabled]="!text()" (click)="text.set('')">{{ i18n.t('fr.clear') }}</button>
+    </span>
+    <textarea
+      id="fr-text"
+      class="io-textarea"
+      rows="8"
+      spellcheck="false"
+      [placeholder]="i18n.t('fr.text.ph')"
+      [value]="text()"
+      (input)="text.set($any($event.target).value)"
+      data-testid="fr-text"
+    ></textarea>
+  </app-io-panel>
+
+  <section class="rules" [attr.aria-label]="i18n.t('fr.rules')">
+    <h2 class="eyebrow">{{ i18n.t('fr.rules') }}</h2>
+    @for (r of rules(); track r.id; let i = $index) {
+      <fieldset class="rule" [class.off]="!r.enabled" data-testid="fr-rule">
+        <legend class="eyebrow">{{ i18n.t('fr.rule', { n: i + 1 }) }}</legend>
+        <div class="line">
+          <div class="field grow">
+            <label class="lbl" [attr.for]="'fr-find-' + r.id">{{ i18n.t('fr.find') }}</label>
+            <input
+              [id]="'fr-find-' + r.id"
+              type="text"
+              class="mono"
+              spellcheck="false"
+              autocomplete="off"
+              autocapitalize="off"
+              [attr.aria-invalid]="syntaxErrors()[i] ? 'true' : null"
+              [value]="r.find"
+              (input)="update(i, { find: $any($event.target).value })"
+              data-testid="fr-find"
+            />
+          </div>
+          <div class="field grow">
+            <label class="lbl" [attr.for]="'fr-repl-' + r.id">{{ i18n.t('fr.replace') }}</label>
+            <input
+              [id]="'fr-repl-' + r.id"
+              type="text"
+              class="mono"
+              spellcheck="false"
+              autocomplete="off"
+              autocapitalize="off"
+              [value]="r.replace"
+              (input)="update(i, { replace: $any($event.target).value })"
+              data-testid="fr-replace"
+            />
+          </div>
+        </div>
+        <div class="line opts">
+          <app-segmented [label]="i18n.t('fr.mode', { n: i + 1 })" [options]="modes()" [value]="r.mode" (valueChange)="update(i, { mode: $event })" />
+          <label class="check"><input type="checkbox" [checked]="r.caseSensitive" (change)="update(i, { caseSensitive: $any($event.target).checked })" /> {{ i18n.t('fr.case') }}</label>
+          <label class="check"><input type="checkbox" [checked]="r.wholeWord" (change)="update(i, { wholeWord: $any($event.target).checked })" /> {{ i18n.t('fr.word') }}</label>
+          @if (r.mode === 'regex') {
+            <label class="check"><input type="checkbox" [checked]="r.flags.g" (change)="setFlag(i, 'g', $any($event.target).checked)" /> {{ i18n.t('fr.flag.g') }}</label>
+            <label class="check"><input type="checkbox" [checked]="r.flags.m" (change)="setFlag(i, 'm', $any($event.target).checked)" /> {{ i18n.t('fr.flag.m') }}</label>
+            <label class="check"><input type="checkbox" [checked]="r.flags.s" (change)="setFlag(i, 's', $any($event.target).checked)" /> {{ i18n.t('fr.flag.s') }}</label>
+            <label class="check"><input type="checkbox" [checked]="r.flags.u" (change)="setFlag(i, 'u', $any($event.target).checked)" /> {{ i18n.t('fr.flag.u') }}</label>
+          }
+        </div>
+        <p class="hint">{{ i18n.t(r.mode === 'regex' ? 'fr.hint.regex' : 'fr.hint.text') }}</p>
+        <div class="line foot">
+          <span class="count" [class.err]="!!syntaxErrors()[i] || !!outcomes()[i]?.error" role="status" aria-live="polite" data-testid="fr-count">{{ counts()[i] }}</span>
+          <label class="check"><input type="checkbox" [checked]="r.enabled" (change)="update(i, { enabled: $any($event.target).checked })" /> {{ i18n.t('fr.enabled') }}</label>
+          <label class="check"><input type="radio" name="fr-preview" [checked]="previewRule() === i" (change)="previewRule.set(i)" /> {{ i18n.t('fr.preview.pick') }}</label>
+          <span class="spacer"></span>
+          <button type="button" class="btn small icon" [disabled]="i === 0" [attr.aria-label]="i18n.t('fr.up', { n: i + 1 })" (click)="move(i, -1)"><app-icon name="up" /></button>
+          <button type="button" class="btn small icon" [disabled]="i === rules().length - 1" [attr.aria-label]="i18n.t('fr.down', { n: i + 1 })" (click)="move(i, 1)"><app-icon name="down" /></button>
+          <button type="button" class="btn small icon" [attr.aria-label]="i18n.t('fr.remove', { n: i + 1 })" (click)="remove(i)"><app-icon name="trash" /></button>
+        </div>
+      </fieldset>
+    }
+    <div class="tool-toolbar">
+      <button type="button" class="btn" [disabled]="rules().length >= maxRules" (click)="add()" data-testid="fr-add"><app-icon name="plus" /> {{ i18n.t('fr.add') }}</button>
+      @if (rules().length >= maxRules) {
+        <span class="hint">{{ i18n.t('fr.max', { max: maxRules }) }}</span>
+      }
+    </div>
+  </section>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (status() === 'busy') {
+      <p class="tool-ok">{{ statusText() }}</p>
+    } @else if (statusText()) {
+      <p class="tool-error" data-testid="fr-status">{{ statusText() }}</p>
+    }
+  </div>
+
+  @if (preview(); as p) {
+    <section class="preview" aria-labelledby="fr-preview-title">
+      <h2 class="eyebrow" id="fr-preview-title">{{ i18n.t('fr.preview', { n: previewRule() + 1 }) }}</h2>
+      @if (p.big) {
+        <p class="hint">{{ i18n.t('fr.preview.big', { n: previewMax }) }}</p>
+      } @else {
+        <pre class="pre mono" data-testid="fr-preview">@for (piece of p.pieces; track $index) {@if (piece.match) {<mark>{{ piece.text }}</mark>} @else {<span>{{ piece.text }}</span>}}</pre>
+        @if (!p.any) {
+          <p class="hint">{{ i18n.t('fr.preview.none') }}</p>
+        }
+        @if (p.truncated) {
+          <p class="hint">{{ i18n.t('fr.preview.truncated', { n: 2000 }) }}</p>
+        }
+      }
+    </section>
+  }
+
+  <app-io-panel [label]="i18n.t('fr.out')" inputId="fr-out" [meta]="total()">
+    <span panel-actions>
+      <app-copy-button [text]="output()" [disabled]="!output()" />
+      <button type="button" class="btn small" [disabled]="!output()" (click)="download()"><app-icon name="download" /> {{ i18n.t('fr.download') }}</button>
+      <button type="button" class="btn small" [disabled]="!output()" (click)="useAsInput()"><app-icon name="swap" /> {{ i18n.t('fr.use') }}</button>
+    </span>
+    <textarea id="fr-out" class="io-textarea" rows="8" readonly spellcheck="false" [value]="output()" data-testid="fr-out"></textarea>
+  </app-io-panel>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fr.info.modes.title') }}</h2>
+      <p>{{ i18n.t('fr.info.modes.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fr.info.seq.title') }}</h2>
+      <p>{{ i18n.t('fr.info.seq.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fr.info.safe.title') }}</h2>
+      <p>{{ i18n.t('fr.info.safe.desc', { s: timeoutSeconds }) }}</p>
+    </div>
+  </section>
+</div>

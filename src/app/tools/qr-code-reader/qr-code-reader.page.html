@@ -1,0 +1,242 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.qrr.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('qrr.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('qrr.source')" [options]="sources()" [value]="source()" (valueChange)="setSource($event)" />
+  </div>
+
+  @if (source() === 'image') {
+    <app-file-drop [hint]="i18n.t('qrr.image.hint')" accept="image/*" (fileSelected)="onFile($event)">
+      @if (imageUrl(); as url) {
+        <figure class="shot">
+          <img [src]="url" [alt]="i18n.t('qrr.image.alt')" data-testid="qrr-image" />
+        </figure>
+      }
+    </app-file-drop>
+  } @else {
+    <section class="camera" [attr.aria-label]="i18n.t('qrr.source.camera')">
+      <p class="hint">{{ i18n.t('qrr.camera.hint') }}</p>
+      <div class="row">
+        @if (cameraState() === 'off') {
+          <button type="button" class="btn primary" (click)="startCamera()" data-testid="qrr-camera-start">
+            <app-icon name="scan" /> {{ i18n.t('qrr.camera.start') }}
+          </button>
+        } @else {
+          <button type="button" class="btn" (click)="stopCamera()" data-testid="qrr-camera-stop">
+            <app-icon name="close" /> {{ i18n.t('qrr.camera.stop') }}
+          </button>
+        }
+      </div>
+      @if (cameraState() === 'on') {
+        <video #video class="video" playsinline muted [attr.aria-label]="i18n.t('qrr.camera.video')"></video>
+      }
+      <div class="tool-status" role="status" aria-live="polite">
+        @if (cameraState() === 'starting') {
+          <p class="tool-ok">{{ i18n.t('qrr.camera.starting') }}</p>
+        } @else if (cameraState() === 'on') {
+          <p class="tool-ok">{{ i18n.t('qrr.camera.on') }}</p>
+        }
+      </div>
+    </section>
+  }
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (busy()) {
+      <p class="tool-ok">{{ i18n.t('qrr.reading') }}</p>
+    } @else if (message()) {
+      <p class="tool-error" data-testid="qrr-message">{{ message() }}</p>
+    }
+  </div>
+
+  @if (content(); as c) {
+    <section class="result" aria-labelledby="qrr-result-title" aria-live="polite" data-testid="qrr-result">
+      <div class="head">
+        <h2 class="eyebrow" id="qrr-result-title">{{ i18n.t('qrr.result') }}</h2>
+        <span class="kind mono" data-testid="qrr-kind">{{ i18n.t('qrr.kind.' + c.kind) }}</span>
+        <button type="button" class="btn small" (click)="clearAll()">{{ i18n.t('qrr.clear') }}</button>
+      </div>
+      <p class="hint">{{ i18n.t('qrr.safe') }}</p>
+
+      @switch (c.kind) {
+        @case ('url') {
+          <dl class="facts">
+            <div class="wide">
+              <dt class="eyebrow">{{ i18n.t('qrr.url.address') }}</dt>
+              <dd class="mono wrap" data-testid="qrr-url">{{ c.url.href }}</dd>
+            </div>
+            @if (c.url.openable) {
+              <div>
+                <dt class="eyebrow">{{ i18n.t('qrr.url.host') }}</dt>
+                <dd class="mono wrap">{{ c.url.host }}</dd>
+              </div>
+            }
+          </dl>
+          @if (warnings().length) {
+            <div class="tool-warn" data-testid="qrr-warnings">
+              <strong>{{ i18n.t('qrr.warn.title') }}</strong>
+              <ul>
+                @for (w of warnings(); track w) {
+                  <li>{{ w }}</li>
+                }
+              </ul>
+            </div>
+          }
+          <div class="row">
+            @if (c.url.openable) {
+              <a class="btn" [href]="c.url.href" target="_blank" rel="noopener noreferrer nofollow" data-testid="qrr-open">
+                <app-icon name="external" /> {{ i18n.t('qrr.url.open') }}
+              </a>
+              <span class="hint">{{ i18n.t('qrr.url.check') }}</span>
+            } @else {
+              <span class="hint">{{ i18n.t('qrr.url.blocked') }}</span>
+            }
+          </div>
+        }
+        @case ('wifi') {
+          <dl class="facts">
+            <div>
+              <dt class="eyebrow">{{ i18n.t('qrr.wifi.ssid') }}</dt>
+              <dd class="mono wrap">{{ c.wifi.ssid }}</dd>
+            </div>
+            <div>
+              <dt class="eyebrow">{{ i18n.t('qrr.wifi.security') }}</dt>
+              <dd class="mono">{{ c.wifi.security }}</dd>
+            </div>
+            <div>
+              <dt class="eyebrow">{{ i18n.t('qrr.wifi.hidden') }}</dt>
+              <dd class="mono">{{ c.wifi.hidden ? i18n.t('qrr.wifi.hiddenYes') : i18n.t('qrr.wifi.hiddenNo') }}</dd>
+            </div>
+            <div class="wide">
+              <dt class="eyebrow">{{ i18n.t('qrr.wifi.password') }}</dt>
+              @if (c.wifi.password) {
+                <dd class="mono wrap" data-testid="qrr-wifi-pass">{{ revealPassword() ? c.wifi.password : '••••••••' }}</dd>
+              } @else {
+                <dd>{{ i18n.t('qrr.wifi.open') }}</dd>
+              }
+            </div>
+          </dl>
+          @if (c.wifi.password) {
+            <div class="row">
+              <button type="button" class="btn small" [attr.aria-pressed]="revealPassword()" (click)="revealPassword.set(!revealPassword())">
+                <app-icon [name]="revealPassword() ? 'eyeOff' : 'eye'" />
+                {{ revealPassword() ? i18n.t('qrr.wifi.hide') : i18n.t('qrr.wifi.reveal') }}
+              </button>
+              <app-copy-button [text]="c.wifi.password" [label]="i18n.t('qrr.wifi.password')" />
+              <app-copy-button [text]="c.wifi.ssid" [label]="i18n.t('qrr.wifi.ssid')" />
+            </div>
+          }
+        }
+        @case ('vcard') {
+          <dl class="facts">
+            @if (c.vcard.name) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.vc.name') }}</dt><dd class="wrap">{{ c.vcard.name }}</dd></div>
+            }
+            @if (c.vcard.org) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.vc.org') }}</dt><dd class="wrap">{{ c.vcard.org }}</dd></div>
+            }
+            @if (c.vcard.title) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.vc.title') }}</dt><dd class="wrap">{{ c.vcard.title }}</dd></div>
+            }
+            @if (c.vcard.phones.length) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.vc.phones') }}</dt>@for (p of c.vcard.phones; track $index) {<dd class="mono wrap">{{ p }}</dd>}</div>
+            }
+            @if (c.vcard.emails.length) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.vc.emails') }}</dt>@for (p of c.vcard.emails; track $index) {<dd class="mono wrap">{{ p }}</dd>}</div>
+            }
+            @if (c.vcard.urls.length) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.vc.urls') }}</dt>@for (p of c.vcard.urls; track $index) {<dd class="mono wrap">{{ p }}</dd>}</div>
+            }
+            @if (c.vcard.address) {
+              <div class="wide"><dt class="eyebrow">{{ i18n.t('qrr.vc.address') }}</dt><dd class="wrap">{{ c.vcard.address }}</dd></div>
+            }
+            @if (c.vcard.note) {
+              <div class="wide"><dt class="eyebrow">{{ i18n.t('qrr.vc.note') }}</dt><dd class="wrap">{{ c.vcard.note }}</dd></div>
+            }
+          </dl>
+        }
+        @case ('email') {
+          <dl class="facts">
+            <div><dt class="eyebrow">{{ i18n.t('qrr.mail.to') }}</dt><dd class="mono wrap">{{ c.to }}</dd></div>
+            @if (c.subject) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.mail.subject') }}</dt><dd class="wrap">{{ c.subject }}</dd></div>
+            }
+            @if (c.body) {
+              <div class="wide"><dt class="eyebrow">{{ i18n.t('qrr.mail.body') }}</dt><dd class="wrap">{{ c.body }}</dd></div>
+            }
+          </dl>
+        }
+        @case ('phone') {
+          <dl class="facts"><div><dt class="eyebrow">{{ i18n.t('qrr.phone.number') }}</dt><dd class="mono">{{ c.number }}</dd></div></dl>
+        }
+        @case ('sms') {
+          <dl class="facts">
+            <div><dt class="eyebrow">{{ i18n.t('qrr.phone.number') }}</dt><dd class="mono">{{ c.number }}</dd></div>
+            @if (c.body) {
+              <div class="wide"><dt class="eyebrow">{{ i18n.t('qrr.mail.body') }}</dt><dd class="wrap">{{ c.body }}</dd></div>
+            }
+          </dl>
+        }
+        @case ('geo') {
+          <dl class="facts">
+            <div><dt class="eyebrow">{{ i18n.t('qrr.geo.lat') }}</dt><dd class="mono">{{ c.lat }}</dd></div>
+            <div><dt class="eyebrow">{{ i18n.t('qrr.geo.lon') }}</dt><dd class="mono">{{ c.lon }}</dd></div>
+          </dl>
+        }
+        @case ('otp') {
+          <dl class="facts">
+            <div><dt class="eyebrow">{{ i18n.t('qrr.otp.label') }}</dt><dd class="mono wrap">{{ c.label }}</dd></div>
+            @if (c.issuer) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.otp.issuer') }}</dt><dd class="wrap">{{ c.issuer }}</dd></div>
+            }
+          </dl>
+          <p class="tool-warn">{{ i18n.t('qrr.otp.warn') }}</p>
+        }
+        @case ('event') {
+          <dl class="facts">
+            @if (c.summary) {
+              <div class="wide"><dt class="eyebrow">{{ i18n.t('qrr.event.summary') }}</dt><dd class="wrap">{{ c.summary }}</dd></div>
+            }
+            @if (c.start) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.event.start') }}</dt><dd class="mono">{{ c.start }}</dd></div>
+            }
+            @if (c.end) {
+              <div><dt class="eyebrow">{{ i18n.t('qrr.event.end') }}</dt><dd class="mono">{{ c.end }}</dd></div>
+            }
+            @if (c.location) {
+              <div class="wide"><dt class="eyebrow">{{ i18n.t('qrr.event.location') }}</dt><dd class="wrap">{{ c.location }}</dd></div>
+            }
+          </dl>
+        }
+      }
+
+      <div class="raw">
+        <div class="head">
+          <label class="eyebrow" for="qrr-raw">{{ i18n.t('qrr.raw') }}</label>
+          <app-copy-button [text]="c.raw" />
+        </div>
+        <textarea id="qrr-raw" class="io-textarea" rows="4" readonly spellcheck="false" [value]="c.raw" data-testid="qrr-raw"></textarea>
+      </div>
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('qrr.info.safe.title') }}</h2>
+      <p>{{ i18n.t('qrr.info.safe.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('qrr.info.tips.title') }}</h2>
+      <p>{{ i18n.t('qrr.info.tips.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('qrr.info.priv.title') }}</h2>
+      <p>{{ i18n.t('qrr.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

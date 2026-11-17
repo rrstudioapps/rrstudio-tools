@@ -1,0 +1,130 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.fenc.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('fenc.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="options" [attr.aria-label]="i18n.t('fenc.direction')">
+    <div class="row">
+      <app-segmented [label]="i18n.t('fenc.direction')" [options]="directions()" [value]="direction()" (valueChange)="setDirection($event)" />
+      <app-segmented [label]="i18n.t('fenc.source')" [options]="sources()" [value]="source()" (valueChange)="setSource($event)" />
+    </div>
+
+    <div class="row pass-row">
+      <div class="col">
+        <label class="lbl" for="fe-pass">{{ i18n.t('fenc.pass') }}</label>
+        <input
+          id="fe-pass"
+          class="pass mono"
+          [type]="visible() ? 'text' : 'password'"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [value]="pass()"
+          (input)="pass.set($any($event.target).value)"
+          data-testid="fe-pass"
+        />
+      </div>
+      @if (isEncrypt()) {
+        <div class="col">
+          <label class="lbl" for="fe-pass2">{{ i18n.t('fenc.pass2') }}</label>
+          <input
+            id="fe-pass2"
+            class="pass mono"
+            [type]="visible() ? 'text' : 'password'"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            [attr.aria-invalid]="mismatch() ? 'true' : null"
+            [attr.aria-describedby]="mismatch() ? 'fe-mismatch' : null"
+            [value]="pass2()"
+            (input)="pass2.set($any($event.target).value)"
+            data-testid="fe-pass2"
+          />
+        </div>
+      }
+      <button
+        type="button"
+        class="btn small toggle"
+        [attr.aria-pressed]="visible()"
+        (click)="visible.set(!visible())"
+      >
+        <app-icon [name]="visible() ? 'eyeOff' : 'eye'" />
+        {{ visible() ? i18n.t('fenc.hide') : i18n.t('fenc.show') }}
+      </button>
+    </div>
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (mismatch()) {
+        <p class="tool-error" id="fe-mismatch">{{ i18n.t('fenc.pass.mismatch') }}</p>
+      } @else if (short()) {
+        <p class="hint">{{ i18n.t('fenc.pass.short') }}</p>
+      }
+    </div>
+    @if (isEncrypt()) {
+      <p class="hint">{{ i18n.t('fenc.pass.lost') }}</p>
+    }
+  </section>
+
+  @if (source() === 'file') {
+    <app-file-drop [hint]="fileHint()" [accept]="isEncrypt() ? '' : '.rrenc,application/octet-stream'" (fileSelected)="onFile($event)">
+      <p class="chosen" aria-live="polite" data-testid="fe-file">
+        <strong>{{ i18n.t('fenc.file.chosen') }}:</strong>
+        {{ fileInfo() || i18n.t('fenc.file.none') }}
+      </p>
+    </app-file-drop>
+  } @else {
+    <app-io-panel [label]="i18n.t(isEncrypt() ? 'fenc.text.in.encrypt' : 'fenc.text.in.decrypt')" inputId="fe-text">
+      <textarea
+        id="fe-text"
+        class="io-textarea"
+        rows="7"
+        spellcheck="false"
+        [placeholder]="isEncrypt() ? '' : i18n.t('fenc.text.ph.decrypt')"
+        [value]="text()"
+        (input)="text.set($any($event.target).value); reset()"
+        data-testid="fe-text"
+      ></textarea>
+    </app-io-panel>
+  }
+
+  <div class="tool-toolbar">
+    <button type="button" class="btn primary" [disabled]="busy()" (click)="run()" data-testid="fe-run">
+      <app-icon [name]="isEncrypt() ? 'lock' : 'key'" /> {{ runLabel() }}
+    </button>
+  </div>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (busy()) {
+      <p class="tool-ok">{{ i18n.t('fenc.busy') }}</p>
+    } @else if (errorText()) {
+      <p class="tool-error" data-testid="fe-error">{{ errorText() }}</p>
+    } @else if (done()) {
+      <p class="tool-ok" data-testid="fe-done">{{ done() }}</p>
+    }
+  </div>
+
+  @if (source() === 'text' && output()) {
+    <app-io-panel [label]="i18n.t(isEncrypt() ? 'fenc.text.out.encrypt' : 'fenc.text.out.decrypt')" inputId="fe-out">
+      <span panel-actions><app-copy-button [text]="output()" /></span>
+      <textarea id="fe-out" class="io-textarea" rows="7" readonly spellcheck="false" [value]="output()" data-testid="fe-out"></textarea>
+    </app-io-panel>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fenc.info.algo.title') }}</h2>
+      <p>{{ i18n.t('fenc.info.algo.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fenc.info.format.title') }}</h2>
+      <p>{{ i18n.t('fenc.info.format.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('fenc.info.limits.title') }}</h2>
+      <p>{{ i18n.t('fenc.info.limits.desc', { max: infoLimit() }) }}</p>
+    </div>
+  </section>
+</div>

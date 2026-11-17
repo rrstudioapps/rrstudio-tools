@@ -1,0 +1,138 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.cron.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('cron.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="expr" [attr.aria-label]="i18n.t('cron.expr')">
+    <label class="eyebrow" for="cron-expr">{{ i18n.t('cron.expr') }}</label>
+    <div class="expr-row">
+      <input
+        id="cron-expr"
+        type="text"
+        class="expr-in mono"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        [placeholder]="i18n.t('cron.expr.ph')"
+        [attr.aria-invalid]="error() ? 'true' : null"
+        [attr.aria-describedby]="'cron-status'"
+        [value]="expression()"
+        (input)="onExpression($event)"
+      />
+      <app-copy-button [text]="expression().trim()" [disabled]="expression().trim() === ''" />
+    </div>
+  </section>
+
+  <section class="presets" [attr.aria-label]="i18n.t('cron.presets')">
+    <h2 class="eyebrow">{{ i18n.t('cron.presets') }}</h2>
+    <div class="pills">
+      @for (p of presets; track p.id) {
+        <button type="button" class="pill" [class.on]="expression().trim() === p.expr" [attr.aria-pressed]="expression().trim() === p.expr" (click)="usePreset(p.expr)">
+          <span>{{ presetLabel(p.id) }}</span>
+          <code>{{ p.expr }}</code>
+        </button>
+      }
+    </div>
+  </section>
+
+  <section class="fields-box" [attr.aria-label]="i18n.t('cron.fields')">
+    <div class="fields-head">
+      <h2 class="eyebrow">{{ i18n.t('cron.fields') }}</h2>
+      <label class="check">
+        <input type="checkbox" [checked]="withSeconds()" (change)="toggleSeconds($any($event.target).checked)" />
+        {{ i18n.t('cron.seconds') }}
+      </label>
+    </div>
+    <div class="fields" [class.six]="withSeconds()">
+      @for (f of fieldList(); track f.name; let i = $index) {
+        <div class="field" [class.bad]="invalidField() === f.name">
+          <label [for]="'cron-f-' + f.name">{{ f.label }}</label>
+          <input
+            [id]="'cron-f-' + f.name"
+            type="text"
+            class="mono"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [attr.aria-invalid]="invalidField() === f.name ? 'true' : null"
+            [value]="f.value"
+            (input)="onField(i, $event)"
+            (change)="onFieldCommit(i, $event)"
+          />
+          <span class="range">{{ f.range }}</span>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="result" id="cron-status" role="status" aria-live="polite">
+    @if (error(); as e) {
+      @if (e.code !== 'empty') {
+        <p class="tool-error" data-testid="cron-error"><strong>{{ i18n.t('cron.err.title') }}.</strong> {{ errorText() }}</p>
+      } @else {
+        <p class="hint">{{ errorText() }}</p>
+      }
+    } @else {
+      <div class="desc">
+        <div class="desc-head">
+          <h2 class="eyebrow">{{ i18n.t('cron.desc.title') }}</h2>
+          <app-segmented [label]="i18n.t('cron.desc.lang')" [options]="langOptions" [(value)]="descLang" />
+        </div>
+        <p class="desc-text" data-testid="cron-description">{{ description() ?? i18n.t('cron.desc.fail') }}</p>
+      </div>
+      @for (n of notes(); track $index) {
+        <p class="note">{{ n }}</p>
+      }
+    }
+  </section>
+
+  @if (cron()) {
+    <section class="runs" [attr.aria-label]="i18n.t('cron.runs.title')">
+      <h2 class="eyebrow">{{ i18n.t('cron.runs.title') }}</h2>
+      <div class="tool-toolbar">
+        <label class="field-inline">
+          <span class="lbl">{{ i18n.t('cron.runs.count') }}</span>
+          <input id="cron-count" type="number" class="num" inputmode="numeric" min="1" [max]="maxRuns" [value]="count()" (change)="setCount($event)" />
+        </label>
+        <app-segmented [label]="i18n.t('cron.runs.tz')" [options]="tzOptions()" [(value)]="tz" />
+        <button type="button" class="btn small" (click)="refresh()">
+          <app-icon name="refresh" /> {{ i18n.t('cron.runs.refresh') }}
+        </button>
+        <app-copy-button [text]="listText()" [label]="i18n.t('cron.runs.copy')" [disabled]="rows().length === 0" />
+      </div>
+      @if (exhausted()) {
+        <p class="tool-error" data-testid="cron-exhausted">{{ i18n.t('cron.runs.empty') }}</p>
+      } @else if (rows().length > 0) {
+        <ol class="runs-list" [attr.aria-label]="i18n.t('cron.runs.list')" data-testid="cron-runs">
+          @for (r of rows(); track r.n) {
+            <li>
+              <span class="n">{{ r.n }}</span>
+              <span class="when mono">{{ r.when }}</span>
+              <span class="rel">{{ r.rel }}</span>
+            </li>
+          }
+        </ol>
+        <p class="hint">{{ fromText() }}</p>
+      }
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cron.info.rule.title') }}</h2>
+      <p>{{ i18n.t('cron.info.rule.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cron.info.dst.title') }}</h2>
+      <p>{{ i18n.t('cron.info.dst.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('cron.info.priv.title') }}</h2>
+      <p>{{ i18n.t('cron.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

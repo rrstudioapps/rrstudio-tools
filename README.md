@@ -51,6 +51,15 @@ Tables, JSON, PDF and images.
 | [**CSV, JSON & Excel converter**](https://tools.rr-dev.eu/csv-json-converter) | Convert CSV, JSON and Excel into each other: automatic delimiter, header row, array of objects or of arrays, nested objects flattened to `a.b` and rebuilt, sheet picker, table preview. Formulas in the exported CSV and XLSX are neutralised. |
 | [**Markdown editor**](https://tools.rr-dev.eu/markdown-editor) | Write Markdown (CommonMark + GFM: headings, lists and task lists, tables with alignment, quotes, code blocks with language) with a live side-by-side preview, a formatting toolbar and shortcuts. Safe preview: raw HTML is never run and external images are not loaded. Export `.md`, a standalone HTML file or PDF (browser print). The draft stays in your browser. |
 | [**Word & character counter**](https://tools.rr-dev.eu/word-counter) | Words, characters (with and without spaces, emoji and accents count 1), sentences, paragraphs, lines, reading (about 200 wpm) and speaking (about 130 wpm) time, most frequent words without Italian/English stopwords, length limits (SMS, X, meta description, title, Instagram) and case conversions. |
+| [**Percentage calculator**](https://tools.rr-dev.eu/percentage-calculator) | Five calculations on one page: X% of Y, X is what % of Y, percentage change from A to B, add or subtract a percentage (discount, markup, VAT) and reverse percentage (the price before a discount). Live results with a copy button, clear errors for division by zero and a 100% discount. |
+| [**Unit converter**](https://tools.rr-dev.eu/unit-converter) | Length, mass, temperature, area, volume, speed, time, digital data (SI KB and binary KiB), pressure and energy. Search a unit by name or symbol across all categories, swap units and see the value in every unit of the category. Temperature goes through Celsius and refuses values below absolute zero. |
+| [**Date and age calculator**](https://tools.rr-dev.eu/date-calculator) | Difference between two dates in years, months and days (plus total days and weeks, end day optional), add or subtract days, weeks, months and years, and exact age with the days to the next birthday. Month ends (31 January + 1 month) and leap years (29 February) are handled. |
+| [**Time zone converter**](https://tools.rr-dev.eu/timezone-converter) | Convert a time between IANA time zones and compare several at once. Zones and daylight saving come from `Intl` only (no time zone database is shipped); search by city, nonexistent and repeated local times at DST changes are flagged. |
+| [**Barcode generator**](https://tools.rr-dev.eu/barcode-generator) | EAN-13, EAN-8, UPC-A, Code 128, Code 39, ITF-14, ITF, Codabar, MSI and Pharmacode with `jsbarcode`: validation, computed check digit, bar width, height, text and colours, SVG or PNG download, and bulk generation from a list into a ZIP. |
+| [**QR code reader**](https://tools.rr-dev.eu/qr-code-reader) | Read QR codes from an uploaded, dropped or pasted image or with the camera (only on request, stopped on exit) using `jsQR`. Recognises URLs, Wi-Fi, vCard, email, phone, SMS, location and text; links are shown as text with warnings and never opened automatically. |
+| [**Sort lines**](https://tools.rr-dev.eu/sort-lines) | Sort lines alphabetically (`Intl.Collator`, Italian or English rules), naturally, by length, by frequency, in reverse or randomly; remove duplicates (with or without case, spaces), blank lines and margins, count occurrences, add prefix, suffix and numbering. |
+| [**Find and replace**](https://tools.rr-dev.eu/find-replace) | Plain-text or regex find and replace (flags g, i, m, s, u, `$1` and `$<name>` groups, case, whole words), several rules in sequence, highlighted preview with counts. Runs in a Web Worker with a timeout against catastrophic regexes. |
+| [**Text to speech**](https://tools.rr-dev.eu/text-to-speech) | Read a text aloud with the Web Speech API: voice and language, speed, pitch, volume, pause/resume/stop and a highlighted sentence. Only local voices (`localService`) are shown and used: network voices would send the text to external servers. |
 
 ### Developers
 
@@ -64,18 +73,37 @@ Encode, decode and compute.
 | [**Hash & checksum**](https://tools.rr-dev.eu/hash-generator) | MD5, SHA-1, SHA-256, SHA-384 and SHA-512 of a text (live) or a file up to 2 GB, in hex and Base64, with a progress bar, cancel and a "compare with a checksum" field. |
 | [**JWT decoder**](https://tools.rr-dev.eu/jwt-decoder) | Paste a JSON Web Token (a leading `Bearer ` is fine) and read the header and payload, highlighted, the algorithm and the `exp`, `iat`, `nbf` and `auth_time` dates in your time zone and in UTC with "expires in…/expired … ago". Clear errors for missing segments, bad Base64URL or JSON; JWE (5 segments) is recognised. The signature is **not** verified. |
 | [**UUID generator**](https://tools.rr-dev.eu/uuid-generator) | UUID v4, UUID v7 (correct timestamp, monotonic within a millisecond) and ULID, 1-1000 at a time, upper/lower case, with or without hyphens, with braces; copy all or download a `.txt`. A validator reads the version, variant and the date inside v7 and ULID. Only `crypto.getRandomValues`. |
+| [**YAML / JSON / TOML converter**](https://tools.rr-dev.eu/yaml-json-converter) | Convert between YAML, JSON and TOML in every direction (`yaml` and `smol-toml`), multiple YAML documents, anchors and merge keys, 2/4-space or tab indentation, sorted keys, errors with line and column and a "go to error" button, file upload and download. |
+| [**XML formatter**](https://tools.rr-dev.eu/xml-formatter) | Format or minify XML keeping comments, CDATA, entities and `xml:space="preserve"`; well-formedness checks with line and column errors (plus the browser's DOMParser as second opinion) and a simple XML to JSON conversion. |
+| [**SQL formatter**](https://tools.rr-dev.eu/sql-formatter) | Format or minify SQL (`sql-formatter`) for standard SQL, PostgreSQL, MySQL, MariaDB, SQLite, T-SQL, BigQuery, PL/SQL and more, keyword case and indentation; the minifier never touches strings, quoted names or hints. |
+| [**HTML entities & escaping**](https://tools.rr-dev.eu/html-entities) | Encode/decode HTML entities (named, decimal, hex; basic, non-ASCII or every character) without touching the DOM, plus escape/unescape for JavaScript and JSON strings and URL components, with error positions. |
+| [**Text case converter**](https://tools.rr-dev.eu/case-converter) | camelCase, PascalCase, snake_case, SCREAMING_SNAKE, kebab-case, Train-Case, dot.case, path/case, Title Case (English and Italian rules, with elisions), Sentence case, upper/lower and aLtErNaTiNg, line by line, with acronyms and accents handled. |
+| [**Slug generator**](https://tools.rr-dev.eu/slug-generator) | URL slugs from text: accents and extended Latin transliterated, separator, maximum length without splitting words, Italian/English stop words and bulk mode (one slug per line, unique duplicates). |
+| [**Lorem ipsum generator**](https://tools.rr-dev.eu/lorem-ipsum-generator) | Paragraphs, sentences or words, optional classic opening, text or HTML `<p>`, deterministic generator with an optional seed for repeatable output. |
+| [**Cron expressions**](https://tools.rr-dev.eu/cron-expression) | Explain cron in Italian or English (`cronstrue`), validate 5 or 6 fields and `@daily`-style aliases with clear errors, field editor with presets, next N runs in local time or UTC with Vixie's day-of-month/day-of-week rule and DST handling. |
 | [**Unix timestamp converter**](https://tools.rr-dev.eu/timestamp-converter) | Timestamp to date (seconds, milliseconds, microseconds or nanoseconds, detected) and date to timestamp, ISO 8601, RFC 2822 and a readable format, any time zone of your browser with daylight saving handled, a live "now", relative time, and many timestamps at once (one per line). |
 | [**Color contrast checker (WCAG)**](https://tools.rr-dev.eu/color-contrast-checker) | Two colors (picker or HEX, rgb(), hsl(), oklch(), CSS names, with alpha), WCAG 2.x contrast ratio with AA/AAA for normal text, large text and graphical objects, preview, swap, copyable HEX/RGB/HSL/OKLCH and the closest color (lightness in OKLCH) that reaches AA and AAA. |
 | [**Regex tester**](https://tools.rr-dev.eu/regex-tester) | Test JavaScript regular expressions: flags `g i m s u y d`, highlighted matches, numbered and named groups, replacement preview (`$1`, `$<name>`, `$&`), the pattern explained in plain words and an example library. Runs in a Web Worker with a 1 second timeout, so catastrophic backtracking cannot freeze the page. |
+| [**Number base converter**](https://tools.rr-dev.eu/number-base-converter) | Binary, octal, decimal, hexadecimal and any base from 2 to 36 with BigInt (no size limit), two's complement at 8, 16, 32 and 64 bits with a bit view, and IEEE-754 float32 and float64: decode a bit pattern or encode a number, with the exact stored decimal value. |
+| [**chmod calculator**](https://tools.rr-dev.eu/chmod-calculator) | Tick r/w/x for owner, group and others plus setuid, setgid and sticky; octal (3 or 4 digits), symbolic (`rwxr-xr-x`, with s/S/t/T) and the `chmod` command stay in sync. Apply expressions such as `u+x,go-w` to the current permissions, and pick common presets (644, 755, 600…) with an explanation. |
+| [**CSS unit converter**](https://tools.rr-dev.eu/css-unit-converter) | px, rem, em, pt, pc, %, vw, vh, cm, mm and inches with your own root and parent font size and viewport; a quick px-to-rem table and bulk conversion of a pasted stylesheet (comments, strings, `url()` and `@media` left alone). |
+| [**CSS generator**](https://tools.rr-dev.eu/css-generator) | Linear, radial and conic gradients (draggable or numeric color stops with opacity, angle, center, repeating) and multi-layer `box-shadow` (inset, offset, blur, spread, color with alpha), with a live preview and copyable CSS. |
+| [**SVG optimizer**](https://tools.rr-dev.eu/svg-optimizer) | Shrink SVGs with SVGO (safe default preset): precision, viewBox kept by default, metadata and comments, before/after sizes, side-by-side preview as an image (SVG is never injected into the page), many files at once with a ZIP download. |
+| [**Favicon generator**](https://tools.rr-dev.eu/favicon-generator) | From an image (PNG, JPG, SVG) or a letter or emoji, with colors, shape, padding and crop: `favicon.ico` (16, 32, 48 PNG-in-ICO), PNGs at 16, 32, 180 (apple-touch-icon), 192 and 512, `site.webmanifest` and the HTML snippet, all in a ZIP. |
+| [**.htpasswd generator**](https://tools.rr-dev.eu/htpasswd-generator) | `.htpasswd` lines for several users with bcrypt (`$2y$`, chosen cost, computed in a Web Worker), APR1-MD5 or `{SHA}` (the last two flagged as weak), plus a checker that tests a password against an existing line. |
+| [**Certificate decoder**](https://tools.rr-dev.eu/certificate-decoder) | Paste PEM or load a PEM/DER/CRT/CSR file: X.509 certificates (also chains) and PKCS#10 requests with subject, issuer, validity and days to expiry, SANs, key usage, extended key usage, basic constraints, key algorithm and size, serial, SHA-1/SHA-256 fingerprints, SKI/AKI. |
 
 ### Security
 
-Strong passwords and photo metadata.
+Strong passwords, two-factor codes, encrypted files and photo metadata.
 
 | Tool | What it does |
 |---|---|
 | [**Password generator**](https://tools.rr-dev.eu/password-generator) | Random passwords (4-128 characters, choose the character sets, exclude ambiguous ones) and passphrases (3-12 words from the EFF large wordlist), with honest entropy in bits, a strength bar and the estimated time to guess. Nothing is stored. |
 | [**EXIF viewer & remover**](https://tools.rr-dev.eu/exif-viewer) | See the EXIF, GPS, XMP and IPTC metadata of JPEG, PNG and WebP photos, with warnings for GPS, serial numbers and owner names, and remove it with no recompression (pixels stay identical). Before/after field counts, single or ZIP download. |
+| [**Password strength checker**](https://tools.rr-dev.eu/password-strength-checker) | Score 0-4 with `zxcvbn-ts` (common, English and Italian dictionaries, loaded only on this page), estimated time to crack in four attack scenarios, entropy, warnings and suggestions in Italian and English. No online check (no Have I Been Pwned): the password never leaves the page. |
+| [**TOTP generator (2FA)**](https://tools.rr-dev.eu/totp-generator) | TOTP codes (RFC 6238) from a Base32 secret or an `otpauth://` URI: SHA-1/256/512, 6-8 digits, any period, current code with countdown plus previous and next, verification with a tolerance of ±N periods, otpauth QR. HMAC with WebCrypto, tested with the RFC vectors. |
+| [**Encrypt and decrypt files**](https://tools.rr-dev.eu/file-encrypt) | Encrypt files and text with a passphrase: AES-256-GCM, key from PBKDF2-SHA256 (600,000 iterations, random salt), documented `.rrenc` format with an authenticated header, clear error on a wrong passphrase or tampering. Files up to 256 MB, text as Base64. |
 
 ### Italy: tax & banking
 
@@ -88,6 +116,9 @@ Codice fiscale, IBAN, VAT number and electronic invoices.
 | [**VAT, VAT extraction & withholding tax (in Italian)**](https://tools.rr-dev.eu/calcolo-iva) | Add or extract Italian VAT (22/10/5/4/0%), prepare a freelancer invoice with INPS surcharge, pension fund, 20% withholding tax, 2 € stamp duty and the flat-rate regime (with the legal notes to print on the invoice), and work backwards from the net you want to receive. Integer-cent arithmetic; indicative, not tax advice; 2026 rules. |
 | [**Italian e-invoice viewer (FatturaPA XML/P7M)**](https://tools.rr-dev.eu/fattura-elettronica) | Open an electronic invoice as XML, signed .p7m (DER or Base64) or a ZIP of invoices and read it laid out: parties, lines, VAT summary, totals, payment, attachments. Print or save as PDF. The signature is not verified. |
 | [**Working days calculator (in Italian)**](https://tools.rr-dev.eu/calcolo-giorni-lavorativi) | Working days between two dates (calendar days, weekends, holidays on weekdays listed) or a deadline by adding/subtracting working days. Italian national holidays with Easter (Gauss/Meeus algorithm), optional patron saint of a regional capital and one custom date. Indicative. |
+| [**Withholding tax calculator (in Italian)**](https://tools.rr-dev.eu/calcolo-ritenuta-acconto) | Gross to net and net to gross for an occasional service or a freelancer fee: editable withholding rate (20%), optional 4% INPS surcharge, pension fund with its own percentage, optional VAT and the 2 € stamp duty above 77.47 € (charged to the client or not), with a copyable line-by-line statement. Integer-cent arithmetic. |
+| [**Mortgage payment calculator (in Italian)**](https://tools.rr-dev.eu/calcolo-rata-mutuo) | Payment, total interest and a full French amortization schedule from principal, nominal rate (TAN) and term in years and months; monthly, quarterly or half-yearly payments, TAN 0% supported, paginated table and CSV export. |
+| [**Numbers in words (in Italian)**](https://tools.rr-dev.eu/numeri-in-lettere) | Writes a number (decimals, negatives, up to 999 billion) in correct Italian: ventuno, centottanta, ventitré, milleuno, un milione. Cheque mode gives the cents as digits (`milleduecentotrentaquattro/56`), with an optional "euro". |
 
 More tools are coming, with the same rule: nothing leaves your browser.
 
@@ -203,6 +234,54 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Route `/uuid-generator`. UUID v4, UUID v7 (48-bit millisecond timestamp, 12-bit counter, so ids stay sorted within the same millisecond) and ULID (Crockford Base32, monotonic).
 - Tests check format, version, variant, ordering of v7 and ULID, and known vectors. The validator reports version, variant and the embedded date.
 
+### YAML / JSON / TOML converter
+
+![YAML / JSON / TOML converter](docs/screenshots/yaml-json-converter.png)
+
+- Route `/yaml-json-converter`. Multi-document YAML becomes an array in JSON; TOML dates become ISO strings; TOML needs an object at the root and no `null` (the error says where). Tests cover all directions, error positions and `__proto__` keys.
+
+### XML formatter
+
+![XML formatter](docs/screenshots/xml-formatter.png)
+
+- Route `/xml-formatter`. Own tokenizer for formatting and well-formedness (exact line/column), DOMParser for the JSON conversion and as a second check. Entities are never expanded.
+
+### SQL formatter
+
+![SQL formatter](docs/screenshots/sql-formatter.png)
+
+- Route `/sql-formatter`. Formatting by `sql-formatter`; the minifier is our own tokenizer aware of strings, quoted identifiers, comments, `$$` quoting and dialect specifics.
+
+### HTML entities & escaping
+
+![HTML entities & escaping](docs/screenshots/html-entities.png)
+
+- Route `/html-entities`. HTML 4 entity table plus common HTML5 names; numeric references follow HTML5 (Windows-1252 for 128-159). Round-trip tests for every scope and format.
+
+### Text case converter
+
+![Text case converter](docs/screenshots/case-converter.png)
+
+- Route `/case-converter`. Word splitting handles camelCase, acronyms (`XMLHttp`), digits, apostrophes and accents; Title Case has separate English and Italian rules.
+
+### Slug generator
+
+![Slug generator](docs/screenshots/slug-generator.png)
+
+- Route `/slug-generator`. Shared transliteration helper in `src/app/shared/translit.ts`; the output is always `[a-z0-9]` words joined by the separator.
+
+### Lorem ipsum generator
+
+![Lorem ipsum generator](docs/screenshots/lorem-ipsum-generator.png)
+
+- Route `/lorem-ipsum-generator`. mulberry32 PRNG seeded by an xmur3 hash: same seed and options, same text in any browser.
+
+### Cron expressions
+
+![Cron expressions](docs/screenshots/cron-expression.png)
+
+- Route `/cron-expression`. Next runs are computed by our own field-skipping algorithm over wall-clock time and mapped to instants with `Intl`; spring-forward gaps slip to the first valid instant, repeated hours run once. Tested on Europe/Rome and America/New_York.
+
 ### Unix timestamp converter
 
 ![Unix timestamp converter](docs/screenshots/timestamp-converter.png)
@@ -279,6 +358,152 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Line numbers with the error line marked; line and column are worked out for V8/Chromium, Firefox and Safari messages.
 - Hand-made syntax highlighting (no editor library, no `innerHTML`).
 
+### Percentage calculator
+
+![Percentage calculator](docs/screenshots/percentage-calculator.png)
+
+- Route `/percentage-calculator` (also `/en/percentage-calculator`). Five cards, each with its own two fields and a live sentence as the result. Both decimal conventions are accepted ("12,5" and "12.5").
+- Percentage change uses the absolute value of the starting value, so going from -50 to -25 is an increase. Percentages above 100%, negative numbers and the impossible cases (division by zero, reversing a 100% discount) are covered by tests.
+
+### Unit converter
+
+![Unit converter](docs/screenshots/unit-converter.png)
+
+- Route `/unit-converter` (also `/en/unit-converter`). Ten categories with exact definitions (international yard and pound, NIST volumes). Digital data lists SI units (kB, MB, GB…) and binary ones (KiB, MiB, GiB…) side by side. Month and year are averages.
+- The search box matches symbols, names in the current language and common aliases (`mq`, `kmh`, `inch`) in every category and jumps to the unit. The table shows the value in all units of the category, each with a copy button. Tests check every pair of units of every category for a round trip.
+
+### Date and age calculator
+
+![Date and age calculator](docs/screenshots/date-calculator.png)
+
+- Route `/date-calculator` (also `/en/date-calculator`). Dates are plain year-month-day values counted with a day number: no time zone or daylight saving can shift a result.
+- Month-end rule: adding months clamps to the last day (31 January + 1 month = 28/29 February); the difference counts whole months that fit, then the remaining days (31 January to 1 March = 1 month and 1 day). Born on 29 February: the birthday is celebrated on the 28th in non-leap years.
+
+### Time zone converter
+
+![Time zone converter](docs/screenshots/timezone-converter.png)
+
+- Route `/timezone-converter` (also `/en/timezone-converter`). No time zone database is bundled: the list comes from `Intl.supportedValuesOf('timeZone')` and offsets from `Intl.DateTimeFormat`, so results follow the browser's own tz data.
+- Several zones are shown together; any card can become the source (the instant stays the same). Local times that do not exist (spring forward) or happen twice (fall back) are detected and reported. Search matches IANA city names, a few Italian and English common names and the localized zone names.
+
+### Number base converter
+
+![Number base converter](docs/screenshots/number-base-converter.png)
+
+- Route `/number-base-converter` (also `/en/number-base-converter`). BigInt conversion between any bases 2-36 (prefixes `0x`, `0b`, `0o`, separators and negatives accepted), copy per row.
+- Two's complement at 8, 16, 32 and 64 bits shows the pattern, hex and both readings (signed/unsigned) with a bit view split by byte. IEEE-754 float32/float64: type a number to encode it or a `0x…`/`0b…` pattern to decode it; sign, exponent and mantissa fields, class (normal, subnormal, zero, infinity, NaN) and the exact decimal value of the stored number, computed with BigInt.
+
+### chmod calculator
+
+![chmod calculator](docs/screenshots/chmod-calculator.png)
+
+- Route `/chmod-calculator` (also `/en/chmod-calculator`). The permission is a number 0-07777; checkboxes, octal, symbolic and the command are views of it. Symbolic input accepts 9 characters or 10 with the file type (`-rwxr-xr-x`), with `s`/`S`/`t`/`T`.
+- Expressions follow `chmod`: `ugoa`, `+ - =`, `rwxXst`, copying a class (`g=u`), several clauses with commas; `=` also clears setuid/setgid. No umask is applied. Tests round-trip all 4096 permissions.
+
+### CSS unit converter
+
+![CSS unit converter](docs/screenshots/css-unit-converter.png)
+
+- Route `/css-unit-converter` (also `/en/css-unit-converter`). 1 in = 96 px, 1 pt = 1/72 in; rem uses the root font size, em and % the parent's, vw/vh the viewport you set.
+- The bulk converter rewrites `px` (or `rem`/`em`) values in pasted CSS, skipping comments, strings, `url()` and `@media` conditions (optional), with an option to keep `1px` hairlines.
+
+### CSS generator
+
+![CSS generator](docs/screenshots/css-generator.png)
+
+- Route `/css-generator` (also `/en/css-generator`). Two tabs: gradient (linear/radial/conic, up to 12 stops dragged on a bar with pointer or arrow keys, or typed, opacity, angle, center, repeating) and box-shadow (up to 8 layers, inset).
+- Colors become `#rrggbb`, or `rgba()` when not opaque. The preview is a styled element built from validated numbers and hex colors.
+
+### SVG optimizer
+
+![SVG optimizer](docs/screenshots/svg-optimizer.png)
+
+- Route `/svg-optimizer` (also `/en/svg-optimizer`). Runs [SVGO](https://github.com/svg/svgo) (browser build, lazy-loaded) with its default preset and `multipass`; the viewBox, title and ids are kept unless you opt out.
+- The preview uses `<img>` with a `data:` URL, so scripts inside an SVG never run and nothing is injected into the DOM. Several files are listed with before/after sizes and can be downloaded one by one or as a ZIP ([fflate](https://github.com/101arrowz/fflate)).
+
+### Favicon generator
+
+![Favicon generator](docs/screenshots/favicon-generator.png)
+
+- Route `/favicon-generator` (also `/en/favicon-generator`). Source: an image (square crop or fit, padding, zoom) or 1-3 characters/emoji. Shapes: square, rounded, circle; transparent or solid background.
+- `favicon.ico` is written by a small encoder (ICO container with embedded 16/32/48 PNGs); the ZIP also holds the PNGs, `site.webmanifest` and a README with the HTML lines.
+
+### .htpasswd generator
+
+![.htpasswd generator](docs/screenshots/htpasswd-generator.png)
+
+- Route `/htpasswd-generator` (also `/en/htpasswd-generator`). bcrypt via [bcryptjs](https://github.com/dcodeIO/bcrypt.js) (`$2y$` prefix, cost 4-14) in a Web Worker; APR1-MD5 implemented here (MD5 from the hash tool) and `{SHA}` via Web Crypto.
+- Tests compare APR1 with `openssl passwd -apr1 -salt …` vectors and bcrypt with an hash produced by another implementation. The checker reads bcrypt, APR1 and `{SHA}` lines.
+
+### Certificate decoder
+
+![Certificate decoder](docs/screenshots/certificate-decoder.png)
+
+- Route `/certificate-decoder` (also `/en/certificate-decoder`). Built on [PKI.js](https://pkijs.org) and [ASN1.js](https://github.com/PeculiarVentures/ASN1.js), loaded on demand. Reads PEM (one or many blocks), base64 without headers, or DER files; private keys are refused with a warning.
+- Tests use fixtures generated with OpenSSL (RSA and EC chains, Ed25519, expired, CSR) and compare serials, SKI/AKI and fingerprints with OpenSSL's output. It does not validate the chain or revocation.
+
+### Password strength checker
+
+![Password strength checker](docs/screenshots/password-strength-checker.png)
+
+- Route `/password-strength-checker` (also `/en/password-strength-checker`). `@zxcvbn-ts/core` with the common, English and Italian dictionaries, all loaded with a dynamic import only on this page; the Levenshtein matcher is off to keep the check fast.
+- Score 0-4, estimated entropy (log2 of the guesses) next to the theoretical one, estimated guesses and the time to crack in four scenarios (online throttled, online unthrottled, slow and fast offline hash). Warnings and suggestions are translated into Italian and English from the library keys.
+- There is no online lookup and no Have I Been Pwned request: the password stays in the page. Passwords over 128 characters are truncated for the analysis.
+
+### TOTP generator
+
+![TOTP generator](docs/screenshots/totp-generator.png)
+
+- Route `/totp-generator` (also `/en/totp-generator`). Paste a Base32 secret or an `otpauth://totp/` URI (settings, label and issuer are filled in), or generate a random 160-bit secret.
+- SHA-1, SHA-256, SHA-512, 6-8 digits, period 5-300 s. Shows the current code with a countdown and the previous and next ones; verifies a typed code with a window of ±0-5 periods and says which period it belongs to.
+- The otpauth URI and its QR (using the QR encoder of the QR generator) can be copied or downloaded. HMAC is computed with WebCrypto; the tests use the RFC 4226 and RFC 6238 vectors.
+
+### Encrypt and decrypt files
+
+![Encrypt and decrypt files](docs/screenshots/file-encrypt.png)
+
+- Route `/file-encrypt` (also `/en/file-encrypt`). Files (up to 256 MB, the whole file is processed in memory by WebCrypto without freezing the page) or text, with a passphrase typed twice when encrypting.
+- AES-256-GCM with a key from PBKDF2-HMAC-SHA256 (600,000 iterations, 16-byte random salt) and a random 12-byte IV. Format `.rrenc`: `RRENC` (5 bytes), version (1), iterations (4, big-endian), salt (16), IV (12), ciphertext and 16-byte GCM tag; the 38-byte header is authenticated data. Text uses the same bytes as Base64.
+- A wrong passphrase and a tampered file give the same clear message (GCM cannot tell them apart); files declaring fewer than 600,000 iterations are refused. The passphrase is NFC-normalised. The file name is not stored: decrypting strips `.rrenc`.
+
+### Barcode generator
+
+![Barcode generator](docs/screenshots/barcode-generator.png)
+
+- Route `/barcode-generator` (also `/en/barcode-generator`). `jsbarcode`, loaded on demand: EAN-13, EAN-8, UPC-A, Code 128, Code 39 (optional modulo 43), ITF-14, ITF, Codabar, MSI and Pharmacode.
+- Each format has its own validation; for EAN, UPC and ITF-14 the check digit is added when missing and verified when present (the error says which digit is expected). Options: bar width, height, text and size, margin, colours.
+- Download as SVG or as PNG (1x to 4x); the bulk mode reads one value per line (up to 300), reports the lines with errors and builds a ZIP of SVG or PNG files with `fflate`.
+
+### QR code reader
+
+![QR code reader](docs/screenshots/qr-code-reader.png)
+
+- Route `/qr-code-reader` (also `/en/qr-code-reader`). Reads an image chosen, dropped or pasted (`Ctrl+V`) with `jsQR`, trying several sizes so small codes inside big photos can be found, or the camera (`getUserMedia`) in a light loop at about 8 frames per second.
+- The camera starts only after pressing the button and its tracks are stopped when a code is found, on Stop, when the tab goes to the background and when leaving the page.
+- The content is classified (URL, Wi-Fi, vCard, email, phone, SMS, location, otpauth, calendar event, text) and shown as text. URLs get warnings (http, user name before `@`, punycode, IP address, shortener, unusual port) and open only through an explicit button with `rel="noopener noreferrer nofollow"`; `javascript:`, `data:` and other schemes are never linkable. Wi-Fi passwords are hidden until revealed.
+
+### Sort lines
+
+![Sort lines](docs/screenshots/sort-lines.png)
+
+- Route `/sort-lines` (also `/en/sort-lines`). Alphabetical (`Intl.Collator` with Italian or English rules, with or without case), natural (`file2` before `file10`), by length, by frequency, reverse, random (Fisher-Yates with `crypto.getRandomValues`) or no sorting.
+- Removes duplicates (identical, or ignoring case; spaces can be collapsed for the comparison), blank lines and spaces at the margins; counts occurrences (merging equal lines); adds prefix, suffix and numbering with a start and a separator. Shows how many lines were removed.
+
+### Find and replace
+
+![Find and replace](docs/screenshots/find-replace.png)
+
+- Route `/find-replace` (also `/en/find-replace`). Plain-text mode (everything literal, `$` is not special) or regex mode (flags g, m, s, u; `$1`, `$<name>`, `$&`), case sensitivity and whole-word matching, up to 20 rules applied in sequence that can be turned off or reordered.
+- A preview highlights the matches of the chosen rule on the text it receives, with a count for every rule; the final result can be copied, downloaded or reused as the source.
+- Rules run in a Web Worker and are stopped after 3 seconds, so a catastrophic backtracking pattern cannot freeze the page.
+
+### Text to speech
+
+![Text to speech](docs/screenshots/text-to-speech.png)
+
+- Route `/text-to-speech` (also `/en/text-to-speech`). Web Speech API (`speechSynthesis`): voice and language, speed, pitch, volume, pause, resume and stop, with the sentence being read highlighted.
+- Privacy: only voices with `localService === true` are listed and used (the utterance always gets an explicit local voice). Network voices, such as Chrome's "Google" ones, send the text to external servers and are hidden; if there is no local voice, or the API is missing, the page says so.
+
 ### Italian tax code (codice fiscale)
 
 ![Italian tax code](docs/screenshots/codice-fiscale.png)
@@ -312,6 +537,28 @@ More tools are coming, with the same rule: nothing leaves your browser.
 
 - Route `/calcolo-giorni-lavorativi`, Italian only (`italyOnly`). Between two dates (end date included or not) or add/subtract N working days.
 - National holidays with Easter computed by the Gauss/Meeus algorithm (tested 2024-2030), optional patron saint of the regional capitals (indicative list, to be verified with the municipality) and one custom date.
+
+### Withholding tax calculator (Italian)
+
+![Italian withholding tax calculator](docs/screenshots/calcolo-ritenuta-acconto.png)
+
+- Route `/calcolo-ritenuta-acconto`, Italian only (`italyOnly`). Two presets (occasional service, freelancer) that only pre-fill the fields, and two directions: from the gross fee to the net, or from the net you want to cash to the gross fee.
+- Withholding rate (default 20%), 4% INPS surcharge, pension fund (any percentage, never subject to withholding), VAT (0 for flat-rate and occasional work), 2 € stamp duty on operations without VAT above 77.47 € with the choice to charge it to the client. A copyable statement lists every line.
+- Integer cents with half-up rounding on each line. From net to gross the tool searches the cent-exact fee and, near the stamp duty threshold where the exact net does not exist, picks the closest. Tests cover hand-checked cases. Indicative only, not tax advice.
+
+### Mortgage payment calculator (Italian)
+
+![Mortgage payment calculator](docs/screenshots/calcolo-rata-mutuo.png)
+
+- Route `/calcolo-rata-mutuo`, Italian only (`italyOnly`). French amortization (constant payment): periodic rate is the TAN divided by the payments per year (the banks' proportional rate), computed with `expm1`/`log1p` so tiny rates stay stable; TAN 0% gives equal payments.
+- Interest of each payment is rounded to the cent and the last payment absorbs the difference, so the balance ends at exactly zero. The schedule is paginated (24 rows) and exported as CSV (`;` and decimal comma in Italian, `,` and dot in English, UTF-8 BOM for Excel). It ignores fees, insurance and the APR (TAEG).
+
+### Numbers in words (Italian)
+
+![Numbers in words](docs/screenshots/numeri-in-lettere.png)
+
+- Route `/numeri-in-lettere`, Italian only (`italyOnly`). Integer part with BigInt up to 999,999,999,999; decimals read as a number after "virgola" (leading zeros one by one); negatives with "meno".
+- Spelling rules covered by tests: tens drop the vowel before uno/otto (ventuno, trentotto), cento drops its o before otto/ottanta (centottanta), the accent on tré only at the end (ventitré, ventitremila), mille/mila, "un milione" and "due miliardi" (or attached with an option). Cheque mode rounds to the cent and prints `/50`.
 
 ### IBAN & Italian VAT validator
 
@@ -402,7 +649,21 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   [Calcolo IVA e ritenuta d'acconto](https://tools.rr-dev.eu/calcolo-iva) (scorporo, notula, rivalsa INPS, cassa, bollo, forfettario),
   [Confronto testi (diff)](https://tools.rr-dev.eu/text-diff),
   [Editor Markdown](https://tools.rr-dev.eu/markdown-editor), [Contatore di parole e caratteri](https://tools.rr-dev.eu/word-counter),
-  [Tester di espressioni regolari](https://tools.rr-dev.eu/regex-tester), [Calcolo giorni lavorativi](https://tools.rr-dev.eu/calcolo-giorni-lavorativi) e
+  [Tester di espressioni regolari](https://tools.rr-dev.eu/regex-tester), [Calcolo giorni lavorativi](https://tools.rr-dev.eu/calcolo-giorni-lavorativi),
+  [Calcolo ritenuta d'acconto](https://tools.rr-dev.eu/calcolo-ritenuta-acconto) (lordo e netto, prestazione occasionale e parcella),
+  [Calcolo rata del mutuo](https://tools.rr-dev.eu/calcolo-rata-mutuo) (piano di ammortamento e CSV),
+  [Numeri in lettere](https://tools.rr-dev.eu/numeri-in-lettere) (anche in modalità assegno),
+  [Calcolatore di percentuali](https://tools.rr-dev.eu/percentage-calculator), [Convertitore di unità di misura](https://tools.rr-dev.eu/unit-converter),
+  [Calcolo date ed età](https://tools.rr-dev.eu/date-calculator), [Convertitore di fusi orari](https://tools.rr-dev.eu/timezone-converter),
+  [Convertitore di basi numeriche](https://tools.rr-dev.eu/number-base-converter) (binario, esadecimale, complemento a due, IEEE-754),
+  [Calcolatore chmod](https://tools.rr-dev.eu/chmod-calculator), [Convertitore unità CSS](https://tools.rr-dev.eu/css-unit-converter),
+  [Generatore CSS](https://tools.rr-dev.eu/css-generator) (gradienti e ombre), [Ottimizzatore SVG](https://tools.rr-dev.eu/svg-optimizer),
+  [Generatore di favicon](https://tools.rr-dev.eu/favicon-generator), [Generatore .htpasswd](https://tools.rr-dev.eu/htpasswd-generator),
+  [Decodificatore di certificati](https://tools.rr-dev.eu/certificate-decoder) (X.509 e CSR),
+  [Verifica robustezza password](https://tools.rr-dev.eu/password-strength-checker), [Generatore TOTP (2FA)](https://tools.rr-dev.eu/totp-generator),
+  [Cifra e decifra file](https://tools.rr-dev.eu/file-encrypt) (AES-256-GCM), [Generatore di codici a barre](https://tools.rr-dev.eu/barcode-generator),
+  [Lettore di codici QR](https://tools.rr-dev.eu/qr-code-reader), [Ordina righe](https://tools.rr-dev.eu/sort-lines),
+  [Trova e sostituisci](https://tools.rr-dev.eu/find-replace), [Sintesi vocale](https://tools.rr-dev.eu/text-to-speech) (solo voci locali) e
   [Convertitore CSV, JSON ed Excel](https://tools.rr-dev.eu/csv-json-converter), tutti con
   elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build

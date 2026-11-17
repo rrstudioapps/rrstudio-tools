@@ -1,0 +1,118 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.rit.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('rit.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <p class="disclaimer" role="note">{{ i18n.t('rit.disclaimer') }}</p>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('rit.kind')" [options]="kinds()" [value]="kind()" (valueChange)="setKind($event)" />
+    <app-segmented [label]="i18n.t('rit.dir')" [options]="dirs()" [(value)]="dir" />
+  </div>
+
+  <div class="rit-layout">
+    <div class="controls">
+      <div class="field">
+        <label for="rit-amount">{{ i18n.t('rit.amount.' + dir()) }}</label>
+        <input
+          id="rit-amount"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          [placeholder]="i18n.t('rit.amount.ph')"
+          [value]="amountText()"
+          [attr.aria-invalid]="amountError()"
+          [attr.aria-describedby]="amountError() ? 'rit-amount-err' : null"
+          (input)="amountText.set($any($event.target).value)"
+        />
+        @if (amountError()) {
+          <p id="rit-amount-err" class="tool-error">{{ i18n.t('rit.amount.err') }}</p>
+        }
+      </div>
+
+      <fieldset class="options">
+        <legend class="eyebrow">{{ i18n.t('rit.opts') }}</legend>
+        <div class="row2">
+          <div class="field">
+            <label for="rit-pct">{{ i18n.t('rit.ritenuta') }}</label>
+            <input id="rit-pct" type="text" inputmode="decimal" autocomplete="off" [value]="ritenutaText()" [attr.aria-invalid]="ritenutaError()" (input)="ritenutaText.set($any($event.target).value)" />
+          </div>
+          <div class="field">
+            <label for="rit-vat">{{ i18n.t('rit.vat') }}</label>
+            <input id="rit-vat" type="text" inputmode="decimal" autocomplete="off" [value]="vatText()" [attr.aria-invalid]="vatError()" (input)="vatText.set($any($event.target).value)" />
+          </div>
+        </div>
+        @if (ritenutaError()) {
+          <p class="tool-error">{{ i18n.t('rit.ritenuta.err') }}</p>
+        }
+        @if (vatError()) {
+          <p class="tool-error">{{ i18n.t('rit.vat.err') }}</p>
+        }
+        <p class="hint">{{ i18n.t('rit.vat.hint') }}</p>
+        <label class="check">
+          <input type="checkbox" [checked]="rivalsa()" (change)="rivalsa.set($any($event.target).checked)" />
+          {{ i18n.t('rit.rivalsa') }}
+        </label>
+        @if (rivalsa()) {
+          <label class="check">
+            <input type="checkbox" [checked]="ritenutaOnRivalsa()" (change)="ritenutaOnRivalsa.set($any($event.target).checked)" />
+            {{ i18n.t('rit.rivalsaBase') }}
+          </label>
+        }
+        <div class="field">
+          <label for="rit-cassa">{{ i18n.t('rit.cassa') }}</label>
+          <input id="rit-cassa" type="text" inputmode="decimal" autocomplete="off" [placeholder]="i18n.t('rit.cassa.ph')" [value]="cassaText()" [attr.aria-invalid]="cassaError()" (input)="cassaText.set($any($event.target).value)" />
+        </div>
+        @if (cassaError()) {
+          <p class="tool-error">{{ i18n.t('rit.cassa.err') }}</p>
+        }
+        <label class="check">
+          <input type="checkbox" [checked]="bolloCharged()" (change)="bolloCharged.set($any($event.target).checked)" />
+          {{ i18n.t('rit.bollo') }}
+        </label>
+      </fieldset>
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('rit.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('rit.summary') }}</h2>
+      @if (hasResult()) {
+        @if (headline(); as h) {
+          <div class="headline" data-testid="rit-headline">
+            <span class="hl-label">{{ h.label }}</span>
+            <span class="hl-value">{{ h.value }}</span>
+            <span class="hl-note">{{ h.note }}</span>
+          </div>
+        }
+        <table class="sum" data-testid="rit-table">
+          <tbody>
+            @for (r of rows(); track $index) {
+              <tr [class.strong]="r.strong">
+                <th scope="row">{{ r.label }}</th>
+                <td>{{ r.value }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        @if (notes().length) {
+          <div class="notes">
+            <h3 class="eyebrow">{{ i18n.t('rit.notes') }}</h3>
+            <ul>
+              @for (n of notes(); track n) {
+                <li>{{ n }}</li>
+              }
+            </ul>
+          </div>
+        }
+        <div class="actions">
+          <app-copy-button [text]="summaryText()" />
+        </div>
+      } @else {
+        <p class="empty">{{ i18n.t('rit.empty') }}</p>
+      }
+    </section>
+  </div>
+</div>

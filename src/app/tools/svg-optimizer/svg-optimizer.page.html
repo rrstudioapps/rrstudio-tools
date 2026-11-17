@@ -1,0 +1,182 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.svgo.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('svgo.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-file-drop [hint]="i18n.t('svgo.drop')" accept=".svg,image/svg+xml" [multiple]="true" (filesSelected)="onFiles($event)">
+    <div class="paste">
+      <label class="eyebrow" for="svgo-paste">{{ i18n.t('svgo.paste') }}</label>
+      <textarea
+        id="svgo-paste"
+        class="io-textarea"
+        rows="4"
+        spellcheck="false"
+        wrap="off"
+        [placeholder]="i18n.t('svgo.paste.ph')"
+        [value]="pasteText()"
+        (input)="pasteText.set($any($event.target).value)"
+      ></textarea>
+      <div class="tool-toolbar">
+        <button type="button" class="btn small" [disabled]="pasteText().trim() === ''" (click)="addPasted()">{{ i18n.t('svgo.paste.add') }}</button>
+      </div>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @for (m of messages(); track $index) {
+      <p class="tool-error">{{ m }}</p>
+    }
+  </div>
+
+  <section class="block" aria-labelledby="svgo-opts-h">
+    <h2 class="eyebrow" id="svgo-opts-h">{{ i18n.t('svgo.opts.title') }}</h2>
+    <div class="opts">
+      <div class="opt">
+        <label for="svgo-precision">{{ i18n.t('svgo.opt.precision') }}</label>
+        <input
+          id="svgo-precision"
+          type="number"
+          [min]="minPrecision"
+          [max]="maxPrecision"
+          [value]="options().precision"
+          aria-describedby="svgo-precision-hint"
+          (change)="setPrecision($any($event.target).value); $any($event.target).value = options().precision"
+        />
+        <span class="hint" id="svgo-precision-hint">{{ i18n.t('svgo.opt.precision.hint') }}</span>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" [checked]="options().removeViewBox" aria-describedby="svgo-vb-hint" (change)="setOption('removeViewBox', $any($event.target).checked)" /> {{ i18n.t('svgo.opt.viewBox') }}</label>
+        <span class="hint" id="svgo-vb-hint">{{ i18n.t('svgo.opt.viewBox.hint') }}</span>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" [checked]="options().removeMetadata" (change)="setOption('removeMetadata', $any($event.target).checked)" /> {{ i18n.t('svgo.opt.metadata') }}</label>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" [checked]="options().removeComments" (change)="setOption('removeComments', $any($event.target).checked)" /> {{ i18n.t('svgo.opt.comments') }}</label>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" [checked]="options().removeTitle" aria-describedby="svgo-title-hint" (change)="setOption('removeTitle', $any($event.target).checked)" /> {{ i18n.t('svgo.opt.title') }}</label>
+        <span class="hint" id="svgo-title-hint">{{ i18n.t('svgo.opt.title.hint') }}</span>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" [checked]="options().removeDimensions" [disabled]="options().removeViewBox" (change)="setOption('removeDimensions', $any($event.target).checked)" /> {{ i18n.t('svgo.opt.dimensions') }}</label>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" [checked]="options().minifyIds" aria-describedby="svgo-ids-hint" (change)="setOption('minifyIds', $any($event.target).checked)" /> {{ i18n.t('svgo.opt.ids') }}</label>
+        <span class="hint" id="svgo-ids-hint">{{ i18n.t('svgo.opt.ids.hint') }}</span>
+      </div>
+      <div class="opt">
+        <label class="check"><input type="checkbox" [checked]="options().pretty" (change)="setOption('pretty', $any($event.target).checked)" /> {{ i18n.t('svgo.opt.pretty') }}</label>
+      </div>
+    </div>
+    <p class="hint">{{ i18n.t('svgo.preset.note') }}</p>
+  </section>
+
+  <section class="block" aria-labelledby="svgo-files-h">
+    <div class="head">
+      <h2 class="eyebrow" id="svgo-files-h">{{ i18n.t('svgo.files.title') }}</h2>
+      <span class="actions">
+        <button type="button" class="btn small" [disabled]="okCount() === 0" (click)="downloadZip()">
+          <app-icon name="download" /> {{ i18n.t('svgo.zip') }}
+        </button>
+        <button type="button" class="btn small" [disabled]="items().length === 0" (click)="clear()">
+          <app-icon name="trash" /> {{ i18n.t('svgo.clear') }}
+        </button>
+      </span>
+    </div>
+    @if (items().length === 0) {
+      <p class="empty">{{ i18n.t('svgo.files.none') }}</p>
+    } @else {
+      <div class="scroll" aria-live="polite">
+        <table class="files" data-testid="svgo-files">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('svgo.col.name') }}</th>
+              <th scope="col" class="r">{{ i18n.t('svgo.col.before') }}</th>
+              <th scope="col" class="r">{{ i18n.t('svgo.col.after') }}</th>
+              <th scope="col" class="r">{{ i18n.t('svgo.col.saved') }}</th>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            @for (i of items(); track i.id) {
+              <tr [class.sel]="selected()?.id === i.id">
+                <th scope="row">
+                  <button type="button" class="link" [attr.aria-label]="i18n.t('svgo.select', { name: i.name })" [attr.aria-current]="selected()?.id === i.id" (click)="select(i.id)">{{ i.name }}</button>
+                </th>
+                @if (i.result === null) {
+                  <td class="r mono" colspan="3">{{ i18n.t('svgo.pending') }}</td>
+                } @else if (i.result.ok) {
+                  <td class="r mono">{{ size(i.result.before) }}</td>
+                  <td class="r mono">{{ size(i.result.after) }}</td>
+                  <td class="r mono">{{ savedText(i.result) }}</td>
+                } @else {
+                  <td colspan="3" class="err">{{ errorText(i.result) }}</td>
+                }
+                <td class="r acts">
+                  <button type="button" class="btn small compact" [disabled]="!i.result?.ok" [attr.aria-label]="i18n.t('svgo.download.one', { name: i.name })" (click)="downloadOne(i)">
+                    <app-icon name="download" />
+                  </button>
+                  <button type="button" class="btn small compact" [attr.aria-label]="i18n.t('svgo.remove', { name: i.name })" (click)="remove(i.id)">
+                    <app-icon name="close" />
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (totals()) {
+        <p class="tool-ok" data-testid="svgo-total">{{ totalsText() }}</p>
+      }
+    }
+  </section>
+
+  @if (selected(); as sel) {
+    @if (selectedOk(); as r) {
+      <section class="block" aria-labelledby="svgo-prev-h">
+        <h2 class="eyebrow" id="svgo-prev-h">{{ i18n.t('svgo.preview.title') }}: {{ sel.name }}</h2>
+        <div class="compare">
+          <figure>
+            <div class="canvas"><img [src]="sel.beforeUrl" [alt]="i18n.t('svgo.preview.alt.before', { name: sel.name })" /></div>
+            <figcaption class="mono">{{ i18n.t('svgo.preview.before', { size: size(r.before) }) }}</figcaption>
+          </figure>
+          <figure>
+            <div class="canvas"><img [src]="sel.afterUrl" [alt]="i18n.t('svgo.preview.alt.after', { name: sel.name })" data-testid="svgo-after" /></div>
+            <figcaption class="mono">{{ i18n.t('svgo.preview.after', { size: size(r.after) }) }} · {{ savedText(r) }}</figcaption>
+          </figure>
+        </div>
+        <p class="hint">{{ i18n.t('svgo.preview.safe') }}</p>
+        <div class="head">
+          <label class="eyebrow" for="svgo-code">{{ i18n.t('svgo.code') }}</label>
+          <span class="actions">
+            <app-copy-button [text]="r.data" [label]="i18n.t('svgo.copy')" />
+            <button type="button" class="btn small" (click)="downloadOne(sel)">
+              <app-icon name="download" /> {{ i18n.t('svgo.download') }}
+            </button>
+          </span>
+        </div>
+        <textarea id="svgo-code" class="io-textarea code" readonly rows="8" spellcheck="false" wrap="off" [value]="r.data"></textarea>
+      </section>
+    }
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('svgo.info.safe.title') }}</h2>
+      <p>{{ i18n.t('svgo.info.safe.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('svgo.info.id.title') }}</h2>
+      <p>{{ i18n.t('svgo.info.id.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('svgo.info.priv.title') }}</h2>
+      <p>{{ i18n.t('svgo.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

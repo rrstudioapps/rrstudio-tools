@@ -1,0 +1,96 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.slug.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('slug.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <section class="options">
+    <div class="tool-toolbar">
+      <app-segmented [label]="i18n.t('slug.mode')" [options]="modes()" [(value)]="mode" />
+      <app-segmented [label]="i18n.t('slug.sep')" [options]="separators()" [(value)]="separator" />
+      <label class="check"><input type="checkbox" [checked]="lowercase()" (change)="lowercase.set($any($event.target).checked)" /> {{ i18n.t('slug.lower') }}</label>
+      @if (mode() === 'bulk') {
+        <label class="check"><input type="checkbox" [checked]="unique()" (change)="unique.set($any($event.target).checked)" /> {{ i18n.t('slug.unique') }}</label>
+      }
+    </div>
+    <div class="tool-toolbar">
+      <label class="field">
+        <span class="lbl">{{ i18n.t('slug.max') }}</span>
+        <input id="slug-max" type="number" class="num" inputmode="numeric" min="0" [max]="maxLimit" [value]="maxLength()" (change)="setMax($event)" />
+        <span class="hint">{{ i18n.t('slug.max.hint') }}</span>
+      </label>
+      <span class="field">
+        <span class="lbl" aria-hidden="true">{{ i18n.t('slug.stop') }}</span>
+        <app-segmented [label]="i18n.t('slug.stop')" [options]="stops()" [(value)]="stopWords" />
+      </span>
+    </div>
+  </section>
+
+  <div class="tool-panels">
+    <app-io-panel [label]="mode() === 'bulk' ? i18n.t('slug.in.bulk') : i18n.t('slug.in')" inputId="slug-in">
+      <span panel-actions>
+        <button type="button" class="btn small" (click)="loadSample()">
+          <app-icon name="type" /> {{ i18n.t('slug.sample') }}
+        </button>
+        <button type="button" class="btn small" [disabled]="input() === ''" (click)="clear()">
+          <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+        </button>
+      </span>
+      <textarea
+        id="slug-in"
+        class="io-textarea"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        [placeholder]="mode() === 'bulk' ? i18n.t('slug.ph.bulk') : i18n.t('slug.ph')"
+        [value]="input()"
+        (input)="onInput($event)"
+      ></textarea>
+    </app-io-panel>
+
+    <app-io-panel [label]="mode() === 'bulk' ? i18n.t('slug.out.bulk') : i18n.t('slug.out')" inputId="slug-out" [meta]="meta()">
+      <span panel-actions>
+        @if (mode() === 'bulk') {
+          <button type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('slug.download') }}
+          </button>
+        }
+        <app-copy-button [text]="output()" [disabled]="output() === ''" />
+      </span>
+      <textarea
+        id="slug-out"
+        class="io-textarea"
+        readonly
+        wrap="off"
+        spellcheck="false"
+        data-testid="slug-out"
+        [placeholder]="i18n.t('slug.empty')"
+        [value]="output()"
+      ></textarea>
+    </app-io-panel>
+  </div>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (empty()) {
+      <p class="tool-error" data-testid="slug-empty">{{ i18n.t('slug.noLatin') }}</p>
+    }
+  </div>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('slug.info.what.title') }}</h2>
+      <p>{{ i18n.t('slug.info.what.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('slug.info.max.title') }}</h2>
+      <p>{{ i18n.t('slug.info.max.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('slug.info.priv.title') }}</h2>
+      <p>{{ i18n.t('slug.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

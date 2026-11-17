@@ -1,0 +1,87 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  .eyebrow {
+    margin: 0;
+  }
+}
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  border-block: 1px solid var(--line);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  .wide {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 520px) {
+  .grid .wide {
+    grid-column: span 1;
+  }
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+.lbl {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+input[type='range'] {
+  accent-color: var(--ink);
+  width: 100%;
+}
+select {
+  width: 100%;
+}
+.reading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  h2 {
+    margin: 0;
+  }
+}
+.reader {
+  max-height: 260px;
+  overflow: auto;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+mark {
+  // la frase letta si distingue anche senza colore: sfondo pieno e sottolineatura
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 2px;
+  padding: 0 2px;
+  text-decoration: underline;
+}

@@ -1,0 +1,131 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.tts.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('tts.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <p class="tool-warn" role="note">
+    <strong>{{ i18n.t('tts.privacy.title') }}</strong>
+    <span>{{ i18n.t('tts.privacy') }}</span>
+  </p>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (support() === 'no') {
+      <p class="tool-error" data-testid="tts-unsupported">{{ i18n.t('tts.unsupported') }}</p>
+    } @else if (support() === 'yes' && !voicesLoaded()) {
+      <p class="tool-ok">{{ i18n.t('tts.loading') }}</p>
+    }
+  </div>
+
+  @if (support() === 'yes' && voicesLoaded() && voices().length === 0) {
+    <p class="tool-warn" role="alert" data-testid="tts-novoices">
+      <strong>{{ i18n.t('tts.novoices.title') }}</strong>
+      <span>{{ i18n.t('tts.novoices') }}</span>
+    </p>
+  }
+
+  <section class="field">
+    <div class="head">
+      <label class="eyebrow" for="tts-text">{{ i18n.t('tts.text') }}</label>
+      <button type="button" class="btn small" (click)="loadExample()">{{ i18n.t('tts.example') }}</button>
+    </div>
+    <textarea
+      id="tts-text"
+      class="io-textarea"
+      rows="8"
+      [attr.lang]="selectedVoice()?.lang"
+      [placeholder]="i18n.t('tts.text.ph')"
+      [value]="text()"
+      (input)="onText($any($event.target).value)"
+      data-testid="tts-text"
+    ></textarea>
+    @if (truncated()) {
+      <p class="hint">{{ i18n.t('tts.truncated', { max: maxChars }) }}</p>
+    }
+  </section>
+
+  @if (support() === 'yes' && voices().length > 0) {
+    <section class="settings" [attr.aria-label]="i18n.t('tts.voice')">
+      <div class="grid">
+        <div class="field">
+          <label class="lbl" for="tts-lang">{{ i18n.t('tts.lang') }}</label>
+          <select id="tts-lang" [value]="langFilter()" (change)="onLang($any($event.target).value)">
+            <option value="" [selected]="langFilter() === ''">{{ i18n.t('tts.lang.all') }}</option>
+            @for (l of languages(); track l) {
+              <option [value]="l" [selected]="l === langFilter()">{{ l }}</option>
+            }
+          </select>
+        </div>
+        <div class="field wide">
+          <label class="lbl" for="tts-voice">{{ i18n.t('tts.voice') }}</label>
+          <select id="tts-voice" [value]="voiceId()" (change)="setVoice($any($event.target).value)" data-testid="tts-voice">
+            @for (v of filteredVoices(); track voiceKeyOf(v)) {
+              <option [value]="voiceKeyOf(v)" [selected]="voiceKeyOf(v) === voiceId()">{{ v.name }} ({{ v.lang }})</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label class="lbl" for="tts-rate">{{ i18n.t('tts.rate') }}: {{ pct.format(rate()) }}×</label>
+          <input id="tts-rate" type="range" min="0.5" max="2" step="0.1" [value]="rate()" (input)="setNumber('rate', $any($event.target).value)" (change)="restart()" />
+        </div>
+        <div class="field">
+          <label class="lbl" for="tts-pitch">{{ i18n.t('tts.pitch') }}: {{ pct.format(pitch()) }}</label>
+          <input id="tts-pitch" type="range" min="0" max="2" step="0.1" [value]="pitch()" (input)="setNumber('pitch', $any($event.target).value)" (change)="restart()" />
+        </div>
+        <div class="field">
+          <label class="lbl" for="tts-volume">{{ i18n.t('tts.volume') }}: {{ pct.format(volume() * 100) }}%</label>
+          <input id="tts-volume" type="range" min="0" max="1" step="0.05" [value]="volume()" (input)="setNumber('volume', $any($event.target).value)" (change)="restart()" />
+        </div>
+      </div>
+      <div class="row">
+        <button type="button" class="btn small" (click)="resetSettings()">{{ i18n.t('tts.reset') }}</button>
+        <span class="hint">{{ i18n.t('tts.settingsNote') }}</span>
+      </div>
+    </section>
+
+    <div class="tool-toolbar">
+      @if (playback() === 'speaking') {
+        <button type="button" class="btn primary" (click)="pause()" data-testid="tts-pause"><app-icon name="clock" /> {{ i18n.t('tts.pause') }}</button>
+      } @else if (playback() === 'paused') {
+        <button type="button" class="btn primary" (click)="resume()" data-testid="tts-resume"><app-icon name="speaker" /> {{ i18n.t('tts.resume') }}</button>
+      } @else {
+        <button type="button" class="btn primary" [disabled]="!canPlay()" (click)="play()" data-testid="tts-play"><app-icon name="speaker" /> {{ i18n.t('tts.play') }}</button>
+      }
+      <button type="button" class="btn" [disabled]="!active()" (click)="stop()" data-testid="tts-stop"><app-icon name="close" /> {{ i18n.t('tts.stop') }}</button>
+      @if (hintKey()) {
+        <span class="hint">{{ i18n.t(hintKey()) }}</span>
+      }
+    </div>
+
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (stateText()) {
+        <p [class.tool-error]="playback() === 'error'" [class.tool-ok]="playback() !== 'error'" data-testid="tts-state">{{ stateText() }}</p>
+      }
+    </div>
+
+    @if (pieces(); as p) {
+      <section class="reading" [attr.aria-label]="i18n.t('tts.reading')">
+        <h2 class="eyebrow">{{ i18n.t('tts.reading') }}</h2>
+        <div class="reader" [attr.lang]="selectedVoice()?.lang" data-testid="tts-reader">{{ p.before }}<mark #currentSentence>{{ p.now }}</mark>{{ p.after }}</div>
+      </section>
+    }
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('tts.info.how.title') }}</h2>
+      <p>{{ i18n.t('tts.info.how.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('tts.info.local.title') }}</h2>
+      <p>{{ i18n.t('tts.info.local.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('tts.info.voices.title') }}</h2>
+      <p>{{ i18n.t('tts.info.voices.desc') }}</p>
+    </div>
+  </section>
+</div>

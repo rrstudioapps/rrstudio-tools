@@ -1,0 +1,102 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.yj.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('yj.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('yj.from')" [options]="formats()" [(value)]="from" />
+    <button type="button" class="btn small" [attr.aria-label]="i18n.t('yj.swap')" (click)="swap()">
+      <app-icon name="swap" /> {{ i18n.t('yj.swap') }}
+    </button>
+    <app-segmented [label]="i18n.t('yj.to')" [options]="formats()" [(value)]="to" />
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()">
+      <app-icon name="braces" /> {{ i18n.t('yj.sample') }}
+    </button>
+    <button type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('yj.indent')" [options]="indents()" [(value)]="indent" />
+    <label class="check"><input type="checkbox" [checked]="sortKeys()" (change)="sortKeys.set($any($event.target).checked)" /> {{ i18n.t('yj.sort') }}</label>
+    <label class="check"><input type="checkbox" [checked]="arrayDocs()" [disabled]="to() !== 'yaml'" (change)="arrayDocs.set($any($event.target).checked)" /> {{ i18n.t('yj.docs') }}</label>
+    <span class="hint">{{ i18n.t('yj.indentNote') }}</span>
+  </div>
+
+  <app-file-drop [hint]="i18n.t('yj.drop')" accept=".yaml,.yml,.json,.toml,text/plain,application/json" (fileSelected)="onFile($event)">
+    <div class="tool-panels">
+      <app-io-panel [label]="i18n.t('yj.in')" inputId="yj-in" [meta]="inputMeta()">
+        <textarea
+          #inputEl
+          id="yj-in"
+          class="io-textarea"
+          wrap="off"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('yj.ph')"
+          [attr.aria-invalid]="error() ? 'true' : null"
+          [attr.aria-describedby]="error() ? 'yj-status' : null"
+          [value]="input()"
+          (input)="onInput($event)"
+        ></textarea>
+      </app-io-panel>
+
+      <app-io-panel [label]="i18n.t('yj.out')" inputId="yj-out" [meta]="outputMeta()">
+        <span panel-actions>
+          <button type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('yj.download') }}
+          </button>
+          <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        </span>
+        <textarea
+          id="yj-out"
+          class="io-textarea"
+          readonly
+          wrap="off"
+          spellcheck="false"
+          data-testid="yj-out"
+          [placeholder]="i18n.t('yj.empty')"
+          [value]="output()"
+        ></textarea>
+      </app-io-panel>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" id="yj-status" role="status" aria-live="polite">
+    @if (error(); as e) {
+      <p class="tool-error" data-testid="yj-error">
+        @if (e.title) {
+          <strong>{{ e.title }}.</strong>
+        }
+        {{ e.text }}
+        @if (e.line) {
+          <button type="button" class="btn small goto" (click)="goToError()">{{ i18n.t('yj.goto') }}</button>
+        }
+      </p>
+    } @else if (note()) {
+      <p class="tool-ok">{{ note() }}</p>
+    }
+  </div>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('yj.info.yaml.title') }}</h2>
+      <p>{{ i18n.t('yj.info.yaml.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('yj.info.toml.title') }}</h2>
+      <p>{{ i18n.t('yj.info.toml.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('yj.info.priv.title') }}</h2>
+      <p>{{ i18n.t('yj.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>
