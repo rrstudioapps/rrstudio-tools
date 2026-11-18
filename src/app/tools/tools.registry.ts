@@ -1407,4 +1407,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.bill.title', descriptionKey: 'seo.bill.desc' },
     loadComponent: () => import('./split-bill/split-bill.page').then((m) => m.SplitBillPage),
   },
+  {
+    id: 'image-redact',
+    path: 'image-redact',
+    icon: 'eyeOff',
+    category: 'media',
+    keywords: {
+      it: 'oscura sfoca pixela censura nascondi volto targa screenshot privacy immagine foto rettangolo',
+      en: 'redact blur pixelate censor hide face license plate screenshot privacy image photo rectangle',
+    },
+    titleKey: 'tool.red.title',
+    descriptionKey: 'tool.red.desc',
+    seo: { titleKey: 'seo.red.title', descriptionKey: 'seo.red.desc' },
+    loadComponent: () => import('./image-redact/image-redact.page').then((m) => m.ImageRedactPage),
+  },
 ];

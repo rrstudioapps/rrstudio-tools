@@ -673,6 +673,59 @@ try {
         await page.waitForTimeout(250);
       },
     });
+  await shot('image-redact.png', {
+      width: 1280,
+      dark: false,
+      path: '/image-redact/',
+      setup: async (page) => {
+        const seg = (name) => page.getByRole('button', { name, exact: true });
+        // immagine di prova 400x300 azzurra con una macchia rossa: generata nella pagina con un canvas
+        const b64 = await page.evaluate(() => {
+          const c = document.createElement('canvas');
+          c.width = 400;
+          c.height = 300;
+          const g = c.getContext('2d');
+          g.fillStyle = '#3a86c8';
+          g.fillRect(0, 0, 400, 300);
+          g.fillStyle = '#e63946';
+          g.fillRect(40, 40, 120, 80);
+          g.fillStyle = '#ffd166';
+          g.fillRect(220, 150, 140, 100);
+          return c.toDataURL('image/png').split(',')[1];
+        });
+        await page.setInputFiles('app-file-drop input[type=file]', { name: 'prova.png', mimeType: 'image/png', buffer: Buffer.from(b64, 'base64') });
+        await page.waitForSelector('[data-testid=red-source]');
+        if (!/400×300/.test(await page.getByTestId('red-source').innerText())) throw new Error('image-redact: dimensioni non lette');
+        // primo rettangolo: riquadro pieno nero sulla macchia rossa, impostato con i campi numerici
+        await page.getByTestId('red-add').click();
+        await page.waitForSelector('#red-x');
+        for (const [id, v] of [['red-x', '40'], ['red-y', '40'], ['red-w', '120'], ['red-h', '80']]) {
+          await page.fill('#' + id, v);
+          await page.press('#' + id, 'Tab');
+        }
+        await page.waitForTimeout(200);
+        const px = (x, y) => page.evaluate(([x, y]) => Array.from(document.querySelector('canvas.img').getContext('2d').getImageData(x, y, 1, 1).data), [x, y]);
+        const covered = await px(100, 80);
+        if (covered[0] !== 0 || covered[1] !== 0 || covered[2] !== 0) throw new Error('image-redact: il riquadro pieno non copre i pixel: ' + covered);
+        // secondo rettangolo: pixelatura sulla macchia gialla
+        await page.getByTestId('red-add').click();
+        await page.waitForTimeout(150);
+        await seg('Pixelatura').click();
+        for (const [id, v] of [['red-x', '220'], ['red-y', '150'], ['red-w', '140'], ['red-h', '100']]) {
+          await page.fill('#' + id, v);
+          await page.press('#' + id, 'Tab');
+        }
+        await page.waitForTimeout(150);
+        if (!/Rettangoli: 2/.test(await page.locator('.hint[aria-live=polite]').innerText())) throw new Error('image-redact: attesi 2 rettangoli');
+        // annulla e ripristina
+        await seg('Annulla').click();
+        await page.waitForTimeout(150);
+        if (!/Rettangoli: 1/.test(await page.locator('.hint[aria-live=polite]').innerText())) throw new Error('image-redact: annulla non ha tolto il rettangolo');
+        await seg('Ripristina').click();
+        await page.waitForTimeout(150);
+        if (!/Rettangoli: 2/.test(await page.locator('.hint[aria-live=polite]').innerText())) throw new Error('image-redact: ripristina non ha rimesso il rettangolo');
+      },
+    });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

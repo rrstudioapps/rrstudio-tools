@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento: oscura parti di un\'immagine con riquadro pieno, pixelatura o sfocatura, con annulla e ripristina e senza metadati nel file.',
+        en: 'New tool: redact parts of an image with a solid box, pixelation or blur, with undo and redo and no metadata in the output file.',
+        toolIds: ['image-redact'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento: dividi il conto alla romana o per consumo, con mancia, costi comuni e arrotondamento della quota.',
         en: 'New tool: split the bill equally or by consumption, with tip, shared costs and share rounding.',
         toolIds: ['split-bill'],

@@ -1,0 +1,183 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.red.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('red.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="image-redact" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <app-file-drop [hint]="i18n.t('red.drop')" accept="image/jpeg,image/png,image/webp" (filesSelected)="onFiles($event)">
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (loading()) {
+        <p class="tool-ok">{{ i18n.t('red.loading') }}</p>
+      }
+    </div>
+    @if (error()) {
+      <p class="tool-error" role="alert" id="red-err" data-testid="red-error">{{ error() }}</p>
+    }
+
+    @if (source(); as src) {
+      <p class="tool-ok" data-testid="red-source">{{ i18n.t('red.source', { name: fileName(), w: src.width, h: src.height }) }}</p>
+
+      <div class="workspace">
+        <div class="stage-wrap">
+          <div
+            class="stage"
+            data-testid="red-stage"
+            [style]="stageStyle()"
+            (pointerdown)="onPointerDown($event)"
+            (pointermove)="onPointerMove($event)"
+            (pointerup)="onPointerUp()"
+            (pointercancel)="onPointerUp()"
+          >
+            <canvas #preview class="img" role="img" [attr.aria-label]="i18n.t('red.stage')"></canvas>
+            @for (row of rows(); track row.region.id) {
+              <div
+                class="box"
+                [class.sel]="row.region.id === selectedId()"
+                [attr.data-rid]="row.region.id"
+                data-testid="red-box"
+                aria-hidden="true"
+                [style]="rectToPercent(row.region.rect, src.width, src.height)"
+              >
+                @if (row.region.id === selectedId()) {
+                  @for (h of handles; track h) {
+                    <span class="handle" [attr.data-handle]="h"></span>
+                  }
+                }
+              </div>
+            }
+          </div>
+          <p class="hint">{{ i18n.t('red.keys') }}</p>
+        </div>
+
+        <div class="side">
+          <section class="panel" [attr.aria-label]="i18n.t('red.effect')">
+            <h2 class="eyebrow">{{ i18n.t('red.effect') }}</h2>
+            <app-segmented [label]="i18n.t('red.effect.label')" [options]="effects()" [value]="effect()" (valueChange)="setEffect($event)" />
+            @switch (effect()) {
+              @case ('fill') {
+                <div class="row">
+                  <label class="lbl" for="red-color">{{ i18n.t('red.color') }}</label>
+                  <input
+                    id="red-color"
+                    type="color"
+                    data-testid="red-color"
+                    [value]="color()"
+                    (input)="setParam('color', $any($event.target).value)"
+                    (change)="endParam()"
+                  />
+                </div>
+              }
+              @case ('pixelate') {
+                <div class="row">
+                  <label class="lbl" for="red-block">{{ i18n.t('red.block', { n: block() }) }}</label>
+                  <input
+                    id="red-block"
+                    type="range"
+                    data-testid="red-block"
+                    [min]="minBlock"
+                    [max]="maxBlock"
+                    [value]="block()"
+                    (input)="setParam('block', $any($event.target).value)"
+                    (change)="endParam()"
+                  />
+                </div>
+              }
+              @case ('blur') {
+                <div class="row">
+                  <label class="lbl" for="red-blur">{{ i18n.t('red.blur', { n: blur() }) }}</label>
+                  <input
+                    id="red-blur"
+                    type="range"
+                    data-testid="red-blur"
+                    [min]="minBlur"
+                    [max]="maxBlur"
+                    [value]="blur()"
+                    (input)="setParam('blur', $any($event.target).value)"
+                    (change)="endParam()"
+                  />
+                </div>
+              }
+            }
+            <p class="hint">{{ i18n.t('red.effect.hint') }}</p>
+          </section>
+
+          <section class="panel" [attr.aria-label]="i18n.t('red.list')">
+            <h2 class="eyebrow">{{ i18n.t('red.list') }}</h2>
+            <div class="row">
+              <button type="button" class="btn small" data-testid="red-add" [disabled]="regions().length >= 100" (click)="add()">
+                <app-icon name="plus" /> {{ i18n.t('red.add') }}
+              </button>
+              <button type="button" class="btn small" data-testid="red-undo" [disabled]="!canUndo()" (click)="undo()">{{ i18n.t('red.undo') }}</button>
+              <button type="button" class="btn small" data-testid="red-redo" [disabled]="!canRedo()" (click)="redo()">{{ i18n.t('red.redo') }}</button>
+              <button type="button" class="btn small" data-shortcut="clear" data-testid="red-clear" [disabled]="regions().length === 0" (click)="clearAll()">
+                {{ i18n.t('red.clear') }}
+              </button>
+            </div>
+            @if (rows().length === 0) {
+              <p class="hint">{{ i18n.t('red.list.empty') }}</p>
+            } @else {
+              <ul class="items" data-testid="red-list">
+                @for (row of rows(); track row.region.id) {
+                  <li [class.sel]="row.region.id === selectedId()">
+                    <button type="button" class="pick" data-testid="red-item" [attr.aria-pressed]="row.region.id === selectedId()" (click)="select(row.region.id)">
+                      {{ row.label }}
+                    </button>
+                    <button type="button" class="btn small" [attr.aria-label]="i18n.t('red.deleteAria', { n: row.n })" (click)="remove(row.region.id)">
+                      {{ i18n.t('red.delete') }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+            <p class="hint" aria-live="polite">{{ i18n.t('red.count', { n: regions().length }) }}</p>
+          </section>
+
+          <section class="panel" [attr.aria-label]="i18n.t('red.area')">
+            <h2 class="eyebrow">{{ i18n.t('red.area') }}</h2>
+            @if (selected(); as sel) {
+              <div class="fields">
+                <label for="red-x">{{ i18n.t('red.x') }}
+                  <input id="red-x" type="number" inputmode="numeric" min="0" [max]="src.width - 1" data-testid="red-x" [value]="sel.rect.x" (change)="setField('x', $any($event.target).value, $any($event.target))" />
+                </label>
+                <label for="red-y">{{ i18n.t('red.y') }}
+                  <input id="red-y" type="number" inputmode="numeric" min="0" [max]="src.height - 1" data-testid="red-y" [value]="sel.rect.y" (change)="setField('y', $any($event.target).value, $any($event.target))" />
+                </label>
+                <label for="red-w">{{ i18n.t('red.w') }}
+                  <input id="red-w" type="number" inputmode="numeric" min="1" [max]="src.width" data-testid="red-w" [value]="sel.rect.w" (change)="setField('w', $any($event.target).value, $any($event.target))" />
+                </label>
+                <label for="red-h">{{ i18n.t('red.h') }}
+                  <input id="red-h" type="number" inputmode="numeric" min="1" [max]="src.height" data-testid="red-h" [value]="sel.rect.h" (change)="setField('h', $any($event.target).value, $any($event.target))" />
+                </label>
+              </div>
+            } @else {
+              <p class="hint">{{ i18n.t('red.noSelection') }}</p>
+            }
+          </section>
+
+          <section class="panel" [attr.aria-label]="i18n.t('red.output')">
+            <h2 class="eyebrow">{{ i18n.t('red.output') }}</h2>
+            <app-segmented [label]="i18n.t('red.format')" [options]="formats" [(value)]="format" />
+            @if (format() === 'jpeg') {
+              <div class="row">
+                <label class="lbl" for="red-quality">{{ i18n.t('red.quality', { n: quality() }) }}</label>
+                <input id="red-quality" type="range" min="10" max="100" [value]="quality()" (input)="quality.set(+$any($event.target).value)" />
+              </div>
+            }
+            <p class="hint">{{ i18n.t('red.noMeta') }}</p>
+            <div class="row">
+              <button data-shortcut="download" type="button" class="btn primary" data-testid="red-download" [disabled]="working()" (click)="download()">
+                <app-icon name="download" /> {{ i18n.t('red.download') }}
+              </button>
+            </div>
+            <p class="tool-ok" role="status" aria-live="polite" data-testid="red-status">{{ working() ? i18n.t('red.working') : status() }}</p>
+          </section>
+        </div>
+      </div>
+    }
+  </app-file-drop>
+</div>
