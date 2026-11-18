@@ -1,0 +1,103 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.ext.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ext.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="text-extractor" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="field">
+    <label for="ext-text">{{ i18n.t('ext.input') }}</label>
+    <textarea
+      id="ext-text"
+      rows="10"
+      spellcheck="false"
+      autocomplete="off"
+      [placeholder]="i18n.t('ext.ph')"
+      [value]="text()"
+      [attr.aria-invalid]="error() ? 'true' : null"
+      [attr.aria-describedby]="error() ? 'ext-error ext-count' : 'ext-count'"
+      data-testid="ext-text"
+      (input)="text.set($any($event.target).value)"
+    ></textarea>
+    <p id="ext-count" class="hint">{{ i18n.t('ext.counter', { n: num(text().length) }) }}</p>
+  </div>
+  @if (error()) {
+    <p id="ext-error" class="tool-error" data-testid="ext-error">{{ error() }}</p>
+  }
+
+  <section class="kinds" [attr.aria-label]="i18n.t('ext.kind')">
+    <h2 class="eyebrow">{{ i18n.t('ext.kind') }}</h2>
+    <app-segmented [label]="i18n.t('ext.kind')" [options]="kindOptions()" [(value)]="kind" />
+  </section>
+
+  <div class="options">
+    <span class="eyebrow">{{ i18n.t('ext.options') }}</span>
+    <div class="checks">
+      <label class="check">
+        <input type="checkbox" [checked]="unique()" data-testid="ext-unique" (change)="unique.set($any($event.target).checked)" />
+        {{ i18n.t('ext.opt.unique') }}
+      </label>
+      @if (supportsCase()) {
+        <label class="check">
+          <input type="checkbox" [checked]="ignoreCase()" data-testid="ext-ignore-case" (change)="ignoreCase.set($any($event.target).checked)" />
+          {{ i18n.t('ext.opt.ignoreCase') }}
+        </label>
+      }
+      <label class="check">
+        <input type="checkbox" [checked]="showCount()" data-testid="ext-show-count" (change)="showCount.set($any($event.target).checked)" />
+        {{ i18n.t('ext.opt.showCount') }}
+      </label>
+    </div>
+    <div class="row">
+      <span class="label">{{ i18n.t('ext.sort') }}</span>
+      <app-segmented [label]="i18n.t('ext.sort')" [options]="sortOptions()" [(value)]="sort" />
+    </div>
+    <div class="row">
+      <span class="label">{{ i18n.t('ext.sep') }}</span>
+      <app-segmented [label]="i18n.t('ext.sep')" [options]="sepOptions()" [(value)]="sep" />
+    </div>
+    <div class="actions">
+      <button type="button" class="btn small" data-shortcut="clear" data-testid="ext-reset" [disabled]="text() === ''" (click)="reset()">
+        <app-icon name="trash" /> {{ i18n.t('ext.reset') }}
+      </button>
+    </div>
+  </div>
+
+  <section class="result" [attr.aria-label]="i18n.t('ext.result')">
+    <h2 class="eyebrow">{{ i18n.t('ext.result') }}</h2>
+    <div aria-live="polite">
+      @if (result(); as r) {
+        @if (r.items.length === 0) {
+          <p class="hint" data-testid="ext-none">{{ i18n.t('ext.none') }}</p>
+        } @else {
+          <p class="summary" data-testid="ext-summary">{{ summary() }}</p>
+          @if (truncated()) {
+            <p class="hint" data-testid="ext-truncated">{{ i18n.t('ext.truncated', { shown: num(shownCount), n: num(r.items.length) }) }}</p>
+          }
+        }
+      } @else if (!error()) {
+        <p class="hint">{{ i18n.t('ext.empty') }}</p>
+      }
+    </div>
+
+    @if (result(); as r) {
+      @if (r.items.length > 0) {
+        <div class="actions">
+          <app-copy-button shortcut="copy" [text]="fullText()" />
+          <button type="button" class="btn small" data-testid="ext-download-txt" (click)="downloadTxt()">
+            <app-icon name="download" /> {{ i18n.t('ext.downloadTxt') }}
+          </button>
+          <button type="button" class="btn small" data-testid="ext-download-csv" (click)="downloadCsv()">
+            <app-icon name="download" /> {{ i18n.t('ext.downloadCsv') }}
+          </button>
+        </div>
+        <label class="visually-hidden" for="ext-out">{{ i18n.t('ext.out') }}</label>
+        <textarea id="ext-out" rows="12" readonly spellcheck="false" [value]="shownText()" data-testid="ext-out"></textarea>
+      }
+    }
+  </section>
+</div>

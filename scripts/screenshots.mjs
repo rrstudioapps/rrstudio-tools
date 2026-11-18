@@ -856,6 +856,21 @@ try {
         if (v !== 'Ciao è 😀') throw new Error('prefissi misti errati: ' + v);
       },
     });
+  await shot('text-extractor.png', { width: 1280, dark: false, path: '/text-extractor/', setup: async (page) => {
+        await page.fill('#ext-text', 'Scrivi a mario.rossi@example.com o a info@sito.it (copia: Mario.Rossi@example.com). Vedi https://sito.it/x, poi www.esempio.it. Fattura del 15/03/2024 e del 31/02/2024, IBAN IT60X0542811101000000123456, tel. +39 333 1234567.');
+        await page.waitForTimeout(250);
+        const seg = (re) => page.getByRole('button', { name: re });
+        for (const re of [/^Email \(2\)/, /^URL \(2\)/, /^Date \(1\)/, /^IBAN \(1\)/, /^Telefoni \(1\)/]) {
+          if ((await seg(re).count()) !== 1) throw new Error('text-extractor: pulsante atteso ' + re);
+        }
+        await seg(/^URL/).click();
+        await page.waitForTimeout(150);
+        if ((await page.getByTestId('ext-out').inputValue()) !== 'https://sito.it/x\nwww.esempio.it') throw new Error('text-extractor: URL inattesi');
+        await seg(/^Email/).click();
+        await page.getByTestId('ext-show-count').check();
+        await page.waitForTimeout(150);
+        if ((await page.getByTestId('ext-out').inputValue()) !== 'mario.rossi@example.com (2)\ninfo@sito.it (1)') throw new Error('text-extractor: email inattese');
+      } });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

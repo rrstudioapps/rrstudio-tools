@@ -1463,4 +1463,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.tbin.title', descriptionKey: 'seo.tbin.desc' },
     loadComponent: () => import('./text-binary-converter/text-binary-converter.page').then((m) => m.TextBinaryConverterPage),
   },
+  {
+    id: 'text-extractor',
+    path: 'text-extractor',
+    icon: 'search',
+    category: 'text',
+    keywords: {
+      it: 'estrai testo email url link indirizzi ip date telefoni numeri iban uuid hashtag menzioni colori importi euro regex elenco',
+      en: 'extract text emails urls links addresses ip dates phone numbers iban uuid hashtags mentions colors amounts euro regex list',
+    },
+    titleKey: 'tool.ext.title',
+    descriptionKey: 'tool.ext.desc',
+    seo: { titleKey: 'seo.ext.title', descriptionKey: 'seo.ext.desc' },
+    loadComponent: () => import('./text-extractor/text-extractor.page').then((m) => m.TextExtractorPage),
+  },
 ];
