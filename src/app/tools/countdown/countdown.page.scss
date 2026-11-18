@@ -1,0 +1,106 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: var(--space-5);
+  align-items: start;
+  @media (max-width: 860px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.panel,
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  > label {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+  input,
+  select {
+    width: 100%;
+    min-width: 0;
+  }
+  input[aria-invalid='true'] {
+    border-style: dashed;
+    border-color: var(--ink);
+  }
+}
+.chips,
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.result h2,
+.target,
+.status {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.status {
+  font-weight: var(--fw-medium);
+}
+.cells {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  min-width: 0;
+}
+.digits {
+  font-family: var(--mono);
+  font-size: clamp(1.5rem, 6vw, 2.75rem);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.lbl {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.facts {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--line);
+  }
+  dt {
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  dd {
+    margin: 0;
+    font-family: var(--mono);
+  }
+}

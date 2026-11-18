@@ -611,6 +611,32 @@ try {
         await page.waitForTimeout(150);
         if ((await page.getByTestId('lcmp-out').inputValue()) !== 'Pera\nkiwi') throw new Error('list-compare: scheda «In comune» inattesa');
       } });
+  await shot('countdown.png', {
+      width: 1280,
+      dark: false,
+      path: '/countdown/',
+      setup: async (page) => {
+        const text = (id) => page.getByTestId(id).innerText();
+        // data fissa nel passato: lo screenshot non mostra mai la data odierna
+        await page.fill('#cdt-name', 'Capodanno 2020');
+        await page.selectOption('#cdt-zone', 'UTC');
+        await page.fill('#cdt-at', '2020-01-01T00:00');
+        await page.waitForTimeout(250);
+        if (!/è passato da/i.test(await text('cdt-status'))) throw new Error('countdown: manca «è passato da»: ' + (await text('cdt-status')));
+        const days = Number((await text('cdt-days')).replace(/\D/g, ''));
+        if (!(days > 2000)) throw new Error('countdown: giorni trascorsi non plausibili: ' + days);
+        if (!/capodanno 2020/i.test(await page.getByTestId('cdt-result').innerText())) throw new Error('countdown: nome non mostrato');
+        // una ricorrenza porta a una data futura: «Mancano»
+        await page.getByTestId('cdt-h-christmas').click();
+        await page.waitForTimeout(250);
+        if (!/mancano/i.test(await text('cdt-status'))) throw new Error('countdown: dopo Natale manca «Mancano»');
+        // si torna alla data fissa nel passato per lo screenshot
+        await page.fill('#cdt-name', 'Capodanno 2020');
+        await page.fill('#cdt-at', '2020-01-01T00:00');
+        await page.waitForTimeout(250);
+        if (!/è passato da/i.test(await text('cdt-status'))) throw new Error('countdown: stato finale errato');
+      },
+    });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

@@ -1,0 +1,92 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.cdt.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('cdt.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="countdown" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="layout">
+    <section class="panel" [attr.aria-label]="i18n.t('cdt.target')">
+      <div class="field">
+        <label for="cdt-name">{{ i18n.t('cdt.name') }}</label>
+        <input
+          id="cdt-name"
+          type="text"
+          maxlength="80"
+          autocomplete="off"
+          [placeholder]="i18n.t('cdt.name.ph')"
+          [value]="name()"
+          data-testid="cdt-name"
+          (input)="name.set($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <label for="cdt-at">{{ i18n.t('cdt.at') }}</label>
+        <input
+          id="cdt-at"
+          type="datetime-local"
+          min="1970-01-01T00:00"
+          max="2100-12-31T23:59"
+          [value]="at()"
+          [attr.aria-invalid]="invalid()"
+          [attr.aria-describedby]="invalid() ? 'cdt-err' : 'cdt-at-hint'"
+          data-testid="cdt-at"
+          (input)="at.set($any($event.target).value)"
+        />
+        @if (invalid()) {
+          <p id="cdt-err" class="tool-error" data-testid="cdt-error">{{ i18n.t('cdt.err.at') }}</p>
+        } @else {
+          <p id="cdt-at-hint" class="hint">{{ i18n.t('cdt.at.hint') }}</p>
+        }
+      </div>
+      <div class="field">
+        <label for="cdt-zone">{{ i18n.t('cdt.zone') }}</label>
+        <select id="cdt-zone" [value]="zone()" data-testid="cdt-zone" (change)="setZone($any($event.target).value)">
+          <option value="local" [selected]="zone() === 'local'">{{ i18n.t('cdt.zone.local') }}</option>
+          @for (z of zones; track z) {
+            <option [value]="z" [selected]="zone() === z">{{ z }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <span class="eyebrow" id="cdt-quick">{{ i18n.t('cdt.quick') }}</span>
+        <div class="chips" role="group" aria-labelledby="cdt-quick">
+          @for (h of holidays; track h) {
+            <button type="button" class="btn small" [attr.data-testid]="'cdt-h-' + h" (click)="pickHoliday(h)">{{ i18n.t('cdt.h.' + h) }}</button>
+          }
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn" data-shortcut="download" data-testid="cdt-ics" [disabled]="!wall()" [title]="i18n.t('cdt.ics.title')" (click)="downloadIcs()">{{ i18n.t('cdt.ics') }}</button>
+        <button type="button" class="btn" data-shortcut="clear" data-testid="cdt-clear" (click)="clear()">{{ i18n.t('cdt.clear') }}</button>
+      </div>
+    </section>
+
+    <section class="result" aria-live="polite" data-testid="cdt-result">
+      @if (result(); as r) {
+        <h2 class="eyebrow">{{ name().trim() || i18n.t('cdt.event') }}</h2>
+        <p class="target" data-testid="cdt-target">{{ targetText() }}</p>
+        <p class="status" data-testid="cdt-status">{{ i18n.t('cdt.status.' + r.state) }}</p>
+        @if (r.state !== 'now') {
+          <div class="cells">
+            <div class="cell"><span class="digits" data-testid="cdt-days">{{ num(r.days) }}</span><span class="lbl">{{ i18n.t('cdt.days') }}</span></div>
+            <div class="cell"><span class="digits" data-testid="cdt-hours">{{ num(r.hours) }}</span><span class="lbl">{{ i18n.t('cdt.hours') }}</span></div>
+            <div class="cell"><span class="digits" data-testid="cdt-minutes">{{ num(r.minutes) }}</span><span class="lbl">{{ i18n.t('cdt.minutes') }}</span></div>
+            <div class="cell"><span class="digits" data-testid="cdt-seconds">{{ num(r.seconds) }}</span><span class="lbl">{{ i18n.t('cdt.seconds') }}</span></div>
+          </div>
+          <dl class="facts">
+            <div><dt>{{ i18n.t('cdt.weeks') }}</dt><dd data-testid="cdt-weeks">{{ num(r.weeks) }}</dd></div>
+            <div><dt>{{ i18n.t('cdt.totalHours') }}</dt><dd data-testid="cdt-total-hours">{{ num(r.totalHours) }}</dd></div>
+            <div><dt>{{ i18n.t('cdt.work') }}</dt><dd data-testid="cdt-work">{{ num(r.workingDays) }}</dd></div>
+          </dl>
+        }
+      } @else {
+        <p class="hint" data-testid="cdt-empty">{{ i18n.t('cdt.empty') }}</p>
+      }
+    </section>
+  </div>
+</div>

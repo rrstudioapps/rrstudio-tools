@@ -1379,4 +1379,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.lcmp.title', descriptionKey: 'seo.lcmp.desc' },
     loadComponent: () => import('./list-compare/list-compare.page').then((m) => m.ListComparePage),
   },
+  {
+    id: 'countdown',
+    path: 'countdown',
+    icon: 'clock',
+    category: 'calc',
+    keywords: {
+      it: 'conto alla rovescia countdown data evento giorni mancanti quanti giorni mancano natale pasqua capodanno ferragosto giorni lavorativi settimane ics calendario',
+      en: 'countdown days until date event how many days left christmas easter new year working days weeks ics calendar',
+    },
+    titleKey: 'tool.cdt.title',
+    descriptionKey: 'tool.cdt.desc',
+    seo: { titleKey: 'seo.cdt.title', descriptionKey: 'seo.cdt.desc' },
+    loadComponent: () => import('./countdown/countdown.page').then((m) => m.CountdownPage),
+  },
 ];

@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento: conto alla rovescia a una data, con giorni lavorativi, fusi orari, feste e file calendario .ics.',
+        en: 'New tool: countdown to a date, with working days, time zones, holidays and an .ics calendar file.',
+        toolIds: ['countdown'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento «Confronta elenchi»: incolla due elenchi e vedi unione, voci in comune, solo in A, solo in B e doppioni, con conteggi, copia e download di ogni scheda.',
         en: 'New tool "List compare": paste two lists and see the union, items in common, only in A, only in B and duplicates, with counts, copy and download for each tab.',
         toolIds: ['list-compare'],

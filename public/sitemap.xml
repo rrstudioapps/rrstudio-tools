@@ -1247,6 +1247,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/list-compare"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/countdown</loc>
+    <lastmod>2026-11-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/countdown"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/countdown"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/countdown"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/countdown</loc>
+    <lastmod>2026-11-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/countdown"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/countdown"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/countdown"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/privacy</loc>
     <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/privacy"/>
