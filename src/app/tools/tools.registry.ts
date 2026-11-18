@@ -1365,4 +1365,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.tcl.title', descriptionKey: 'seo.tcl.desc' },
     loadComponent: () => import('./text-cleaner/text-cleaner.page').then((m) => m.TextCleanerPage),
   },
+  {
+    id: 'list-compare',
+    path: 'list-compare',
+    icon: 'columns',
+    category: 'text',
+    keywords: {
+      it: 'confronta elenchi liste intersezione unione differenza in comune doppioni duplicati righe diff insiemi',
+      en: 'compare lists intersection union difference in common duplicates lines sets diff',
+    },
+    titleKey: 'tool.lcmp.title',
+    descriptionKey: 'tool.lcmp.desc',
+    seo: { titleKey: 'seo.lcmp.title', descriptionKey: 'seo.lcmp.desc' },
+    loadComponent: () => import('./list-compare/list-compare.page').then((m) => m.ListComparePage),
+  },
 ];

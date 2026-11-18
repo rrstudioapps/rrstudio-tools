@@ -1,0 +1,131 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.lcmp.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('lcmp.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="list-compare" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="lists">
+    <div class="field">
+      <label for="lcmp-a">{{ i18n.t('lcmp.a') }}</label>
+      <textarea
+        id="lcmp-a"
+        rows="10"
+        spellcheck="false"
+        autocomplete="off"
+        [placeholder]="i18n.t('lcmp.ph')"
+        [value]="a()"
+        [attr.aria-invalid]="error() ? 'true' : null"
+        [attr.aria-describedby]="error() ? 'lcmp-error lcmp-count-a' : 'lcmp-count-a'"
+        data-testid="lcmp-a"
+        (input)="a.set($any($event.target).value)"
+      ></textarea>
+      <p id="lcmp-count-a" class="hint">{{ i18n.t('lcmp.counter', { n: num(linesA()) }) }}</p>
+    </div>
+    <div class="field">
+      <label for="lcmp-b">{{ i18n.t('lcmp.b') }}</label>
+      <textarea
+        id="lcmp-b"
+        rows="10"
+        spellcheck="false"
+        autocomplete="off"
+        [placeholder]="i18n.t('lcmp.ph')"
+        [value]="b()"
+        [attr.aria-invalid]="error() ? 'true' : null"
+        [attr.aria-describedby]="error() ? 'lcmp-error lcmp-count-b' : 'lcmp-count-b'"
+        data-testid="lcmp-b"
+        (input)="b.set($any($event.target).value)"
+      ></textarea>
+      <p id="lcmp-count-b" class="hint">{{ i18n.t('lcmp.counter', { n: num(linesB()) }) }}</p>
+    </div>
+  </div>
+  @if (error()) {
+    <p id="lcmp-error" class="tool-error" data-testid="lcmp-error">{{ error() }}</p>
+  }
+
+  <div class="options">
+    <span class="eyebrow">{{ i18n.t('lcmp.options') }}</span>
+    <div class="checks">
+      <label class="check">
+        <input type="checkbox" [checked]="ignoreCase()" data-testid="lcmp-ignore-case" (change)="ignoreCase.set($any($event.target).checked)" />
+        {{ i18n.t('lcmp.opt.ignoreCase') }}
+      </label>
+      <label class="check">
+        <input type="checkbox" [checked]="trim()" data-testid="lcmp-trim" (change)="trim.set($any($event.target).checked)" />
+        {{ i18n.t('lcmp.opt.trim') }}
+      </label>
+      <label class="check">
+        <input type="checkbox" [checked]="ignoreEmpty()" data-testid="lcmp-ignore-empty" (change)="ignoreEmpty.set($any($event.target).checked)" />
+        {{ i18n.t('lcmp.opt.ignoreEmpty') }}
+      </label>
+    </div>
+    <div class="sort">
+      <span class="label">{{ i18n.t('lcmp.sort') }}</span>
+      <app-segmented [label]="i18n.t('lcmp.sort')" [options]="sortOptions()" [(value)]="sort" />
+    </div>
+    <div class="actions">
+      <button type="button" class="btn small" data-testid="lcmp-swap" (click)="swap()"><app-icon name="swap" /> {{ i18n.t('lcmp.swap') }}</button>
+      <button type="button" class="btn small" data-shortcut="clear" data-testid="lcmp-reset" [disabled]="a() === '' && b() === ''" (click)="reset()">
+        <app-icon name="trash" /> {{ i18n.t('lcmp.reset') }}
+      </button>
+    </div>
+  </div>
+
+  <section class="result" [attr.aria-label]="i18n.t('lcmp.result')">
+    <h2 class="eyebrow">{{ i18n.t('lcmp.result') }}</h2>
+    <div aria-live="polite">
+      @if (result()) {
+        <p class="summary" data-testid="lcmp-summary">{{ summary() }}</p>
+        @if (ignoreCase()) {
+          <p class="hint">{{ i18n.t('lcmp.summary.case') }}</p>
+        }
+      } @else if (!error()) {
+        <p class="hint">{{ i18n.t('lcmp.empty') }}</p>
+      }
+    </div>
+
+    @if (result(); as r) {
+      <app-segmented [label]="i18n.t('lcmp.tab')" [options]="tabs()" [(value)]="tab" />
+
+      <div class="panel" data-testid="lcmp-panel">
+        <div class="actions">
+          <app-copy-button shortcut="copy" [text]="tabText()" [disabled]="tabText() === ''" />
+          <button type="button" class="btn small" data-shortcut="download" data-testid="lcmp-download" [disabled]="tabText() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('lcmp.download') }}
+          </button>
+          <app-copy-button [text]="allText()" [label]="i18n.t('lcmp.copyAll')" />
+        </div>
+
+        @if (tab() === 'dups') {
+          <div class="dups">
+            <div class="field">
+              <label for="lcmp-dup-a">{{ i18n.t('lcmp.dups.in', { which: 'A' }) }}</label>
+              @if (r.dupA.length === 0) {
+                <p class="hint">{{ i18n.t('lcmp.dups.none', { which: 'A' }) }}</p>
+              } @else {
+                <textarea id="lcmp-dup-a" rows="10" readonly spellcheck="false" [value]="dupAText()" data-testid="lcmp-dups-a"></textarea>
+              }
+            </div>
+            <div class="field">
+              <label for="lcmp-dup-b">{{ i18n.t('lcmp.dups.in', { which: 'B' }) }}</label>
+              @if (r.dupB.length === 0) {
+                <p class="hint">{{ i18n.t('lcmp.dups.none', { which: 'B' }) }}</p>
+              } @else {
+                <textarea id="lcmp-dup-b" rows="10" readonly spellcheck="false" [value]="dupBText()" data-testid="lcmp-dups-b"></textarea>
+              }
+            </div>
+          </div>
+        } @else if (tabText() === '') {
+          <p class="hint">{{ i18n.t('lcmp.none') }}</p>
+        } @else {
+          <label class="visually-hidden" for="lcmp-out">{{ i18n.t('lcmp.out') }}</label>
+          <textarea id="lcmp-out" rows="12" readonly spellcheck="false" [value]="tabText()" data-testid="lcmp-out"></textarea>
+        }
+      </div>
+    }
+  </section>
+</div>

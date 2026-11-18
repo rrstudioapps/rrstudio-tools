@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento «Confronta elenchi»: incolla due elenchi e vedi unione, voci in comune, solo in A, solo in B e doppioni, con conteggi, copia e download di ogni scheda.',
+        en: 'New tool "List compare": paste two lists and see the union, items in common, only in A, only in B and duplicates, with counts, copy and download for each tab.',
+        toolIds: ['list-compare'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento «Pulisci testo»: incolla un testo da PDF, email o Word e ottieni la versione pulita, con righe riunite, spazi doppi tolti, virgolette semplici, caratteri invisibili e tag HTML rimossi.',
         en: 'New tool "Text cleaner": paste text from a PDF, email or Word and get a clean version, with lines joined, double spaces removed, straight quotes, and invisible characters and HTML tags stripped.',
         toolIds: ['text-cleaner'],

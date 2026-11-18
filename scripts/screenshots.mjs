@@ -597,6 +597,20 @@ try {
         if (out !== 'Il gatto dormiva sul divano.\n\n"Che bello", disse il padrone.') throw new Error('text-cleaner: risultato inatteso ' + JSON.stringify(out));
         if (!/tolti \d+ caratteri/i.test(await page.getByTestId('tcl-removed').innerText())) throw new Error('text-cleaner: manca il conteggio dei caratteri tolti');
       } });
+  await shot('list-compare.png', { width: 1280, dark: false, path: '/list-compare/', setup: async (page) => {
+        await page.fill('#lcmp-a', 'mela\nPera\nkiwi\nmela\nfico');
+        await page.fill('#lcmp-b', 'pera\nbanana\nkiwi\nuva\nuva');
+        await page.getByTestId('lcmp-ignore-case').check();
+        await page.waitForTimeout(250);
+        const summary = await page.getByTestId('lcmp-summary').innerText();
+        if (!/A ha 5 voci, B ha 5 voci: 2 in comune, 2 solo in A, 2 solo in B/.test(summary)) throw new Error('list-compare: riepilogo inatteso ' + summary);
+        await page.getByRole('button', { name: /^Solo in A/ }).click();
+        await page.waitForTimeout(150);
+        if ((await page.getByTestId('lcmp-out').inputValue()) !== 'mela\nfico') throw new Error('list-compare: scheda «Solo in A» inattesa');
+        await page.getByRole('button', { name: /^In comune/ }).click();
+        await page.waitForTimeout(150);
+        if ((await page.getByTestId('lcmp-out').inputValue()) !== 'Pera\nkiwi') throw new Error('list-compare: scheda «In comune» inattesa');
+      } });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

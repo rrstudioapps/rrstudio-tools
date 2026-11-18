@@ -1233,6 +1233,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-cleaner"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/list-compare</loc>
+    <lastmod>2026-11-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/list-compare"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/list-compare"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/list-compare"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/list-compare</loc>
+    <lastmod>2026-11-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/list-compare"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/list-compare"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/list-compare"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/privacy</loc>
     <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/privacy"/>
