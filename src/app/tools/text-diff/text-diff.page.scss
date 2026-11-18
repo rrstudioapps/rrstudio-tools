@@ -24,13 +24,6 @@ $ins-strong: color-mix(in srgb, var(--src-2) 34%, transparent);
   gap: var(--space-3);
   min-width: 0;
 }
-.result-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-}
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -55,11 +48,54 @@ $ins-strong: color-mix(in srgb, var(--src-2) 34%, transparent);
   font-size: var(--fs-xs);
   color: var(--muted);
 }
-.scroll {
+.inputs-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.hidden-sum {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+}
+// area dei risultati con scorrimento proprio: la pagina non cresce quanto il diff e la barra resta in vista
+.viewer {
   max-width: 100%;
-  overflow-x: auto;
+  max-height: max(360px, calc(100dvh - 2rem));
+  overflow: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
+}
+.bar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.opts-btn {
+  display: none;
+}
+.goto {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: right;
+  cursor: pointer;
+  &:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
 }
 .diff {
   width: 100%;
@@ -96,6 +132,17 @@ $ins-strong: color-mix(in srgb, var(--src-2) 34%, transparent);
   tr.cur {
     outline: 2px solid var(--ink);
     outline-offset: -2px;
+  }
+}
+// senza "a capo": righe su una sola riga e scorrimento orizzontale
+.nowrap .diff {
+  table-layout: auto;
+  width: max-content;
+  min-width: 100%;
+  .tx {
+    white-space: pre;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 }
 .diff.side .tx:nth-child(2) {
@@ -157,6 +204,37 @@ mark.chg {
   align-self: flex-start;
 }
 @media (max-width: 760px) {
+  // barra sticky compatta: posizione, precedente/successiva e "Opzioni"; il resto si apre a richiesta
+  .bar {
+    padding: var(--space-1) var(--space-2);
+  }
+  .opts-btn {
+    display: inline-flex;
+  }
+  .lbl {
+    display: none;
+  }
+  .bar:not(.open) .summary {
+    flex-wrap: nowrap;
+    gap: var(--space-2);
+    [data-testid='diff-position'] {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: var(--fs-xs);
+    }
+    .btn {
+      flex: none;
+    }
+  }
+  .bar:not(.open) {
+    .controls,
+    .extra,
+    .summary.has-nav > .tool-ok:not([data-testid]) {
+      display: none;
+    }
+  }
   .diff .c-no {
     width: 34px;
   }

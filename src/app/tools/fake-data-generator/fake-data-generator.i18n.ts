@@ -69,6 +69,8 @@ const it = {
   'fake.info.seed.desc':
     'Con lo stesso seme, gli stessi campi e le stesse opzioni ottieni sempre le stesse righe, anche su un altro computer: utile per test ripetibili. Il link di condivisione conserva le impostazioni, non i dati. Se lasci il seme vuoto ne viene scelto uno a caso, che puoi fissare con il pulsante.',
   'fake.info.phone.title': 'Telefoni, indirizzi e privacy',
+  'fake.gcf': 'Ti servono codici di prova?',
+  'fake.gcf.link': 'Generatore codice fiscale e partita IVA',
   'fake.info.phone.desc':
     'I telefoni hanno prefissi italiani plausibili ma numeri casuali: potrebbero coincidere con un numero vero per caso, quindi non chiamarli. Vie e città vengono da un piccolo elenco incluso e i CAP sono di fantasia. Tutto avviene in questa pagina: niente viene inviato né salvato.',
 };
@@ -140,6 +142,8 @@ const en: typeof it = {
   'fake.info.seed.desc':
     'With the same seed, fields and options you always get the same rows, even on another computer: handy for repeatable tests. The share link keeps the settings, not the data. If you leave the seed empty a random one is picked, which you can pin with the button.',
   'fake.info.phone.title': 'Phones, addresses and privacy',
+  'fake.gcf': 'Need test codes?',
+  'fake.gcf.link': 'Fake tax code and VAT number generator (in Italian)',
   'fake.info.phone.desc':
     'Phone numbers have plausible Italian prefixes but random digits: one might match a real number by chance, so do not call them. Streets and cities come from a small built-in list and ZIP codes are invented. Everything happens on this page: nothing is sent or saved.',
 };

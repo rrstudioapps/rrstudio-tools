@@ -20,7 +20,7 @@ let lib: Promise<PdfjsLib> | null = null;
  * Carica pdf.js alla prima richiesta. Worker, font standard e wasm vengono dallo stesso sito
  * (vedi gli asset in angular.json): nessuna richiesta a CDN.
  */
-function loadPdfjs(): Promise<PdfjsLib> {
+export function loadPdfjs(): Promise<PdfjsLib> {
   lib ??= import('pdfjs-dist').then((m) => {
     m.GlobalWorkerOptions.workerSrc = new URL('pdfjs/pdf.worker.min.mjs', document.baseURI).href;
     return m;

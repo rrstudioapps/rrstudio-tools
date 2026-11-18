@@ -16,7 +16,7 @@ export const MAX_SUGGESTIONS = 8;
 
 /** Strumenti per tipo di contenuto, dal più pertinente. */
 export const TEXT_TARGETS: Readonly<Record<ContentType, readonly string[]>> = {
-  json: ['json-formatter', 'json-viewer', 'json-query', 'yaml-json-converter', 'csv-json-converter'],
+  json: ['json-formatter', 'json-viewer', 'json-query', 'json-diff', 'yaml-json-converter', 'csv-json-converter'],
   jwt: ['jwt-decoder', 'base64'],
   url: ['url-parser', 'url-encode', 'qr-code-generator'],
   base64: ['base64'],
@@ -152,6 +152,7 @@ export const FILE_TARGETS: Readonly<Record<FileClass, readonly FilePick[]>> = {
     { id: 'pdf-sign', via: 'files' },
     { id: 'image-watermark', via: 'files', multi: true },
     { id: 'pdf-to-images', via: 'files' },
+    { id: 'pdf-to-text', via: 'files', multi: true },
   ],
   csv: [
     { id: 'csv-dashboard', via: 'files' },
@@ -162,6 +163,7 @@ export const FILE_TARGETS: Readonly<Record<FileClass, readonly FilePick[]>> = {
     { id: 'json-formatter', via: 'text' },
     { id: 'json-viewer', via: 'text' },
     { id: 'json-query', via: 'text' },
+    { id: 'json-diff', via: 'text' },
     { id: 'yaml-json-converter', via: 'text' },
     { id: 'csv-json-converter', via: 'text' },
   ],

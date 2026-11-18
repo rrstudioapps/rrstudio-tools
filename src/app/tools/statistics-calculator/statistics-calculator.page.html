@@ -5,11 +5,13 @@
     <p class="tool-lead">{{ i18n.t('stat.lead') }}</p>
   </header>
 
+  <app-print-button [title]="i18n.t('tool.stat.title')" [params]="printParams()" />
+
   <app-privacy-note />
 
   <app-share-link toolId="statistics-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
 
-  <div class="tool-toolbar">
+  <div class="tool-toolbar no-print">
     <app-segmented [label]="i18n.t('stat.source')" [options]="sources()" [(value)]="source" />
     @if (source() === 'csv' && columnCount() > 0) {
       <div class="field inline">
@@ -27,7 +29,7 @@
     }
   </div>
 
-  <app-io-panel [label]="i18n.t('stat.input')" inputId="stat-in" [meta]="status()">
+  <app-io-panel class="no-print" [label]="i18n.t('stat.input')" inputId="stat-in" [meta]="status()">
     <span panel-actions>
       <button type="button" class="btn small" data-testid="stat-sample" (click)="loadSample()">{{ i18n.t('stat.sample') }}</button>
       <button data-shortcut="clear" type="button" class="btn small" (click)="input.set('')"><app-icon name="trash" /> {{ i18n.t('stat.clear') }}</button>
@@ -53,7 +55,7 @@
           <app-send-to from="statistics-calculator" [text]="summary()" />
         </span>
       </div>
-      <div class="field inline">
+      <div class="field inline no-print">
         <label for="stat-pct">{{ i18n.t('stat.percentile') }}</label>
         <input id="stat-pct" type="number" min="0" max="100" step="any" [value]="percentile()" (input)="setPercentile($any($event.target).value)" />
       </div>
@@ -73,7 +75,7 @@
     @if (hist(); as h) {
       <section class="panel" [attr.aria-label]="i18n.t('stat.hist.title')">
         <h2 class="eyebrow">{{ i18n.t('stat.hist.title') }}</h2>
-        <div class="field inline">
+        <div class="field inline no-print">
           <label for="stat-bins">{{ i18n.t('stat.bins') }}</label>
           <input id="stat-bins" type="number" min="0" max="60" step="1" [value]="bins()" (input)="setBins($any($event.target).value)" />
         </div>
@@ -85,7 +87,7 @@
             <rect class="bar" [attr.x]="b.x" [attr.y]="b.y" [attr.width]="b.w" [attr.height]="b.h"><title>{{ b.title }}</title></rect>
           }
           @for (t of h.xTicks; track $index) {
-            <text class="tick" text-anchor="middle" [attr.x]="t.x" [attr.y]="h.base + 16">{{ t.label }}</text>
+            <text class="tick" [attr.text-anchor]="t.anchor" [attr.x]="t.x" [attr.y]="h.base + 16">{{ t.label }}</text>
           }
           @for (t of h.yTicks; track $index) {
             <text class="tick" text-anchor="end" [attr.x]="PAD.l - 6" [attr.y]="t.y + 4">{{ t.label }}</text>

@@ -42,6 +42,7 @@ describe('filterTools', () => {
       'codice-fiscale',
       'convertitore-lire-euro',
       'fattura-elettronica',
+      'generatore-codice-fiscale',
       'iban-partita-iva',
       'numeri-in-lettere',
       'scadenze-fatture',
@@ -57,7 +58,7 @@ describe('filterTools', () => {
     expect(filterTools(TOOLS, null, 'perche', t).map((x) => x.id)).toEqual(['url-encode']);
   });
   it('più parole: devono esserci tutte', () => {
-    expect(filterTools(TOOLS, null, 'json albero', texts).map((t) => t.id)).toEqual(['json-viewer']);
+    expect(filterTools(TOOLS, null, 'json albero', texts).map((t) => t.id).sort()).toEqual(['json-diff', 'json-viewer']);
     expect(filterTools(TOOLS, null, 'json zzzz', texts)).toEqual([]);
   });
   it('combina categoria e ricerca', () => {

@@ -3,6 +3,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { WD_DICTIONARIES } from './calcolo-giorni-lavorativi.i18n';
@@ -36,7 +37,7 @@ interface HolidayRow {
 
 @Component({
   selector: 'app-calcolo-giorni-lavorativi',
-  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrintButton, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calcolo-giorni-lavorativi.page.html',
   styleUrl: './calcolo-giorni-lavorativi.page.scss',
@@ -194,6 +195,21 @@ export class CalcoloGiorniLavorativiPage {
     const e = easter(year);
     const d = toDayNo(year, e.m, e.d);
     return `${this.i18n.t('wd.easter', { year })}: ${weekdayName(d)} ${e.d}/${e.m}`;
+  });
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    const yn = (b: boolean) => t(b ? 'print.yes' : 'print.no');
+    const out = [p(t('wd.mode'), t('wd.mode.' + this.mode())), p(t('wd.start'), this.startText())];
+    if (this.mode() === 'between') out.push(p(t('wd.end'), this.endText()), p(t('wd.includeEnd'), yn(this.includeEnd())));
+    else out.push(p(t('wd.dir'), t('wd.dir.' + this.dir())), p(t('wd.days'), this.daysText()));
+    out.push(p(t('wd.sat'), yn(this.excludeSat())), p(t('wd.sun'), yn(this.excludeSun())), p(t('wd.national'), yn(this.national())));
+    const patron = this.patrons.find((x) => x.id === this.patron());
+    out.push(p(t('wd.patron'), patron ? this.patronLabel(patron) : t('wd.patron.none')));
+    if (this.custom()) out.push(p(t('wd.custom'), this.custom()));
+    return out;
   });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)

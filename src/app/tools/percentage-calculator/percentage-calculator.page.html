@@ -5,23 +5,27 @@
     <p class="tool-lead">{{ i18n.t('pct.lead') }}</p>
   </header>
 
+  <!-- le risposte sono frasi complete ("20% di 150 = 30"): niente riepilogo dei parametri -->
+  <app-print-button [title]="i18n.t('tool.pct.title')" />
+
   <app-privacy-note />
 
   <app-share-link toolId="percentage-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
 
   <div class="cards">
     @for (c of cards; track c.id) {
-      <section class="card" [attr.aria-labelledby]="'pct-h-' + c.id">
+      <section class="card" [class.no-print]="!view(c.id).text" [attr.aria-labelledby]="'pct-h-' + c.id">
         <h2 class="card-title" [id]="'pct-h-' + c.id">{{ i18n.t('pct.' + c.id + '.title') }}</h2>
         @if (c.hasMode) {
           <app-segmented
+            class="no-print"
             [label]="i18n.t('pct.' + c.id + '.mode')"
             [options]="modeOptions($any(c.id))"
             [value]="modeOf(c.id)"
             (valueChange)="setMode($any(c.id), $event)"
           />
         }
-        <div class="pair">
+        <div class="pair no-print">
           <div class="field">
             <label [for]="'pct-' + c.id + '-a'">{{ i18n.t('pct.' + c.id + '.a') }}</label>
             <input

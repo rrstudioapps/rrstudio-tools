@@ -26,6 +26,7 @@ test('esclusioni', () => {
   assert.ok(isExcluded('og/it/qr.png'));
   assert.ok(isExcluded('og-image.png'));
   assert.ok(isExcluded('sitemap.xml'));
+  assert.ok(isExcluded('changelog.xml') && isExcluded('changelog.en.xml'));
   assert.ok(isExcluded('sw.js'));
   assert.ok(isExcluded('main-AAAAAAAA.js.map'));
   assert.ok(isExcluded('index.csr.html'));

@@ -19,6 +19,7 @@ export interface SegmentOption<T extends string> {
           class="seg-btn"
           [class.on]="value() === o.value"
           [attr.aria-pressed]="value() === o.value"
+          [attr.data-shortcut]="toggleShortcut() && value() !== o.value ? toggleShortcut() : null"
           (click)="value.set(o.value)"
         >
           {{ o.label }}
@@ -65,4 +66,6 @@ export class Segmented<T extends string = string> {
   readonly label = input.required<string>();
   readonly options = input.required<readonly SegmentOption<T>[]>();
   readonly value = model.required<T>();
+  /** Azione di scorciatoia (es. `toggle-view`) che passa all'altra opzione: ha senso con due opzioni; il pulsante marcato è quello non attivo. */
+  readonly toggleShortcut = input<string | null>(null);
 }

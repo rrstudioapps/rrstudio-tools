@@ -2,6 +2,9 @@
 // © 2026 rrstudio — rrstudio Tools
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_OPTIONS, computeDiff, inlineDiff, normalizeLine, splitLines, toUnifiedDiff, tokenize } from './diff-core';
+import { ScrollGeometry, lineCount, lineStartOffset, nextGroup, targetScrollTop } from './diff-nav';
+import { SHARE_SCHEMA } from './text-diff.share';
+import { SHARE_PREFIX, encodeState, parseHash, validateState } from '../../shared/share-state';
 import { diffSequences, editDistance, matchRuns } from './myers';
 
 const seq = (s: string): number[] => Array.from(s).map((c) => c.charCodeAt(0));
@@ -235,5 +238,64 @@ describe('prestazioni', () => {
     const ms = performance.now() - t0;
     expect(m.stats).toMatchObject({ added: 5000, removed: 5000, modified: 5000 });
     expect(ms).toBeLessThan(10000);
+  });
+});
+
+describe('stato condiviso: "a capo"', () => {
+  it('wrap è un booleano; i link vecchi (senza wrap) restano validi', () => {
+    expect(validateState(SHARE_SCHEMA, { textA: 'a', textB: 'b', view: 'inline', wrap: false })).toEqual({ textA: 'a', textB: 'b', view: 'inline', wrap: false });
+    expect(validateState(SHARE_SCHEMA, { textA: 'a', textB: 'b', view: 'side', collapse: true })).toEqual({ textA: 'a', textB: 'b', view: 'side', collapse: true });
+    expect(validateState(SHARE_SCHEMA, { textA: 'a', wrap: 'no' })).toEqual({ textA: 'a' });
+  });
+
+  it('andata e ritorno nell\'hash, e un vecchio link non toglie il valore predefinito', async () => {
+    const hash = SHARE_PREFIX + (await encodeState('text-diff', { textA: 'x', wrap: false }));
+    const parsed = await parseHash('text-diff', SHARE_SCHEMA, hash);
+    expect(parsed).toMatchObject({ kind: 'ok', state: { textA: 'x', wrap: false } });
+    const old = SHARE_PREFIX + (await encodeState('text-diff', { textA: 'x', view: 'side' }));
+    const p2 = await parseHash('text-diff', SHARE_SCHEMA, old);
+    expect(p2.kind).toBe('ok');
+    if (p2.kind === 'ok') expect(Object.hasOwn(p2.state, 'wrap')).toBe(false);
+  });
+});
+
+describe('navigazione nel contenitore', () => {
+  const base: ScrollGeometry = { scrollTop: 0, containerTop: 100, elTop: 600, elHeight: 20, containerHeight: 600, stickyHeight: 60, maxScroll: 5000 };
+
+  it('la riga finisce sotto la barra sticky, circa a un terzo', () => {
+    const t = targetScrollTop(base);
+    // riga a 500px dall'inizio del contenitore; margine = (540-20)/3 ≈ 173; barra 60
+    expect(t).toBe(Math.round(500 - 60 - (540 - 20) / 3));
+    expect(t).toBeGreaterThan(0);
+  });
+
+  it('tiene conto dello scorrimento attuale e dei limiti', () => {
+    expect(targetScrollTop({ ...base, scrollTop: 300, elTop: 150 })).toBe(Math.round(300 + 50 - 60 - (540 - 20) / 3));
+    expect(targetScrollTop({ ...base, elTop: 110 })).toBe(0);
+    expect(targetScrollTop({ ...base, elTop: 9000, maxScroll: 1200 })).toBe(1200);
+    expect(targetScrollTop({ ...base, maxScroll: 0 })).toBe(0);
+  });
+
+  it('nextGroup gira in avanti e indietro', () => {
+    expect(nextGroup(-1, 1, 3)).toBe(0);
+    expect(nextGroup(-1, -1, 3)).toBe(2);
+    expect(nextGroup(2, 1, 3)).toBe(0);
+    expect(nextGroup(0, -1, 3)).toBe(2);
+    expect(nextGroup(0, 1, 0)).toBe(-1);
+  });
+
+  it('lineStartOffset: inizio della riga N con qualunque terminatore', () => {
+    expect(lineStartOffset('a\nbb\nccc', 1)).toBe(0);
+    expect(lineStartOffset('a\nbb\nccc', 2)).toBe(2);
+    expect(lineStartOffset('a\nbb\nccc', 3)).toBe(5);
+    expect(lineStartOffset('a\r\nbb\rccc', 3)).toBe(6);
+    expect(lineStartOffset('a\nb', 9)).toBe(3);
+    expect(lineStartOffset('', 1)).toBe(0);
+  });
+
+  it('lineCount', () => {
+    expect(lineCount('')).toBe(0);
+    expect(lineCount('a')).toBe(1);
+    expect(lineCount('a\nb\n')).toBe(3);
   });
 });

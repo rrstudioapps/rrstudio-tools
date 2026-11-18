@@ -1,0 +1,232 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.gcf.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('gcf.lead') }}</p>
+  </header>
+
+  <p class="warn" role="note" data-testid="gcf-warning">
+    <app-icon name="shield" />
+    <span>{{ i18n.t('gcf.warning') }}</span>
+  </p>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="generatore-codice-fiscale" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <section class="options" [attr.aria-label]="i18n.t('gcf.options')">
+    <div class="row">
+      <app-segmented [label]="i18n.t('gcf.mode')" [options]="modes()" [(value)]="mode" />
+    </div>
+    <div class="row">
+      <label class="lbl" for="gcf-count">{{ i18n.t('gcf.count', { min: minCount, max: maxCount }) }}</label>
+      <input id="gcf-count" type="number" class="num" inputmode="numeric" [min]="minCount" [max]="maxCount" [value]="count()"
+        (change)="setCount($any($event.target).value); $any($event.target).value = count()" />
+      <label class="lbl" for="gcf-seed">{{ i18n.t('gcf.seed') }}</label>
+      <input id="gcf-seed" type="text" class="seed mono" spellcheck="false" autocomplete="off" maxlength="100"
+        [placeholder]="i18n.t('gcf.seed.ph')" [value]="seed()" (input)="seed.set($any($event.target).value)" />
+    </div>
+    <div class="row">
+      <span class="hint" data-testid="gcf-seed-used">{{ i18n.t('gcf.seed.used') }}: <code class="mono">{{ usedSeed() }}</code></span>
+      @if (!seed().trim() && usedSeed()) {
+        <button type="button" class="btn small" (click)="keepSeed()">{{ i18n.t('gcf.seed.keep') }}</button>
+      }
+    </div>
+
+    @if (mode() === 'cf') {
+      <div class="row">
+        <app-segmented [label]="i18n.t('gcf.sex')" [options]="sexes()" [(value)]="sex" />
+      </div>
+      <div class="row">
+        <label class="lbl" for="gcf-exact">{{ i18n.t('gcf.birth.exact') }}</label>
+        <input id="gcf-exact" type="date" [value]="birthExact()" (input)="birthExact.set($any($event.target).value)" />
+        <label class="lbl" for="gcf-yfrom">{{ i18n.t('gcf.birth.yearFrom') }}</label>
+        <input id="gcf-yfrom" type="number" class="num small" inputmode="numeric" min="1900" [max]="currentYear" [value]="yearFrom()"
+          [disabled]="birthExact() !== ''" (change)="setYear('from', $any($event.target).value); $any($event.target).value = yearFrom()" />
+        <label class="lbl" for="gcf-yto">{{ i18n.t('gcf.birth.yearTo') }}</label>
+        <input id="gcf-yto" type="number" class="num small" inputmode="numeric" min="1900" [max]="currentYear" [value]="yearTo()"
+          [disabled]="birthExact() !== ''" (change)="setYear('to', $any($event.target).value); $any($event.target).value = yearTo()" />
+      </div>
+      <p class="hint">{{ i18n.t('gcf.birth.hint') }}</p>
+      <div class="place">
+        <app-segmented [label]="i18n.t('gcf.place')" [options]="placeKinds()" [value]="placeKind()" (valueChange)="setPlaceKind($event)" />
+        @switch (placeKind()) {
+          @case ('comune') {
+            <app-place-combobox
+              [label]="i18n.t('gcf.place.comune')"
+              [placeholder]="i18n.t('gcf.place.comune.ph')"
+              [index]="index()"
+              [kinds]="comuneKinds"
+              [preset]="comboPreset()"
+              (wanted)="ensurePlaces()"
+              (picked)="onPicked($event)"
+            />
+          }
+          @case ('estero') {
+            <app-place-combobox
+              [label]="i18n.t('gcf.place.estero')"
+              [placeholder]="i18n.t('gcf.place.estero.ph')"
+              [index]="index()"
+              [kinds]="esteroKinds"
+              [preset]="comboPreset()"
+              (wanted)="ensurePlaces()"
+              (picked)="onPicked($event)"
+            />
+          }
+        }
+        @if (placeKind() !== 'any') {
+          <p class="hint" role="status">
+            @if (placesError()) {
+              {{ i18n.t('gcf.place.error') }}
+            } @else if (!index()) {
+              {{ i18n.t('gcf.place.loading') }}
+            } @else if (!placeCode()) {
+              {{ i18n.t('gcf.place.choose') }}
+            }
+          </p>
+        }
+      </div>
+      <div class="row">
+        <label class="lbl" for="gcf-homo">{{ i18n.t('gcf.homocodia') }}</label>
+        <select id="gcf-homo" [value]="homocodia()" (change)="setHomocodia($any($event.target).value)">
+          @for (n of homocodiaLevels; track n) {
+            <option [value]="n" [selected]="n === homocodia()">{{ n === 0 ? i18n.t('gcf.homocodia.0') : n === 8 ? i18n.t('gcf.homocodia.8') : i18n.t('gcf.homocodia.n', { n }) }}</option>
+          }
+        </select>
+      </div>
+      @if (hasHomocodia()) {
+        <p class="hint">{{ i18n.t('gcf.homocodia.hint') }}</p>
+      }
+    } @else {
+      <div class="row">
+        <label class="lbl" for="gcf-office">{{ i18n.t('gcf.office') }}</label>
+        <select id="gcf-office" [value]="office()" (change)="office.set($any($event.target).value)">
+          <option value="" [selected]="office() === ''">{{ i18n.t('gcf.office.any') }}</option>
+          @for (o of offices; track o.code) {
+            <option [value]="o.code" [selected]="o.code === office()">{{ o.label }}</option>
+          }
+        </select>
+        <label class="check">
+          <input id="gcf-prefix" type="checkbox" [checked]="prefix()" (change)="prefix.set($any($event.target).checked)" />
+          {{ i18n.t('gcf.prefix') }}
+        </label>
+      </div>
+      <p class="hint">{{ i18n.t('gcf.vat.hint') }}</p>
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (error()) {
+        <p class="tool-error" data-testid="gcf-error">{{ i18n.t('gcf.err.' + error()) }}</p>
+      }
+      @if (short()) {
+        <p class="hint" data-testid="gcf-short">{{ i18n.t('gcf.short', { n: short() }) }}</p>
+      }
+    </div>
+  </section>
+
+  <div class="tool-toolbar">
+    <button data-shortcut="run" type="button" class="btn primary" (click)="regenerate()">
+      <app-icon name="refresh" /> {{ i18n.t('gcf.generate') }}
+    </button>
+    <button data-shortcut="clear" type="button" class="btn small" [disabled]="!total()" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('gcf.clear') }}
+    </button>
+  </div>
+
+  @if (total()) {
+    <section class="block" aria-labelledby="gcf-res-title">
+      <h2 class="eyebrow" id="gcf-res-title">{{ i18n.t('gcf.result') }}</h2>
+      <p class="hint" aria-live="polite" data-testid="gcf-meta">{{ meta() }}</p>
+      <div class="tablewrap" tabindex="0" role="region" [attr.aria-label]="i18n.t('gcf.result')">
+        @if (mode() === 'cf') {
+          <table data-testid="gcf-table">
+            <thead>
+              <tr>
+                <th scope="col" class="idx">#</th>
+                <th scope="col">{{ i18n.t('gcf.col.code') }}</th>
+                <th scope="col">{{ i18n.t('gcf.col.first') }}</th>
+                <th scope="col">{{ i18n.t('gcf.col.last') }}</th>
+                <th scope="col">{{ i18n.t('gcf.col.sex') }}</th>
+                <th scope="col">{{ i18n.t('gcf.col.birth') }}</th>
+                <th scope="col">{{ i18n.t('gcf.col.place') }}</th>
+                @if (hasHomocodia()) {
+                  <th scope="col">{{ i18n.t('gcf.col.homocodia') }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of cfPreview(); track r.code; let n = $index) {
+                <tr>
+                  <th scope="row" class="idx">{{ n + 1 }}</th>
+                  <td><span class="code"><code class="mono" data-testid="gcf-code">{{ r.code }}</code><app-copy-button [compact]="true" [text]="r.code" [ariaLabel]="i18n.t('gcf.copyOne', { value: r.code })" /></span></td>
+                  <td>{{ r.first }}</td>
+                  <td>{{ r.last }}</td>
+                  <td>{{ r.sex }}</td>
+                  <td>{{ r.birth }}</td>
+                  <td>{{ r.place }} <span class="muted mono">{{ r.placeCode }}</span></td>
+                  @if (hasHomocodia()) {
+                    <td>{{ r.homocodia ? i18n.t('gcf.homocodia.row', { n: r.homocodia }) : '—' }}</td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <table data-testid="gcf-table">
+            <thead>
+              <tr>
+                <th scope="col" class="idx">#</th>
+                <th scope="col">{{ i18n.t('gcf.col.vat') }}</th>
+                <th scope="col">{{ i18n.t('gcf.col.office') }}</th>
+                <th scope="col">{{ i18n.t('gcf.col.province') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of vatPreview(); track r.value; let n = $index) {
+                <tr>
+                  <th scope="row" class="idx">{{ n + 1 }}</th>
+                  <td><span class="code"><code class="mono" data-testid="gcf-code">{{ r.value }}</code><app-copy-button [compact]="true" [text]="r.value" [ariaLabel]="i18n.t('gcf.copyOne', { value: r.value })" /></span></td>
+                  <td class="mono">{{ r.office }}</td>
+                  <td>{{ r.province || '—' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+      <div class="row">
+        <app-segmented [label]="i18n.t('gcf.format')" [options]="formats" [(value)]="format" />
+      </div>
+      <div class="tool-toolbar">
+        <app-copy-button shortcut="copy" [text]="text()" [label]="i18n.t('gcf.copyAll')" />
+        <button data-shortcut="download" type="button" class="btn small" (click)="download()">
+          <app-icon name="download" /> {{ i18n.t('gcf.download') }}
+        </button>
+        <app-send-to from="generatore-codice-fiscale" kind="text" [text]="text()" />
+      </div>
+    </section>
+  } @else if (!placePending()) {
+    <p class="hint" data-testid="gcf-empty">{{ i18n.t('gcf.empty') }}</p>
+  }
+
+  <p class="hint crosslinks" data-testid="gcf-validators">
+    {{ i18n.t('gcf.validators') }}
+    <a [routerLink]="i18n.link('codice-fiscale')">{{ i18n.t('gcf.validators.cf') }}</a>
+    ·
+    <a [routerLink]="i18n.link('iban-partita-iva')">{{ i18n.t('gcf.validators.vat') }}</a>.
+  </p>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('gcf.info.valid.title') }}</h2>
+      <p>{{ i18n.t('gcf.info.valid.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('gcf.info.seed.title') }}</h2>
+      <p>{{ i18n.t('gcf.info.seed.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('gcf.info.priv.title') }}</h2>
+      <p>{{ i18n.t('gcf.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

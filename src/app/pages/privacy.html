@@ -77,6 +77,11 @@
       worker tiene il contenuto in memoria per pochi secondi, finché la pagina di ricezione non lo prende (una sola
       volta), poi lo dimentica: non finisce in cache, in IndexedDB né sul server.
     </p>
+    <p>
+      Anche il pulsante «Stampa o salva PDF» degli strumenti di calcolo lavora solo nel browser: apre il dialogo di
+      stampa del dispositivo e non invia nulla. Nell'intestazione stampata compare l'indirizzo della pagina senza
+      la parte dopo il #, che può contenere i dati di un link condiviso.
+    </p>
 
     <h2>Log tecnici del server</h2>
     <p>
@@ -108,6 +113,14 @@
       <a [href]="apps" target="_blank" rel="noopener">apps.rr-dev.eu</a>, OpenStreetMap (dal visualizzatore EXIF) e
       VIES (dalla verifica della partita IVA). Si aprono solo se ci clicchi e da quel momento valgono le loro
       informative.
+    </p>
+
+    <h2>Segnalazioni e feedback</h2>
+    <p>
+      In fondo agli strumenti e nel piè di pagina ci sono link per segnalare un problema o proporre un'idea. Portano a
+      GitHub, un servizio esterno con una propria informativa, e si aprono solo se ci clicchi: il sito non invia nulla.
+      Nel modulo precompilato compaiono soltanto il nome dello strumento, la lingua e l'indirizzo della pagina, senza i
+      dati che hai inserito. Per inviarlo serve un account GitHub.
     </p>
 
     <h2>I tuoi diritti</h2>
@@ -205,6 +218,11 @@
       the content in memory for a few seconds, until the receiving page takes it (once), then forgets it: it never
       ends up in the cache, in IndexedDB or on the server.
     </p>
+    <p>
+      The "Print or save PDF" button of the calculation tools also works only in the browser: it opens your
+      device's print dialog and sends nothing. The printed header shows the page address without the part after
+      the #, which may hold the data of a shared link.
+    </p>
 
     <h2>Technical server logs</h2>
     <p>
@@ -234,6 +252,14 @@
       <a [href]="demo" target="_blank" rel="noopener">demo.rr-dev.eu</a>,
       <a [href]="apps" target="_blank" rel="noopener">apps.rr-dev.eu</a>, OpenStreetMap (from the EXIF viewer) and
       VIES (from the VAT number check). They open only if you click them, and from then on their own notices apply.
+    </p>
+
+    <h2>Reports and feedback</h2>
+    <p>
+      At the bottom of the tools and in the footer there are links to report a problem or suggest an idea. They lead to
+      GitHub, an external service with its own notice, and open only if you click them: the site sends nothing.
+      The pre-filled form contains only the tool name, the language and the address of the page, never the data you
+      entered. A GitHub account is needed to submit it.
     </p>
 
     <h2>Your rights</h2>

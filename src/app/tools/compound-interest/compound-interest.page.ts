@@ -3,6 +3,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { parseDecimal } from '../../shared/decimal';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
@@ -17,12 +18,12 @@ const VB_W = 640;
 const VB_H = 250;
 const PLOT_X = 74;
 const PLOT_Y = 12;
-const PLOT_W = VB_W - PLOT_X - 8;
+const PLOT_R = 8;
 const PLOT_H = 190;
 
 @Component({
   selector: 'app-compound-interest',
-  imports: [PrivacyNote, Segmented, ShareLink],
+  imports: [PrintButton, PrivacyNote, Segmented, ShareLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './compound-interest.page.html',
   styleUrl: './compound-interest.page.scss',
@@ -97,18 +98,36 @@ export class CompoundInterestPage {
   }
   protected readonly amountErrorKey = computed(() => (this.error() === 'nothing' ? 'ci.err.nothing' : this.error() === 'negative' ? 'ci.err.negative' : 'ci.err.amount'));
 
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    return [
+      p(t('ci.principal'), this.principalText()),
+      p(t('ci.contribution'), this.contributionText()),
+      p(t('ci.frequency'), t('ci.freq.' + this.frequency())),
+      p(t('ci.timing'), t('ci.timing.' + this.timing())),
+      p(t('ci.rate'), this.rateText()),
+      p(t('ci.years'), this.yearsText()),
+      p(t('ci.compounding'), t('ci.comp.' + this.compounding())),
+      p(t('ci.inflation'), this.inflationText()),
+      p(t('ci.tax'), this.taxText()),
+    ];
+  });
+
   protected readonly hasTax = computed(() => (this.input().taxPct || 0) > 0);
 
   // ---- grafico ----
   protected readonly vbW = VB_W;
   protected readonly vbH = VB_H;
-  protected readonly plotX = PLOT_X;
+  /** Margine sinistro proporzionato all'etichetta più lunga dell'asse Y (carattere mono da 12 px, circa 7,3 px a carattere). */
+  protected readonly plotX = computed(() => Math.max(PLOT_X, Math.ceil(this.yMax().length * 7.3) + 14));
   protected readonly plotY = PLOT_Y;
-  protected readonly plotW = PLOT_W;
+  protected readonly plotW = computed(() => VB_W - this.plotX() - PLOT_R);
   protected readonly plotH = PLOT_H;
   protected readonly bars = computed(() => {
     const r = this.result();
-    return r ? chartBars(r.rows, PLOT_W, PLOT_H) : [];
+    return r ? chartBars(r.rows, this.plotW(), PLOT_H) : [];
   });
   protected readonly yMax = computed(() => (this.result() ? this.compact(this.result()!.final) : ''));
 

@@ -5,11 +5,13 @@
     <p class="tool-lead">{{ i18n.t('subnet.lead') }}</p>
   </header>
 
+  <app-print-button [title]="i18n.t('tool.subnet.title')" [params]="printParams()" />
+
   <app-privacy-note />
 
   <app-share-link toolId="subnet-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
 
-  <div class="field">
+  <div class="field no-print">
     <label for="subnet-input">{{ i18n.t('subnet.input') }}</label>
     <div class="row">
       <input
@@ -75,10 +77,10 @@
       </div>
     </section>
 
-    <section class="card" [attr.aria-label]="i18n.t('subnet.split.title')">
+    <section class="card" [class.no-print]="splitRows().length === 0" [attr.aria-label]="i18n.t('subnet.split.title')">
       <h2 class="eyebrow">{{ i18n.t('subnet.split.title') }}</h2>
-      <app-segmented [label]="i18n.t('subnet.split.mode')" [options]="splitModes()" [(value)]="splitMode" />
-      <div class="field">
+      <app-segmented class="no-print" [label]="i18n.t('subnet.split.mode')" [options]="splitModes()" [(value)]="splitMode" />
+      <div class="field no-print">
         <label for="subnet-split">{{ i18n.t('subnet.split.value.' + splitMode()) }}</label>
         <input
           id="subnet-split"
@@ -131,9 +133,9 @@
   }
 
   @if (v4() || v6()) {
-    <section class="card" [attr.aria-label]="i18n.t('subnet.check.title')">
+    <section class="card" [class.no-print]="!check().text" [attr.aria-label]="i18n.t('subnet.check.title')">
       <h2 class="eyebrow">{{ i18n.t('subnet.check.title') }}</h2>
-      <div class="field">
+      <div class="field no-print">
         <label for="subnet-check">{{ i18n.t('subnet.check.label') }}</label>
         <input
           id="subnet-check"

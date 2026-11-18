@@ -5,16 +5,18 @@
     <p class="tool-lead">{{ i18n.t('dc.lead') }}</p>
   </header>
 
+  <app-print-button [title]="i18n.t('tool.dc.title')" [params]="printParams()" />
+
   <app-privacy-note />
 
   <app-share-link toolId="date-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
 
-  <div class="tool-toolbar">
+  <div class="tool-toolbar no-print">
     <app-segmented [label]="i18n.t('dc.mode')" [options]="modes()" [(value)]="mode" />
   </div>
 
   <div class="dc-layout">
-    <div class="controls">
+    <div class="controls no-print">
       @switch (mode()) {
         @case ('diff') {
           <div class="field">

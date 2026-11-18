@@ -37,7 +37,7 @@ import { ShortcutsService } from './shortcuts.service';
           @for (it of items(); track it.action) {
             <div class="row">
               <dt>{{ i18n.t('shortcuts.' + it.action) }}</dt>
-              <dd>@for (k of it.keys; track $index) {<kbd>{{ k }}</kbd>}</dd>
+              <dd>@for (k of it.keys; track $index) {<kbd>{{ k }}</kbd>}@if (it.alt) { {{ i18n.t('shortcuts.or') }} @for (k of it.alt; track $index) {<kbd>{{ k }}</kbd>}}</dd>
             </div>
           }
         </dl>
@@ -156,7 +156,7 @@ export class ShortcutsHelp {
   private readonly dlg = viewChild.required<ElementRef<HTMLDialogElement>>('dlg');
   private readonly opener = viewChild.required<ElementRef<HTMLButtonElement>>('opener');
   /** Azioni dello strumento, lette all'apertura (i pulsanti marcati possono comparire dopo). */
-  protected readonly items = signal<{ action: string; keys: string[] }[]>([]);
+  protected readonly items = signal<{ action: string; keys: string[]; alt: string[] | null }[]>([]);
 
   constructor() {
     effect(() => {

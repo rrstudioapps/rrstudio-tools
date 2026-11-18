@@ -1,0 +1,56 @@
+name: New tool / Proponi un nuovo strumento
+description: Propose a new tool / Proponi un nuovo strumento
+title: "[new tool] "
+labels: ["tool"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not include personal or confidential data. / Non includere dati personali o riservati.
+  - type: input
+    id: page
+    attributes:
+      label: Page URL / URL della pagina
+      description: Optional, the page you were on. / Facoltativo, la pagina in cui eri.
+    validations:
+      required: false
+  - type: dropdown
+    id: lang
+    attributes:
+      label: Language / Lingua
+      options:
+        - it
+        - en
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Description / Descrizione
+      description: What should the tool do? / Cosa dovrebbe fare lo strumento?
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example input and output / Esempio di input e output
+      description: Fictitious data only. / Solo dati di fantasia.
+    validations:
+      required: false
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope / Ambito
+      description: Only for Italy or general purpose? / Solo Italia o generico?
+      options:
+        - General / Generico
+        - Italy only / Solo Italia
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I have not included personal or confidential data / Non ho incluso dati personali o riservati
+          required: true

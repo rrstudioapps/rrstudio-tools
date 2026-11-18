@@ -164,6 +164,8 @@ const it = {
   'cf.issue.place': 'Il codice del luogo (12º-15º carattere) non è valido: serve una lettera e tre cifre (o lettere omocodiche).',
   'cf.issue.check': 'Il carattere di controllo (16º) non corrisponde: dovrebbe essere {expected}. Probabilmente c\'è un errore di battitura.',
   'cf.how.title': 'Come funziona',
+  'cf.gcf': 'Ti servono codici di prova?',
+  'cf.gcf.link': 'Generatore codice fiscale e partita IVA',
   'cf.how.body':
     'Il codice è fatto di 16 caratteri: 3 dal cognome, 3 dal nome, anno (2 cifre), lettera del mese, giorno (più 40 per le donne), codice catastale del luogo di nascita e un carattere di controllo. Le regole sono quelle del DM 23 dicembre 1976 e delle circolari dell\'Agenzia delle Entrate. Nessun servizio viene contattato: l\'elenco dei luoghi è un file di questo sito, caricato solo quando serve.',
   'cf.credits':
@@ -302,6 +304,8 @@ const en: Omit<typeof it, keyof typeof guideIt> = {
   'cf.issue.place': 'The place code (characters 12-15) is not valid: it needs one letter and three digits (or omocodia letters).',
   'cf.issue.check': 'The check character (16th) does not match: it should be {expected}. There is probably a typo.',
   'cf.how.title': 'How it works',
+  'cf.gcf': 'Need test codes?',
+  'cf.gcf.link': 'Fake tax code and VAT number generator (in Italian)',
   'cf.how.body':
     'The code has 16 characters: 3 from the surname, 3 from the first name, year (2 digits), month letter, day (plus 40 for women), the cadastral code of the place of birth and a check character. The rules are those of the Ministerial Decree of 23 December 1976 and the Revenue Agency circulars. No service is contacted: the list of places is a file of this site, loaded only when needed.',
   'cf.credits':

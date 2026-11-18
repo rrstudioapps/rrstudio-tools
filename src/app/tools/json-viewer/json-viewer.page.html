@@ -68,10 +68,10 @@
             (input)="onSearchInput($event)"
             (keydown)="onSearchKey($event)"
           />
-          <button type="button" class="btn small compact" [disabled]="results().matches.length === 0" [attr.aria-label]="i18n.t('jv.search.prev')" [attr.title]="i18n.t('jv.search.prev')" (click)="step(-1)">
+          <button data-shortcut="prev" type="button" class="btn small compact" [disabled]="results().matches.length === 0" [attr.aria-label]="i18n.t('jv.search.prev')" [attr.title]="i18n.t('jv.search.prev')" (click)="step(-1)">
             <app-icon name="up" />
           </button>
-          <button type="button" class="btn small compact" [disabled]="results().matches.length === 0" [attr.aria-label]="i18n.t('jv.search.next')" [attr.title]="i18n.t('jv.search.next')" (click)="step(1)">
+          <button data-shortcut="next" type="button" class="btn small compact" [disabled]="results().matches.length === 0" [attr.aria-label]="i18n.t('jv.search.next')" [attr.title]="i18n.t('jv.search.next')" (click)="step(1)">
             <app-icon name="down" />
           </button>
           <span class="search-count" role="status" aria-live="polite">{{ searchStatus() }}</span>

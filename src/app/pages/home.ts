@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
+import { feedbackUrl } from '../shared/tool-feedback-url';
 import { Location, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { BuildDay } from '../core/build-day';
+import { newToolIds } from '../core/changelog.logic';
 import { FavoritesService } from '../core/favorites/favorites.service';
 import { FAVORITES_SLUG } from '../core/i18n/lang-routing';
 import { I18nService } from '../core/i18n/i18n.service';
@@ -28,6 +31,8 @@ export class Home {
   protected readonly i18n = inject(I18nService);
   protected readonly favs = inject(FavoritesService);
   private readonly location = inject(Location);
+  /** Strumenti nuovi (ultimi 30 giorni dalla data di build, fissata dal prerender): badge «Nuovo» sulla card. */
+  protected readonly newIds = newToolIds(inject(BuildDay).day);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
@@ -35,6 +40,7 @@ export class Home {
   protected readonly modKey = signal('Ctrl');
 
   /** In /en/ niente strumenti italyOnly né la loro categoria: restano in una riga discreta in fondo. */
+  protected readonly suggest = computed(() => feedbackUrl('new-tool', { slug: '', lang: this.i18n.lang() }));
   protected readonly english = computed(() => this.i18n.lang() === 'en');
   protected readonly italyTools: readonly ToolDefinition[] = TOOLS.filter((t) => t.italyOnly);
   private readonly shownTools = computed(() => (this.english() ? TOOLS.filter((t) => !t.italyOnly) : TOOLS));

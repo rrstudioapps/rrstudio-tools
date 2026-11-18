@@ -5,18 +5,19 @@ import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { FavoriteButton } from './favorite-button';
 import { ShortcutsHelp } from './shortcuts-help';
 import { ShortcutsService } from './shortcuts.service';
+import { ToolFeedback } from './tool-feedback';
 import { ToolGuide } from './tool-guide';
 
 /**
  * Cornice comune delle pagine strumento (route padre di ogni tool): mostra la stella dei preferiti
  * nell'angolo dell'intestazione e, sotto lo strumento, la guida "come si usa" + FAQ se lo strumento ne ha una
- * (vedi tool-guide.ts), senza toccare i template dei singoli strumenti. L'id arriva da `data.toolId`.
+ * (vedi tool-guide.ts) e il riquadro "Feedback" (tool-feedback.ts), senza toccare i template dei singoli strumenti. L'id arriva da `data.toolId`.
  * Ospita anche le scorciatoie da tastiera (shortcuts.ts): il servizio ascolta i tasti, il pulsante "Scorciatoie"
  * apre l'aiuto e il feedback ("Scaricato"…) compare in una regione aria-live in basso.
  */
 @Component({
   selector: 'app-tool-frame',
-  imports: [RouterOutlet, FavoriteButton, ToolGuide, ShortcutsHelp],
+  imports: [RouterOutlet, FavoriteButton, ToolGuide, ToolFeedback, ShortcutsHelp],
   providers: [ShortcutsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -30,6 +31,7 @@ import { ToolGuide } from './tool-guide';
       <app-shortcuts-help />
     </div>
     <app-tool-guide [toolId]="toolId" />
+    <app-tool-feedback [toolId]="toolId" />
     <div class="toast-region" role="status" aria-live="polite" data-testid="shortcut-status">
       @if (sc.message(); as m) {
         <p class="toast">{{ m }}</p>

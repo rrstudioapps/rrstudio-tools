@@ -90,16 +90,16 @@ export function randomSeedText(): string {
   return [...bytes].map((b) => 'abcdefghjkmnpqrstuvwxyz23456789'[b % 31]).join('');
 }
 
-type Rng = () => number;
-const int = (r: Rng, min: number, max: number): number => min + Math.floor(r() * (max - min + 1));
-const pick = <T>(r: Rng, list: readonly T[]): T => list[Math.floor(r() * list.length)];
+export type Rng = () => number;
+export const int = (r: Rng, min: number, max: number): number => min + Math.floor(r() * (max - min + 1));
+export const pick = <T>(r: Rng, list: readonly T[]): T => list[Math.floor(r() * list.length)];
 const digits = (r: Rng, n: number): string => Array.from({ length: n }, () => int(r, 0, 9)).join('');
 
 // ---------- dati di base ----------
 
-const MALE = ['Luca', 'Marco', 'Giuseppe', 'Francesco', 'Alessandro', 'Andrea', 'Matteo', 'Lorenzo', 'Davide', 'Simone', 'Stefano', 'Paolo', 'Roberto', 'Fabio', 'Giovanni', 'Riccardo', 'Daniele', 'Emanuele', 'Gabriele', 'Federico', 'Tommaso', 'Nicola', 'Claudio', 'Massimo', 'Salvatore'];
-const FEMALE = ['Giulia', 'Francesca', 'Chiara', 'Sara', 'Martina', 'Alice', 'Elena', 'Valentina', 'Federica', 'Silvia', 'Laura', 'Elisa', 'Anna', 'Paola', 'Giorgia', 'Ilaria', 'Roberta', 'Beatrice', 'Alessia', 'Monica', 'Cristina', 'Serena', 'Veronica', 'Lucia', 'Irene'];
-const SURNAMES = ['Rossi', 'Russo', 'Ferrari', 'Esposito', 'Bianchi', 'Romano', 'Colombo', 'Ricci', 'Marino', 'Greco', 'Bruno', 'Gallo', 'Conti', 'De Luca', 'Mancini', 'Costa', 'Giordano', 'Rizzo', 'Lombardi', 'Moretti', 'Barbieri', 'Fontana', 'Santoro', 'Mariani', 'Rinaldi', 'Caruso', 'Ferrara', 'Galli', 'Martini', 'Leone', 'Longo', 'Gentile', 'Martinelli', 'Vitale', 'Lombardo', 'Serra', 'Coppola', 'De Santis', "D'Angelo", 'Marchetti'];
+export const MALE = ['Luca', 'Marco', 'Giuseppe', 'Francesco', 'Alessandro', 'Andrea', 'Matteo', 'Lorenzo', 'Davide', 'Simone', 'Stefano', 'Paolo', 'Roberto', 'Fabio', 'Giovanni', 'Riccardo', 'Daniele', 'Emanuele', 'Gabriele', 'Federico', 'Tommaso', 'Nicola', 'Claudio', 'Massimo', 'Salvatore'];
+export const FEMALE = ['Giulia', 'Francesca', 'Chiara', 'Sara', 'Martina', 'Alice', 'Elena', 'Valentina', 'Federica', 'Silvia', 'Laura', 'Elisa', 'Anna', 'Paola', 'Giorgia', 'Ilaria', 'Roberta', 'Beatrice', 'Alessia', 'Monica', 'Cristina', 'Serena', 'Veronica', 'Lucia', 'Irene'];
+export const SURNAMES = ['Rossi', 'Russo', 'Ferrari', 'Esposito', 'Bianchi', 'Romano', 'Colombo', 'Ricci', 'Marino', 'Greco', 'Bruno', 'Gallo', 'Conti', 'De Luca', 'Mancini', 'Costa', 'Giordano', 'Rizzo', 'Lombardi', 'Moretti', 'Barbieri', 'Fontana', 'Santoro', 'Mariani', 'Rinaldi', 'Caruso', 'Ferrara', 'Galli', 'Martini', 'Leone', 'Longo', 'Gentile', 'Martinelli', 'Vitale', 'Lombardo', 'Serra', 'Coppola', 'De Santis', "D'Angelo", 'Marchetti'];
 
 const STREET_KINDS = ['Via', 'Via', 'Via', 'Viale', 'Piazza', 'Corso', 'Largo', 'Vicolo'];
 const STREET_NAMES = ['Roma', 'Garibaldi', 'Mazzini', 'Verdi', 'Dante Alighieri', 'Cavour', 'Marconi', 'Gramsci', 'Matteotti', 'della Repubblica', 'XX Settembre', 'dei Mille', 'Manzoni', 'Leopardi', 'Vittorio Veneto', 'San Francesco', 'Kennedy', 'della Libertà', 'Piave', 'Carducci', 'Puccini', 'Colombo', 'Fratelli Bandiera', 'Trieste', 'Montenero'];
@@ -126,10 +126,13 @@ const LOREM = ('lorem ipsum dolor sit amet consectetur adipiscing elit sed do ei
 
 // ---------- valori formalmente validi ----------
 
-/** Partita IVA di 11 cifre con cifra di controllo corretta (ufficio 001-100, progressivo mai tutto zero). */
-export function fakeVat(r: Rng): string {
+/**
+ * Partita IVA di 11 cifre con cifra di controllo corretta (progressivo mai tutto zero).
+ * `fixedOffice`: codice dell'ufficio a tre cifre; senza, ne viene scelto uno a caso tra 001 e 100.
+ */
+export function fakeVat(r: Rng, fixedOffice?: string): string {
   const progressive = String(int(r, 1, 9_999_999)).padStart(7, '0');
-  const office = String(int(r, 1, 100)).padStart(3, '0');
+  const office = fixedOffice ?? String(int(r, 1, 100)).padStart(3, '0');
   const first10 = progressive + office;
   return first10 + vatCheckDigit(first10);
 }
@@ -178,7 +181,7 @@ export function parseIsoDay(s: string): number | null {
   return Math.round(t / 86_400_000);
 }
 
-function dayToParts(day: number): { y: number; m: number; d: number } {
+export function dayToParts(day: number): { y: number; m: number; d: number } {
   const dt = new Date(day * 86_400_000);
   return { y: dt.getUTCFullYear(), m: dt.getUTCMonth() + 1, d: dt.getUTCDate() };
 }

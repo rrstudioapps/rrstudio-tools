@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="it">
+  <id>https://tools.rr-dev.eu/novita</id>
+  <title>rrstudio Tools: Novità</title>
+  <updated>2026-11-18T00:00:00Z</updated>
+  <link rel="self" type="application/atom+xml" href="https://tools.rr-dev.eu/changelog.xml"/>
+  <link rel="alternate" type="text/html" href="https://tools.rr-dev.eu/novita"/>
+  <author><name>rrstudio</name></author>
+  <entry>
+    <id>https://tools.rr-dev.eu/novita#2026-11-18</id>
+    <title>Codice fiscale, confronto testi e stampa</title>
+    <updated>2026-11-18T00:00:00Z</updated>
+    <link rel="alternate" type="text/html" href="https://tools.rr-dev.eu/novita#v-2026-11-18"/>
+    <content type="html">&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Estrazione del testo dai PDF, anche protetti da password: righe, paragrafi e colonne ricostruiti, scarico in TXT o Markdown.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Generatore di codice fiscale e di partita IVA con dati di prova, utile per testare moduli e gestionali.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Calcolo di sottoreti IP, conversione da docker run a Docker Compose, generatore di CSS clamp(), calcolatrice di orari e scadenze delle fatture.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Confronto JSON strutturale: differenze per percorso con valore vecchio e nuovo, array per indice, come insiemi o per chiave, albero unito ed esportazione come JSON Patch.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Scorciatoie da tastiera in tutti gli strumenti: premi ? per vedere l'elenco.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Nella home puoi incollare un testo o trascinare un file: il sito propone gli strumenti adatti.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Dalla versione installata come app puoi condividere testi e file verso rrstudio Tools e aprirli con gli strumenti giusti.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Stampa dei risultati negli strumenti di calcolo, con un impaginato pulito.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Da ogni strumento puoi segnalare un problema o suggerire un miglioramento: si apre un modulo GitHub già compilato.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Questa pagina Novità, con un feed per seguire gli aggiornamenti, e il badge «Nuovo» sugli strumenti appena arrivati.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Miglioramento&lt;/strong&gt;: Confronto testi più comodo: i risultati scorrono in una propria area, la barra dei comandi resta sempre in vista, puoi nascondere i testi, andare a capo e saltare a una riga, e spostarti tra le differenze con F7.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <id>https://tools.rr-dev.eu/novita#2026-11-17</id>
+    <title>App installabile, preferiti e molti nuovi strumenti</title>
+    <updated>2026-11-17T00:00:00Z</updated>
+    <link rel="alternate" type="text/html" href="https://tools.rr-dev.eu/novita#v-2026-11-17"/>
+    <content type="html">&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Filigrana per immagini e PDF, selettore di colori e palette da un'immagine, da SVG a PNG, convertitore di formato per le immagini.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Generatori HMAC, chiavi SSH e CSR, condivisione di un segreto con Shamir.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Convertitori di colori e cURL, analisi degli URL, interesse composto.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Statistica, proporzioni, ispettore Unicode, numeri romani, codice Morse, cifrari classici, lire in euro.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Dati finti, interrogazioni JSONPath, firma dei PDF, ritaglio e rotazione immagini, anteprima dei meta tag.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Trentuno strumenti in una volta: ritenuta d'acconto, rata del mutuo, numeri in lettere, formattatori YAML, XML e SQL, TOTP, cifratura dei file, lettore di QR code e molti altri.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Il sito si può installare come app e funziona anche senza connessione.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Preferiti e menu personalizzati, con esportazione e importazione in un file e link per passarli a un altro dispositivo. Restano nel tuo browser.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Link condivisibili in 36 strumenti: l'impostazione che hai scelto si rimette uguale a chi apre il link. Nel link non finiscono mai i tuoi file.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Funzione «Invia a…»: passi il risultato di uno strumento a un altro senza copiare e incollare.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Miglioramento&lt;/strong&gt;: Guide «come si fa» e domande frequenti negli strumenti, home con 8 categorie, filtro Preferiti e schede più compatte su telefono.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Miglioramento&lt;/strong&gt;: Pagine più veloci a comparire e più reattive.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <id>https://tools.rr-dev.eu/novita#2026-11-16</id>
+    <title>Versione inglese e nuovi strumenti</title>
+    <updated>2026-11-16T00:00:00Z</updated>
+    <link rel="alternate" type="text/html" href="https://tools.rr-dev.eu/novita#v-2026-11-16"/>
+    <content type="html">&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Codice QR, calcolo dell'IVA, confronto testi, convertitore CSV/JSON/Excel, JWT, UUID, timestamp, contrasto dei colori, editor Markdown, contaparole, prova delle espressioni regolari, giorni lavorativi.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Visualizzatore di fatture elettroniche, da immagini a PDF e da PDF a immagini, lettore dei dati EXIF.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Visualizzatore e editor JSON.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Miglioramento&lt;/strong&gt;: Il calcolo del codice fiscale ora gestisce anche i comuni soppressi e gli stati esteri.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Verifica del codice fiscale e di IBAN e partita IVA.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Il sito è disponibile in inglese: aggiungi /en/ all'indirizzo oppure usa il selettore di lingua.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Funzione&lt;/strong&gt;: Strumenti divisi per categoria nella home e informativa sulla privacy.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Miglioramento&lt;/strong&gt;: Più accessibilità, anteprime più curate quando si condivide un indirizzo del sito.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <id>https://tools.rr-dev.eu/novita#2026-11-15</id>
+    <title>Prima uscita</title>
+    <updated>2026-11-15T00:00:00Z</updated>
+    <link rel="alternate" type="text/html" href="https://tools.rr-dev.eu/novita#v-2026-11-15"/>
+    <content type="html">&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Nuovo strumento&lt;/strong&gt;: Dalla prima uscita: CSV in dashboard, generatore di password, calcolo di hash, strumenti per i PDF (unisci, dividi, ruota, riordina), compressione immagini, Base64, codifica degli URL e formattatore JSON.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Correzione&lt;/strong&gt;: Esportazione in PNG e PDF: margini corretti e file PDF molto più piccoli.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+</feed>

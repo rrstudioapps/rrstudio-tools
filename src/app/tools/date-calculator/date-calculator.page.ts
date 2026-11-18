@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { formatNumber } from '../../shared/decimal';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { DC_DICTIONARIES } from './date-calculator.i18n';
@@ -31,7 +32,7 @@ function parseCount(text: string): number | null {
 
 @Component({
   selector: 'app-date-calculator',
-  imports: [ShareLink, CopyButton, PrivacyNote, Segmented],
+  imports: [ShareLink, CopyButton, PrintButton, PrivacyNote, Segmented],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './date-calculator.page.html',
   styleUrl: './date-calculator.page.scss',
@@ -64,6 +65,32 @@ export class DateCalculatorPage {
     { value: 'plus', label: this.i18n.t('dc.add.plus') },
     { value: 'minus', label: this.i18n.t('dc.add.minus') },
   ]);
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    const yn = (b: boolean) => t(b ? 'print.yes' : 'print.no');
+    const out = [p(t('dc.mode'), t('dc.mode.' + this.mode()))];
+    switch (this.mode()) {
+      case 'diff':
+        out.push(p(t('dc.diff.from'), this.diffFrom()), p(t('dc.diff.to'), this.diffTo()), p(t('dc.diff.inclusive'), yn(this.inclusive())));
+        break;
+      case 'add':
+        out.push(
+          p(t('dc.add.date'), this.addDate()),
+          p(t('dc.add.dir'), t('dc.add.' + (this.dir() === 'plus' ? 'plus' : 'minus'))),
+          p(t('dc.add.years'), this.years()),
+          p(t('dc.add.months'), this.months()),
+          p(t('dc.add.weeks'), this.weeks()),
+          p(t('dc.add.days'), this.days()),
+        );
+        break;
+      default:
+        out.push(p(t('dc.age.birth'), this.birth()), p(t('dc.age.ref'), this.ref()));
+    }
+    return out;
+  });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
   protected readonly shareSchema = SHARE_SCHEMA;

@@ -1,0 +1,53 @@
+name: Improvement / Suggerisci un miglioramento
+description: Suggest an improvement to an existing tool / Suggerisci un miglioramento a uno strumento esistente
+title: "[tool] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not include personal or confidential data. / Non includere dati personali o riservati.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool / Strumento
+      description: Tool id, e.g. json-formatter. / Id dello strumento, es. json-formatter.
+    validations:
+      required: false
+  - type: input
+    id: page
+    attributes:
+      label: Page URL / URL della pagina
+      description: Address of the page, without any data. / Indirizzo della pagina, senza dati.
+    validations:
+      required: false
+  - type: dropdown
+    id: lang
+    attributes:
+      label: Language / Lingua
+      options:
+        - it
+        - en
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Description / Descrizione
+      description: What would you like to improve? / Cosa vorresti migliorare?
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example input and output / Esempio di input e output
+      description: Fictitious data only. / Solo dati di fantasia.
+    validations:
+      required: false
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I have not included personal or confidential data / Non ho incluso dati personali o riservati
+          required: true

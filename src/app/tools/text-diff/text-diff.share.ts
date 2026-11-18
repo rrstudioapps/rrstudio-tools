@@ -12,4 +12,6 @@ export const SHARE_SCHEMA: Schema = {
   granularity: { type: 'enum', values: ['word', 'char'] },
   view: { type: 'enum', values: ['side', 'inline'] },
   collapse: { type: 'boolean' },
+  // aggiunto dopo: i link vecchi non lo hanno e restano validi ("a capo" attivo)
+  wrap: { type: 'boolean' },
 };

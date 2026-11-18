@@ -162,6 +162,21 @@
     color: var(--faint);
   }
 }
+// Badge «Nuovo»: il testo resta per i lettori di schermo, il maiuscolo è solo grafico
+.new {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: var(--space-2);
+  padding: 1px 8px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+}
 .chip {
   font-family: var(--mono);
   font-size: var(--fs-xs);

@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { I18nService } from '../../core/i18n/i18n.service';
 import { formatMoney, formatPercent, parseMoney, parsePercent } from '../calcolo-iva/iva';
 import { CopyButton } from '../../shared/copy-button';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { RITENUTA_DICTIONARIES } from './calcolo-ritenuta-acconto.i18n';
@@ -23,7 +24,7 @@ interface Row {
 
 @Component({
   selector: 'app-calcolo-ritenuta-acconto',
-  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrintButton, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calcolo-ritenuta-acconto.page.html',
   styleUrl: './calcolo-ritenuta-acconto.page.scss',
@@ -148,6 +149,23 @@ export class CalcoloRitenutaAccontoPage {
     const n = this.notes();
     if (n.length) lines.push('', ...n);
     return lines.join('\n');
+  });
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    const yn = (b: boolean) => t(b ? 'print.yes' : 'print.no');
+    const out = [
+      p(t('rit.kind'), t('rit.kind.' + this.kind())),
+      p(t('rit.amount.' + this.dir()), this.amountText()),
+      p(t('rit.ritenuta'), this.ritenutaText()),
+      p(t('rit.vat'), this.vatText()),
+      p(t('rit.rivalsa'), yn(this.rivalsa())),
+    ];
+    if (this.rivalsa()) out.push(p(t('rit.rivalsaBase'), yn(this.ritenutaOnRivalsa())));
+    out.push(p(t('rit.cassa'), this.cassaText()), p(t('rit.bollo'), yn(this.bolloCharged())));
+    return out;
   });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)

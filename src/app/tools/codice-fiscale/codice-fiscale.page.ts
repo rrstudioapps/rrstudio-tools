@@ -2,6 +2,7 @@
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { Icon } from '../../shared/icon';
@@ -33,7 +34,7 @@ interface PartRow {
 
 @Component({
   selector: 'app-codice-fiscale',
-  imports: [Icon, PrivacyNote, Segmented, CopyButton, PlaceCombobox],
+  imports: [Icon, PrivacyNote, Segmented, CopyButton, PlaceCombobox, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './codice-fiscale.page.html',
   styleUrl: './codice-fiscale.page.scss',
@@ -171,7 +172,8 @@ export class CodiceFiscalePage {
     if (rx?.text !== undefined) {
       // un codice incollato si verifica: passa alla modalità di verifica
       this.mode.set('verify');
-      this.verifyInput.set(rx.text.trim());
+      // più codici (per esempio dal generatore): si verifica il primo
+      this.verifyInput.set(rx.text.trim().split(/\r\n|\r|\n/)[0].trim());
     }
   }
 

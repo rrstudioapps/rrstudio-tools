@@ -6,6 +6,7 @@ import { SHARE_SCHEMA as RATA_MUTUO } from '../tools/calcolo-rata-mutuo/calcolo-
 import { SHARE_SCHEMA as CSS_GENERATOR, decodeShadows, decodeStops, encodeShadows, encodeStops } from '../tools/css-generator/css-generator.share';
 import { SHARE_SCHEMA as CRON } from '../tools/cron-expression/cron-expression.share';
 import { SHARE_SCHEMA as FIND_REPLACE, decodeRule, encodeRule } from '../tools/find-replace/find-replace.share';
+import { SHARE_SCHEMA as JSON_DIFF } from '../tools/json-diff/json-diff.share';
 import { SHARE_SCHEMA as JSON_FORMATTER } from '../tools/json-formatter/json-formatter.share';
 import { SHARE_SCHEMA as NUMBER_BASE } from '../tools/number-base-converter/number-base-converter.share';
 import { SHARE_SCHEMA as PERCENTAGE } from '../tools/percentage-calculator/percentage-calculator.share';
@@ -26,6 +27,13 @@ describe('schemi di condivisione degli strumenti', () => {
   it('json-formatter: enum di azione e indentazione', () => {
     expect(validateState(JSON_FORMATTER, { input: '{}', action: 'minify', indent: 'tab', sortKeys: true })).toEqual({ input: '{}', action: 'minify', indent: 'tab', sortKeys: true });
     expect(validateState(JSON_FORMATTER, { input: '{}', action: 'delete', indent: 8 })).toEqual({ input: '{}' });
+  });
+
+  it('json-diff: testi e opzioni; modalità o vista non ammesse scartate', () => {
+    const ok = { textA: '{"a":1}', textB: '{"a":2}', arrayMode: 'key', key: 'id', ignoreCase: true, epsilon: '0,01', ignore: '/meta/*', view: 'tree', collapse: false };
+    expect(validateState(JSON_DIFF, ok)).toEqual(ok);
+    expect(validateState(JSON_DIFF, { textA: '{}', arrayMode: 'sorted', view: 'grid' })).toEqual({ textA: '{}' });
+    expect(validateState(JSON_DIFF, { textA: 'x'.repeat(100001) })).toBeNull();
   });
 
   it('cron-expression: conteggio entro 1..100', () => {

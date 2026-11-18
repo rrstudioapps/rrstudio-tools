@@ -6,7 +6,8 @@
         © 2026 rrstudio ·
         <a [href]="license" target="_blank" rel="noopener">{{ i18n.t('footer.license') }}</a> ·
         <a [href]="repo" target="_blank" rel="noopener">{{ i18n.t('footer.source') }}</a> ·
-        <a [routerLink]="i18n.link('privacy')">{{ i18n.t('footer.privacy') }}</a>
+        <a [routerLink]="i18n.link('privacy')">{{ i18n.t('footer.privacy') }}</a> ·
+        <a [routerLink]="i18n.link(changelogSlug())" data-testid="footer-changelog">{{ i18n.t('footer.changelog') }}</a>
         @if (pwa.supported()) {
           · <button type="button" class="linklike" (click)="offline.open()">{{ i18n.t('pwa.footer') }}</button>
         }
@@ -22,6 +23,9 @@
         </li>
         <li>
           <a [href]="github" target="_blank" rel="noopener">{{ i18n.t('footer.github') }}</a>
+        </li>
+        <li>
+          <a [href]="suggest()" target="_blank" rel="noopener noreferrer">{{ i18n.t('footer.suggest') }}<span class="visually-hidden"> {{ i18n.t('feedback.newtab') }}</span></a>
         </li>
         <li>
           <a [href]="kofi" target="_blank" rel="noopener">{{ i18n.t('footer.coffee') }}</a>

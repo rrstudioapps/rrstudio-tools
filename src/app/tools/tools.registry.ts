@@ -187,6 +187,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./json-formatter/json-formatter.page').then((m) => m.JsonFormatterPage),
   },
   {
+    id: 'json-diff',
+    path: 'json-diff',
+    icon: 'columns',
+    category: 'data',
+    keywords: {
+      it: 'confronta json confronto json differenze json diff strutturale compare yaml jsonpatch json patch rfc 6902 percorso json pointer array chiave id albero modifiche',
+      en: 'json diff json compare compare json differences structural diff yaml json patch rfc 6902 json pointer path array key id tree changes',
+    },
+    titleKey: 'tool.jd.title',
+    descriptionKey: 'tool.jd.desc',
+    seo: { titleKey: 'seo.jd.title', descriptionKey: 'seo.jd.desc' },
+    loadComponent: () => import('./json-diff/json-diff.page').then((m) => m.JsonDiffPage),
+  },
+  {
     id: 'json-viewer',
     path: 'json-viewer',
     icon: 'tree',
@@ -252,6 +266,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     descriptionKey: 'tool.p2i.desc',
     seo: { titleKey: 'seo.p2i.title', descriptionKey: 'seo.p2i.desc' },
     loadComponent: () => import('./images-pdf/images-pdf.page').then((m) => m.ImagesPdfPage),
+  },
+  {
+    id: 'pdf-to-text',
+    path: 'pdf-to-text',
+    icon: 'paragraph',
+    category: 'media',
+    keywords: {
+      it: 'pdf in testo estrarre testo da pdf copiare testo pdf pdf to txt estrai testo ocr scansione paragrafi colonne password txt markdown',
+      en: 'pdf to text extract text from pdf copy text from pdf pdf to txt convert pdf text ocr scan paragraphs columns password txt markdown',
+    },
+    titleKey: 'tool.p2t.title',
+    descriptionKey: 'tool.p2t.desc',
+    seo: { titleKey: 'seo.p2t.title', descriptionKey: 'seo.p2t.desc' },
+    loadComponent: () => import('./pdf-to-text/pdf-to-text.page').then((m) => m.PdfToTextPage),
   },
   {
     id: 'exif-viewer',
@@ -1265,5 +1293,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     descriptionKey: 'tool.scad.desc',
     seo: { titleKey: 'seo.scad.title', descriptionKey: 'seo.scad.desc' },
     loadComponent: () => import('./scadenze-fatture/scadenze-fatture.page').then((m) => m.ScadenzeFatturePage),
+  },
+  {
+    id: 'generatore-codice-fiscale',
+    italyOnly: true,
+    path: 'generatore-codice-fiscale',
+    icon: 'idcard',
+    category: 'italy',
+    keywords: {
+      it: 'generatore codice fiscale casuale finto di prova test partita iva casuale generatore partita iva omocodia dati finti fake mock cf codici fiscali p.iva ufficio provinciale seme csv json',
+      en: 'random italian tax code generator fake codice fiscale test partita iva vat number generator homocodia mock data seed csv json',
+    },
+    titleKey: 'tool.gcf.title',
+    descriptionKey: 'tool.gcf.desc',
+    seo: { titleKey: 'seo.gcf.title', descriptionKey: 'seo.gcf.desc' },
+    loadComponent: () => import('./generatore-codice-fiscale/generatore-codice-fiscale.page').then((m) => m.GeneratoreCodiceFiscalePage),
   },
 ];

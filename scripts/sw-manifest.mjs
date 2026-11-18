@@ -16,6 +16,7 @@ const EXCLUDED = [
   /^og\//,
   /^og-image\.png$/,
   /^sitemap\.xml$/,
+  /^changelog(\.en)?\.xml$/, // feed Atom: lo leggono i lettori di feed, non serve offline
   /^robots\.txt$/,
   /^docs\//,
   /^3rdpartylicenses\.txt$/,

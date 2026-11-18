@@ -5,18 +5,20 @@
     <p class="tool-lead">{{ i18n.t('wd.lead') }}</p>
   </header>
 
+  <app-print-button [title]="i18n.t('tool.wd.title')" [params]="printParams()" />
+
   <app-privacy-note />
 
   <app-share-link toolId="calcolo-giorni-lavorativi" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
 
   <p class="disclaimer" role="note">{{ i18n.t('wd.disclaimer') }}</p>
 
-  <div class="tool-toolbar">
+  <div class="tool-toolbar no-print">
     <app-segmented [label]="i18n.t('wd.mode')" [options]="modes()" [value]="mode()" (valueChange)="mode.set($event)" />
   </div>
 
   <div class="layout">
-    <div class="controls">
+    <div class="controls no-print">
       <div class="row2">
         <div class="field">
           <label for="wd-start">{{ i18n.t('wd.start') }}</label>

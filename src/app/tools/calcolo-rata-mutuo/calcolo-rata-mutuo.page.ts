@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { I18nService } from '../../core/i18n/i18n.service';
 import { saveBytes } from '../../shared/download';
 import { Icon } from '../../shared/icon';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { formatMoney, parseMoney } from '../calcolo-iva/iva';
@@ -17,7 +18,7 @@ const PAGE_SIZE = 24;
 
 @Component({
   selector: 'app-calcolo-rata-mutuo',
-  imports: [ShareLink, Icon, PrivacyNote, Segmented],
+  imports: [ShareLink, Icon, PrintButton, PrivacyNote, Segmented],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calcolo-rata-mutuo.page.html',
   styleUrl: './calcolo-rata-mutuo.page.scss',
@@ -77,6 +78,19 @@ export class CalcoloRataMutuoPage {
     const rows = this.rows();
     if (!r || !rows.length) return '';
     return this.i18n.t('mutuo.page', { from: rows[0].n, to: rows[rows.length - 1].n, total: r.periods });
+  });
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    return [
+      p(t('mutuo.capital'), this.capitalText()),
+      p(t('mutuo.tan'), this.tanText()),
+      p(t('mutuo.years'), this.yearsText()),
+      p(t('mutuo.months'), this.monthsText()),
+      p(t('mutuo.period'), t('mutuo.period.' + this.periodicity())),
+    ];
   });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)

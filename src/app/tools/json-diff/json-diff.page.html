@@ -1,0 +1,213 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.jd.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('jd.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="json-diff" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <fieldset class="opts" [attr.aria-label]="i18n.t('jd.opts')">
+      <app-segmented [label]="i18n.t('jd.arrays')" [options]="arrayOptions()" [value]="arrayMode()" (valueChange)="arrayMode.set($event)" />
+      @if (arrayMode() === 'key') {
+        <label class="field">
+          <span>{{ i18n.t('jd.key') }}</span>
+          <input id="jd-key" class="inp" type="text" spellcheck="false" autocomplete="off" [placeholder]="i18n.t('jd.key.ph')" [value]="key()" (input)="key.set($any($event.target).value)" />
+        </label>
+      }
+      <label class="check"><input id="jd-case" type="checkbox" [checked]="ignoreCase()" (change)="ignoreCase.set($any($event.target).checked)" /> {{ i18n.t('jd.ignoreCase') }}</label>
+      <label class="field">
+        <span>{{ i18n.t('jd.epsilon') }}</span>
+        <input id="jd-eps" class="inp narrow" type="text" inputmode="decimal" autocomplete="off" [placeholder]="i18n.t('jd.epsilon.ph')" [value]="epsilon()" (input)="epsilon.set($any($event.target).value)" />
+      </label>
+      <label class="field grow">
+        <span>{{ i18n.t('jd.ignore') }}</span>
+        <textarea id="jd-ignore" class="inp ignore" rows="2" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('jd.ignore.ph')" [value]="ignore()" (input)="ignore.set($any($event.target).value)"></textarea>
+      </label>
+    </fieldset>
+    <p class="hint">{{ i18n.t('jd.keysIgnored') }} {{ i18n.t('jd.ignore.hint') }}</p>
+    <div class="actions">
+      <button type="button" class="btn small" data-testid="jd-sample" (click)="loadSample()">{{ i18n.t('jd.sample') }}</button>
+      <button data-shortcut="swap" type="button" class="btn small" [disabled]="!hasInput()" (click)="swap()"><app-icon name="swap" /> {{ i18n.t('jd.swap') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" [disabled]="!hasInput()" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('jd.clear') }}</button>
+    </div>
+  </div>
+
+  @if (!panelsHidden()) {
+    <div class="tool-panels" id="jd-panels">
+      <app-io-panel [label]="i18n.t('jd.a')" inputId="jd-a" [meta]="metaA()">
+        <span panel-actions>
+          <label class="btn small">
+            <app-icon name="upload" /> {{ i18n.t('jd.file') }}
+            <input class="visually-hidden" type="file" id="jd-file-a" accept=".json,.yaml,.yml,.txt,application/json,text/plain" [attr.aria-label]="i18n.t('jd.file') + ': ' + i18n.t('jd.a')" (change)="onFile('a', $event)" />
+          </label>
+        </span>
+        <textarea id="jd-a" class="io-textarea" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('jd.a.ph')" [value]="textA()" (input)="onText('a', $event)"></textarea>
+      </app-io-panel>
+      <app-io-panel [label]="i18n.t('jd.b')" inputId="jd-b" [meta]="metaB()">
+        <span panel-actions>
+          <label class="btn small">
+            <app-icon name="upload" /> {{ i18n.t('jd.file') }}
+            <input class="visually-hidden" type="file" id="jd-file-b" accept=".json,.yaml,.yml,.txt,application/json,text/plain" [attr.aria-label]="i18n.t('jd.file') + ': ' + i18n.t('jd.b')" (change)="onFile('b', $event)" />
+          </label>
+        </span>
+        <textarea id="jd-b" class="io-textarea" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('jd.b.ph')" [value]="textB()" (input)="onText('b', $event)"></textarea>
+      </app-io-panel>
+    </div>
+  }
+
+  @if (result()) {
+    <div class="inputs-row">
+      <button data-shortcut="toggle-inputs" type="button" class="btn small" [attr.aria-expanded]="!panelsHidden()" aria-controls="jd-panels" (click)="toggleInputs()">
+        {{ i18n.t(panelsHidden() ? 'jd.inputs.show' : 'jd.inputs.hide') }}
+      </button>
+      @if (panelsHidden()) {
+        <span class="muted hidden-sum" data-testid="jd-hidden-summary">{{ hiddenSummary() }}</span>
+      }
+    </div>
+  }
+
+  <div class="tool-status" aria-live="polite">
+    @if (fileError()) {
+      <p class="tool-error">{{ i18n.t('jd.file.err') }}</p>
+    }
+    @for (e of errors(); track e.side) {
+      <p class="tool-error" data-testid="jd-error">
+        {{ i18n.t('jd.error.title', { side: e.label }) }}: {{ e.error.message }}
+        @if (e.error.line !== undefined) {
+          <span>({{ i18n.t('jd.error.at', { line: e.error.line, column: e.error.column ?? 1 }) }})</span>
+        }
+        <button type="button" class="linklike" (click)="goToError(e.side, e.error)">{{ i18n.t('jd.error.goto') }}</button>
+      </p>
+    }
+  </div>
+
+  <section class="result" [attr.aria-label]="i18n.t('jd.result')">
+    <h2 class="eyebrow">{{ i18n.t('jd.result') }}</h2>
+
+    @if (result() && diffs().length > 0) {
+      <div class="exports">
+        <app-copy-button shortcut="copy" [text]="listText()" [label]="i18n.t('jd.copy.list')" />
+        <app-copy-button [text]="markdownText()" [label]="i18n.t('jd.copy.md')" />
+        <app-copy-button [text]="patchText()" [label]="i18n.t('jd.copy.patch')" />
+        <button data-shortcut="download" type="button" class="btn small" data-testid="jd-download" (click)="downloadPatch()"><app-icon name="download" /> {{ i18n.t('jd.download.patch') }}</button>
+        <app-send-to from="json-diff" kind="json" [text]="patchText()" />
+      </div>
+      <p class="hint">{{ i18n.t('jd.patch.note') }}</p>
+    }
+
+    <div class="viewer" tabindex="0" role="region" [attr.aria-label]="i18n.t(view() === 'list' ? 'jd.list.aria' : 'jd.tree.aria')">
+      <div class="bar" [class.open]="optsOpen()">
+        <div class="controls">
+          <app-segmented [label]="i18n.t('jd.view')" [options]="viewOptions()" [value]="view()" (valueChange)="setView($event)" toggleShortcut="toggle-view" />
+          @if (view() === 'tree') {
+            <label class="check"><input data-shortcut="toggle-collapse" type="checkbox" [checked]="collapse()" (change)="collapse.set($any($event.target).checked)" /> {{ i18n.t('jd.collapse') }}</label>
+          }
+          @if (counts() && counts()!.total > 0) {
+            <span class="chips" role="group" [attr.aria-label]="i18n.t('jd.filter')">
+              @for (k of kinds; track k) {
+                @if (view() === 'list') {
+                  <button type="button" class="chip" [class]="'chip k-' + k" [attr.aria-pressed]="activeKinds().has(k)" [disabled]="!counts()![k]" (click)="toggleKind(k)">{{ kindCount(k) }}</button>
+                } @else {
+                  <span [class]="'chip k-' + k">{{ kindCount(k) }}</span>
+                }
+              }
+            </span>
+          }
+        </div>
+        <div class="summary" aria-live="polite" data-testid="jd-summary" [class.has-nav]="groups() > 0">
+          @if (busy()) {
+            <span class="tool-ok">{{ i18n.t('jd.busy') }}</span>
+          } @else if (result()) {
+            @if (counts()!.total === 0) {
+              <span class="tool-ok">{{ i18n.t('jd.identical') }}</span>
+            } @else {
+              <span class="tool-ok" data-testid="jd-count">{{ statsText() }}</span>
+            }
+          } @else if (!errors().length) {
+            <span class="tool-ok">{{ i18n.t('jd.empty') }}</span>
+          }
+          <span class="spacer"></span>
+          @if (groups() > 0) {
+            <span class="tool-ok" data-testid="jd-position">{{ positionText() }}</span>
+            <button data-shortcut="prev" type="button" class="btn small" data-testid="jd-prev" [attr.aria-label]="i18n.t('jd.prev.aria')" (click)="go(-1)"><app-icon name="up" /> <span class="lbl">{{ i18n.t('jd.prev') }}</span></button>
+            <button data-shortcut="next" type="button" class="btn small" data-testid="jd-next" [attr.aria-label]="i18n.t('jd.next.aria')" (click)="go(1)"><app-icon name="down" /> <span class="lbl">{{ i18n.t('jd.next') }}</span></button>
+            <button type="button" class="btn small opts-btn" [attr.aria-expanded]="optsOpen()" (click)="optsOpen.set(!optsOpen())">{{ i18n.t('jd.opts.btn') }}</button>
+          }
+        </div>
+      </div>
+
+      @if (result() && view() === 'list') {
+        @if (shownList().length) {
+          <ol class="list" data-testid="jd-list">
+            @for (d of shownList(); track $index) {
+              <li [class]="'item k-' + d.kind" [class.cur]="$index === current()" [attr.data-group]="$index">
+                <span [class]="'badge k-' + d.kind">{{ kindLabel(d.kind) }}</span>
+                <span class="where">
+                  <code class="path">{{ d.path || i18n.t('jd.root') }}</code>
+                  <code class="ptr" [attr.title]="i18n.t('jd.pointer', { p: d.pointer || i18n.t('jd.root') })">{{ d.pointer }}</code>
+                </span>
+                <span class="vals">
+                  @if (d.kind !== 'added') {
+                    <code class="val del"><span class="visually-hidden">{{ i18n.t('jd.before') }}: </span>{{ fmt(d.oldValue) }}</code>
+                  }
+                  @if (d.kind === 'changed' || d.kind === 'type') {
+                    <span class="arrow" aria-hidden="true">→</span>
+                  }
+                  @if (d.kind !== 'removed') {
+                    <code class="val ins"><span class="visually-hidden">{{ i18n.t('jd.after') }}: </span>{{ fmt(d.newValue) }}</code>
+                  }
+                </span>
+              </li>
+            }
+          </ol>
+        } @else if (diffs().length) {
+          <p class="empty">{{ i18n.t('jd.nofilter') }}</p>
+        }
+      }
+
+      @if (result() && view() === 'tree') {
+        <div class="tree" data-testid="jd-tree">
+          @for (r of shownTree(); track $index) {
+            @if (r.fold) {
+              <div class="trow fold" [style.padding-inline-start]="indent(r.depth)">
+                <button type="button" class="linklike" [attr.aria-label]="i18n.t('jd.fold.aria', { n: r.fold.count })" (click)="expand(r.id)">{{ foldText(r.fold.count) }}</button>
+              </div>
+            } @else {
+              <div [class]="'trow s-' + r.status" [class.cur]="r.group >= 0 && r.group === current()" [attr.data-group]="r.group >= 0 ? r.group : null" [style.padding-inline-start]="indent(r.depth)">
+                @if (r.group >= 0) {
+                  <span [class]="'badge k-' + r.status">{{ kindLabel(r.status) }}</span>
+                }
+                <span class="lab">{{ r.label || i18n.t('jd.root') }}</span>
+                @if (r.open) {
+                  <span class="muted">{{ r.open }}</span>
+                }
+                @if (r.text !== undefined) {
+                  <code [class]="'val ' + (r.status === 'added' ? 'ins' : r.status === 'removed' ? 'del' : '')">{{ r.text }}</code>
+                }
+                @if (r.oldText !== undefined) {
+                  <code class="val del"><span class="visually-hidden">{{ i18n.t('jd.before') }}: </span>{{ r.oldText }}</code>
+                  <span class="arrow" aria-hidden="true">→</span>
+                  <code class="val ins"><span class="visually-hidden">{{ i18n.t('jd.after') }}: </span>{{ r.newText }}</code>
+                }
+                @if (r.ignored) {
+                  <span class="muted">({{ i18n.t('jd.ignored') }})</span>
+                }
+              </div>
+            }
+          }
+        </div>
+        @if (flat().truncated) {
+          <p class="hint pad">{{ i18n.t('jd.truncated') }}</p>
+        }
+      }
+    </div>
+
+    @if (remaining() > 0) {
+      <button type="button" class="btn small more" (click)="showMore()">{{ i18n.t('jd.more', { n: remaining() }) }}</button>
+    }
+  </section>
+</div>

@@ -1,0 +1,67 @@
+name: Bug report / Segnala un problema
+description: Something does not work as expected / Qualcosa non funziona come previsto
+title: "[tool] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not include personal or confidential data. / Non includere dati personali o riservati.
+  - type: input
+    id: tool
+    attributes:
+      label: Tool / Strumento
+      description: Tool id, e.g. json-formatter. / Id dello strumento, es. json-formatter.
+    validations:
+      required: false
+  - type: input
+    id: page
+    attributes:
+      label: Page URL / URL della pagina
+      description: Address of the page, without any data. / Indirizzo della pagina, senza dati.
+    validations:
+      required: false
+  - type: dropdown
+    id: lang
+    attributes:
+      label: Language / Lingua
+      options:
+        - it
+        - en
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Description / Descrizione
+      description: What went wrong? / Cosa è andato storto?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce / Passi per riprodurre
+      description: 1. ... 2. ... (no personal data / senza dati personali)
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior / Comportamento atteso
+      description: What did you expect to happen? / Cosa ti aspettavi?
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device / Browser e dispositivo
+      description: e.g. Firefox 130 on Android / es. Firefox 130 su Android
+    validations:
+      required: false
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I have not included personal or confidential data / Non ho incluso dati personali o riservati
+          required: true

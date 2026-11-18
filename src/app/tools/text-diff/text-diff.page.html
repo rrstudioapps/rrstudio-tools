@@ -11,7 +11,7 @@
 
   <div class="tool-toolbar">
     <fieldset class="opts" [attr.aria-label]="i18n.t('diff.opts')">
-      <label class="check"><input type="checkbox" [checked]="ignoreWs()" (change)="ignoreWs.set($any($event.target).checked)" /> {{ i18n.t('diff.ignoreWs') }}</label>
+      <label class="check"><input data-shortcut="toggle-ws" type="checkbox" [checked]="ignoreWs()" (change)="ignoreWs.set($any($event.target).checked)" /> {{ i18n.t('diff.ignoreWs') }}</label>
       <label class="check"><input type="checkbox" [checked]="ignoreCase()" (change)="ignoreCase.set($any($event.target).checked)" /> {{ i18n.t('diff.ignoreCase') }}</label>
       <label class="check"><input type="checkbox" [checked]="ignoreBlank()" (change)="ignoreBlank.set($any($event.target).checked)" /> {{ i18n.t('diff.ignoreBlank') }}</label>
     </fieldset>
@@ -21,26 +21,39 @@
     <button data-shortcut="clear" type="button" class="btn small" [disabled]="!hasInput()" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('diff.clear') }}</button>
   </div>
 
-  <div class="tool-panels">
-    <app-io-panel [label]="i18n.t('diff.a')" inputId="diff-a" [meta]="metaA()">
-      <span panel-actions>
-        <label class="btn small">
-          <app-icon name="upload" /> {{ i18n.t('diff.file') }}
-          <input class="visually-hidden" type="file" id="diff-file-a" [attr.aria-label]="i18n.t('diff.file') + ': ' + i18n.t('diff.a')" (change)="onFile('a', $event)" />
-        </label>
-      </span>
-      <textarea id="diff-a" class="io-textarea" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('diff.a.ph')" [value]="textA()" (input)="onText('a', $event)"></textarea>
-    </app-io-panel>
-    <app-io-panel [label]="i18n.t('diff.b')" inputId="diff-b" [meta]="metaB()">
-      <span panel-actions>
-        <label class="btn small">
-          <app-icon name="upload" /> {{ i18n.t('diff.file') }}
-          <input class="visually-hidden" type="file" id="diff-file-b" [attr.aria-label]="i18n.t('diff.file') + ': ' + i18n.t('diff.b')" (change)="onFile('b', $event)" />
-        </label>
-      </span>
-      <textarea id="diff-b" class="io-textarea" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('diff.b.ph')" [value]="textB()" (input)="onText('b', $event)"></textarea>
-    </app-io-panel>
-  </div>
+  @if (!panelsHidden()) {
+    <div class="tool-panels" id="diff-panels">
+      <app-io-panel [label]="i18n.t('diff.a')" inputId="diff-a" [meta]="metaA()">
+        <span panel-actions>
+          <label class="btn small">
+            <app-icon name="upload" /> {{ i18n.t('diff.file') }}
+            <input class="visually-hidden" type="file" id="diff-file-a" [attr.aria-label]="i18n.t('diff.file') + ': ' + i18n.t('diff.a')" (change)="onFile('a', $event)" />
+          </label>
+        </span>
+        <textarea id="diff-a" class="io-textarea" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('diff.a.ph')" [value]="textA()" (input)="onText('a', $event)"></textarea>
+      </app-io-panel>
+      <app-io-panel [label]="i18n.t('diff.b')" inputId="diff-b" [meta]="metaB()">
+        <span panel-actions>
+          <label class="btn small">
+            <app-icon name="upload" /> {{ i18n.t('diff.file') }}
+            <input class="visually-hidden" type="file" id="diff-file-b" [attr.aria-label]="i18n.t('diff.file') + ': ' + i18n.t('diff.b')" (change)="onFile('b', $event)" />
+          </label>
+        </span>
+        <textarea id="diff-b" class="io-textarea" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('diff.b.ph')" [value]="textB()" (input)="onText('b', $event)"></textarea>
+      </app-io-panel>
+    </div>
+  }
+
+  @if (model()) {
+    <div class="inputs-row">
+      <button data-shortcut="toggle-inputs" type="button" class="btn small" [attr.aria-expanded]="!panelsHidden()" aria-controls="diff-panels" (click)="toggleInputs()">
+        {{ i18n.t(panelsHidden() ? 'diff.inputs.show' : 'diff.inputs.hide') }}
+      </button>
+      @if (panelsHidden()) {
+        <span class="muted hidden-sum" data-testid="diff-hidden-summary">{{ hiddenSummary() }}</span>
+      }
+    </div>
+  }
 
   <div class="tool-status" aria-live="polite">
     @if (fileError()) {
@@ -49,16 +62,20 @@
   </div>
 
   <section class="result" [attr.aria-label]="i18n.t('diff.result')">
-    <div class="result-bar">
-      <h2 class="eyebrow">{{ i18n.t('diff.result') }}</h2>
-      <div class="controls">
-        <app-segmented [label]="i18n.t('diff.view')" [options]="viewOptions()" [value]="view()" (valueChange)="view.set($event)" />
-        <app-segmented [label]="i18n.t('diff.detail')" [options]="detailOptions()" [value]="granularity()" (valueChange)="granularity.set($event)" />
-        <label class="check"><input type="checkbox" [checked]="collapse()" (change)="collapse.set($any($event.target).checked)" /> {{ i18n.t('diff.collapse') }}</label>
-      </div>
-    </div>
+    <h2 class="eyebrow">{{ i18n.t('diff.result') }}</h2>
+    @if (ignoreBlank() && patch()) {
+      <p class="hint">{{ i18n.t('diff.note.ignore') }}</p>
+    }
 
-    <div class="summary" aria-live="polite" data-testid="diff-summary">
+    <div class="viewer" [class.nowrap]="!wrap()" tabindex="0" role="region" [attr.aria-label]="i18n.t(view() === 'side' ? 'diff.table.side' : 'diff.table.inline')">
+    <div class="bar" [class.open]="optsOpen()">
+      <div class="controls">
+        <app-segmented [label]="i18n.t('diff.view')" [options]="viewOptions()" [value]="view()" (valueChange)="view.set($event)" toggleShortcut="toggle-view" />
+        <app-segmented [label]="i18n.t('diff.detail')" [options]="detailOptions()" [value]="granularity()" (valueChange)="granularity.set($event)" />
+        <label class="check"><input data-shortcut="toggle-collapse" type="checkbox" [checked]="collapse()" (change)="collapse.set($any($event.target).checked)" /> {{ i18n.t('diff.collapse') }}</label>
+        <label class="check"><input type="checkbox" [checked]="wrap()" (change)="wrap.set($any($event.target).checked)" /> {{ i18n.t('diff.wrap') }}</label>
+      </div>
+    <div class="summary" aria-live="polite" data-testid="diff-summary" [class.has-nav]="groups() > 0">
       @if (busy()) {
         <span class="tool-ok">{{ i18n.t('diff.busy') }}</span>
       } @else if (stats(); as s) {
@@ -73,21 +90,18 @@
       <span class="spacer"></span>
       @if (groups() > 0) {
         <span class="tool-ok" data-testid="diff-position">{{ positionText() }}</span>
-        <button type="button" class="btn small" data-testid="diff-prev" (click)="go(-1)"><app-icon name="up" /> {{ i18n.t('diff.prev') }}</button>
-        <button type="button" class="btn small" data-testid="diff-next" (click)="go(1)"><app-icon name="down" /> {{ i18n.t('diff.next') }}</button>
+        <button data-shortcut="prev" type="button" class="btn small" data-testid="diff-prev" [attr.aria-label]="i18n.t('diff.prev.aria')" (click)="go(-1)"><app-icon name="up" /> <span class="lbl">{{ i18n.t('diff.prev') }}</span></button>
+        <button data-shortcut="next" type="button" class="btn small" data-testid="diff-next" [attr.aria-label]="i18n.t('diff.next.aria')" (click)="go(1)"><app-icon name="down" /> <span class="lbl">{{ i18n.t('diff.next') }}</span></button>
+        <button type="button" class="btn small opts-btn" [attr.aria-expanded]="optsOpen()" (click)="optsOpen.set(!optsOpen())">{{ i18n.t('diff.opts.btn') }}</button>
       }
       @if (patch()) {
-        <app-copy-button shortcut="copy" [text]="patch()" [label]="i18n.t('diff.copy')" />
-        <button data-shortcut="download" type="button" class="btn small" data-testid="diff-download" (click)="downloadPatch()"><app-icon name="download" /> {{ i18n.t('diff.download') }}</button>
+        <app-copy-button class="extra" shortcut="copy" [text]="patch()" [label]="i18n.t('diff.copy')" />
+        <button data-shortcut="download" type="button" class="btn small extra" data-testid="diff-download" (click)="downloadPatch()"><app-icon name="download" /> {{ i18n.t('diff.download') }}</button>
       }
     </div>
-
-    @if (ignoreBlank() && patch()) {
-      <p class="hint">{{ i18n.t('diff.note.ignore') }}</p>
-    }
+    </div>
 
     @if (view() === 'side' && shownSide().length) {
-      <div class="scroll">
         <table class="diff side" [attr.aria-label]="i18n.t('diff.table.side')">
           <colgroup><col class="c-no" /><col class="c-text" /><col class="c-no" /><col class="c-text" /></colgroup>
           <tbody>
@@ -96,14 +110,14 @@
                 <tr class="fold"><td colspan="4"><button type="button" class="linklike" (click)="expand(it.id)">{{ i18n.t('diff.fold', { n: it.count }) }}</button></td></tr>
               } @else {
                 <tr [class]="'r ' + it.line.kind" [class.cur]="it.line.group >= 0 && it.line.group === current()" [attr.data-group]="it.first ? it.line.group : null">
-                  <td class="no">@if (it.line.kind !== 'eq') {<span class="visually-hidden">{{ i18n.t('diff.row.' + it.line.kind) }}: </span>}{{ it.line.aNo }}</td>
+                  <td class="no">@if (it.line.kind !== 'eq') {<span class="visually-hidden">{{ i18n.t('diff.row.' + it.line.kind) }}: </span>}<ng-container *ngTemplateOutlet="noTpl; context: { side: 'a', n: it.line.aNo }" /></td>
                   <td class="tx">
                     @if (it.line.a !== undefined) {
                       @if (it.line.kind !== 'eq') {<span class="sign" aria-hidden="true">−</span>}
                       <ng-container *ngTemplateOutlet="segsTpl; context: { $implicit: segs(it.line, 'a'), cls: 'del' }" />
                     }
                   </td>
-                  <td class="no">{{ it.line.bNo }}</td>
+                  <td class="no"><ng-container *ngTemplateOutlet="noTpl; context: { side: 'b', n: it.line.bNo }" /></td>
                   <td class="tx">
                     @if (it.line.b !== undefined) {
                       @if (it.line.kind !== 'eq') {<span class="sign" aria-hidden="true">+</span>}
@@ -115,11 +129,9 @@
             }
           </tbody>
         </table>
-      </div>
     }
 
     @if (view() === 'inline' && shownInline().length) {
-      <div class="scroll">
         <table class="diff inline" [attr.aria-label]="i18n.t('diff.table.inline')">
           <colgroup><col class="c-no" /><col class="c-no" /><col class="c-text" /></colgroup>
           <tbody>
@@ -128,8 +140,8 @@
                 <tr class="fold"><td colspan="3"><button type="button" class="linklike" (click)="expand(it.id)">{{ i18n.t('diff.fold', { n: it.count }) }}</button></td></tr>
               } @else {
                 <tr [class]="'r ' + it.line.kind" [class.cur]="it.line.group >= 0 && it.line.group === current()" [attr.data-group]="it.first ? it.line.group : null">
-                  <td class="no">@if (it.line.kind !== 'eq') {<span class="visually-hidden">{{ i18n.t('diff.row.' + it.line.kind) }}: </span>}{{ it.line.aNo }}</td>
-                  <td class="no">{{ it.line.bNo }}</td>
+                  <td class="no">@if (it.line.kind !== 'eq') {<span class="visually-hidden">{{ i18n.t('diff.row.' + it.line.kind) }}: </span>}<ng-container *ngTemplateOutlet="noTpl; context: { side: 'a', n: it.line.aNo }" /></td>
+                  <td class="no"><ng-container *ngTemplateOutlet="noTpl; context: { side: 'b', n: it.line.bNo }" /></td>
                   <td class="tx">
                     @if (it.line.kind !== 'eq') {<span class="sign" aria-hidden="true">{{ it.line.kind === 'del' ? '−' : '+' }}</span>}
                     <ng-container *ngTemplateOutlet="segsTpl; context: { $implicit: it.line.segs, cls: it.line.kind }" />
@@ -139,8 +151,8 @@
             }
           </tbody>
         </table>
-      </div>
     }
+    </div>
 
     @if (remaining() > 0) {
       <button type="button" class="btn small more" (click)="showMore()">{{ i18n.t('diff.more', { n: remaining() }) }}</button>
@@ -155,5 +167,11 @@
     } @else {
       <span>{{ s.text }}</span>
     }
+  }
+</ng-template>
+
+<ng-template #noTpl let-side="side" let-n="n">
+  @if (n !== undefined) {
+    <button type="button" class="goto" [attr.aria-label]="i18n.t('diff.goto', { n: n, side: side === 'a' ? 'A' : 'B' })" (click)="goToLine(side, n)">{{ n }}</button>
   }
 </ng-template>

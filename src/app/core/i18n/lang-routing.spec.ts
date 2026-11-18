@@ -80,6 +80,7 @@ describe('URL ↔ lingua', () => {
       'codice-fiscale',
       'convertitore-lire-euro',
       'fattura-elettronica',
+      'generatore-codice-fiscale',
       'iban-partita-iva',
       'numeri-in-lettere',
       'scadenze-fatture',
@@ -113,7 +114,7 @@ describe('sitemap', () => {
   it('ha tutte le URL italiane e quelle inglesi dei soli strumenti generici', () => {
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     const generic = TOOLS.filter((t) => !t.italyOnly).length;
-    expect(locs.length).toBe(allSlugs().length + 1 + generic + STATIC_PAGES.length);
+    expect(locs.length).toBe(allSlugs().length + 1 + generic + STATIC_PAGES.length + 2);
     expect(new Set(locs).size).toBe(locs.length);
     expect(locs).toContain('https://tools.rr-dev.eu/en/');
     expect(locs).toContain('https://tools.rr-dev.eu/en/pdf-tools');
@@ -121,6 +122,8 @@ describe('sitemap', () => {
     expect(locs).toContain('https://tools.rr-dev.eu/privacy');
     expect(locs).toContain('https://tools.rr-dev.eu/en/privacy');
     expect(locs).not.toContain('https://tools.rr-dev.eu/en/codice-fiscale');
+    expect(locs).toContain('https://tools.rr-dev.eu/novita');
+    expect(locs).toContain('https://tools.rr-dev.eu/en/changelog');
   });
   it('dichiara il namespace xhtml e ogni url ha i suoi link alternate', () => {
     expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"');

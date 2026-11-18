@@ -62,6 +62,7 @@ Tables and structured formats.
 | [**CSV, JSON & Excel converter**](https://tools.rr-dev.eu/csv-json-converter) | Convert CSV, JSON and Excel into each other: automatic delimiter, header row, array of objects or of arrays, nested objects flattened to `a.b` and rebuilt, sheet picker, table preview. Formulas in the exported CSV and XLSX are neutralised. |
 | [**JSON Formatter and Validator**](https://tools.rr-dev.eu/json-formatter) | Format (2 / 4 spaces or tab), minify and sort keys, with live validation: errors show line and column, plus size, key count and depth, and light syntax highlighting. |
 | [**JSON Viewer & Editor**](https://tools.rr-dev.eu/json-viewer) | Explore JSON as a lazy, paginated tree (files up to 50 MB), search keys and values, copy the JavaScript path or JSON Pointer of a node, edit values and keys inline, add, delete, duplicate, move and retype nodes, with undo/redo and a formatted Text view. |
+| [**JSON diff (structural compare)**](https://tools.rr-dev.eu/json-diff) | Compare two JSON (or YAML) documents by structure: every difference with its path (JSON Pointer and `a.b[2].c`), type (added, removed, changed, type changed) and old and new value. Key order is ignored; arrays by index, as sets or by key (`id`, `_id`, `key`, `uuid` detected automatically); options for case, number tolerance and ignored paths. List with filters or merged tree, previous/next navigation, export as text, Markdown or JSON Patch (RFC 6902). Parsing errors with line and column; big inputs run in a Web Worker. |
 | [**YAML / JSON / TOML converter**](https://tools.rr-dev.eu/yaml-json-converter) | Convert between YAML, JSON and TOML in every direction (`yaml` and `smol-toml`), multiple YAML documents, anchors and merge keys, 2/4-space or tab indentation, sorted keys, errors with line and column and a "go to error" button, file upload and download. |
 | [**XML formatter**](https://tools.rr-dev.eu/xml-formatter) | Format or minify XML keeping comments, CDATA, entities and `xml:space="preserve"`; well-formedness checks with line and column errors (plus the browser's DOMParser as second opinion) and a simple XML to JSON conversion. |
 | [**SQL formatter**](https://tools.rr-dev.eu/sql-formatter) | Format or minify SQL (`sql-formatter`) for standard SQL, PostgreSQL, MySQL, MariaDB, SQLite, T-SQL, BigQuery, PL/SQL and more, keyword case and indentation; the minifier never touches strings, quoted names or hints. |
@@ -79,6 +80,7 @@ Images, PDFs, QR codes and barcodes.
 | [**PDF tools: merge, split, rotate**](https://tools.rr-dev.eu/pdf-tools) | Merge several PDFs, extract or split pages (every page, every N pages or by ranges like `1-3, 5, 8-10`), rotate, delete and reorder pages from a grid of thumbnails. Your PDFs are never uploaded: fine for confidential documents. |
 | [**Images to PDF**](https://tools.rr-dev.eu/images-to-pdf) | Combine JPG, PNG and WebP images into one PDF: reorder the thumbnails (drag & drop or keyboard), choose A4, Letter or fit-to-image pages, orientation, margins, 1, 2 or 4 images per page and the quality. EXIF orientation is respected. |
 | [**PDF to images**](https://tools.rr-dev.eu/pdf-to-images) | Turn PDF pages (all, or a range like `1-3, 5`) into PNG or JPEG at 72, 150 or 300 dpi, with previews and single or ZIP download. |
+| [**PDF to text**](https://tools.rr-dev.eu/pdf-to-text) | Extract the text of one or more PDFs (password-protected ones too, the password is only used to open the file): lines, paragraphs and simple two-column layouts rebuilt, flowing text or layout kept with spaces, split words joined, repeated headers and footers removed, page range, page separators. Warns when pages have no text layer (scans need OCR, which is not done here). Copy, `.txt`/`.md` (ZIP for several PDFs), or send to another tool. |
 | [**Barcode generator**](https://tools.rr-dev.eu/barcode-generator) | EAN-13, EAN-8, UPC-A, Code 128, Code 39, ITF-14, ITF, Codabar, MSI and Pharmacode with `jsbarcode`: validation, computed check digit, bar width, height, text and colours, SVG or PNG download, and bulk generation from a list into a ZIP. |
 | [**QR code reader**](https://tools.rr-dev.eu/qr-code-reader) | Read QR codes from an uploaded, dropped or pasted image or with the camera (only on request, stopped on exit) using `jsQR`. Recognises URLs, Wi-Fi, vCard, email, phone, SMS, location and text; links are shown as text with warnings and never opened automatically. |
 
@@ -176,6 +178,7 @@ Codice fiscale, IBAN, VAT number and electronic invoices.
 | [**CSS clamp() fluid typography generator**](https://tools.rr-dev.eu/css-clamp-calculator) | `clamp(min, intercept + slope vw, max)` in rem between a minimum and maximum viewport, configurable root size, fluid type scale (steps -2 to +5) exported as CSS variables, preview with a simulated width slider and a WCAG 1.4.4 warning when max/min exceeds 2.5. |
 | [**Time calculator (hours and minutes)**](https://tools.rr-dev.eu/time-calculator) | Add and subtract durations in mixed formats (`1:30`, `1h 30m`, `90m`, `1,5h`), timesheet with start/end/break (night shifts across midnight), daily and weekly totals and overtime over a threshold, decimal hours and hours:minutes conversion, amount from an hourly rate. Receives text from other tools. |
 | [**Invoice due dates (in Italian)**](https://tools.rr-dev.eu/scadenze-fatture) | Due dates from the invoice date with 30/60/90/120 or custom terms, "invoice date" or end of month (D.F.F.M. and end of month + N days), multiple installments with the amount split (rounding on the last one), optional move to the next business day using the computed Italian holidays, informational note on Italian payment-term law (no interest), CSV and `.ics` export. Italian only. |
+| [**Fake tax code and VAT number generator (in Italian)**](https://tools.rr-dev.eu/generatore-codice-fiscale) | Made-up but formally valid Italian tax codes (codice fiscale) and VAT numbers (partita IVA) for tests, 1 to 1000 at a time. Each tax code comes with a made-up first and last name, sex, birth date and birthplace that match the code, with optional filters (sex, exact date or range of years, comune or foreign state from the same list as the tax code tool) and an optional homocodia (digits replaced by letters, level 1 to 7 or random). VAT numbers have a correct check digit, an office code picked from the provincial list or random, and an optional `IT` prefix. Repeatable results with a seed, copy of a single value or of all, CSV and JSON download, "Send to" the validators. Italian only. |
 
 More tools are coming, with the same rule: nothing leaves your browser.
 
@@ -423,6 +426,16 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Search by key or value with next/previous, path as `$.users[0].name` and as JSON Pointer `/users/0/name`.
 - Inline editing with type validation, key rename, add, delete, duplicate, move, change type; undo/redo (Ctrl/Cmd+Z); Tree and Text views.
 
+### JSON diff (structural compare)
+
+![JSON diff (structural compare)](docs/screenshots/json-diff.png)
+
+- Route `/json-diff` (also `/en/json-diff`). Two panels (paste, open a file, load an example, swap), JSON or YAML (read with the `yaml` library already used by the YAML ⇄ JSON converter; a text starting with `{` or `[` is always JSON, so its errors are reported with line and column).
+- Pure recursive comparison (no new dependency): differences with JSON Pointer (RFC 6901, `~0` and `~1` escaped) and readable path, type and old/new value. Object key order is always ignored.
+- Arrays: by index (default), as sets (order ignored) or by key field, with automatic detection of `id`, `_id`, `key` and `uuid`; a moved element is not a change. Options: ignore case in strings, number tolerance (epsilon), ignored paths (JSON Pointer with `*` and `**`).
+- Two views: list with filters and counts by type, and merged tree with colored nodes and collapsible unchanged branches. The results scroll in their own area with a sticky bar, previous/next difference (F7 / Shift+F7) and "Hide the texts", as in the text compare.
+- Export: JSON Patch (RFC 6902, exact, tested by applying it to A and checking it gives B), list as text or Markdown, and "Send to…". Texts and options go in the share link (warning if too large). Above about 200,000 characters the work moves to a Web Worker.
+
 ### JSON Formatter and Validator
 
 ![JSON Formatter and Validator](docs/screenshots/json-formatter.png)
@@ -543,6 +556,17 @@ More tools are coming, with the same rule: nothing leaves your browser.
 
 - Route `/compound-interest` (also `/en/compound-interest`). The nominal rate and the compounding give the effective annual rate and the simulation runs month by month, so with monthly compounding it matches the textbook closed formulas (the unit tests check them). No tax rules are built in: the optional tax field has no default and is applied once to the interest at the end.
 - The chart is a hand-written SVG (stacked bars of paid-in and interest); the year-by-year table has the same data.
+
+### PDF to text
+
+![PDF to text](docs/screenshots/pdf-to-text.png)
+
+- Route `/pdf-to-text` (also `/en/pdf-to-text`). Text items come from pdf.js `getTextContent` (same lazy loader and local worker as the other PDF tools; the password is only passed to `getDocument`, never stored or put in the share link). All reconstruction is pure, unit-tested logic in `pdf-to-text.ts` working on fake `(str, x, y, width)` items.
+- Lines: items are grouped by baseline with a tolerance of half the font size, sorted by x, and a space is inserted where the gap is over 15% of the font size. Paragraph break where the vertical jump exceeds 1.4 times the typical leading (or after a short line ending with a full stop). Keep-layout mode pads with spaces according to the distance from the left margin.
+- Two columns: a near-empty vertical band (wider than 3% of the text and 1.2 times the font size) in the middle 30-70% with at least four lines per side; full-width lines are accepted only above or below the columns. Three columns, tables and headings in between fall back to line-by-line reading.
+- Repeated headers and footers: among the first or last two lines of a page (digits ignored, so "Page 3 of 9" matches), lines found on more than half of the pages, with at least three pages.
+- Pages without any visible text are counted and explained: a scan needs OCR, which is not offered because files never leave the browser (link to PDF to images).
+- The link only stores options (layout, switches, page range), never files, text or passwords.
 
 ### Sign a PDF
 
@@ -697,6 +721,13 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Route `/scadenze-fatture`, with no `/en/` version. "Invoice date", D.F.F.M. (days added, then moved to the end of the month, plus optional extra days) or end of month + days. Installments split the total in equal amounts rounded down to the cent, the last one takes the difference.
 - Moving to the next business day is optional and shown in the table; Italian national holidays (Easter computed for each year) come from the working-days tool. The legal-terms note (D.Lgs. 231/2002) is informational, with no late-payment interest. CSV and iCalendar (.ics, one all-day event per due date).
 
+### Fake tax code and VAT number generator (Italian only)
+
+- Route `/generatore-codice-fiscale`, with no `/en/` version. A warning on top says the codes are made up and only for tests: they have the right format and check digits but belong to nobody, and must not be used for official purposes, to sign up to services or to impersonate someone.
+- Tax codes are computed with the official rules (the same code as the tax code tool) on a made-up first name, surname, sex, birth date and birthplace taken from the fake data lists, so every row is coherent with its code and accepted by the validator. Filters: sex, exact date or range of years (1900 to this year), comune or foreign state with the same search box as the tax code tool (the list of places is loaded only when you pick one). Homocodia: a fixed level from 1 to 7 or a random one, applied with the replacement rules and a recomputed check character.
+- VAT numbers: 7 digits of progressive, 3 of provincial office (picked from the list of historical province codes or random) and the check digit. There is no natural person / company option because the Italian VAT number format does not distinguish them (explained in the FAQ).
+- The seed is optional: the same seed and options always give the same results. The share link holds only the options (quantity, filters, seed), never the generated codes. Copy of a single value or of all, CSV and JSON download, "Send to" the tax code and IBAN / VAT validators, and links to both validators.
+
 ### Encrypt and decrypt files
 
 ![Encrypt and decrypt files](docs/screenshots/file-encrypt.png)
@@ -830,6 +861,14 @@ Most text and calculator tools (regex tester, diff, formatters, converters, calc
 - **Offline cache.** The site uses a service worker and the browser's Cache Storage only to keep the site files (pages, scripts, styles, fonts) so it works offline; nothing you enter in the tools is saved. You can empty it from the "Use offline" panel in the footer or from the browser settings.
 - Full notice (Italian and English): [`/privacy`](https://tools.rr-dev.eu/privacy) and [`/en/privacy`](https://tools.rr-dev.eu/en/privacy).
 
+## Feedback and contributing
+
+Every tool page has a small "Feedback" box with three links to pre-filled GitHub issue forms (`.github/ISSUE_TEMPLATE/`): **Report a problem** (`bug`), **Suggest an improvement** (`enhancement`) and **Propose a new tool** (`tool`); the footer and the home page also link to the new tool form. The forms are bilingual (English and Italian) and are pre-filled with the tool id, the language and the canonical page address only: never the URL hash or query (the shared state in `#s=` may hold your data) and never anything you typed in the tool. Nothing is sent by the site; a GitHub account is needed to submit the form. The URLs are built by `src/app/shared/tool-feedback-url.ts`.
+
+## What's new
+
+The [`/en/changelog`](https://tools.rr-dev.eu/en/changelog) page ([`/novita`](https://tools.rr-dev.eu/novita) in Italian) lists new tools, features and improvements by date, with a filter by type, and links to an Atom feed (`public/changelog.xml`, `public/changelog.en.xml`). The data is in `src/app/core/changelog.ts`; the feeds are static files regenerated with `UPDATE_SITEMAP=1 npm test`. Tools added in the latest release that has new tools, if it is less than 30 days old, get a "New" badge on the home page, computed at prerender time.
+
 ## Smart paste and drop on the home page
 
 The home page has a "Paste or drop here" box. Press `Ctrl/⌘ + V` anywhere on the page (outside a text field; in the search box and in any other field paste stays the normal browser paste) or paste into the box, and the content is recognised and the right tools are offered, most relevant first. Detectors (pure functions in `src/app/shared/content-detect.ts`, with many specs including false positives) cover JSON, JWT, URL, Base64, CSS colour, cron expression, IBAN, Italian tax code and VAT number (with checksums), SVG, curl and `docker run` commands, CSV/TSV, YAML, XML/HTML, SQL, Unix timestamp, UUID, hex hash (md5/sha*), PEM, IP/CIDR, Roman numeral, Morse code and dates. A short preview is shown as plain text only (never HTML; private key bodies are never shown) with the note that the content stays in the tab. A file can be dropped anywhere on the home page (a full-page overlay) or picked with "Choose a file": the type is read from the MIME type and the extension and tools are proposed (images, PDF, CSV, JSON/YAML/XML/SVG/text, PEM/CRT, and hash/encryption for any file); several files go only to tools that accept several. The content reaches the chosen tool through the in-memory "Send to…" service (`kind` text/json/csv/svg/image/files), so the receiving tools declare the kind in `HANDOFF_ACCEPTS`. Nothing is stored or uploaded. The mapping (`src/app/shared/smart-targets.ts`) is plain data and easy to extend.
@@ -899,6 +938,8 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
 
 **Link di condivisione.** Molti strumenti di testo e di calcolo hanno il pulsante «Copia link»: lo stato (testo e opzioni) viene compresso, codificato in base64url e scritto nell'hash dell'URL (`#s=…`); aprendo il link si ritrova. L'hash non va mai al server, si legge solo nel browser e viene validato per ogni strumento (tetto di 256 KB decompressi, link oltre 8.000 caratteri rifiutati con un messaggio). Gli strumenti con password, chiavi, dati personali o file non lo hanno.
 
+**Feedback e contributi.** Ogni pagina strumento ha un riquadro «Feedback» con tre link a moduli di issue GitHub precompilati (`.github/ISSUE_TEMPLATE/`): **Segnala un problema** (`bug`), **Suggerisci un miglioramento** (`enhancement`) e **Proponi un nuovo strumento** (`tool`); anche il piè di pagina e la home rimandano al modulo per un nuovo strumento. I moduli sono bilingui e si precompilano solo con id dello strumento, lingua e indirizzo canonico della pagina: mai hash o query dell'URL (lo stato condiviso in `#s=` può contenere i tuoi dati) né quello che hai scritto nello strumento. Il sito non invia nulla; per inviare il modulo serve un account GitHub.
+
 **Scorciatoie da tastiera negli strumenti.** Ogni strumento ha le stesse scorciatoie, guidate dall'attributo `data-shortcut` sui pulsanti (nessuna logica nelle pagine): `Ctrl/⌘ + Invio` esegue o genera, `Alt + Maiusc + C` copia il risultato, `D` lo scarica, `S` scambia input e output, `X` pulisce (due pressioni per confermare), `O` apre «Invia a…», `?` (fuori dai campi di testo) apre il pannello di aiuto con le sole scorciatoie presenti nello strumento. Esc chiude pannelli e menu e non cancella mai i dati. I tasti si leggono da `event.code`, quindi funzionano anche su macOS; il pulsante «Scorciatoie» è nascosto sui dispositivi touch.
 
 **Incolla e trascina nella home.** Nella home il riquadro «Incolla o trascina qui» riconosce il contenuto e propone gli strumenti adatti: premi `Ctrl/⌘ + V` fuori dai campi di testo (nella ricerca e negli altri campi l'incolla resta quella normale) oppure incolla nel riquadro. I rilevatori (`src/app/shared/content-detect.ts`, con molti test anche sui falsi positivi) riconoscono JSON, JWT, URL, Base64, colori CSS, espressioni cron, IBAN, codice fiscale e partita IVA (con controllo del checksum), SVG, comandi curl e `docker run`, CSV/TSV, YAML, XML/HTML, SQL, timestamp Unix, UUID, hash esadecimali, PEM, IP/CIDR, numeri romani, Morse e date. L'anteprima è solo testo (mai HTML, il corpo delle chiavi private non si mostra) e ricorda che il contenuto resta nella scheda. Un file si trascina su tutta la pagina o si sceglie con «Scegli un file»: il tipo si riconosce da MIME ed estensione; più file vanno solo agli strumenti che li accettano insieme. Il passaggio usa il servizio «Invia a…» (solo memoria): niente viene salvato o caricato.
@@ -943,12 +984,14 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   [Trova e sostituisci](https://tools.rr-dev.eu/find-replace), [Sintesi vocale](https://tools.rr-dev.eu/text-to-speech) (solo voci locali) e
   [Generatore di dati finti](https://tools.rr-dev.eu/fake-data-generator) (CF, P.IVA e IBAN formalmente validi, seme, CSV/JSON/SQL),
   [JSONPath, JSON → TypeScript e JSON Schema](https://tools.rr-dev.eu/json-query),
+  [Confronto JSON (diff strutturale)](https://tools.rr-dev.eu/json-diff) (differenze per percorso, array per indice, insiemi o chiave, albero unito, JSON Patch),
   [Anteprima meta tag e Open Graph](https://tools.rr-dev.eu/meta-tag-preview), [Firma PDF](https://tools.rr-dev.eu/pdf-sign) (firma grafica),
   [Ritaglia e ruota immagini](https://tools.rr-dev.eu/image-crop),
   [Convertitore cURL](https://tools.rr-dev.eu/curl-converter), [Analizzatore URL](https://tools.rr-dev.eu/url-parser),
   [Calcolo interesse composto](https://tools.rr-dev.eu/compound-interest),
   [Convertitore formato immagini](https://tools.rr-dev.eu/image-converter) (PNG, JPG, WebP, AVIF),
   [Filigrana su immagini e PDF](https://tools.rr-dev.eu/image-watermark),
+  [Estrai testo da PDF](https://tools.rr-dev.eu/pdf-to-text) (anche protetti da password, avvisa se serve l'OCR),
   [Contagocce e palette da immagine](https://tools.rr-dev.eu/image-color-picker),
   [SVG in PNG](https://tools.rr-dev.eu/svg-to-png),
   [Convertitore colori](https://tools.rr-dev.eu/color-converter) (HEX, RGB, HSL, HWB, OKLCH, OKLAB, palette),
@@ -959,6 +1002,7 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   [Calcolatore subnet IP](https://tools.rr-dev.eu/subnet-calculator), [Da docker run a docker-compose](https://tools.rr-dev.eu/docker-run-to-compose),
   [Generatore CSS clamp()](https://tools.rr-dev.eu/css-clamp-calculator), [Calcolatrice ore e minuti](https://tools.rr-dev.eu/time-calculator),
   [Calcolo scadenze fatture](https://tools.rr-dev.eu/scadenze-fatture),
+  [Generatore codice fiscale e partita IVA](https://tools.rr-dev.eu/generatore-codice-fiscale),
   [Convertitore CSV, JSON ed Excel](https://tools.rr-dev.eu/csv-json-converter), tutti con
   elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build
@@ -972,3 +1016,4 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   licenza e mantenere l'attribuzione ("Based on rrstudio Tools by rrstudio", file NOTICE e
   intestazioni). Dettagli in [LICENSE](LICENSE) e [NOTICE](NOTICE).
 - **Contribuire:** leggi [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Novità:** la pagina [`/novita`](https://tools.rr-dev.eu/novita) elenca strumenti, funzioni e miglioramenti per data, con un feed Atom (`public/changelog.xml`); i dati sono in `src/app/core/changelog.ts`.

@@ -108,6 +108,8 @@ const it = {
   'ibv.bulk.col.normalized': 'Normalizzato',
   'ibv.bulk.file': 'verifica-iban-partita-iva.csv',
   'ibv.how.title': 'Come funziona',
+  'ibv.gcf': 'Ti servono codici di prova?',
+  'ibv.gcf.link': 'Generatore codice fiscale e partita IVA',
   'ibv.how.body':
     'Per l\'IBAN si porta il paese e le cifre di controllo in fondo, si trasformano le lettere in numeri (A=10 … Z=35) e il resto della divisione per 97 deve essere 1 (ISO 13616). La lunghezza e il formato dipendono dal paese (registro IBAN SWIFT); per l\'Italia si controlla anche il CIN su ABI, CAB e numero di conto. Per la partita IVA si usa l\'algoritmo di controllo sull\'undicesima cifra. Nessun servizio esterno viene contattato.',
 };
@@ -218,6 +220,8 @@ const en: typeof it = {
   'ibv.bulk.col.normalized': 'Normalised',
   'ibv.bulk.file': 'iban-vat-check.csv',
   'ibv.how.title': 'How it works',
+  'ibv.gcf': 'Need test codes?',
+  'ibv.gcf.link': 'Fake tax code and VAT number generator (in Italian)',
   'ibv.how.body':
     'For the IBAN, the country and check digits are moved to the end, letters become numbers (A=10 … Z=35) and the remainder of the division by 97 must be 1 (ISO 13616). Length and format depend on the country (SWIFT IBAN registry); for Italy the CIN is also checked against ABI, CAB and account number. For the VAT number the check algorithm on the eleventh digit is used. No external service is contacted.',
 };

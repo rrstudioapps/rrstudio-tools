@@ -122,6 +122,8 @@ export class PlaceCombobox {
   readonly kinds = input.required<readonly Place['kind'][]>();
   readonly invalid = input(false);
   readonly describedBy = input('');
+  /** Testo da mostrare nella casella quando la pagina sceglie il luogo da sola (per esempio da un link condiviso). */
+  readonly preset = input('');
   /** Luogo scelto (o null quando il testo cambia dopo una scelta). */
   readonly picked = output<Place | null>();
   /** Il campo ha preso il focus: la pagina può caricare l'elenco dei luoghi. */
@@ -149,6 +151,10 @@ export class PlaceCombobox {
   });
 
   constructor() {
+    effect(() => {
+      const v = this.preset();
+      if (v) untracked(() => this.text.set(v));
+    });
     // quando cambiano i risultati si riparte dal primo
     effect(() => {
       this.options();

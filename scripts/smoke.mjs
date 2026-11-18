@@ -36,8 +36,8 @@ if (!tools.length || tools.some((t) => !t.path)) {
   process.exit(1);
 }
 const toolPaths = new Set(tools.map((t) => t.path));
-const pages = ['/', '/privacy/', '/preferiti/', '/condividi/'];
-const pagesEn = ['/en/', '/en/privacy/', '/en/favorites/', '/en/share/'];
+const pages = ['/', '/privacy/', '/preferiti/', '/condividi/', '/novita/'];
+const pagesEn = ['/en/', '/en/privacy/', '/en/favorites/', '/en/share/', '/en/changelog/'];
 for (const t of tools) {
   pages.push(`/${t.path}/`);
   if (!t.italyOnly) pagesEn.push(`/en/${t.path}/`);

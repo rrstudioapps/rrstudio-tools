@@ -23,6 +23,34 @@ export const it = {
   'footer.github': 'GitHub',
   'footer.license': 'Licenza AGPL-3.0',
   'footer.source': 'Codice sorgente',
+  'feedback.title': 'Feedback',
+  'feedback.bug': 'Segnala un problema',
+  'feedback.idea': 'Suggerisci un miglioramento',
+  'feedback.newtool': 'Proponi un nuovo strumento',
+  'feedback.newtab': '(si apre in una nuova scheda, su GitHub)',
+  'feedback.note': 'Serve un account GitHub. Non viene inviato nulla finché non invii il modulo; non incollare dati personali.',
+  'footer.suggest': 'Suggerisci uno strumento',
+  'footer.changelog': 'Novità',
+  'home.new': 'Nuovo',
+  'changelog.eyebrow': 'Novità',
+  'changelog.title': 'Cosa c\'è di nuovo',
+  'changelog.lead': 'Gli strumenti, le funzioni e i miglioramenti aggiunti al sito, dalla versione più recente.',
+  'changelog.filter.label': 'Filtra per tipo',
+  'changelog.filter.all': 'Tutto',
+  'changelog.filter.new-tool': 'Nuovi strumenti',
+  'changelog.filter.feature': 'Funzioni',
+  'changelog.filter.improvement': 'Miglioramenti',
+  'changelog.filter.fix': 'Correzioni',
+  'changelog.kind.new-tool': 'Nuovo strumento',
+  'changelog.kind.feature': 'Funzione',
+  'changelog.kind.improvement': 'Miglioramento',
+  'changelog.kind.fix': 'Correzione',
+  'changelog.tools': 'Strumenti:',
+  'changelog.issues': 'Segnalazioni:',
+  'changelog.feed': 'Feed Atom',
+  'changelog.empty': 'Nessuna novità di questo tipo.',
+  'seo.changelog.title': 'Novità | rrstudio Tools',
+  'seo.changelog.desc': 'Nuovi strumenti, funzioni e miglioramenti di rrstudio Tools, con feed per seguire gli aggiornamenti.',
   'footer.privacy': 'Privacy',
   'footer.noads': 'Nessuna pubblicità, nessun cookie, nessun tracciamento.',
   'pwa.footer': 'Usa offline',
@@ -202,6 +230,18 @@ export const it = {
   'shortcuts.swap': 'Inverti input e output',
   'shortcuts.clear': 'Cancella i dati (due volte per confermare)',
   'shortcuts.send': 'Invia ad un altro strumento',
+  'print.btn': 'Stampa o salva PDF',
+  'print.btn.aria': 'Stampa o salva PDF dei risultati',
+  'print.note': 'Calcolo indicativo, generato nel browser da tools.rr-dev.eu',
+  'print.yes': 'Sì',
+  'print.no': 'No',
+  'shortcuts.print': 'Stampa o salva come PDF',
+  'shortcuts.next': 'Differenza o risultato successivo (anche nei campi)',
+  'shortcuts.prev': 'Differenza o risultato precedente (anche nei campi)',
+  'shortcuts.toggle-view': 'Cambia vista (affiancata o in linea)',
+  'shortcuts.toggle-collapse': 'Nascondi o mostra le righe uguali',
+  'shortcuts.toggle-ws': 'Ignora gli spazi, sì o no',
+  'shortcuts.toggle-inputs': 'Nascondi o mostra i testi',
   'shortcuts.help': 'Apri questo pannello (fuori dai campi di testo)',
   'shortcuts.esc': 'Chiude pannelli e menu, non cancella mai i dati',
   'shortcuts.search': 'Cerca uno strumento (nella home)',
@@ -211,6 +251,11 @@ export const it = {
   'shortcuts.done.swap': 'Invertito',
   'shortcuts.done.clear': 'Dati cancellati',
   'shortcuts.done.send': 'Scegli lo strumento di destinazione',
+  'shortcuts.done.print': 'Apro la stampa',
+  'shortcuts.done.toggle-view': 'Vista cambiata',
+  'shortcuts.done.toggle-collapse': 'Righe uguali: opzione cambiata',
+  'shortcuts.done.toggle-ws': 'Opzione degli spazi cambiata',
+  'shortcuts.done.toggle-inputs': 'Testi: visibilità cambiata',
   'shortcuts.unavailable': 'Niente da fare in questo momento',
   'shortcuts.confirmClear': 'Premi di nuovo {keys} per cancellare i dati',
   'shortcuts.key.enter': 'Invio',
@@ -319,6 +364,13 @@ export const it = {
   'seo.p2i.desc':
     'Converti le pagine di un PDF in immagini PNG o JPEG, tutte o solo un intervallo, a 72, 150 o 300 dpi, con anteprime e download in ZIP. Nessun upload.',
 
+  'tool.p2t.title': 'Estrai testo da PDF',
+  'tool.p2t.desc':
+    'Estrai il testo da uno o più PDF, anche protetti da password: righe e paragrafi ricostruiti, colonne, trattini a capo uniti, intestazioni e piè di pagina ripetuti tolti. Copia o scarica in .txt e .md.',
+  'seo.p2t.title': 'Estrai testo da PDF online: da PDF a testo (TXT), senza caricare il file | rrstudio Tools',
+  'seo.p2t.desc':
+    'Copia il testo di un PDF o trasformalo in TXT o Markdown: ricostruisce righe, paragrafi e colonne, unisce le parole spezzate, toglie intestazioni e piè di pagina. Avvisa se il PDF è una scansione (serve l\'OCR). Nel browser, senza upload.',
+
   'tool.exif.title': 'Metadati foto (EXIF): visualizza e rimuovi',
   'tool.exif.desc':
     'Scopri cosa rivelano le tue foto (posizione GPS, modello del telefono, data, numero di serie) e rimuovi i metadati senza ricomprimere l\'immagine.',
@@ -346,6 +398,12 @@ export const it = {
   'seo.diff.title': 'Confronto testi online (diff) | rrstudio Tools',
   'seo.diff.desc':
     'Confronta due testi o file e vedi le differenze: righe, parole e caratteri cambiati, vista affiancata o in linea, ignora spazi e maiuscole, esporta in .patch.',
+  'tool.jd.title': 'Confronto JSON (diff strutturale)',
+  'tool.jd.desc':
+    'Confronta due JSON (o YAML) per struttura: differenze con percorso, valore vecchio e nuovo, array per indice, come insiemi o per chiave, albero unito ed esportazione come JSON Patch.',
+  'seo.jd.title': 'Confronto JSON online (diff strutturale) | rrstudio Tools',
+  'seo.jd.desc':
+    'Confronta due JSON e vedi le differenze: aggiunte, rimozioni e modifiche con il percorso esatto, ordine delle chiavi ignorato, array per chiave id, esporta in JSON Patch. Nel browser, nessun upload.',
 
   'tool.md.title': 'Editor Markdown',
   'tool.md.desc':
@@ -876,6 +934,10 @@ export const it = {
   'tool.scad.desc': 'Calcola le scadenze di pagamento: 30, 60, 90 o 120 giorni, data fattura o fine mese (D.F.F.M.), rate multiple, spostamento al giorno lavorativo ed esportazione CSV e .ics.',
   'seo.scad.title': 'Calcolo scadenze fatture: D.F.F.M., rate e giorni lavorativi | rrstudio Tools',
   'seo.scad.desc': 'Calcola le scadenze di pagamento di una fattura: termini a 30, 60, 90, 120 giorni o personalizzati, data fattura o fine mese (D.F.F.M.), rate con importo diviso, spostamento al primo giorno lavorativo ed esportazione in CSV e calendario .ics.',
+  'tool.gcf.title': 'Generatore codice fiscale e partita IVA',
+  'tool.gcf.desc': 'Genera codici fiscali e partite IVA di prova, validi ma inventati: filtri per sesso, data e comune di nascita, omocodia, ufficio provinciale, seme ripetibile, copia singola, CSV e JSON.',
+  'seo.gcf.title': 'Generatore codice fiscale e partita IVA casuali di prova | rrstudio Tools',
+  'seo.gcf.desc': 'Genera codici fiscali casuali e partite IVA di prova formalmente validi ma finti: scegli quanti, sesso, data e comune di nascita, omocodia e ufficio provinciale. Seme per risultati ripetibili, esporta in CSV e JSON. Nel browser, solo per test.',
 };
 
 export type Dict = typeof it;

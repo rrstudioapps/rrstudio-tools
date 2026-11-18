@@ -5,6 +5,7 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { Icon } from '../../shared/icon';
 import { IoPanel } from '../../shared/io-panel';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
@@ -36,7 +37,7 @@ export const SAMPLE_SHEET = 'lun 8:30 17:30 60\nmar 8:30 18:00 60\nmer 8:30 17:3
 
 @Component({
   selector: 'app-time-calculator',
-  imports: [CopyButton, Icon, IoPanel, PrivacyNote, Segmented, ShareLink],
+  imports: [CopyButton, Icon, IoPanel, PrintButton, PrivacyNote, Segmented, ShareLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './time-calculator.page.html',
   styleUrl: './time-calculator.page.scss',
@@ -164,6 +165,21 @@ export class TimeCalculatorPage {
     else if (this.mode() === 'convert') this.convertIn.set('');
     else this.sumText.set('');
   }
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    const out = [p(t('time.mode'), t('time.mode.' + this.mode()))];
+    if (this.mode() === 'sum') out.push(p(t('time.bare'), t('time.bare.' + this.bare())));
+    if (this.mode() === 'sheet') out.push(p(t('time.threshold'), this.threshold()), p(t('time.scope'), t('time.scope.' + this.scope())));
+    if (this.mode() === 'convert') out.push(p(t('time.convert.input'), this.convertIn()));
+    else {
+      if (this.rate().trim()) out.push(p(t('time.rate'), this.rate()));
+      if (this.mode() === 'sheet' && this.premium().trim()) out.push(p(t('time.premium'), this.premium()));
+    }
+    return out;
+  });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
   protected readonly shareSchema = SHARE_SCHEMA;

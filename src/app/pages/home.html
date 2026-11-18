@@ -83,7 +83,12 @@
   <div class="item card">
     <a class="card-link link" [routerLink]="i18n.link(tool.path)">
       <span class="num">{{ numbers().get(tool.id)! < 10 ? '0' + numbers().get(tool.id) : numbers().get(tool.id) }}</span>
-      <h3>{{ i18n.t(tool.titleKey) }}</h3>
+      <h3>
+        {{ i18n.t(tool.titleKey) }}
+        @if (newIds.has(tool.id)) {
+          <span class="new" data-testid="new-badge">{{ i18n.t('home.new') }}</span>
+        }
+      </h3>
       <p>{{ i18n.t(tool.descriptionKey) }}</p>
       <span class="open">{{ i18n.t('home.open') }} <span class="arrow" aria-hidden="true">→</span></span>
     </a>
@@ -155,3 +160,8 @@
     }
   </p>
 }
+
+<p class="container italy-row suggest-row">
+  <a [href]="suggest()" target="_blank" rel="noopener noreferrer" data-testid="home-suggest">{{ i18n.t('footer.suggest') }}</a
+  ><span class="visually-hidden"> {{ i18n.t('feedback.newtab') }}</span>
+</p>

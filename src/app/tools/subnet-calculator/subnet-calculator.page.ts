@@ -3,6 +3,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
@@ -57,7 +58,7 @@ interface View {
 
 @Component({
   selector: 'app-subnet-calculator',
-  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrintButton, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './subnet-calculator.page.html',
   styleUrl: './subnet-calculator.page.scss',
@@ -235,6 +236,16 @@ export class SubnetCalculatorPage {
   protected loadSample(): void {
     this.input.set('192.168.10.37/26');
   }
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    const out = [p(t('subnet.input'), this.input())];
+    if (this.splitRows().length > 0) out.push(p(t('subnet.split.mode'), t('subnet.split.' + this.splitMode())), p(t('subnet.split.value.' + this.splitMode()), this.splitValue()));
+    if (this.check().text) out.push(p(t('subnet.check.label'), this.checkIp()));
+    return out;
+  });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
   protected readonly shareSchema = SHARE_SCHEMA;

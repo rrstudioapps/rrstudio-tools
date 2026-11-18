@@ -7,6 +7,7 @@ import { CopyButton } from '../../shared/copy-button';
 import { parseDecimal } from '../../shared/decimal';
 import { saveBytes } from '../../shared/download';
 import { Icon } from '../../shared/icon';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { SendTo } from '../../shared/send-to';
 import { Segmented, SegmentOption } from '../../shared/segmented';
@@ -20,7 +21,7 @@ const PRESETS = ['30', '60', '90', '120', '30-60-90'];
 
 @Component({
   selector: 'app-scadenze-fatture',
-  imports: [CopyButton, Icon, PrivacyNote, Segmented, SendTo, ShareLink],
+  imports: [CopyButton, Icon, PrintButton, PrivacyNote, Segmented, SendTo, ShareLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './scadenze-fatture.page.html',
   styleUrl: './scadenze-fatture.page.scss',
@@ -148,6 +149,19 @@ export class ScadenzeFatturePage {
     this.reference.set('Fattura 12/2026');
   }
   protected readonly hasData = computed(() => this.rows().length > 0);
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    const yn = (b: boolean) => t(b ? 'print.yes' : 'print.no');
+    const out = [p(t('scad.date'), this.date()), p(t('scad.terms'), this.terms()), p(t('scad.base'), t('scad.base.' + this.base()))];
+    if (this.base() === 'dffm') out.push(p(t('scad.extra'), this.extra()));
+    out.push(p(t('scad.shift'), yn(this.shift())), p(t('scad.satWork'), yn(this.satWork())));
+    if (this.total().trim()) out.push(p(t('scad.total'), this.total()));
+    if (this.reference().trim()) out.push(p(t('scad.reference'), this.reference()));
+    return out;
+  });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
   protected readonly shareSchema = SHARE_SCHEMA;

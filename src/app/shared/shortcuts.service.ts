@@ -5,6 +5,7 @@ import { I18nService } from '../core/i18n/i18n.service';
 import {
   SHORTCUT_ACTIONS,
   ShortcutAction,
+  altShortcutKeys,
   ariaKeyShortcuts,
   findTarget,
   isTypingTarget,
@@ -54,9 +55,9 @@ export class ShortcutsService {
   }
 
   /** Azioni disponibili ora nello strumento (almeno un pulsante marcato), con i tasti da mostrare. */
-  available(): { action: ShortcutAction; keys: string[] }[] {
+  available(): { action: ShortcutAction; keys: string[]; alt: string[] | null }[] {
     if (!this.root) return [];
-    return SHORTCUT_ACTIONS.filter((a) => markedButtons(this.root!, a).length > 0).map((action) => ({ action, keys: this.keys(action) }));
+    return SHORTCUT_ACTIONS.filter((a) => markedButtons(this.root!, a).length > 0).map((action) => ({ action, keys: this.keys(action), alt: altShortcutKeys(action, this.mac(), { shift: this.i18n.t('shortcuts.key.shift') }) }));
   }
 
   keys(action: ShortcutAction): string[] {
@@ -89,7 +90,7 @@ export class ShortcutsService {
     target.click();
     if (m.action === 'send') target.focus();
     // "Copia" si annuncia da sé (pulsante "Copiato"); le altre azioni hanno il loro messaggio
-    if (m.action !== 'copy') this.say(this.i18n.t('shortcuts.done.' + m.action));
+    if (m.action !== 'copy' && m.action !== 'next' && m.action !== 'prev') this.say(this.i18n.t('shortcuts.done.' + m.action));
   }
 
   /** Pulisci cancella dei dati: alla prima pressione chiede conferma (annunciata), alla seconda entro 4 s procede. */

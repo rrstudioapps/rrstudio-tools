@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, Injector, afterNextRender, computed, effect, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { saveBytes } from '../../shared/download';
@@ -12,6 +12,7 @@ import { Segmented, SegmentOption } from '../../shared/segmented';
 import { textStats } from '../../shared/text-stats';
 import { DiffClient, StaleDiff } from './diff-client';
 import { DEFAULT_OPTIONS, DiffModel, DiffOptions, Row, Seg, toUnifiedDiff } from './diff-core';
+import { lineCount, lineStartOffset, nextGroup, targetScrollTop } from './diff-nav';
 import { DIFF_DICTIONARIES } from './text-diff.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
@@ -22,6 +23,8 @@ type View = 'side' | 'inline';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const CONTEXT = 3;
 const PAGE_ROWS = 1500;
+/** Sotto questa larghezza (px) la vista predefinita è "in linea". */
+const NARROW_PX = 760;
 
 /** Riga mostrata nella vista in linea. */
 interface InlineLine {
@@ -44,6 +47,7 @@ type Shown<T> = { fold: false; line: T; first: boolean } | { fold: true; id: num
 export class TextDiffPage {
   protected readonly i18n = inject(I18nService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   private readonly client = new DiffClient();
 
   protected readonly textA = signal('');
@@ -56,6 +60,13 @@ export class TextDiffPage {
   protected readonly granularity = signal<'word' | 'char'>('word');
   protected readonly view = signal<View>('side');
   protected readonly collapse = signal(true);
+  protected readonly wrap = signal(true);
+  /** Solo su schermi stretti: apre le opzioni della barra (altrimenti resta una riga compatta). */
+  protected readonly optsOpen = signal(false);
+  /** Pannelli dei testi compressi (solo in memoria, non finisce nel link). */
+  protected readonly inputsHidden = signal(false);
+  /** Prima navigazione dopo un nuovo confronto: porta in vista il contenitore. */
+  private navigated = false;
   protected readonly fileError = signal(false);
   protected readonly model = signal<DiffModel | null>(null);
   protected readonly busy = signal(false);
@@ -83,6 +94,16 @@ export class TextDiffPage {
   protected readonly metaA = computed(() => this.counter(this.textA()));
   protected readonly metaB = computed(() => this.counter(this.textB()));
   protected readonly hasInput = computed(() => this.textA() !== '' || this.textB() !== '');
+  /** I pannelli si comprimono solo se c'è un risultato da guardare. */
+  protected readonly panelsHidden = computed(() => this.inputsHidden() && this.model() !== null);
+  protected readonly hiddenSummary = computed(() =>
+    this.i18n.t('diff.inputs.summary', {
+      a: this.nameA() || this.i18n.t('diff.a'),
+      ma: this.metaA(),
+      b: this.nameB() || this.i18n.t('diff.b'),
+      mb: this.metaB(),
+    }),
+  );
 
   protected readonly stats = computed(() => this.model()?.stats ?? null);
   protected readonly groups = computed(() => this.stats()?.groups ?? 0);
@@ -149,6 +170,7 @@ export class TextDiffPage {
     granularity: this.granularity,
     view: this.view,
     collapse: this.collapse,
+    wrap: this.wrap,
   };
   protected readonly shareState = (): ShareData => snapshotShare(this.shared);
 
@@ -158,6 +180,8 @@ export class TextDiffPage {
 
   constructor() {
     this.i18n.register(DIFF_DICTIONARIES);
+    // su schermi stretti la vista predefinita è "in linea" (un link con la vista esplicita la sovrascrive dopo)
+    if (typeof matchMedia === 'function' && matchMedia(`(max-width: ${NARROW_PX}px)`).matches) this.view.set('inline');
     // il testo ricevuto diventa il testo di sinistra
     const rx = inject(ToolHandoff).take('text-diff');
     if (rx?.text !== undefined) this.textA.set(rx.text);
@@ -183,6 +207,7 @@ export class TextDiffPage {
             this.current.set(-1);
             this.limit.set(PAGE_ROWS);
             this.expanded.set(new Set());
+            this.navigated = false;
           })
           .catch((e) => {
             if (!(e instanceof StaleDiff)) throw e;
@@ -295,6 +320,7 @@ export class TextDiffPage {
     this.nameA.set('');
     this.nameB.set('');
     this.fileError.set(false);
+    this.inputsHidden.set(false);
   }
 
   protected loadSample(): void {
@@ -309,15 +335,34 @@ export class TextDiffPage {
   protected go(delta: 1 | -1): void {
     const n = this.groups();
     if (n === 0) return;
-    const cur = this.current();
-    const next = cur < 0 ? (delta === 1 ? 0 : n - 1) : (cur + delta + n) % n;
+    const next = nextGroup(this.current(), delta, n);
     this.current.set(next);
     const idx = this.items().findIndex((it) => !it.fold && it.first && this.groupOf(it.line) === next);
     if (idx >= this.limit()) this.limit.set(idx + 200);
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const behavior: ScrollBehavior = smooth ? 'smooth' : 'auto';
+    const box = this.host.nativeElement.querySelector<HTMLElement>('.viewer');
+    // la prima volta si porta in vista il contenitore (l'unico movimento della pagina); poi si scorre solo dentro
+    if (!this.navigated) {
+      this.navigated = true;
+      box?.scrollIntoView({ block: 'start', behavior });
+    }
     // il DOM si aggiorna al ciclo successivo: si cerca la riga dopo il rendering
     setTimeout(() => {
       const el = this.host.nativeElement.querySelector<HTMLElement>(`[data-group="${next}"]`);
-      el?.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      if (!box || !el) return;
+      const c = box.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      const top = targetScrollTop({
+        scrollTop: box.scrollTop,
+        containerTop: c.top + box.clientTop,
+        elTop: r.top,
+        elHeight: r.height,
+        containerHeight: box.clientHeight,
+        stickyHeight: box.querySelector<HTMLElement>('.bar')?.offsetHeight ?? 0,
+        maxScroll: box.scrollHeight - box.clientHeight,
+      });
+      box.scrollTo({ top, behavior });
     }, 30);
   }
 
@@ -328,5 +373,31 @@ export class TextDiffPage {
   protected downloadPatch(): void {
     const p = this.patch();
     if (p) saveBytes(new Blob([p], { type: 'text/x-diff;charset=utf-8' }), 'diff.patch', 'text/x-diff');
+  }
+
+  // ---- testi compressi e salto alla riga ----
+
+  protected toggleInputs(): void {
+    this.inputsHidden.update((v) => !v);
+  }
+
+  /** Dal numero di riga alla stessa riga nella textarea: mostra i testi, focus, cursore a inizio riga, riga in vista. */
+  protected goToLine(side: 'a' | 'b', line: number | undefined): void {
+    if (line === undefined) return;
+    this.inputsHidden.set(false);
+    afterNextRender(
+      () => {
+        const ta = this.host.nativeElement.querySelector<HTMLTextAreaElement>(side === 'a' ? '#diff-a' : '#diff-b');
+        if (!ta) return;
+        const off = lineStartOffset(ta.value, line);
+        ta.focus();
+        ta.setSelectionRange(off, off);
+        // scorrimento interno: la riga a circa un terzo dall'alto (stima sul rapporto tra righe, le righe lunghe vanno a capo)
+        const total = Math.max(1, lineCount(ta.value));
+        const y = ((line - 1) / total) * ta.scrollHeight - ta.clientHeight / 3;
+        ta.scrollTop = Math.max(0, y);
+      },
+      { injector: this.injector },
+    );
   }
 }

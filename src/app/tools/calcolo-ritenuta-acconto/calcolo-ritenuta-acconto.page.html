@@ -5,19 +5,21 @@
     <p class="tool-lead">{{ i18n.t('rit.lead') }}</p>
   </header>
 
+  <app-print-button [title]="i18n.t('tool.rit.title')" [params]="printParams()" />
+
   <app-privacy-note />
 
   <app-share-link toolId="calcolo-ritenuta-acconto" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
 
   <p class="disclaimer" role="note">{{ i18n.t('rit.disclaimer') }}</p>
 
-  <div class="tool-toolbar">
+  <div class="tool-toolbar no-print">
     <app-segmented [label]="i18n.t('rit.kind')" [options]="kinds()" [value]="kind()" (valueChange)="setKind($event)" />
     <app-segmented [label]="i18n.t('rit.dir')" [options]="dirs()" [(value)]="dir" />
   </div>
 
   <div class="rit-layout">
-    <div class="controls">
+    <div class="controls no-print">
       <div class="field">
         <label for="rit-amount">{{ i18n.t('rit.amount.' + dir()) }}</label>
         <input

@@ -5,11 +5,13 @@
     <p class="tool-lead">{{ i18n.t('scad.lead') }}</p>
   </header>
 
+  <app-print-button [title]="i18n.t('tool.scad.title')" [params]="printParams()" />
+
   <app-privacy-note />
 
   <app-share-link toolId="scadenze-fatture" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
 
-  <section class="card" [attr.aria-label]="i18n.t('scad.params')">
+  <section class="card no-print" [attr.aria-label]="i18n.t('scad.params')">
     <h2 class="eyebrow">{{ i18n.t('scad.params') }}</h2>
     <div class="grid">
       <div class="field">

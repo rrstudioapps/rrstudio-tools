@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { describe, expect, it } from 'vitest';
-import { KeyLike, ariaKeyShortcuts, findTarget, isTypingTarget, matchShortcut, shortcutKeys } from './shortcuts';
+import { KeyLike, altShortcutKeys, ariaKeyShortcuts, findTarget, isTypingTarget, matchShortcut, shortcutKeys } from './shortcuts';
 
 function key(over: Partial<KeyLike>): KeyLike {
   return { key: '', code: '', ctrlKey: false, metaKey: false, altKey: false, shiftKey: false, ...over };
@@ -20,8 +20,8 @@ describe('matchShortcut', () => {
     expect(matchShortcut(key({ code: 'Enter', key: 'Enter', ctrlKey: true, repeat: true }), true)).toBeNull();
   });
 
-  it('Alt+Maiusc+C/D/S/X/O mappano sulle azioni', () => {
-    const map = { KeyC: 'copy', KeyD: 'download', KeyS: 'swap', KeyX: 'clear', KeyO: 'send' };
+  it('Alt+Maiusc+C/D/S/X/O/P mappano sulle azioni', () => {
+    const map = { KeyC: 'copy', KeyD: 'download', KeyS: 'swap', KeyX: 'clear', KeyO: 'send', KeyP: 'print' };
     for (const [code, action] of Object.entries(map)) {
       expect(matchShortcut(key({ code, altKey: true, shiftKey: true }), false)).toEqual({ kind: 'action', action });
       // anche dentro un campo: sono combinazioni con modificatori
@@ -58,6 +58,55 @@ describe('matchShortcut', () => {
 
   it('Esc non è mai una scorciatoia di azione', () => {
     expect(matchShortcut(key({ key: 'Escape', code: 'Escape' }), false)).toBeNull();
+  });
+});
+
+describe('azioni successivo/precedente e specifiche', () => {
+  it('F7 e Maiusc+F7: successivo e precedente, anche nei campi e a tasto tenuto premuto', () => {
+    expect(matchShortcut(key({ code: 'F7', key: 'F7' }), false)).toEqual({ kind: 'action', action: 'next' });
+    expect(matchShortcut(key({ code: 'F7', key: 'F7' }), true)).toEqual({ kind: 'action', action: 'next' });
+    expect(matchShortcut(key({ code: 'F7', key: 'F7', shiftKey: true }), true)).toEqual({ kind: 'action', action: 'prev' });
+    expect(matchShortcut(key({ code: 'F7', key: 'F7', repeat: true }), false)).toEqual({ kind: 'action', action: 'next' });
+    expect(matchShortcut(key({ code: 'F7', ctrlKey: true }), false)).toBeNull();
+    expect(matchShortcut(key({ code: 'F7', altKey: true }), false)).toBeNull();
+  });
+
+  it('Alt+Maiusc+freccia giù/su: solo fuori dai campi', () => {
+    expect(matchShortcut(key({ code: 'ArrowDown', altKey: true, shiftKey: true }), false)).toEqual({ kind: 'action', action: 'next' });
+    expect(matchShortcut(key({ code: 'ArrowUp', altKey: true, shiftKey: true }), false)).toEqual({ kind: 'action', action: 'prev' });
+    expect(matchShortcut(key({ code: 'ArrowDown', altKey: true, shiftKey: true }), true)).toBeNull();
+    expect(matchShortcut(key({ code: 'ArrowDown', altKey: true }), false)).toBeNull();
+  });
+
+  it('Alt+Maiusc+V/U/W/H: vista, comprimi, spazi, testi', () => {
+    const map = { KeyV: 'toggle-view', KeyU: 'toggle-collapse', KeyW: 'toggle-ws', KeyH: 'toggle-inputs' };
+    for (const [code, action] of Object.entries(map)) {
+      expect(matchShortcut(key({ code, altKey: true, shiftKey: true }), true)).toEqual({ kind: 'action', action });
+      expect(matchShortcut(key({ code, altKey: true, shiftKey: true, repeat: true }), true)).toBeNull();
+    }
+  });
+
+  it('tasti mostrati e aria-keyshortcuts', () => {
+    const words = { enter: 'Invio', shift: 'Maiusc' };
+    expect(shortcutKeys('next', false, words)).toEqual(['F7']);
+    expect(shortcutKeys('prev', false, words)).toEqual(['Maiusc', 'F7']);
+    expect(shortcutKeys('prev', true, words)).toEqual(['⇧', 'F7']);
+    expect(shortcutKeys('toggle-inputs', false, words)).toEqual(['Alt', 'Maiusc', 'H']);
+    expect(altShortcutKeys('next', false, words)).toEqual(['Alt', 'Maiusc', '↓']);
+    expect(altShortcutKeys('prev', true, words)).toEqual(['⌥', '⇧', '↑']);
+    expect(altShortcutKeys('copy', false, words)).toBeNull();
+    expect(ariaKeyShortcuts('next')).toBe('F7 Alt+Shift+ArrowDown');
+    expect(ariaKeyShortcuts('prev')).toBe('Shift+F7 Alt+Shift+ArrowUp');
+    expect(ariaKeyShortcuts('toggle-view')).toBe('Alt+Shift+V');
+  });
+
+  it('findTarget: un pulsante marcato "next" disabilitato è presente ma senza bersaglio', () => {
+    const root = document.createElement('div');
+    root.innerHTML = '<button data-shortcut="next" disabled></button>';
+    document.body.appendChild(root);
+    expect(findTarget(root, 'next')).toEqual({ present: true, target: null });
+    expect(findTarget(root, 'prev').present).toBe(false);
+    root.remove();
   });
 });
 

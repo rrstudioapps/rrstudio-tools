@@ -569,6 +569,36 @@ try {
       await page.waitForSelector('[data-testid=scad-table]');
     },
   });
+  await shot('generatore-codice-fiscale.png', {
+    width: 1280,
+    dark: false,
+    path: '/generatore-codice-fiscale/',
+    setup: async (page) => {
+      await page.waitForSelector('[data-testid=gcf-table] tbody tr');
+      await page.fill('#gcf-seed', 'demo');
+      await page.fill('#gcf-count', '8');
+      await page.locator('#gcf-count').dispatchEvent('change');
+      await page.getByRole('button', { name: 'Femmina' }).click();
+      await page.fill('#gcf-yfrom', '1985');
+      await page.locator('#gcf-yfrom').dispatchEvent('change');
+      await page.fill('#gcf-yto', '1995');
+      await page.locator('#gcf-yto').dispatchEvent('change');
+      await page.getByRole('button', { name: 'Comune italiano' }).click();
+      await page.getByRole('combobox', { name: 'Comune italiano' }).focus();
+      await page.keyboard.type('Milano', { delay: 80 });
+      await page.waitForTimeout(300);
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => document.querySelectorAll('[data-testid=gcf-table] tbody tr').length === 8);
+      // ogni riga è coerente con i filtri e il seme rende i risultati ripetibili
+      const rows = await page.locator('[data-testid=gcf-table] tbody tr').allInnerTexts();
+      if (!rows.every((r) => /\tF\t/.test(r) && r.includes('Milano (MI)'))) throw new Error('le righe non rispettano i filtri: ' + rows[0]);
+      await page.getByRole('button', { name: 'Genera di nuovo' }).click();
+      await page.waitForTimeout(200);
+      const again = await page.locator('[data-testid=gcf-table] tbody tr').allInnerTexts();
+      if (JSON.stringify(rows) !== JSON.stringify(again)) throw new Error('il seme non rende riproducibili i codici');
+      await page.waitForSelector('[data-testid=gcf-warning]');
+    },
+  });
   await shot('percentage-calculator.png', {
     width: 1280,
     dark: false,
@@ -637,6 +667,16 @@ try {
     setup: async (page) => {
       await page.getByRole('button', { name: 'Carica un esempio' }).click();
       await page.waitForSelector('table.diff');
+    },
+  });
+  await shot('json-diff.png', {
+    width: 1280,
+    dark: false,
+    path: '/json-diff/',
+    setup: async (page) => {
+      await page.getByTestId('jd-sample').click();
+      await page.getByTestId('jd-count').waitFor();
+      await page.waitForTimeout(300);
     },
   });
   // ---- Markdown, contatore, regex, giorni lavorativi (dati inventati) ----
@@ -1320,6 +1360,79 @@ try {
       await page.waitForTimeout(500);
     },
   });
+  // PDF di prova per "PDF in testo", creati al volo con pdf-lib: tre pagine con intestazione e piè di pagina ripetuti,
+  // una parola spezzata col trattino a fine riga e due paragrafi; poi un PDF di sole immagini (nessun livello di testo)
+  const textPdf = async () => {
+    const doc = await PDFDocument.create();
+    const font = await doc.embedFont(StandardFonts.Helvetica);
+    const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+    const bodies = [
+      [
+        ['Contratto di prova', 20, 700, bold],
+        ["Questo documento serve a verificare che l'estrazione ricostruisca", 12, 650],
+        ['correttamente le righe e le parole spez-', 12, 634],
+        ["zate a fine riga senza perdere l'ordine.", 12, 618],
+        ['Secondo paragrafo con una frase conclusiva.', 12, 570],
+      ],
+      [['Seconda pagina: testo diverso da quello della prima.', 12, 650]],
+      [['Terza pagina: qui finisce il documento di prova.', 12, 650]],
+    ];
+    bodies.forEach((lines, i) => {
+      const pg = doc.addPage([595, 842]);
+      pg.drawText('Contratto di esempio', { x: 40, y: 800, size: 9, font });
+      for (const [t, size, y, f] of lines) pg.drawText(t, { x: 40, y, size, font: f ?? font });
+      pg.drawText(`Pagina ${i + 1} di 3`, { x: 40, y: 30, size: 9, font });
+    });
+    return Buffer.from(await doc.save());
+  };
+  const imageOnlyPdf = async () => {
+    const doc = await PDFDocument.create();
+    const png = await doc.embedPng(Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64'));
+    for (let i = 0; i < 2; i++) doc.addPage([595, 842]).drawImage(png, { x: 40, y: 40, width: 515, height: 760 });
+    return Buffer.from(await doc.save());
+  };
+  await shot('pdf-to-text.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-to-text/',
+    setup: async (page) => {
+      // 1. PDF di sole immagini: messaggio "serve OCR" e conteggio delle pagine senza testo
+      await page.setInputFiles('input[type=file]', [{ name: 'scansione.pdf', mimeType: 'application/pdf', buffer: await imageOnlyPdf() }]);
+      await page.locator('[data-testid=p2t-ocr]').waitFor({ timeout: 30000 });
+      need(/OCR/.test(await page.locator('[data-testid=p2t-ocr]').innerText()), 'il messaggio per i PDF senza testo non cita l\'OCR');
+      need(/2 senza testo/.test(await page.locator('[data-testid=p2t-without]').innerText()), 'conteggio delle pagine senza testo errato');
+      need((await page.locator('[data-testid=p2t-ocr] a[href$="pdf-to-images"]').count()) === 1, 'manca il link a pdf-to-images');
+      await page.locator('[data-shortcut=clear]').click();
+      // 2. PDF con testo: frasi nell'ordine giusto, trattino unito, intestazione e piè di pagina tolti
+      await page.setInputFiles('input[type=file]', [{ name: 'contratto.pdf', mimeType: 'application/pdf', buffer: await textPdf() }]);
+      await page.locator('[data-testid=p2t-with]', { hasText: '3 con testo' }).waitFor({ timeout: 30000 });
+      const shown = await page.locator('[data-testid=p2t-pages-text]').innerText();
+      const flat = shown.replace(/\s+/g, ' ');
+      const phrases = ['Contratto di prova', "Questo documento serve a verificare che l'estrazione ricostruisca", 'Secondo paragrafo con una frase conclusiva.', 'Seconda pagina', 'Terza pagina'];
+      let from = 0;
+      for (const ph of phrases) {
+        const at = flat.indexOf(ph, from);
+        need(at >= 0, `frase mancante o fuori ordine nel testo estratto: «${ph}»`);
+        from = at + ph.length;
+      }
+      need(flat.includes('le parole spezzate a fine riga'), 'il trattino a fine riga non è stato unito: ' + flat.slice(0, 300));
+      need(!/spez-/.test(flat), 'resta una parola spezzata col trattino');
+      need(!/Contratto di esempio/.test(flat) && !/Pagina \d di 3/.test(flat), 'intestazione o piè di pagina ripetuti non tolti');
+      // con l'opzione dei trattini spenta il trattino resta
+      await page.locator('[data-testid=p2t-dehyphenate]').uncheck();
+      await page.waitForFunction(() => /spez-/.test(document.querySelector('[data-testid=p2t-pages-text]').textContent));
+      await page.locator('[data-testid=p2t-dehyphenate]').check();
+      await page.waitForFunction(() => !/spez-/.test(document.querySelector('[data-testid=p2t-pages-text]').textContent));
+      // scarico del .txt con i separatori di pagina
+      const txt = await downloadBuffer(page, () => page.locator('[data-testid=p2t-txt]').click());
+      need(txt.name === 'contratto.txt', 'nome del .txt inatteso: ' + txt.name);
+      const body = txt.buffer.toString('utf8');
+      need(body.startsWith('--- Pagina 1 ---') && body.includes('--- Pagina 3 ---') && body.includes('spezzate a fine riga'), 'contenuto del .txt inatteso');
+      const md = await downloadBuffer(page, () => page.locator('[data-testid=p2t-md]').click());
+      need(md.name === 'contratto.md' && md.buffer.toString('utf8').startsWith('# contratto.pdf\n\n## Pagina 1'), 'contenuto del .md inatteso');
+      await page.waitForTimeout(300);
+    },
+  });
   await shot('image-color-picker.png', {
     width: 1280,
     dark: false,
@@ -1553,6 +1666,49 @@ try {
     },
   });
 
+  // Novità: la pagina si apre, il filtro "Nuovi strumenti" riduce le voci e il link a uno strumento funziona;
+  // il badge "Nuovo" della home è già nell'HTML prerenderizzato e coincide con quello dopo l'idratazione.
+  await shot('changelog.png', {
+    width: 1280,
+    dark: false,
+    path: '/novita/',
+    setup: async (page) => {
+      await page.waitForSelector('[data-testid=changelog-version]');
+      must((await page.title()).includes('Novità'), 'titolo della pagina Novità');
+      const feed = await page.locator('head link[rel=alternate][type="application/atom+xml"]').getAttribute('href');
+      must(feed === 'https://tools.rr-dev.eu/changelog.xml', 'link al feed nella head: ' + feed);
+      const all = await page.locator('[data-testid=changelog-entry]').count();
+      await page.getByRole('button', { name: 'Nuovi strumenti', exact: true }).click();
+      await page.waitForFunction((n) => document.querySelectorAll('[data-testid=changelog-entry]').length < n, all, { timeout: 3000 }).catch(() => {});
+      const onlyNew = await page.locator('[data-testid=changelog-entry]').count();
+      must(onlyNew > 0 && onlyNew < all, `filtro Nuovi strumenti: ${onlyNew} voci su ${all}`);
+      must((await page.locator('.badge:not([data-kind=new-tool])').count()) === 0, 'il filtro lascia voci di altro tipo');
+      await page.getByRole('button', { name: 'Tutto', exact: true }).click();
+      await page.waitForFunction((n) => document.querySelectorAll('[data-testid=changelog-entry]').length === n, all, { timeout: 3000 }).catch(() => {
+        throw new Error('il filtro Tutto non ripristina le voci');
+      });
+      // link a uno strumento
+      await page.locator('[data-testid=changelog-tool]', { hasText: 'Confronto testi' }).first().click();
+      await page.waitForURL('**/text-diff');
+      // inglese: stessa pagina sotto /en/changelog, con feed inglese
+      await page.goto(base + '/en/changelog/');
+      await page.waitForSelector('[data-testid=changelog-version]');
+      must((await page.locator('head link[rel=alternate][type="application/atom+xml"]').getAttribute('href')).endsWith('/changelog.en.xml'), 'feed inglese');
+      must((await page.locator('time').first().textContent()).includes('November'), 'data in inglese');
+      // la home: badge Nuovo identici nell'HTML del server e nel DOM
+      const raw = await (await page.request.get(base + '/')).text();
+      const served = (raw.match(/data-testid="new-badge"/g) ?? []).length;
+      await page.goto(base + '/');
+      await page.waitForSelector('app-home .card');
+      await page.waitForTimeout(500);
+      const live = await page.locator('[data-testid=new-badge]').count();
+      must(served <= 12 && served === live, `badge Nuovo (al massimo 12): ${served} nell'HTML, ${live} nel DOM`);
+      must((await page.locator('[data-testid=footer-changelog]').count()) === 1, 'link Novità nel footer');
+      await page.goto(base + '/novita/');
+      await page.waitForSelector('[data-testid=changelog-version]');
+    },
+  });
+
   // Link di condivisione ("Copia link"): lo stato sta nell'hash. Solo in --check (niente screenshot):
   // si imposta uno stato, si preme il pulsante, si legge l'indirizzo da location (non dagli appunti)
   // e si apre in una pagina nuova, dove stato e risultato devono essere ripristinati.
@@ -1741,6 +1897,7 @@ try {
   // "Invia a…": il risultato di uno strumento passa a un altro senza essere salvato. Solo in --check.
   const handoffCase = async (name, path, run) => {
     if (!CHECK) return;
+    if (process.env.CASE && !name.includes(process.env.CASE)) return; // CASE=json-diff: solo i casi con quel nome
     const prefix = `[handoff ${name}] `;
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'it-IT' });
     const page = await ctx.newPage();
@@ -1787,6 +1944,34 @@ try {
     await page.getByText('Ricevuto da Ritaglia e ruota immagini').waitFor();
     await page.locator('li.row[data-status=done]').first().waitFor();
   });
+  await handoffCase('generatore-codice-fiscale → codice-fiscale', '/generatore-codice-fiscale/', async (page) => {
+    await page.fill('#gcf-count', '5');
+    await page.locator('#gcf-count').dispatchEvent('change');
+    await page.waitForFunction(() => document.querySelectorAll('[data-testid=gcf-table] tbody tr').length === 5);
+    await page.getByRole('button', { name: 'Copia tutti' }).click();
+    await page.getByText('Copiato', { exact: true }).first().waitFor();
+    const first = (await page.locator('[data-testid=gcf-code]').first().innerText()).trim();
+    await sendTo(page, 'Calcolo e verifica codice fiscale');
+    await page.waitForURL('**/codice-fiscale');
+    await page.getByText('Ricevuto da Generatore codice fiscale e partita IVA').waitFor();
+    await page.locator('[data-testid=cf-verdict]').waitFor();
+    must(/valido/i.test(await page.locator('[data-testid=cf-verdict]').innerText()), 'il validatore non dice "valido" per ' + first);
+    must((await page.locator('main').innerText()).includes(first), 'il codice inviato non è nel validatore');
+  });
+  await handoffCase('generatore-codice-fiscale partita IVA → iban-partita-iva', '/generatore-codice-fiscale/', async (page) => {
+    await page.getByRole('button', { name: 'Partita IVA' }).click();
+    await page.locator('#gcf-office').selectOption('015');
+    await page.locator('#gcf-prefix').check();
+    await page.fill('#gcf-count', '5');
+    await page.locator('#gcf-count').dispatchEvent('change');
+    await page.waitForFunction(() => document.querySelectorAll('[data-testid=gcf-table] tbody tr').length === 5);
+    must(/^IT\d{11}$/.test((await page.locator('[data-testid=gcf-code]').first().innerText()).trim()), 'partita IVA senza prefisso IT');
+    await sendTo(page, 'Verifica IBAN e partita IVA');
+    await page.waitForURL('**/iban-partita-iva');
+    await page.locator('.badge.ok').first().waitFor();
+    must((await page.locator('.badge.ok').count()) === 5, 'il validatore non ha accettato tutte e cinque le partite IVA');
+    must((await page.locator('.badge:not(.ok)').count()) === 0, 'il validatore ha rifiutato una partita IVA generata');
+  });
   // Scorciatoie da tastiera comuni agli strumenti (pulsanti marcati con data-shortcut). Solo in --check.
   await handoffCase('scorciatoie json-formatter', '/json-formatter/', async (page) => {
     await page.fill('#json-in', '{"nome":"Zoe","b":[1,2]}');
@@ -1813,6 +1998,122 @@ try {
     must((await page.inputValue('#json-in')).includes('Zoe'), 'Pulisci ha cancellato i dati alla prima pressione');
     await page.keyboard.press('Alt+Shift+KeyX');
     await page.waitForFunction(() => document.querySelector('#json-in').value === '');
+  });
+  // text-diff: scorciatoie F7 e Alt+Maiusc+H, scorrimento dentro il contenitore, clic sul numero di riga. Solo in --check.
+  await handoffCase('scorciatoie text-diff', '/text-diff/', async (page) => {
+    const lines = Array.from({ length: 240 }, (_, i) => `riga numero ${i + 1} del file di prova`);
+    await page.fill('#diff-a', lines.join('\n'));
+    await page.fill('#diff-b', lines.map((l, i) => (i % 30 === 15 ? l + ' modificata' : l)).join('\n'));
+    await page.waitForSelector('[data-testid=diff-next]');
+    await page.keyboard.press('F7');
+    await page.getByTestId('diff-position').getByText(/1 di \d+/).waitFor();
+    await page.waitForTimeout(1000); // fine dello scorrimento morbido iniziale che porta in vista il contenitore
+    const y1 = await page.evaluate(() => window.scrollY);
+    await page.keyboard.press('F7');
+    await page.getByTestId('diff-position').getByText(/2 di \d+/).waitFor();
+    await page.waitForTimeout(800);
+    const y2 = await page.evaluate(() => window.scrollY);
+    must(y1 === y2, `F7 ha mosso la pagina (scrollY ${y1} -> ${y2})`);
+    const inner = await page.evaluate(() => document.querySelector('.viewer').scrollTop);
+    must(inner > 0, 'F7 non ha scorso dentro il contenitore dei risultati');
+    const h = await page.evaluate(() => document.querySelector('.viewer').getBoundingClientRect().height);
+    must(h <= 900, 'il contenitore dei risultati supera l\'altezza della finestra');
+    await page.keyboard.press('Shift+F7');
+    await page.getByTestId('diff-position').getByText(/1 di \d+/).waitFor();
+    // la barra sticky non è troppo alta (desktop: al massimo circa due righe)
+    const barH = await page.evaluate(() => document.querySelector('.viewer .bar').offsetHeight);
+    must(barH <= 140, `la barra dei risultati è alta ${barH}px`);
+    // Alt+Maiusc+H nasconde i testi e li mostra di nuovo
+    await page.locator('h1').click();
+    await page.keyboard.press('Alt+Shift+KeyH');
+    await page.getByTestId('diff-hidden-summary').waitFor();
+    must((await page.locator('#diff-a').count()) === 0, 'i testi non sono stati nascosti');
+    must((await page.getByRole('button', { name: 'Mostra i testi' }).getAttribute('aria-expanded')) === 'false', 'aria-expanded non aggiornato');
+    // clic su un numero di riga: mostra i testi e il focus va alla textarea giusta, con il cursore a inizio riga
+    await page.getByRole('button', { name: 'Vai alla riga 16 del testo B' }).first().click();
+    await page.waitForSelector('#diff-b');
+    await page.waitForFunction(() => document.activeElement && document.activeElement.id === 'diff-b');
+    const caret = await page.evaluate(() => {
+      const t = document.querySelector('#diff-b');
+      return t.value.slice(0, t.selectionStart).split('\n').length;
+    });
+    must(caret === 16, `cursore alla riga ${caret} invece della 16`);
+    // "A capo" disattivato: niente a capo nelle righe
+    await page.getByLabel('A capo').uncheck();
+    await page.locator('.viewer.nowrap').waitFor({ timeout: 3000 }).catch(() => {});
+    must((await page.locator('.viewer.nowrap').count()) === 1, 'l\'opzione "A capo" non agisce');
+  });
+  // json-diff: esempio e conteggio, F7, array per chiave id (spostamento non modificato), albero unito, export JSON Patch. Solo in --check.
+  if (!only || only.includes('json-diff.png')) {
+    await handoffCase('json-diff', '/json-diff/', async (page) => {
+      await page.getByTestId('jd-sample').click();
+      await page.getByTestId('jd-count').waitFor();
+      const count = async () => Number((await txt(page, '[data-testid=jd-count]')).match(/\d+/)[0]);
+      const n = await count();
+      must(n > 8, `per indice l'esempio dovrebbe avere più di 8 differenze (trovate ${n})`);
+      await page.keyboard.press('F7');
+      await page.getByTestId('jd-position').getByText(new RegExp(`1 di ${n}$`)).waitFor();
+      await page.keyboard.press('F7');
+      await page.getByTestId('jd-position').getByText(new RegExp(`2 di ${n}$`)).waitFor();
+      must((await page.evaluate(() => document.querySelector('.viewer').getBoundingClientRect().height)) <= 900, 'il contenitore dei risultati supera la finestra');
+      // array per chiave: lo spostamento non è una modifica
+      await page.getByRole('button', { name: 'Per chiave', exact: true }).click();
+      await page.fill('#jd-key', 'id');
+      await page.getByTestId('jd-count').getByText('8 differenze').waitFor();
+      const list = await txt(page, '[data-testid=jd-list]');
+      must(list.includes('users[id=2].role') && list.includes('users[id=4]'), 'mancano le differenze degli utenti 2 e 4');
+      must(!list.includes('users[id=1]') && !list.includes('users[id=3]'), 'lo spostamento degli utenti 1 e 3 è stato segnalato come modifica');
+      // albero unito: i rami invariati sono compressi
+      await page.getByRole('button', { name: 'Albero unito', exact: true }).click();
+      await page.locator('[data-testid=jd-tree] .trow.fold').first().waitFor();
+      await page.keyboard.press('Alt+Shift+KeyU');
+      await page.waitForFunction(() => document.querySelectorAll('[data-testid=jd-tree] .trow.fold').length === 0);
+      // JSON Patch (RFC 6902) scaricata
+      const patch = JSON.parse((await downloadBuffer(page, () => page.getByTestId('jd-download').click())).buffer.toString('utf8'));
+      must(Array.isArray(patch) && patch.every((o) => ['add', 'remove', 'replace'].includes(o.op)), 'la JSON Patch non è valida');
+      must(patch.some((o) => o.op === 'remove' && o.path === '/legacy') && patch.some((o) => o.op === 'add' && o.path === '/meta'), 'la JSON Patch non contiene le operazioni attese');
+      // errore di lettura con riga e colonna
+      await page.fill('#jd-a', '{\n  "a": 1,\n  "b": ,\n}');
+      await page.locator('[data-testid=jd-error]').getByText(/riga 3, colonna/).waitFor();
+    });
+  }
+  // Riquadro Feedback: i link a GitHub non portano mai l'hash (#s=) con lo stato dello strumento. Solo in --check.
+  await handoffCase('feedback json-formatter senza hash', '/json-formatter/#s=SEGRETO123', async (page) => {
+    const link = page.getByTestId('tool-feedback').getByRole('link', { name: /Segnala un problema/ });
+    await link.waitFor();
+    const href = (await link.getAttribute('href')) ?? '';
+    must(href.includes('template=bug.yml'), 'href senza template=bug.yml');
+    must(href.includes('tool=json-formatter'), 'href senza tool=json-formatter');
+    must(!href.includes('#s=') && !href.includes('SEGRETO123'), "l'href contiene lo stato condiviso");
+    must((await link.getAttribute('rel')) === 'noopener noreferrer' && (await link.getAttribute('target')) === '_blank', 'target/rel errati');
+  });
+  // Stampa / salva PDF: in modalità "print" restano solo intestazione di stampa, riepilogo e risultati; l'indirizzo stampato non ha hash. Solo in --check.
+  await handoffCase('stampa compound-interest', '/compound-interest/#s=SEGRETO123', async (page) => {
+    await page.fill('#ci-principal', '10.000');
+    await page.fill('#ci-rate', '5');
+    await page.fill('#ci-years', '30');
+    await page.waitForSelector('[data-testid=ci-table] tbody tr');
+    // il pulsante e la scorciatoia Alt+Maiusc+P chiamano window.print() (qui sostituita per non aprire il dialogo)
+    await page.evaluate(() => { window.__printCalls = 0; window.print = () => { window.__printCalls++; }; });
+    await page.getByRole('button', { name: /Stampa o salva PDF/ }).click();
+    await page.keyboard.press('Alt+Shift+KeyP');
+    must((await page.evaluate(() => window.__printCalls)) === 2, 'il pulsante o Alt+Maiusc+P non chiamano window.print()');
+    await page.emulateMedia({ media: 'print' });
+    for (const sel of ['app-header', 'app-footer', '[data-testid=tool-feedback]', 'app-privacy-note', 'app-print-button button', '.controls']) {
+      const loc = page.locator(sel).first();
+      must((await loc.count()) === 0 || !(await loc.isVisible()), 'in stampa è ancora visibile: ' + sel);
+    }
+    const head = page.getByTestId('print-head');
+    must(await head.isVisible(), "l'intestazione di stampa non è visibile");
+    must(await page.locator('[data-testid=ci-table]').isVisible(), 'la tabella non è visibile in stampa');
+    must(await page.locator('[data-testid=ci-chart]').isVisible(), 'il grafico non è visibile in stampa');
+    const addr = await page.getByTestId('print-url').innerText();
+    must(addr === 'https://tools.rr-dev.eu/compound-interest', "indirizzo stampato inatteso: " + addr);
+    must(!/[#?]/.test(addr) && !(await head.innerText()).includes('SEGRETO123'), "l'intestazione di stampa contiene hash o dati");
+    const txt = await head.innerText();
+    must(txt.includes('Calcolo interesse composto') && txt.includes('Calcolo indicativo, generato nel browser da tools.rr-dev.eu'), 'titolo o nota mancanti in stampa: ' + txt);
+    must(txt.includes('10.000'), 'il riepilogo dei parametri non contiene il capitale');
+    must(/\d{4}/.test(await page.getByTestId('print-date').innerText()), 'data di stampa mancante');
   });
   // Incolla intelligente e trascinamento di file sulla home: riconoscimento, proposta degli strumenti, passaggio in memoria. Solo in --check.
   await handoffCase('incolla JSON in home → json-formatter', '/', async (page) => {

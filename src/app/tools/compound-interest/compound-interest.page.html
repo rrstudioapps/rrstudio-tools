@@ -5,6 +5,8 @@
     <p class="tool-lead">{{ i18n.t('ci.lead') }}</p>
   </header>
 
+  <app-print-button [title]="i18n.t('tool.ci.title')" [params]="printParams()" />
+
   <app-privacy-note />
 
   <app-share-link toolId="compound-interest" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
@@ -12,7 +14,7 @@
   <p class="disclaimer" role="note">{{ i18n.t('ci.disclaimer') }}</p>
 
   <div class="ci-layout">
-    <div class="controls">
+    <div class="controls no-print">
       <div class="row2">
         <div class="field">
           <label for="ci-principal">{{ i18n.t('ci.principal') }}</label>
@@ -130,17 +132,17 @@
     <section class="chart" [attr.aria-label]="i18n.t('ci.chart')">
       <h2 class="eyebrow">{{ i18n.t('ci.chart') }}</h2>
       <svg [attr.viewBox]="'0 0 ' + vbW + ' ' + vbH" role="img" [attr.aria-label]="i18n.t('ci.chart.alt')" data-testid="ci-chart">
-        <g [attr.transform]="'translate(' + plotX + ',' + plotY + ')'">
+        <g [attr.transform]="'translate(' + plotX() + ',' + plotY + ')'">
           @for (b of bars(); track b.year) {
             <rect class="bar-dep" [attr.x]="b.x" [attr.y]="b.depositedY" [attr.width]="b.width" [attr.height]="b.depositedH" />
             <rect class="bar-int" [attr.x]="b.x" [attr.y]="b.interestY" [attr.width]="b.width" [attr.height]="b.interestH" />
           }
-          <line class="axis" x1="0" [attr.y1]="plotH" [attr.x2]="plotW" [attr.y2]="plotH" />
+          <line class="axis" x1="0" [attr.y1]="plotH" [attr.x2]="plotW()" [attr.y2]="plotH" />
         </g>
-        <text class="tick" [attr.x]="plotX - 6" [attr.y]="plotY + 10" text-anchor="end">{{ yMax() }}</text>
-        <text class="tick" [attr.x]="plotX - 6" [attr.y]="plotY + plotH" text-anchor="end">0</text>
-        <text class="tick" [attr.x]="plotX" [attr.y]="plotY + plotH + 18" text-anchor="start">1</text>
-        <text class="tick" [attr.x]="plotX + plotW" [attr.y]="plotY + plotH + 18" text-anchor="end">{{ r.rows.length }}</text>
+        <text class="tick" [attr.x]="plotX() - 6" [attr.y]="plotY + 10" text-anchor="end">{{ yMax() }}</text>
+        <text class="tick" [attr.x]="plotX() - 6" [attr.y]="plotY + plotH" text-anchor="end">0</text>
+        <text class="tick" [attr.x]="plotX()" [attr.y]="plotY + plotH + 18" text-anchor="start">1</text>
+        <text class="tick" [attr.x]="plotX() + plotW()" [attr.y]="plotY + plotH + 18" text-anchor="end">{{ r.rows.length }}</text>
       </svg>
       <p class="legend">
         <span class="sw dep" aria-hidden="true"></span>{{ i18n.t('ci.legend.deposited') }}

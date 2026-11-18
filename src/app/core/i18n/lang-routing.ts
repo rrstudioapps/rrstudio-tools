@@ -31,6 +31,14 @@ export const SHARE_SLUG: Record<Lang, string> = { it: 'condividi', en: 'share' }
 
 export const isShareSlug = (slug: string): boolean => slug === SHARE_SLUG.it || slug === SHARE_SLUG.en;
 
+/**
+ * Pagina "Novità" (/novita, /en/changelog): indicizzata, in sitemap con hreflang tra i due slug diversi,
+ * senza immagine social dedicata (usa quella generica).
+ */
+export const CHANGELOG_SLUG: Record<Lang, string> = { it: 'novita', en: 'changelog' };
+
+export const isChangelogSlug = (slug: string): boolean => slug === CHANGELOG_SLUG.it || slug === CHANGELOG_SLUG.en;
+
 export interface Alternate {
   hreflang: string;
   href: string;
@@ -74,7 +82,7 @@ export function hasLang(slug: string, lang: Lang): boolean {
 
 /** Vero se esiste un'immagine social dedicata (home e pagine statiche usano quella generica). */
 export function hasOgImage(slug: string, lang: Lang): boolean {
-  return slug !== '' && !STATIC_PAGES.includes(slug) && hasLang(slug, lang);
+  return slug !== '' && !STATIC_PAGES.includes(slug) && !isChangelogSlug(slug) && hasLang(slug, lang);
 }
 
 /** Percorso della stessa pagina nell'altra lingua, o null se non esiste (strumento solo italiano). */
@@ -82,11 +90,20 @@ export function alternatePath(path: string, target: Lang): string | null {
   const slug = slugFromPath(path);
   if (isFavoritesSlug(slug)) return routePath(FAVORITES_SLUG[target], target);
   if (isShareSlug(slug)) return routePath(SHARE_SLUG[target], target);
+  if (isChangelogSlug(slug)) return routePath(CHANGELOG_SLUG[target], target);
   return hasLang(slug, target) ? routePath(slug, target) : null;
 }
 
 /** Link hreflang di una pagina: it, en e x-default (= inglese) se esistono entrambe, solo it altrimenti. */
 export function hreflangLinks(slug: string): Alternate[] {
+  if (isChangelogSlug(slug)) {
+    const en = publicUrl(CHANGELOG_SLUG.en, 'en');
+    return [
+      { hreflang: 'it', href: publicUrl(CHANGELOG_SLUG.it, 'it') },
+      { hreflang: 'en', href: en },
+      { hreflang: 'x-default', href: en },
+    ];
+  }
   const it: Alternate = { hreflang: 'it', href: publicUrl(slug, 'it') };
   if (!hasLang(slug, 'en')) return [it];
   const en = publicUrl(slug, 'en');
@@ -109,6 +126,13 @@ export function buildSitemap(): string {
         .join('\n');
       entries.push(`  <url>\n    <loc>${publicUrl(slug, lang)}</loc>\n${alts}\n  </url>`);
     }
+  }
+  // Novità: slug diverso per lingua, stessi link alternate su entrambe le URL
+  const alts = hreflangLinks(CHANGELOG_SLUG.it)
+    .map((a) => `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${a.href}"/>`)
+    .join('\n');
+  for (const lang of LANGS) {
+    entries.push(`  <url>\n    <loc>${publicUrl(CHANGELOG_SLUG[lang], lang)}</loc>\n${alts}\n  </url>`);
   }
   return (
     '<?xml version="1.0" encoding="UTF-8"?>\n' +

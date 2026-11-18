@@ -2,6 +2,7 @@
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, computed, effect, inject, signal, untracked } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { saveBytes } from '../../shared/download';
@@ -19,7 +20,7 @@ import { SHARE_SCHEMA } from './fake-data-generator.share';
 
 @Component({
   selector: 'app-fake-data-generator',
-  imports: [ShareLink, Icon, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, Icon, PrivacyNote, Segmented, CopyButton, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './fake-data-generator.page.html',
   styleUrl: './fake-data-generator.page.scss',

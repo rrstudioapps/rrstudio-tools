@@ -2,6 +2,7 @@
 // © 2026 rrstudio — rrstudio Tools
 import { ChangeDetectionStrategy, Component, afterNextRender, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { BuildDay } from './core/build-day';
 import { FavoritesService } from './core/favorites/favorites.service';
 import { I18nService } from './core/i18n/i18n.service';
 import { PwaService } from './core/pwa/pwa.service';
@@ -60,6 +61,7 @@ export class App {
   private readonly favorites = inject(FavoritesService);
 
   constructor() {
+    inject(BuildDay); // fissa il giorno della build nel prerender (badge «Nuovo» senza differenze in idratazione)
     inject(SeoService); // avvia l'ascolto della navigazione per title/meta
     // Il tema salvato si legge solo nel browser, dopo l'idratazione (la lingua la decide l'URL)
     afterNextRender(() => {

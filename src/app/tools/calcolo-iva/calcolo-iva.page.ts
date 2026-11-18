@@ -3,6 +3,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { IVA_DICTIONARIES } from './calcolo-iva.i18n';
@@ -38,7 +39,7 @@ interface Row {
 
 @Component({
   selector: 'app-calcolo-iva',
-  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrintButton, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calcolo-iva.page.html',
   styleUrl: './calcolo-iva.page.scss',
@@ -186,6 +187,25 @@ export class CalcoloIvaPage {
   });
 
   protected readonly bolloCents = BOLLO_CENTS;
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    const yn = (b: boolean) => t(b ? 'print.yes' : 'print.no');
+    const out = [p(t('iva.mode'), t('iva.mode.' + this.mode())), p(t('iva.amount.' + this.mode()), this.amountText())];
+    if (!(this.isInvoiceLike() && this.forfettario())) out.push(p(t('iva.vat'), formatPercent(this.vatBp(), this.i18n.locale())));
+    if (this.showNature()) out.push(p(t('iva.nature'), t('iva.nat.' + this.nature())));
+    if (this.isInvoiceLike()) {
+      const c = this.cassa();
+      const cassa = c === 'none' ? t('iva.cassa.none') : c === 'custom' ? this.cassaCustom() + '%' : formatPercent(Number(c), this.i18n.locale());
+      out.push(p(t('iva.forfettario'), yn(this.forfettario())), p(t('iva.rivalsa'), yn(this.rivalsa())), p(t('iva.cassa'), cassa));
+      if (c !== 'none') out.push(p(t('iva.cassa.vat'), yn(this.cassaVat())));
+      if (!this.forfettario()) out.push(p(t('iva.ritenuta'), t('iva.ritenuta.' + this.ritenuta())));
+      out.push(p(t('iva.bollo'), yn(this.bolloCharged())));
+    }
+    return out;
+  });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
   protected readonly shareSchema = SHARE_SCHEMA;

@@ -450,43 +450,57 @@ select option {
   }
 }
 
-// Stampa della fattura elettronica: via intestazione, piè di pagina e tema scuro; resta solo la fattura.
-@media print {
-  body:has(app-fattura-elettronica) {
-    --bg: #fff;
-    --surface: #fff;
-    --ink: #000;
-    --ink-2: #222;
-    --muted: #444;
-    --line: #999;
-    --line-soft: #ccc;
-    background: #fff;
-    :is(app-header, app-footer, .skip) {
-      display: none !important;
-    }
-    .container {
-      max-width: none;
-      padding-inline: 0;
-    }
-    .tool-page {
-      padding-block: 0;
-    }
-  }
+// Stampa / salva come PDF (Ctrl+P del browser o pulsante app-print-button) di ogni pagina strumento: via intestazione,
+// piè di pagina, feedback, guida, link di condivisione, pulsanti e menu, tema chiaro, nero su bianco. Restano il
+// risultato (tabelle su più pagine con intestazione ripetuta, grafici SVG) e l'intestazione di stampa del
+// componente PrintButton. I campi di input si nascondono con `.no-print` e si leggono nel riepilogo dei parametri.
+@page {
+  margin: 14mm 12mm;
 }
-
-// Stampa delle parti Shamir: via intestazione e piè di pagina, restano solo le parti.
+.print-only {
+  display: none;
+}
 @media print {
-  body:has(app-shamir-secret-sharing) {
+  body:has(app-tool-frame) {
     --bg: #fff;
     --surface: #fff;
     --ink: #000;
     --ink-2: #222;
-    --muted: #444;
-    --line: #999;
+    --muted: #555;
+    --line: #888;
     --line-soft: #ccc;
     background: #fff;
-    :is(app-header, app-footer, .skip) {
+    color: #000;
+    font-size: 11pt;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    :is(
+        app-header,
+        app-footer,
+        app-privacy-note,
+        app-share-link,
+        app-send-to,
+        app-shortcuts-help,
+        app-tool-feedback,
+        app-tool-guide,
+        app-favorite-button,
+        app-offline-dialog,
+        .skip,
+        .toast-region,
+        .no-print,
+        .tool-info,
+        button,
+        .btn,
+        dialog
+      ) {
       display: none !important;
+    }
+    // con il pulsante, titolo e data stanno già nell'intestazione di stampa
+    &:has(app-print-button) .tool-intro {
+      display: none;
+    }
+    .print-only {
+      display: block;
     }
     .container {
       max-width: none;
@@ -494,6 +508,47 @@ select option {
     }
     .tool-page {
       padding-block: 0;
+      gap: 10pt;
+    }
+    // tabelle lunghe: più pagine, intestazione ripetuta, righe intere
+    .table-wrap {
+      overflow: visible !important;
+      max-height: none !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead {
+      display: table-header-group;
+    }
+    tfoot {
+      display: table-footer-group;
+    }
+    tr,
+    figure,
+    svg,
+    .result,
+    .headline {
+      break-inside: avoid;
+    }
+    th,
+    td {
+      border-bottom: 0.5pt solid #999;
+      color: #000;
+    }
+    h2,
+    .eyebrow {
+      break-after: avoid;
+    }
+    // grafici SVG: nessun fondo colorato, serie distinguibili anche in bianco e nero
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+    a {
+      color: #000;
+      text-decoration: none;
     }
   }
 }

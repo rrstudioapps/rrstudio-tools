@@ -6,6 +6,7 @@ import { formatNumber } from '../../shared/decimal';
 import { CopyButton } from '../../shared/copy-button';
 import { Icon } from '../../shared/icon';
 import { IoPanel } from '../../shared/io-panel';
+import { PrintButton, PrintParam } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { SendTo } from '../../shared/send-to';
@@ -39,7 +40,7 @@ const PAD = { l: 44, r: 12, t: 12, b: 44 };
 
 @Component({
   selector: 'app-statistics-calculator',
-  imports: [ShareLink, Icon, PrivacyNote, Segmented, IoPanel, CopyButton, SendTo],
+  imports: [ShareLink, Icon, PrintButton, PrivacyNote, Segmented, IoPanel, CopyButton, SendTo],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './statistics-calculator.page.html',
   styleUrl: './statistics-calculator.page.scss',
@@ -148,9 +149,9 @@ export class StatisticsCalculatorPage {
     // etichette dell'asse x: inizio di alcune classi e il massimo
     const step = Math.ceil(bins.length / 6);
     const xTicks = bins
-      .map((b, i) => ({ x: PAD.l + i * bw, label: this.fmt(b.from), i }))
+      .map((b, i) => ({ x: PAD.l + i * bw, label: this.fmt(b.from), i, anchor: i === 0 ? 'start' : 'middle' }))
       .filter((t) => t.i % step === 0);
-    xTicks.push({ x: PAD.l + innerW, label: this.fmt(bins[bins.length - 1].to), i: -1 });
+    xTicks.push({ x: PAD.l + innerW, label: this.fmt(bins[bins.length - 1].to), i: -1, anchor: 'end' });
     const yTicks = [0, Math.ceil(maxCount / 2), maxCount].filter((v, i, a) => a.indexOf(v) === i).map((v) => ({ y: PAD.t + innerH - (v / maxCount) * innerH, label: String(v) }));
     return {
       bars,
@@ -164,6 +165,17 @@ export class StatisticsCalculatorPage {
   protected readonly W = W;
   protected readonly H = H;
   protected readonly PAD = PAD;
+
+  /** Parametri per il riepilogo di stampa (al posto dei campi). */
+  protected readonly printParams = computed<PrintParam[]>(() => {
+    const t = (k: string) => this.i18n.t(k);
+    const p = (label: string, value: string): PrintParam => ({ label, value: value.trim() || '-' });
+    const out = [p(t('stat.source'), t('stat.source.' + this.source()))];
+    if (this.source() === 'csv') out.push(p(t('stat.column'), this.columnOptions().find((c) => c.n === this.column())?.label ?? String(this.column())));
+    out.push(p(t('stat.percentile'), String(this.percentile())));
+    if (this.bins() > 0) out.push(p(t('stat.bins'), String(this.bins())));
+    return out;
+  });
 
   // Link di condivisione: lo stato sta nell'hash dell'URL (vedi shared/share-link.ts)
   protected readonly shareSchema = SHARE_SCHEMA;

@@ -1,0 +1,56 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<article class="container changelog rise">
+  <p class="eyebrow">{{ i18n.t('changelog.eyebrow') }}</p>
+  <h1>{{ i18n.t('changelog.title') }}</h1>
+  <p class="lead">{{ i18n.t('changelog.lead') }}</p>
+
+  <div class="bar">
+    <app-segmented [label]="i18n.t('changelog.filter.label')" [options]="filters()" [(value)]="filter" />
+    <p class="links">
+      <a [href]="feedUrl()" type="application/atom+xml" data-testid="changelog-feed">{{ i18n.t('changelog.feed') }}</a> ·
+      <a [href]="bugUrl()" target="_blank" rel="noopener noreferrer">{{ i18n.t('feedback.bug') }}<span class="visually-hidden"> {{ i18n.t('feedback.newtab') }}</span></a> ·
+      <a [href]="ideaUrl()" target="_blank" rel="noopener noreferrer">{{ i18n.t('feedback.idea') }}<span class="visually-hidden"> {{ i18n.t('feedback.newtab') }}</span></a>
+    </p>
+  </div>
+
+  @for (v of versions(); track v.date) {
+    <section class="version" [id]="'v-' + v.date" [attr.aria-labelledby]="'vh-' + v.date" data-testid="changelog-version">
+      <h2 [id]="'vh-' + v.date">
+        <time [attr.datetime]="v.date">{{ v.label }}</time>
+        <span class="vtitle">{{ v.title }}</span>
+      </h2>
+      <ul class="entries">
+        @for (e of v.entries; track $index) {
+          <li class="entry" data-testid="changelog-entry">
+            <span class="badge" [attr.data-kind]="e.kind">{{ i18n.t('changelog.kind.' + e.kind) }}</span>
+            <div class="body">
+              <p>{{ e.text }}</p>
+              @if (e.tools.length || e.issues.length) {
+                <p class="refs">
+                  @if (e.tools.length) {
+                    <span class="ref-label">{{ i18n.t('changelog.tools') }}</span>
+                    @for (t of e.tools; track t.id) {
+                      @if (t.path) {
+                        <a [routerLink]="t.path" data-testid="changelog-tool">{{ t.name }}</a>
+                      } @else {
+                        <span>{{ t.name }}</span>
+                      }
+                    }
+                  }
+                  @if (e.issues.length) {
+                    <span class="ref-label">{{ i18n.t('changelog.issues') }}</span>
+                    @for (i of e.issues; track i.n) {
+                      <a [href]="i.url" target="_blank" rel="noopener noreferrer">#{{ i.n }}<span class="visually-hidden"> {{ i18n.t('feedback.newtab') }}</span></a>
+                    }
+                  }
+                </p>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  } @empty {
+    <p class="empty" role="status">{{ i18n.t('changelog.empty') }}</p>
+  }
+</article>

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { Route, Routes } from '@angular/router';
-import { FAVORITES_SLUG, SHARE_SLUG } from './core/i18n/lang-routing';
+import { CHANGELOG_SLUG, FAVORITES_SLUG, SHARE_SLUG } from './core/i18n/lang-routing';
 import { ToolFrame } from './shared/tool-frame';
 import { TOOLS, ToolDefinition } from './tools/tools.registry';
 
@@ -41,6 +41,13 @@ const favoritesRoute = (lang: 'it' | 'en'): Route => ({
   data: { seo: { titleKey: 'seo.favorites.title', descriptionKey: 'seo.favorites.desc', noindex: true } },
 });
 
+/** Novità del sito: /novita e /en/changelog (indicizzata, in sitemap con hreflang). */
+const changelogRoute = (lang: 'it' | 'en'): Route => ({
+  path: CHANGELOG_SLUG[lang],
+  loadComponent: () => import('./pages/changelog').then((m) => m.ChangelogPage),
+  data: { seo: { titleKey: 'seo.changelog.title', descriptionKey: 'seo.changelog.desc' } },
+});
+
 /** Ricezione dei contenuti condivisi dal sistema e dei file aperti con l'app: /condividi e /en/share (noindex, fuori dalla sitemap). */
 const shareRoute = (lang: 'it' | 'en'): Route => ({
   path: SHARE_SLUG[lang],
@@ -57,6 +64,7 @@ export const routes: Routes = [
   ...TOOLS.map(toRoute),
   PRIVACY,
   favoritesRoute('it'),
+  changelogRoute('it'),
   shareRoute('it'),
   {
     path: 'en',
@@ -65,6 +73,7 @@ export const routes: Routes = [
       ...TOOLS.filter((t) => !t.italyOnly).map(toRoute),
       PRIVACY,
       favoritesRoute('en'),
+      changelogRoute('en'),
       shareRoute('en'),
       // /en/<sconosciuto> → home inglese
       { path: '**', redirectTo: '/en' },

@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { I18nService } from '../../core/i18n/i18n.service';
 import { formatNumber, parseDecimal } from '../../shared/decimal';
 import { CopyButton } from '../../shared/copy-button';
+import { PrintButton } from '../../shared/print-button';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { PCT_DICTIONARIES } from './percentage-calculator.i18n';
@@ -42,7 +43,7 @@ const CARDS: readonly Card[] = [
 
 @Component({
   selector: 'app-percentage-calculator',
-  imports: [ShareLink, PrivacyNote, Segmented, CopyButton],
+  imports: [ShareLink, PrintButton, PrivacyNote, Segmented, CopyButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './percentage-calculator.page.html',
   styleUrl: './percentage-calculator.page.scss',

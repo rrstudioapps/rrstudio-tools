@@ -89,7 +89,14 @@ export class IbanPartitaIvaPage {
     this.i18n.register(IBV_DICTIONARIES);
     // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
     const rx = inject(ToolHandoff).take('iban-partita-iva');
-    if (rx?.text !== undefined) this.value.set(rx.text.trim());
+    if (rx?.text !== undefined) {
+      const text = rx.text.trim();
+      // più valori (per esempio dal generatore di codici di prova): si controllano in blocco
+      if (text.split(/\r\n|\r|\n/).filter((l) => l.trim()).length > 1) {
+        this.tab.set('bulk');
+        this.bulkText.set(text);
+      } else this.value.set(text);
+    }
   }
 
   private regionName(cc: string): string {

@@ -1,0 +1,152 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.p2t.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('p2t.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="pdf-to-text" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <app-file-drop [hint]="i18n.t('p2t.drop', { max: maxFiles })" [accept]="accept" [multiple]="true" (filesSelected)="onFiles($event)">
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (reading()) {
+        <p class="tool-ok" data-testid="p2t-reading">{{ i18n.t('p2t.reading') }}</p>
+      }
+      @if (error()) {
+        <p class="tool-error" role="alert" data-testid="p2t-error">{{ error() }}</p>
+      }
+      @if (status()) {
+        <p class="tool-ok">{{ status() }}</p>
+      }
+    </div>
+
+    <section class="panel" [attr.aria-label]="i18n.t('p2t.options')">
+      <h2 class="eyebrow">{{ i18n.t('p2t.options') }}</h2>
+      <div class="opts">
+        <app-segmented [label]="i18n.t('p2t.layout')" [options]="layouts()" [value]="layout()" (valueChange)="layout.set($event)" />
+        <label class="check"><input type="checkbox" data-testid="p2t-dehyphenate" [checked]="dehyphenate()" (change)="dehyphenate.set($any($event.target).checked)" /> {{ i18n.t('p2t.dehyphenate') }}</label>
+        <label class="check"><input type="checkbox" data-testid="p2t-markers" [checked]="markers()" (change)="markers.set($any($event.target).checked)" /> {{ i18n.t('p2t.markers') }}</label>
+        <label class="check"><input type="checkbox" data-testid="p2t-strip" [checked]="stripRepeated()" (change)="stripRepeated.set($any($event.target).checked)" /> {{ i18n.t('p2t.strip') }}</label>
+        <label class="check"><input type="checkbox" data-testid="p2t-columns" [checked]="columns()" (change)="columns.set($any($event.target).checked)" /> {{ i18n.t('p2t.columns') }}</label>
+        <div class="row">
+          <label class="lbl" for="p2t-pages">{{ i18n.t('p2t.pages') }}</label>
+          <input id="p2t-pages" type="text" inputmode="numeric" maxlength="80" placeholder="1-3, 5" data-testid="p2t-pages" autocomplete="off" [attr.aria-invalid]="rangeInvalid()" [value]="pages()" (input)="pages.set($any($event.target).value)" />
+        </div>
+      </div>
+      <p class="hint">{{ i18n.t('p2t.options.hint') }}</p>
+      @if (rangeInvalid()) {
+        <p class="tool-error" role="alert" data-testid="p2t-range-error">{{ i18n.t('p2t.err.range') }}</p>
+      }
+    </section>
+
+    @if (items().length > 0) {
+      <section class="panel" [attr.aria-label]="i18n.t('p2t.files')">
+        <h2 class="eyebrow">{{ i18n.t('p2t.files') }}</h2>
+        <ul class="files" data-testid="p2t-files">
+          @for (it of items(); track it.id) {
+            <li [attr.data-status]="it.status">
+              <span class="fname">{{ it.file.name }}</span>
+              <span class="fmeta mono">{{ size(it.file.size) }}</span>
+              <button type="button" class="btn small" [attr.aria-label]="i18n.t('p2t.remove', { name: it.file.name })" (click)="remove(it)">
+                <app-icon name="close" />
+              </button>
+              @if (it.status === 'reading') {
+                <span class="fmeta">{{ i18n.t('p2t.readingOne') }} {{ it.progress }}</span>
+              }
+              @if (it.status === 'error') {
+                <p class="tool-error scan" role="alert">{{ errorOf(it) }}</p>
+              }
+              @if (it.status === 'password') {
+                <form class="pw" data-testid="p2t-password" (submit)="unlock(it, pwInput, $event)">
+                  <label class="lbl" [for]="'p2t-pw-' + it.id">{{ i18n.t(it.wrong ? 'p2t.pw.wrong' : 'p2t.pw.ask', { name: it.file.name }) }}</label>
+                  <input #pwInput [id]="'p2t-pw-' + it.id" type="password" autocomplete="off" spellcheck="false" />
+                  <button type="submit" class="btn small">{{ i18n.t('p2t.pw.unlock') }}</button>
+                  <span class="hint">{{ i18n.t('p2t.pw.hint') }}</span>
+                </form>
+              }
+            </li>
+          }
+        </ul>
+        <div class="row">
+          <button data-shortcut="clear" type="button" class="btn small" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('p2t.clear') }}</button>
+        </div>
+      </section>
+    }
+
+    @for (r of results(); track r.item.id) {
+      <section class="panel" [attr.aria-label]="r.item.file.name" [attr.data-testid]="'p2t-result-' + $index">
+        <h2 class="eyebrow">{{ r.item.file.name }}</h2>
+        <p class="stats">
+          <span>{{ i18n.t('p2t.pagesCount', { total: r.doc.pages.length }) }}</span>
+          <span data-testid="p2t-with">{{ i18n.t('p2t.withText', { n: r.doc.withText }) }}</span>
+          <span data-testid="p2t-without">{{ i18n.t('p2t.withoutText', { n: r.doc.withoutText }) }}</span>
+          @if (r.doc.twoColumnPages > 0) {
+            <span>{{ i18n.t('p2t.twoCols', { n: r.doc.twoColumnPages }) }}</span>
+          }
+        </p>
+        @if (r.doc.pages.length > 0 && r.doc.withText === 0) {
+          <p class="scan" role="status" data-testid="p2t-ocr">
+            <strong>{{ i18n.t('p2t.ocr.title') }}</strong> {{ i18n.t('p2t.ocr.all') }}
+            <a [routerLink]="i18n.link('pdf-to-images')">{{ i18n.t('p2t.ocr.link') }}</a>
+          </p>
+        } @else if (r.doc.withoutText > 0) {
+          <p class="scan" role="status" data-testid="p2t-ocr-some">
+            {{ i18n.t('p2t.ocr.some', { pages: noTextList(r) }) }}
+            <a [routerLink]="i18n.link('pdf-to-images')">{{ i18n.t('p2t.ocr.link') }}</a>
+          </p>
+        }
+        @if (r.doc.pages.length > 0) {
+          <div class="scroll" tabindex="0" role="region" [attr.aria-label]="i18n.t('p2t.text.label', { name: r.item.file.name })" data-testid="p2t-pages-text">
+            @for (p of r.doc.pages; track p.number) {
+              <div class="pg" [attr.data-page]="p.number">
+                <h3>{{ i18n.t('p2t.pageWord') }} {{ p.number }}</h3>
+                @if (p.hasText) {
+                  <pre>{{ p.text }}</pre>
+                } @else {
+                  <pre class="none">{{ i18n.t('p2t.page.empty') }}</pre>
+                }
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+
+    @if (results().length > 0) {
+      <section class="panel" [attr.aria-label]="i18n.t('p2t.out')">
+        <h2 class="eyebrow">{{ i18n.t('p2t.out') }}</h2>
+        <p class="stats" data-testid="p2t-totals">
+          <span><b>{{ totals().words }}</b> {{ i18n.t('p2t.words') }}</span>
+          <span><b>{{ totals().chars }}</b> {{ i18n.t('p2t.chars') }}</span>
+        </p>
+        <div class="row">
+          <app-copy-button shortcut="copy" [text]="allText()" [disabled]="!hasOutput()" />
+          <button data-shortcut="download" type="button" class="btn primary" data-testid="p2t-txt" [disabled]="!hasOutput()" (click)="downloadTxt()">
+            <app-icon name="download" /> {{ i18n.t(results().length > 1 ? 'p2t.txt.zip' : 'p2t.txt') }}
+          </button>
+          <button type="button" class="btn" data-testid="p2t-md" [disabled]="!hasOutput()" (click)="downloadMd()">
+            <app-icon name="download" /> {{ i18n.t(results().length > 1 ? 'p2t.md.zip' : 'p2t.md') }}
+          </button>
+          <app-send-to from="pdf-to-text" [text]="allText()" [disabled]="!hasOutput()" />
+        </div>
+      </section>
+    }
+  </app-file-drop>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('p2t.info.order.title') }}</h2>
+      <p>{{ i18n.t('p2t.info.order.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('p2t.info.ocr.title') }}</h2>
+      <p>{{ i18n.t('p2t.info.ocr.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('p2t.info.priv.title') }}</h2>
+      <p>{{ i18n.t('p2t.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>
