@@ -902,6 +902,10 @@ export const it = {
   'tool.rnd.desc': 'Numeri casuali in un intervallo, dadi con notazione 2d6+3, estrazioni da un elenco di nomi, squadre e testa o croce, con il generatore sicuro del browser.',
   'seo.rnd.title': 'Generatore di numeri casuali, dadi e sorteggi | rrstudio Tools',
   'seo.rnd.desc': 'Genera numeri casuali, tira i dadi (2d6+3), estrai nomi da un elenco, forma squadre equilibrate e lancia la moneta. Casualità sicura del browser, tutto sul tuo dispositivo.',
+  'tool.tcl.title': 'Pulisci testo',
+  'tool.tcl.desc': 'Ripulisci un testo copiato da PDF, email o Word: righe spezzate, spazi doppi, virgolette tipografiche, caratteri invisibili e tag HTML.',
+  'seo.tcl.title': 'Pulisci testo online: a capo, spazi doppi, caratteri invisibili | rrstudio Tools',
+  'seo.tcl.desc': 'Pulisci il testo copiato da PDF, email o Word: unisci le righe spezzate, togli spazi doppi, virgolette tipografiche, caratteri invisibili e tag HTML. Nel browser.',
 
   'tool.uni.title': 'Ispettore Unicode',
   'tool.uni.desc': 'Vedi ogni carattere con code point, categoria, byte UTF-8 e UTF-16, entità HTML ed escape; trova invisibili, omoglifi e alfabeti mescolati.',

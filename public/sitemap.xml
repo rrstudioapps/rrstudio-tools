@@ -1219,6 +1219,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/random-number-generator"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/text-cleaner</loc>
+    <lastmod>2026-11-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/text-cleaner"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/text-cleaner"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-cleaner"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/text-cleaner</loc>
+    <lastmod>2026-11-18</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/text-cleaner"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/text-cleaner"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-cleaner"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/privacy</loc>
     <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/privacy"/>

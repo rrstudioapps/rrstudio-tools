@@ -80,7 +80,7 @@ describe('badge «Nuovo»', () => {
   });
   it('dati reali: oggi gli strumenti nuovi del 18/11', () => {
     expect([...newToolIds('2026-11-18')].sort()).toEqual(
-      ['generatore-codice-fiscale', 'subnet-calculator', 'docker-run-to-compose', 'css-clamp-calculator', 'time-calculator', 'scadenze-fatture', 'pdf-to-text', 'json-diff', 'timer', 'scientific-calculator', 'random-number-generator'].sort(),
+      ['generatore-codice-fiscale', 'subnet-calculator', 'docker-run-to-compose', 'css-clamp-calculator', 'time-calculator', 'scadenze-fatture', 'pdf-to-text', 'json-diff', 'timer', 'scientific-calculator', 'random-number-generator', 'text-cleaner'].sort(),
     );
   });
   it('date: differenza in giorni e giorno UTC', () => {

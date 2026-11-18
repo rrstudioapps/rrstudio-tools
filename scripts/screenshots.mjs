@@ -589,6 +589,14 @@ try {
       if (sizes.join() !== '3,3') throw new Error('squadre non equilibrate: ' + sizes);
     },
   });
+  await shot('text-cleaner.png', { width: 1280, dark: false, path: '/text-cleaner/', setup: async (page) => {
+        await page.fill('#tcl-input', 'Il gat-\nto dormiva sul   divano.\n\n\n\n\u201cChe bello\u201d,\ndisse\u00a0il\u200b padrone.');
+        await page.getByTestId('tcl-opt-dehyphen').check();
+        await page.waitForTimeout(250);
+        const out = await page.getByTestId('tcl-output').inputValue();
+        if (out !== 'Il gatto dormiva sul divano.\n\n"Che bello", disse il padrone.') throw new Error('text-cleaner: risultato inatteso ' + JSON.stringify(out));
+        if (!/tolti \d+ caratteri/i.test(await page.getByTestId('tcl-removed').innerText())) throw new Error('text-cleaner: manca il conteggio dei caratteri tolti');
+      } });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

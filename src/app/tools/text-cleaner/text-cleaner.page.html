@@ -1,0 +1,91 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.tcl.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('tcl.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="text-cleaner" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tcl-layout">
+    <div class="side">
+      <div class="field">
+        <label for="tcl-input">{{ i18n.t('tcl.input') }}</label>
+        <textarea
+          id="tcl-input"
+          rows="12"
+          spellcheck="false"
+          autocomplete="off"
+          [placeholder]="i18n.t('tcl.input.ph')"
+          [value]="input()"
+          [attr.aria-invalid]="error() ? 'true' : null"
+          [attr.aria-describedby]="error() ? 'tcl-error tcl-counter' : 'tcl-counter'"
+          data-testid="tcl-input"
+          (input)="input.set($any($event.target).value)"
+        ></textarea>
+        <p id="tcl-counter" class="hint">{{ i18n.t('tcl.counter', { chars: input().length.toLocaleString(i18n.locale()), lines: inputLines().toLocaleString(i18n.locale()) }) }}</p>
+      </div>
+      @if (error()) {
+        <p id="tcl-error" class="tool-error" data-testid="tcl-error">{{ error() }}</p>
+      }
+
+      <fieldset class="options">
+        <legend class="eyebrow">{{ i18n.t('tcl.options') }}</legend>
+        @for (t of toggles; track t.key) {
+          <div class="opt">
+            <label class="check">
+              <input
+                type="checkbox"
+                [checked]="value(t.key)"
+                [attr.data-testid]="'tcl-opt-' + t.key"
+                [attr.aria-describedby]="t.hint ? 'tcl-hint-' + t.key : null"
+                (change)="setToggle(t.key, $any($event.target).checked)"
+              />
+              {{ i18n.t('tcl.opt.' + t.key) }}
+            </label>
+            @if (t.hint) {
+              <p class="hint" [id]="'tcl-hint-' + t.key">{{ i18n.t('tcl.opt.' + t.key + '.hint') }}</p>
+            }
+          </div>
+        }
+        <div class="opt">
+          <span class="eyebrow">{{ i18n.t('tcl.blank') }}</span>
+          <app-segmented [label]="i18n.t('tcl.blank')" [options]="blankOptions()" [(value)]="blankLines" />
+        </div>
+        <div class="opt">
+          <span class="eyebrow">{{ i18n.t('tcl.case') }}</span>
+          <app-segmented [label]="i18n.t('tcl.case')" [options]="caseOptions()" [(value)]="caseMode" />
+        </div>
+      </fieldset>
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('tcl.result')" aria-live="polite">
+      <div class="result-head">
+        <h2 class="eyebrow">{{ i18n.t('tcl.result') }}</h2>
+        <div class="actions">
+          <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
+          <button type="button" class="btn small" data-shortcut="download" data-testid="tcl-download" [disabled]="output() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('tcl.download') }}
+          </button>
+        </div>
+      </div>
+      @if (input() === '') {
+        <p class="hint">{{ i18n.t('tcl.empty') }}</p>
+      } @else if (!error()) {
+        <label class="visually-hidden" for="tcl-output">{{ i18n.t('tcl.result.label') }}</label>
+        <textarea id="tcl-output" rows="12" readonly spellcheck="false" [value]="output()" data-testid="tcl-output"></textarea>
+        <p class="hint" data-testid="tcl-removed">{{ removedText() }}</p>
+      }
+      <div class="actions">
+        <button type="button" class="btn small" data-testid="tcl-reuse" [disabled]="output() === '' || output() === input()" (click)="reuse()">
+          <app-icon name="refresh" /> {{ i18n.t('tcl.reuse') }}
+        </button>
+        <button type="button" class="btn small" data-shortcut="clear" data-testid="tcl-reset" [disabled]="input() === ''" (click)="reset()">
+          <app-icon name="trash" /> {{ i18n.t('tcl.reset') }}
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

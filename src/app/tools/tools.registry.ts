@@ -1351,4 +1351,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.rnd.title', descriptionKey: 'seo.rnd.desc' },
     loadComponent: () => import('./random-number-generator/random-number-generator.page').then((m) => m.RandomNumberGeneratorPage),
   },
+  {
+    id: 'text-cleaner',
+    path: 'text-cleaner',
+    icon: 'paragraph',
+    category: 'text',
+    keywords: {
+      it: 'pulisci testo ripulire incolla pdf word email a capo righe spezzate spazi doppi virgolette tipografiche caratteri invisibili html elenco puntato maiuscole',
+      en: 'clean text tidy paste pdf word email line breaks broken lines double spaces smart quotes invisible characters html bullets sentence case',
+    },
+    titleKey: 'tool.tcl.title',
+    descriptionKey: 'tool.tcl.desc',
+    seo: { titleKey: 'seo.tcl.title', descriptionKey: 'seo.tcl.desc' },
+    loadComponent: () => import('./text-cleaner/text-cleaner.page').then((m) => m.TextCleanerPage),
+  },
 ];

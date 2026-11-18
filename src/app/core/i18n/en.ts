@@ -903,6 +903,10 @@ export const en: Dict = {
   'tool.rnd.desc': 'Random numbers in a range, dice with 2d6+3 notation, draws from a list of names, teams and heads or tails, using the browser\'s secure generator.',
   'seo.rnd.title': 'Random number generator, dice roller and name picker | rrstudio Tools',
   'seo.rnd.desc': 'Generate random numbers, roll dice (2d6+3), draw names from a list, make balanced teams and flip a coin. Secure browser randomness, all on your device.',
+  'tool.tcl.title': 'Text cleaner',
+  'tool.tcl.desc': 'Tidy text copied from PDFs, emails or Word: broken lines, double spaces, smart quotes, invisible characters and HTML tags.',
+  'seo.tcl.title': 'Text cleaner online: line breaks, double spaces, invisible characters | rrstudio Tools',
+  'seo.tcl.desc': 'Clean text copied from PDFs, emails or Word: join broken lines, remove double spaces, smart quotes, invisible characters and HTML tags. Runs in your browser.',
 
   'tool.uni.title': 'Unicode inspector',
   'tool.uni.desc': 'See every character with code point, category, UTF-8 and UTF-16 bytes, HTML entity and escapes; find invisibles, homoglyphs and mixed scripts.',

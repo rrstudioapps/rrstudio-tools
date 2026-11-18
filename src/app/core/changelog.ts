@@ -28,6 +28,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     title: { it: 'Codice fiscale, confronto testi e stampa', en: 'Tax code, text comparison and printing' },
     entries: [
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Pulisci testo»: incolla un testo da PDF, email o Word e ottieni la versione pulita, con righe riunite, spazi doppi tolti, virgolette semplici, caratteri invisibili e tag HTML rimossi.',
+        en: 'New tool "Text cleaner": paste text from a PDF, email or Word and get a clean version, with lines joined, double spaces removed, straight quotes, and invisible characters and HTML tags stripped.',
+        toolIds: ['text-cleaner'],
+      },
+      {
         kind: 'improvement',
         it: 'In fondo a ogni strumento trovi i collegamenti agli strumenti affini, per passare da uno all\'altro senza tornare alla home.',
         en: 'At the bottom of every tool you now find links to related tools, to move from one to another without going back to the home page.',
