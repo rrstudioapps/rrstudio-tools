@@ -16,6 +16,12 @@ $type: var(--src-3);
   border: 0;
   min-width: 0;
 }
+// Allinea alla stessa altezza dei campi (34px) i controlli senza etichetta sopra: segmentato e casella
+.opts > .check,
+.opts > app-segmented {
+  min-height: 34px;
+  align-items: center;
+}
 .field {
   display: flex;
   flex-direction: column;

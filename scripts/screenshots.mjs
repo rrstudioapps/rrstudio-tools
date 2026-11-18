@@ -1083,14 +1083,18 @@ try {
       const gen = await page.context().newPage();
       await gen.goto(base + '/qr-code-generator/');
       await gen.fill('#qr-url', 'https://example.com/ciao?da=qr');
-      await gen.waitForSelector('[data-testid=qr-preview]');
-      const [download] = await Promise.all([gen.waitForEvent('download'), gen.getByRole('button', { name: /PNG/ }).first().click()]);
+      await gen.waitForSelector('[data-testid=qr-preview]', { timeout: 60000 });
+      // sotto carico il QR può non essere ancora disegnato: il pulsante PNG deve essere attivo prima del clic
+      const pngBtn = gen.getByRole('button', { name: /PNG/ }).first();
+      await pngBtn.waitFor({ state: 'visible', timeout: 60000 });
+      await gen.waitForFunction(() => [...document.querySelectorAll('button')].some((b) => /PNG/.test(b.textContent ?? '') && !b.disabled), null, { timeout: 60000 });
+      const [download] = await Promise.all([gen.waitForEvent('download', { timeout: 60000 }), pngBtn.click()]);
       const stream = await download.createReadStream();
       const chunks = [];
       for await (const c of stream) chunks.push(c);
       await gen.close();
       await page.setInputFiles('input[type=file]', [{ name: 'qr.png', mimeType: 'image/png', buffer: Buffer.concat(chunks) }]);
-      await page.waitForSelector('[data-testid=qrr-result]');
+      await page.waitForSelector('[data-testid=qrr-result]', { timeout: 60000 });
     },
   });
   await shot('sort-lines.png', {
