@@ -1,0 +1,182 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.lco.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('lco.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="list-converter" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="dir">
+    <app-segmented [label]="i18n.t('lco.dir')" [options]="dirOptions()" [(value)]="dir" />
+  </div>
+
+  <div class="field">
+    <label for="lco-text">{{ i18n.t(dir() === 'toLine' ? 'lco.in.toLine' : 'lco.in.toList') }}</label>
+    <textarea
+      id="lco-text"
+      rows="10"
+      spellcheck="false"
+      autocomplete="off"
+      [placeholder]="i18n.t(dir() === 'toLine' ? 'lco.ph.toLine' : 'lco.ph.toList')"
+      [value]="text()"
+      [attr.aria-invalid]="error() ? 'true' : null"
+      [attr.aria-describedby]="error() ? 'lco-error lco-chars' : 'lco-chars'"
+      data-testid="lco-text"
+      (input)="text.set($any($event.target).value)"
+    ></textarea>
+    <p id="lco-chars" class="hint">{{ i18n.t('lco.counter', { n: num(text().length) }) }}</p>
+  </div>
+  @if (error()) {
+    <p id="lco-error" class="tool-error" data-testid="lco-error">{{ error() }}</p>
+  }
+
+  @if (dir() === 'toLine') {
+    <section class="panel" [attr.aria-label]="i18n.t('lco.format')">
+      <span class="eyebrow">{{ i18n.t('lco.presets') }}</span>
+      <div class="actions">
+        @for (id of presetIds; track id) {
+          <button type="button" class="btn small" [attr.data-testid]="'lco-preset-' + id" (click)="applyPreset(id)">{{ i18n.t('lco.preset.' + id) }}</button>
+        }
+      </div>
+
+      <span class="eyebrow">{{ i18n.t('lco.format') }}</span>
+      <div class="row">
+        <span class="label">{{ i18n.t('lco.sep') }}</span>
+        <app-segmented [label]="i18n.t('lco.sep')" [options]="sepOptions()" [(value)]="sepKind" />
+      </div>
+      @if (sepKind() === 'custom') {
+        <div class="field">
+          <label for="lco-custom">{{ i18n.t('lco.customSep') }}</label>
+          <input id="lco-custom" type="text" spellcheck="false" autocomplete="off" data-testid="lco-custom" [value]="customSep()" (input)="customSep.set($any($event.target).value)" aria-describedby="lco-custom-hint" />
+          <p id="lco-custom-hint" class="hint">{{ i18n.t('lco.customSep.hint') }}</p>
+        </div>
+      }
+      <div class="row">
+        <span class="label">{{ i18n.t('lco.quote') }}</span>
+        <app-segmented [label]="i18n.t('lco.quote')" [options]="quoteOptions()" [(value)]="quote" />
+      </div>
+      <div class="grid">
+        <div class="field">
+          <label for="lco-escape">{{ i18n.t('lco.escape') }}</label>
+          <select id="lco-escape" data-testid="lco-escape" [disabled]="quote() === 'none' || quote() === 'minimal'" (change)="escape.set($any($event.target).value)">
+            @for (o of escapeOptions(); track o.value) {
+              <option [value]="o.value" [selected]="o.value === escape()">{{ o.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="lco-prefix">{{ i18n.t('lco.prefix') }}</label>
+          <input id="lco-prefix" type="text" spellcheck="false" autocomplete="off" data-testid="lco-prefix" [value]="prefix()" (input)="prefix.set($any($event.target).value)" />
+        </div>
+        <div class="field">
+          <label for="lco-suffix">{{ i18n.t('lco.suffix') }}</label>
+          <input id="lco-suffix" type="text" spellcheck="false" autocomplete="off" data-testid="lco-suffix" [value]="suffix()" (input)="suffix.set($any($event.target).value)" />
+        </div>
+      </div>
+      <div class="checks">
+        <label class="check">
+          <input type="checkbox" [checked]="trailing()" data-testid="lco-trailing" (change)="trailing.set($any($event.target).checked)" />
+          {{ i18n.t('lco.opt.trailing') }}
+        </label>
+        <label class="check">
+          <input type="checkbox" [checked]="noQuoteNumbers()" data-testid="lco-no-quote-numbers" (change)="noQuoteNumbers.set($any($event.target).checked)" />
+          {{ i18n.t('lco.opt.noQuoteNumbers') }}
+        </label>
+        <label class="check">
+          <input type="checkbox" [checked]="encodeUri()" data-testid="lco-encode-uri" (change)="encodeUri.set($any($event.target).checked)" />
+          {{ i18n.t('lco.opt.encodeUri') }}
+        </label>
+      </div>
+    </section>
+  } @else {
+    <section class="panel" [attr.aria-label]="i18n.t('lco.format')">
+      <span class="eyebrow">{{ i18n.t('lco.format') }}</span>
+      <div class="row">
+        <span class="label">{{ i18n.t('lco.sep') }}</span>
+        <app-segmented [label]="i18n.t('lco.sep')" [options]="fromSepOptions()" [(value)]="fromSep" />
+      </div>
+      @if (fromSep() === 'auto' && detectedLabel()) {
+        <p class="hint" data-testid="lco-detected">{{ i18n.t('lco.detected', { sep: detectedLabel() }) }}</p>
+      }
+      @if (fromSep() === 'custom') {
+        <div class="field">
+          <label for="lco-from-custom">{{ i18n.t('lco.customSep') }}</label>
+          <input id="lco-from-custom" type="text" spellcheck="false" autocomplete="off" data-testid="lco-from-custom" [value]="fromCustom()" (input)="fromCustom.set($any($event.target).value)" aria-describedby="lco-from-custom-hint" />
+          <p id="lco-from-custom-hint" class="hint">{{ i18n.t('lco.customSep.hint') }}</p>
+        </div>
+      }
+      <div class="checks">
+        <label class="check">
+          <input type="checkbox" [checked]="stripQuotes()" data-testid="lco-strip-quotes" (change)="stripQuotes.set($any($event.target).checked)" />
+          {{ i18n.t('lco.opt.stripQuotes') }}
+        </label>
+        <label class="check">
+          <input type="checkbox" [checked]="backslash()" data-testid="lco-backslash" (change)="backslash.set($any($event.target).checked)" />
+          {{ i18n.t('lco.opt.backslash') }}
+        </label>
+        <label class="check">
+          <input type="checkbox" [checked]="stripWrapper()" data-testid="lco-strip-wrapper" (change)="stripWrapper.set($any($event.target).checked)" />
+          {{ i18n.t('lco.opt.stripWrapper') }}
+        </label>
+      </div>
+    </section>
+  }
+
+  <section class="panel" [attr.aria-label]="i18n.t('lco.clean')">
+    <span class="eyebrow">{{ i18n.t('lco.clean') }}</span>
+    <div class="checks">
+      <label class="check">
+        <input type="checkbox" [checked]="trim()" data-testid="lco-trim" (change)="trim.set($any($event.target).checked)" />
+        {{ i18n.t('lco.opt.trim') }}
+      </label>
+      <label class="check">
+        <input type="checkbox" [checked]="dropEmpty()" data-testid="lco-drop-empty" (change)="dropEmpty.set($any($event.target).checked)" />
+        {{ i18n.t('lco.opt.dropEmpty') }}
+      </label>
+      <label class="check">
+        <input type="checkbox" [checked]="unique()" data-testid="lco-unique" (change)="unique.set($any($event.target).checked)" />
+        {{ i18n.t('lco.opt.unique') }}
+      </label>
+    </div>
+    <div class="row">
+      <span class="label">{{ i18n.t('lco.sort') }}</span>
+      <app-segmented [label]="i18n.t('lco.sort')" [options]="sortOptions()" [(value)]="sort" />
+    </div>
+    @if (dir() === 'toLine') {
+      <div class="row">
+        <span class="label">{{ i18n.t('lco.case') }}</span>
+        <app-segmented [label]="i18n.t('lco.case')" [options]="caseOptions()" [(value)]="caseMode" />
+      </div>
+    }
+  </section>
+
+  <section class="panel" [attr.aria-label]="i18n.t('lco.result')">
+    <h2 class="eyebrow">{{ i18n.t('lco.result') }}</h2>
+    <div aria-live="polite">
+      @if (converted()) {
+        <p class="summary" data-testid="lco-count">{{ countText() }}</p>
+      } @else if (!error()) {
+        <p class="hint">{{ i18n.t('lco.empty') }}</p>
+      }
+    </div>
+    <div class="actions">
+      <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
+      <button type="button" class="btn small" data-shortcut="download" data-testid="lco-download" [disabled]="output() === ''" (click)="download()">
+        <app-icon name="download" /> {{ i18n.t('lco.download') }}
+      </button>
+      <button type="button" class="btn small" data-shortcut="swap" data-testid="lco-swap" [disabled]="output() === ''" (click)="swap()">
+        <app-icon name="swap" /> {{ i18n.t('lco.swap') }}
+      </button>
+      <button type="button" class="btn small" data-shortcut="clear" data-testid="lco-reset" [disabled]="text() === ''" (click)="reset()">
+        <app-icon name="trash" /> {{ i18n.t('lco.reset') }}
+      </button>
+    </div>
+    @if (output() !== '') {
+      <label class="visually-hidden" for="lco-out">{{ i18n.t('lco.out') }}</label>
+      <textarea id="lco-out" rows="8" readonly spellcheck="false" [value]="output()" data-testid="lco-out"></textarea>
+    }
+  </section>
+</div>

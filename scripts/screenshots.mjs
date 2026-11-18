@@ -871,6 +871,22 @@ try {
         await page.waitForTimeout(150);
         if ((await page.getByTestId('ext-out').inputValue()) !== 'mario.rossi@example.com (2)\ninfo@sito.it (1)') throw new Error('text-extractor: email inattese');
       } });
+  await shot('list-converter.png', { width: 1280, dark: false, path: '/list-converter/', setup: async (page) => {
+        await page.fill('#lco-text', "mela\nO'Brien\n12\n007\nmela");
+        await page.getByTestId('lco-preset-sql').click();
+        await page.getByTestId('lco-unique').check();
+        await page.waitForTimeout(250);
+        const out = () => page.getByTestId('lco-out').inputValue();
+        if ((await out()) !== "('mela', 'O''Brien', 12, '007')") throw new Error('list-converter: SQL inatteso ' + (await out()));
+        if (!/4 voci/.test(await page.getByTestId('lco-count').innerText())) throw new Error('list-converter: conteggio inatteso');
+        // andata e ritorno: scambia direzione e rileggi la lista
+        await page.getByTestId('lco-swap').click();
+        await page.waitForTimeout(250);
+        if ((await out()) !== "mela\nO'Brien\n12\n007") throw new Error('list-converter: ritorno inatteso ' + (await out()));
+        await page.getByTestId('lco-swap').click();
+        await page.waitForTimeout(250);
+        if ((await out()) !== "('mela', 'O''Brien', 12, '007')") throw new Error('list-converter: secondo scambio inatteso ' + (await out()));
+      } });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento «Elenco ↔ riga»: trasforma un elenco in una sola riga con separatori e apici (preset per SQL, JSON, JavaScript, CSV, URL e riga di comando, con gli escape giusti) e una riga in un elenco, rispettando le voci tra apici.',
+        en: 'New tool "List ↔ line": turn a list into a single line with separators and quotes (presets for SQL, JSON, JavaScript, CSV, URL and command line, with the right escaping) and a line back into a list, respecting quoted items.',
+        toolIds: ['list-converter'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento «Estrai dal testo»: incolla un testo e ottieni l\'elenco di email, link, IP, date, telefoni, IBAN, hashtag e altro, con conteggio per tipo, doppioni tolti, ordine a scelta, copia e download in .txt o .csv.',
         en: 'New tool "Text extractor": paste a text and get the list of emails, links, IPs, dates, phone numbers, IBANs, hashtags and more, with a count per kind, duplicates removed, your choice of order, copy and download as .txt or .csv.',
         toolIds: ['text-extractor'],

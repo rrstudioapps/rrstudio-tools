@@ -1477,4 +1477,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.ext.title', descriptionKey: 'seo.ext.desc' },
     loadComponent: () => import('./text-extractor/text-extractor.page').then((m) => m.TextExtractorPage),
   },
+  {
+    id: 'list-converter',
+    path: 'list-converter',
+    icon: 'columns',
+    category: 'text',
+    keywords: {
+      it: 'elenco riga converti separatore virgola apici sql in json array csv lista una riga unisci dividi parametri url shell',
+      en: 'list line convert separator comma quotes sql in json array csv join split one line url parameters shell',
+    },
+    titleKey: 'tool.lco.title',
+    descriptionKey: 'tool.lco.desc',
+    seo: { titleKey: 'seo.lco.title', descriptionKey: 'seo.lco.desc' },
+    loadComponent: () => import('./list-converter/list-converter.page').then((m) => m.ListConverterPage),
+  },
 ];
