@@ -1421,4 +1421,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.red.title', descriptionKey: 'seo.red.desc' },
     loadComponent: () => import('./image-redact/image-redact.page').then((m) => m.ImageRedactPage),
   },
+  {
+    id: 'zip-tool',
+    path: 'zip-tool',
+    icon: 'layers',
+    category: 'media',
+    keywords: {
+      it: 'zip crea estrai comprimi decomprimi archivio cartella unzip scompatta file compressione',
+      en: 'zip create extract compress decompress archive folder unzip unpack files compression',
+    },
+    titleKey: 'tool.zip.title',
+    descriptionKey: 'tool.zip.desc',
+    seo: { titleKey: 'seo.zip.title', descriptionKey: 'seo.zip.desc' },
+    loadComponent: () => import('./zip-tool/zip-tool.page').then((m) => m.ZipToolPage),
+  },
 ];

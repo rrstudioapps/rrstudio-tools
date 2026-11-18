@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento: crea archivi ZIP da file e cartelle, oppure apri uno ZIP, cerca nell\'elenco e scarica solo ciò che serve, con controlli contro archivi pericolosi.',
+        en: 'New tool: create ZIP archives from files and folders, or open a ZIP, search the list and download only what you need, with checks against dangerous archives.',
+        toolIds: ['zip-tool'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento: oscura parti di un\'immagine con riquadro pieno, pixelatura o sfocatura, con annulla e ripristina e senza metadati nel file.',
         en: 'New tool: redact parts of an image with a solid box, pixelation or blur, with undo and redo and no metadata in the output file.',
         toolIds: ['image-redact'],

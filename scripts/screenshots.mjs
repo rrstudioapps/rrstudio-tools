@@ -726,6 +726,63 @@ try {
         if (!/Rettangoli: 2/.test(await page.locator('.hint[aria-live=polite]').innerText())) throw new Error('image-redact: ripristina non ha rimesso il rettangolo');
       },
     });
+  await shot('zip-tool.png', {
+      width: 1280,
+      dark: false,
+      path: '/zip-tool/',
+      setup: async (page) => {
+        const { zipSync, strToU8 } = await import('fflate');
+        const seg = (name) => page.getByRole('button', { name, exact: true });
+        const downloadBuf = async (click) => {
+          const [dl] = await Promise.all([page.waitForEvent('download'), click()]);
+          const chunks = [];
+          for await (const c of await dl.createReadStream()) chunks.push(c);
+          return { name: dl.suggestedFilename(), buffer: Buffer.concat(chunks) };
+        };
+        const fileInput = 'app-file-drop .bar input[type=file]';
+        // crea: tre file (anche con nome unicode), poi scarica lo ZIP
+        await page.setInputFiles(fileInput, [
+          { name: 'nota.txt', mimeType: 'text/plain', buffer: Buffer.from('ciao '.repeat(400)) },
+          { name: 'dati.csv', mimeType: 'text/csv', buffer: Buffer.from('a;b\n1;2\n'.repeat(100)) },
+          { name: 'è già così.txt', mimeType: 'text/plain', buffer: Buffer.from('accenti') },
+        ]);
+        await page.waitForSelector('[data-testid=zip-total]');
+        if (!/3 file/.test(await page.getByTestId('zip-total').innerText())) throw new Error('zip-tool: attesi 3 file nell\'elenco');
+        const created = await downloadBuf(() => page.getByTestId('zip-create').click());
+        if (created.name !== 'archivio.zip') throw new Error('zip-tool: nome archivio ' + created.name);
+        if (created.buffer.subarray(0, 2).toString() !== 'PK') throw new Error('zip-tool: l\'archivio creato non è uno ZIP');
+        await page.waitForTimeout(200);
+        if (!/Creato archivio\.zip/.test(await page.getByTestId('zip-status').innerText())) throw new Error('zip-tool: manca il messaggio di creazione');
+        // estrai: archivio con date fisse e una voce pericolosa
+        const fixed = new Date(2025, 0, 15, 9, 30, 0).getTime();
+        const archive = zipSync({
+          'relazione.txt': [strToU8('Relazione di prova. '.repeat(50)), { mtime: fixed }],
+          'immagini/logo.svg': [strToU8('<svg xmlns="http://www.w3.org/2000/svg"/>'), { mtime: fixed }],
+          'ünïcödé/ß.txt': [strToU8('ciao'), { mtime: fixed }],
+          '../fuori.txt': [strToU8('x'), { mtime: fixed }],
+        });
+        await seg('Estrai').click();
+        await page.setInputFiles(fileInput, { name: 'esempio.zip', mimeType: 'application/zip', buffer: Buffer.from(archive) });
+        await page.waitForSelector('[data-testid=zip-table]');
+        if ((await page.getByTestId('zip-row').count()) !== 4) throw new Error('zip-tool: attese 4 voci');
+        if (!/percorso pericoloso/i.test(await page.getByTestId('zip-warn-unsafe').innerText())) throw new Error('zip-tool: manca l\'avviso sul percorso pericoloso');
+        await page.fill('#zip-search', 'logo');
+        await page.waitForTimeout(150);
+        if ((await page.getByTestId('zip-row').count()) !== 1) throw new Error('zip-tool: la ricerca non filtra');
+        await page.fill('#zip-search', '');
+        await page.waitForTimeout(150);
+        const one = await downloadBuf(() => page.getByRole('button', { name: 'Scarica relazione.txt', exact: true }).click());
+        if (one.name !== 'relazione.txt' || !one.buffer.toString().startsWith('Relazione di prova.')) throw new Error('zip-tool: download singolo errato');
+        await page.getByRole('checkbox', { name: 'Seleziona immagini/logo.svg' }).check();
+        await page.waitForTimeout(150);
+        const sel = await downloadBuf(() => page.getByTestId('zip-dl-selected').click());
+        if (sel.name !== 'esempio-selezione.zip' || sel.buffer.subarray(0, 2).toString() !== 'PK') throw new Error('zip-tool: ZIP dei selezionati errato ' + sel.name);
+        const all = await downloadBuf(() => page.getByTestId('zip-dl-all').click());
+        const names = Object.keys((await import('fflate')).unzipSync(new Uint8Array(all.buffer)));
+        if (names.length !== 3 || names.some((n) => n.includes('..'))) throw new Error('zip-tool: «scarica tutti» doveva avere 3 file sicuri: ' + names);
+        await page.waitForTimeout(200);
+      },
+    });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

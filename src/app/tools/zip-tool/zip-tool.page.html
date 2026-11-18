@@ -1,0 +1,166 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.zip.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('zip.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="zip-tool" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="bar">
+    <app-segmented [label]="i18n.t('zip.mode')" [options]="modes()" [value]="mode()" (valueChange)="setMode($event)" />
+  </div>
+
+  @if (mode() === 'create') {
+    <app-file-drop [hint]="i18n.t('zip.drop.create')" [multiple]="true" (filesSelected)="addFiles($event)">
+      <div class="row">
+        <label class="btn small">
+          <app-icon name="upload" /> {{ i18n.t('zip.folder') }}
+          <input class="visually-hidden" type="file" webkitdirectory multiple data-testid="zip-folder" (change)="onFolder($event)" />
+        </label>
+      </div>
+
+      <section class="panel" [attr.aria-label]="i18n.t('zip.files')">
+        <h2 class="eyebrow">{{ i18n.t('zip.files') }}</h2>
+        @if (items().length === 0) {
+          <p class="hint">{{ i18n.t('zip.list.empty') }}</p>
+        } @else {
+          <ul class="items" data-testid="zip-items">
+            @for (item of items(); track item.id) {
+              <li>
+                <span class="path" data-testid="zip-item">{{ item.path }}</span>
+                <span class="size mono">{{ size(item.file.size) }}</span>
+                <button type="button" class="btn small" [attr.aria-label]="i18n.t('zip.removeAria', { name: item.path })" (click)="removeItem(item.id)">
+                  {{ i18n.t('zip.remove') }}
+                </button>
+              </li>
+            }
+          </ul>
+          <p class="tool-ok" data-testid="zip-total" aria-live="polite">{{ i18n.t('zip.total', { n: items().length, size: size(totalBytes()) }) }}</p>
+        }
+      </section>
+
+      <section class="panel" [attr.aria-label]="i18n.t('zip.level')">
+        <app-segmented [label]="i18n.t('zip.level')" [options]="levels()" [value]="levelKey()" (valueChange)="setLevel($event)" />
+        <p class="hint">{{ i18n.t('zip.level.hint') }}</p>
+        <div class="field">
+          <label for="zip-name">{{ i18n.t('zip.name') }}</label>
+          <input
+            id="zip-name"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            maxlength="100"
+            data-testid="zip-name"
+            [placeholder]="i18n.t('zip.name.ph')"
+            [value]="name()"
+            (input)="name.set($any($event.target).value)"
+          />
+        </div>
+        <div class="row">
+          <button type="button" class="btn primary" data-shortcut="run" data-testid="zip-create" [disabled]="busy() || items().length === 0" (click)="create()">
+            <app-icon name="download" /> {{ i18n.t('zip.create') }}
+          </button>
+          <button type="button" class="btn" data-shortcut="clear" data-testid="zip-clear" [disabled]="busy() || items().length === 0" (click)="clearItems()">
+            {{ i18n.t('zip.clear') }}
+          </button>
+        </div>
+      </section>
+    </app-file-drop>
+  } @else {
+    <app-file-drop [hint]="i18n.t('zip.drop.extract')" accept=".zip,application/zip,application/x-zip-compressed" (filesSelected)="openArchive($event)">
+      @if (opened()) {
+        <p class="tool-ok" data-testid="zip-archive">
+          {{ i18n.t('zip.archive', { name: archiveFile(), n: entries().length, size: size(archiveBytes()), expanded: size(expandedBytes()) }) }}
+        </p>
+        @if (hasEncrypted()) {
+          <p class="tool-error" role="alert" data-testid="zip-warn-encrypted">{{ i18n.t('zip.warn.encrypted') }}</p>
+        }
+        @if (unsafeCount() > 0) {
+          <p class="tool-error" role="alert" data-testid="zip-warn-unsafe">{{ i18n.t('zip.warn.unsafe', { n: unsafeCount() }) }}</p>
+        }
+
+        <div class="field">
+          <label for="zip-search">{{ i18n.t('zip.search') }}</label>
+          <input
+            id="zip-search"
+            type="search"
+            autocomplete="off"
+            spellcheck="false"
+            data-testid="zip-search"
+            [placeholder]="i18n.t('zip.search.ph')"
+            [value]="query()"
+            (input)="query.set($any($event.target).value)"
+          />
+        </div>
+
+        <div class="row">
+          <button type="button" class="btn primary" data-testid="zip-dl-selected" [disabled]="busy() || selectedList().length === 0" (click)="downloadSelected()">
+            <app-icon name="download" /> {{ i18n.t('zip.dlSelected') }}
+          </button>
+          <button type="button" class="btn" data-shortcut="download" data-testid="zip-dl-all" [disabled]="busy() || extractableAll().length === 0" (click)="downloadAll()">
+            <app-icon name="download" /> {{ i18n.t('zip.dlAll') }}
+          </button>
+          <span class="hint" aria-live="polite">{{ i18n.t('zip.selectedCount', { n: selectedList().length }) }}</span>
+        </div>
+
+        <div class="table-wrap">
+          <table data-testid="zip-table">
+            <caption class="visually-hidden">{{ i18n.t('zip.table') }}</caption>
+            <thead>
+              <tr>
+                <th scope="col" class="narrow">
+                  <input type="checkbox" [attr.aria-label]="i18n.t('zip.selectAll')" [checked]="allVisibleSelected()" (change)="toggleVisible($any($event.target).checked)" />
+                </th>
+                <th scope="col">{{ i18n.t('zip.col.path') }}</th>
+                <th scope="col" class="num">{{ i18n.t('zip.col.size') }}</th>
+                <th scope="col" class="num">{{ i18n.t('zip.col.csize') }}</th>
+                <th scope="col">{{ i18n.t('zip.col.date') }}</th>
+                <th scope="col">{{ i18n.t('zip.col.action') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (e of shown(); track e.index) {
+                <tr [class.bad]="!e.safe || e.encrypted" data-testid="zip-row">
+                  <td class="narrow">
+                    @if (extractable(e)) {
+                      <input type="checkbox" [attr.aria-label]="i18n.t('zip.selectRow', { name: e.name })" [checked]="selected().has(e.index)" (change)="toggle(e, $any($event.target).checked)" />
+                    }
+                  </td>
+                  <td class="path">
+                    {{ e.name }}
+                    @if (stateOf(e); as st) {
+                      <span class="state">({{ st }})</span>
+                    }
+                  </td>
+                  <td class="num mono">{{ e.dir ? '' : size(e.size) }}</td>
+                  <td class="num mono">{{ e.dir ? '' : size(e.csize) }}</td>
+                  <td class="mono">{{ date(e.date) }}</td>
+                  <td>
+                    @if (extractable(e)) {
+                      <button type="button" class="btn small" data-testid="zip-dl-one" [disabled]="busy()" [attr.aria-label]="i18n.t('zip.downloadAria', { name: e.name })" (click)="downloadOne(e)">
+                        {{ i18n.t('zip.download') }}
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        @if (filtered().length === 0) {
+          <p class="hint">{{ i18n.t('zip.none') }}</p>
+        } @else if (filtered().length > maxRows) {
+          <p class="hint">{{ i18n.t('zip.more', { n: maxRows }) }}</p>
+        }
+      }
+    </app-file-drop>
+  }
+
+  @if (error()) {
+    <p class="tool-error" role="alert" data-testid="zip-error">{{ error() }}</p>
+  }
+  <p class="tool-ok" role="status" aria-live="polite" data-testid="zip-status">{{ busy() ? i18n.t('zip.working') : status() }}</p>
+</div>
