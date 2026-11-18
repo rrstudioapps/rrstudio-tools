@@ -1,0 +1,198 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.tbin.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('tbin.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="text-binary-converter" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tbin-bar">
+    <div class="bar-item">
+      <span class="eyebrow">{{ i18n.t('tbin.direction') }}</span>
+      <app-segmented [label]="i18n.t('tbin.direction')" [options]="directionOptions()" [(value)]="direction" />
+    </div>
+    <div class="bar-item">
+      <span class="eyebrow">{{ i18n.t('tbin.format') }}</span>
+      <app-segmented [label]="i18n.t('tbin.format')" [options]="formatOptions()" [value]="format()" (valueChange)="setFormat($event)" />
+    </div>
+    <div class="bar-item">
+      <label class="eyebrow" for="tbin-enc">{{ i18n.t('tbin.encoding') }}</label>
+      <select id="tbin-enc" data-testid="tbin-enc" [value]="encoding()" (change)="encoding.set($any($event.target).value)">
+        @for (e of encodings; track e) {
+          <option [value]="e" [selected]="e === encoding()">{{ i18n.t('tbin.enc.' + e) }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="tbin-layout">
+    <div class="side">
+      @if (file()) {
+        <div class="file-card" data-testid="tbin-file-info">
+          <p class="hint">{{ fileInfo() }}</p>
+          <button type="button" class="btn small" data-testid="tbin-file-clear" (click)="clearFile()">
+            <app-icon name="close" /> {{ i18n.t('tbin.file.clear') }}
+          </button>
+        </div>
+      } @else {
+        <div class="field">
+          <label for="tbin-input">{{ i18n.t(direction() === 'toBytes' ? 'tbin.input.text' : 'tbin.input.bytes') }}</label>
+          <textarea
+            id="tbin-input"
+            rows="8"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [placeholder]="i18n.t(direction() === 'toBytes' ? 'tbin.input.text.ph' : 'tbin.input.bytes.ph')"
+            [value]="input()"
+            [attr.aria-invalid]="error() ? 'true' : null"
+            [attr.aria-describedby]="error() ? 'tbin-error' : null"
+            data-testid="tbin-input"
+            (input)="input.set($any($event.target).value)"
+          ></textarea>
+        </div>
+      }
+
+      <div class="field">
+        <label for="tbin-file">{{ i18n.t('tbin.file') }}</label>
+        <input id="tbin-file" type="file" data-testid="tbin-file" (change)="onFile($event)" />
+        <p class="hint">{{ i18n.t('tbin.file.hint') }}</p>
+        @if (fileError()) {
+          <p class="tool-error" data-testid="tbin-file-error">{{ fileError() }}</p>
+        }
+      </div>
+
+      <fieldset class="options">
+        <legend class="eyebrow">{{ i18n.t('tbin.options') }}</legend>
+        @if (showSeparator()) {
+          <div class="opt">
+            <label for="tbin-sep">{{ i18n.t('tbin.separator') }}</label>
+            <select id="tbin-sep" data-testid="tbin-sep" (change)="separator.set($any($event.target).value)">
+              @for (s of separatorChoices(); track s) {
+                <option [value]="s" [selected]="s === separator()">{{ sepLabel(s) }}</option>
+              }
+            </select>
+          </div>
+        }
+        @if (showGroup()) {
+          <div class="opt">
+            <span class="eyebrow">{{ i18n.t('tbin.group') }}</span>
+            <app-segmented [label]="i18n.t('tbin.group')" [options]="groupOptions()" [(value)]="group" />
+          </div>
+        }
+        @if (producing() && !isBase64()) {
+          <div class="opt">
+            <label for="tbin-perline">{{ i18n.t('tbin.perLine') }}</label>
+            <input id="tbin-perline" type="number" min="0" max="4096" step="1" inputmode="numeric" data-testid="tbin-perline" [value]="perLine()" (input)="setPerLine($any($event.target).value)" />
+            <p class="hint">{{ i18n.t('tbin.perLine.hint') }}</p>
+          </div>
+        }
+        @if (showHexCase()) {
+          <label class="check">
+            <input type="checkbox" [checked]="uppercase()" data-testid="tbin-upper" (change)="uppercase.set($any($event.target).checked)" />
+            {{ i18n.t('tbin.upper') }}
+          </label>
+        }
+        @if (showPad()) {
+          <label class="check">
+            <input type="checkbox" [checked]="pad()" data-testid="tbin-pad" (change)="pad.set($any($event.target).checked)" />
+            {{ i18n.t('tbin.pad.' + format()) }}
+          </label>
+        }
+        @if (showBom()) {
+          <label class="check">
+            <input type="checkbox" [checked]="bom()" data-testid="tbin-bom" (change)="bom.set($any($event.target).checked)" />
+            {{ i18n.t('tbin.bom') }}
+          </label>
+        }
+        @if (showReplace()) {
+          <label class="check">
+            <input type="checkbox" [checked]="replace()" data-testid="tbin-replace" (change)="replace.set($any($event.target).checked)" />
+            {{ i18n.t('tbin.replace') }}
+          </label>
+        }
+      </fieldset>
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('tbin.result')" aria-live="polite">
+      <div class="result-head">
+        <h2 class="eyebrow">{{ i18n.t('tbin.result') }}</h2>
+        <div class="actions">
+          <app-copy-button shortcut="copy" [text]="output()" [disabled]="!hasResult()" />
+        </div>
+      </div>
+      @if (error()) {
+        <p id="tbin-error" class="tool-error" data-testid="tbin-error">{{ error() }}</p>
+      } @else if (!hasResult()) {
+        <p class="hint">{{ i18n.t('tbin.empty') }}</p>
+      } @else {
+        <label class="visually-hidden" for="tbin-output">{{ i18n.t('tbin.result.label') }}</label>
+        <textarea id="tbin-output" rows="8" readonly spellcheck="false" [value]="output()" data-testid="tbin-output"></textarea>
+        @if (warning()) {
+          <p class="tool-warn" role="note" data-testid="tbin-warning">{{ warning() }}</p>
+        }
+        <p class="hint" data-testid="tbin-stats">{{ statsText() }}</p>
+      }
+      <div class="actions">
+        <button type="button" class="btn small" data-testid="tbin-download-bin" [disabled]="!hasResult()" (click)="downloadBin()">
+          <app-icon name="download" /> {{ i18n.t('tbin.download.bin') }}
+        </button>
+        <button type="button" class="btn small" data-testid="tbin-download-txt" [disabled]="!hasResult()" (click)="downloadTxt()">
+          <app-icon name="download" /> {{ i18n.t('tbin.download.txt') }}
+        </button>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn small" data-shortcut="swap" data-testid="tbin-swap" [disabled]="!hasResult() || file() !== null" (click)="swap()">
+          <app-icon name="swap" /> {{ i18n.t('tbin.swap') }}
+        </button>
+        <button type="button" class="btn small" data-shortcut="clear" data-testid="tbin-reset" [disabled]="input() === '' && file() === null" (click)="reset()">
+          <app-icon name="trash" /> {{ i18n.t('tbin.reset') }}
+        </button>
+      </div>
+    </section>
+  </div>
+
+  @if (file() && !error()) {
+    <section class="block" [attr.aria-label]="i18n.t('tbin.dump')">
+      <h2 class="eyebrow">{{ i18n.t('tbin.dump') }}</h2>
+      <pre class="dump" tabindex="0" data-testid="tbin-dump">{{ dump() }}</pre>
+      <p class="hint">{{ dumpNote() }}</p>
+    </section>
+  }
+
+  @if (table().length > 0) {
+    <section class="block" [attr.aria-label]="i18n.t('tbin.table')">
+      <h2 class="eyebrow">{{ i18n.t('tbin.table') }}</h2>
+      <div class="table-wrap">
+        <table data-testid="tbin-table">
+          <caption class="visually-hidden">{{ i18n.t('tbin.table.caption', { max: tableRows }) }}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('tbin.table.char') }}</th>
+              <th scope="col">{{ i18n.t('tbin.table.cp') }}</th>
+              <th scope="col">{{ i18n.t('tbin.table.bytes') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of table(); track $index) {
+              <tr>
+                <td class="ch">{{ r.shown }}</td>
+                <td>{{ r.codePoint }}</td>
+                <td>
+                  {{ r.bytes }}
+                  @if (r.unmappable) {
+                    <span class="hint"> {{ i18n.t('tbin.table.unmappable') }}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">{{ i18n.t('tbin.table.note', { max: tableRows }) }}</p>
+    </section>
+  }
+</div>

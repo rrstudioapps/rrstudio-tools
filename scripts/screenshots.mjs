@@ -817,6 +817,45 @@ try {
         if (!v.includes('😀')) throw new Error('risultato finale errato: ' + v);
       },
     });
+  await shot('text-binary-converter.png', {
+      width: 1280,
+      dark: false,
+      path: '/text-binary-converter/',
+      setup: async (page) => {
+        const seg = (name) => page.getByRole('button', { name, exact: true });
+        const out = async () => {
+          await page.waitForTimeout(150);
+          return page.getByTestId('tbin-output').inputValue();
+        };
+        // testo → byte in UTF-8
+        await page.fill('#tbin-input', 'Ciao è 😀');
+        let v = await out();
+        if (v !== '43 69 61 6F 20 C3 A8 20 F0 9F 98 80') throw new Error('hex UTF-8 errato: ' + v);
+        // Latin-1: l'emoji non esiste, diventa ? e compare l'avviso
+        await page.selectOption('#tbin-enc', 'latin1');
+        v = await out();
+        if (v !== '43 69 61 6F 20 E8 20 3F') throw new Error('hex Latin-1 errato: ' + v);
+        await page.waitForSelector('[data-testid=tbin-warning]');
+        await page.selectOption('#tbin-enc', 'utf-8');
+        // binario
+        await seg('Binario').click();
+        v = await out();
+        if (!v.startsWith('01000011 01101001')) throw new Error('binario errato: ' + v);
+        await seg('Esadecimale').click();
+        // scambia: i byte tornano testo
+        await page.getByTestId('tbin-swap').click();
+        v = await out();
+        if (v !== 'Ciao è 😀') throw new Error('byte → testo errato: ' + v);
+        // errore: byte isolato FF, con la posizione
+        await page.fill('#tbin-input', '48 65 FF');
+        await page.waitForSelector('[data-testid=tbin-error]');
+        if (!/posizione 2/i.test(await page.getByTestId('tbin-error').innerText())) throw new Error('posizione dell\'errore mancante');
+        // prefissi misti
+        await page.fill('#tbin-input', '0x43 \\x69,61-6f 20 %C3%A8 F0 9F 98 80');
+        v = await out();
+        if (v !== 'Ciao è 😀') throw new Error('prefissi misti errati: ' + v);
+      },
+    });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

@@ -1449,4 +1449,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.esc.title', descriptionKey: 'seo.esc.desc' },
     loadComponent: () => import('./string-escape/string-escape.page').then((m) => m.StringEscapePage),
   },
+  {
+    id: 'text-binary-converter',
+    path: 'text-binary-converter',
+    icon: 'binary',
+    category: 'dev',
+    keywords: {
+      it: 'testo byte esadecimale binario decimale ottale base64 hex utf-8 utf-16 latin-1 windows-1252 ascii codifica decodifica unicode code point bom hex dump',
+      en: 'text bytes hexadecimal binary decimal octal base64 hex utf-8 utf-16 latin-1 windows-1252 ascii encoding decoding unicode code point bom hex dump',
+    },
+    titleKey: 'tool.tbin.title',
+    descriptionKey: 'tool.tbin.desc',
+    seo: { titleKey: 'seo.tbin.title', descriptionKey: 'seo.tbin.desc' },
+    loadComponent: () => import('./text-binary-converter/text-binary-converter.page').then((m) => m.TextBinaryConverterPage),
+  },
 ];

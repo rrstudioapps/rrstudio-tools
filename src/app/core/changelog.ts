@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento: converte testo in byte (esadecimale, binario, decimale, ottale, Base64) e viceversa, con più codifiche, tabella dei caratteri e anteprima hex dump di un file.',
+        en: 'New tool: converts text to bytes (hex, binary, decimal, octal, Base64) and back, with several encodings, a character table and a hex dump preview of a file.',
+        toolIds: ['text-binary-converter'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento: escape e unescape di stringhe per JSON, JavaScript, Python, regex, shell, SQL, CSV, Java e PHP, con errori precisi e supporto alle emoji.',
         en: 'New tool: string escape and unescape for JSON, JavaScript, Python, regex, shell, SQL, CSV, Java and PHP, with precise errors and emoji support.',
         toolIds: ['string-escape'],
