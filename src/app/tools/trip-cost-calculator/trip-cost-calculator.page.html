@@ -1,0 +1,339 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.trip.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('trip.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="trip-cost-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="bar">
+    <app-segmented [label]="i18n.t('trip.mode')" [options]="modes()" [(value)]="mode" />
+  </div>
+
+  <div class="layout">
+    <section class="panel" [attr.aria-label]="i18n.t('trip.mode.' + mode())" (input)="touched.set(true)">
+      @if (showDistance()) {
+        <div class="field">
+          <label for="trip-distance">{{ i18n.t('trip.distance') }}</label>
+          <div class="row">
+            <input
+              id="trip-distance"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="i18n.t('trip.distance.ph')"
+              [value]="distance()"
+              [attr.aria-invalid]="err(distP()) !== ''"
+              [attr.aria-describedby]="err(distP()) ? 'trip-distance-err' : null"
+              data-testid="trip-distance"
+              (input)="distance.set($any($event.target).value)"
+            />
+            <select [attr.aria-label]="i18n.t('trip.distance.unit')" data-testid="trip-dist-unit" (change)="setDistUnit($any($event.target).value)">
+              @for (u of distUnits; track u) {
+                <option [value]="u" [selected]="distUnit() === u">{{ i18n.t('trip.unit.' + u) }}</option>
+              }
+            </select>
+          </div>
+          @if (err(distP())) {
+            <p id="trip-distance-err" class="tool-error" data-testid="trip-distance-error">{{ i18n.t(err(distP())) }}</p>
+          }
+        </div>
+        @if (mode() === 'cost') {
+          <label class="check">
+            <input type="checkbox" [checked]="roundTrip()" data-testid="trip-round" (change)="roundTrip.set($any($event.target).checked)" />
+            <span>{{ i18n.t('trip.round') }}</span>
+          </label>
+        }
+      }
+
+      @if (showVehicle()) {
+        <div class="field">
+          <label for="trip-fuel">{{ i18n.t('trip.fuel') }}</label>
+          <select id="trip-fuel" data-testid="trip-fuel" (change)="setFuel($any($event.target).value)">
+            @for (f of fuels; track f) {
+              <option [value]="f" [selected]="fuel() === f">{{ i18n.t('trip.fuel.' + f) }}</option>
+            }
+          </select>
+        </div>
+
+        @if (isEv()) {
+          <div class="field">
+            <label for="trip-evcons">{{ i18n.t('trip.cons.ev') }}</label>
+            <input
+              id="trip-evcons"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="i18n.t('trip.cons.ev.ph')"
+              [value]="evCons()"
+              [attr.aria-invalid]="err(consP()) !== ''"
+              [attr.aria-describedby]="err(consP()) ? 'trip-evcons-err' : null"
+              data-testid="trip-evcons"
+              (input)="evCons.set($any($event.target).value)"
+            />
+            @if (err(consP())) {
+              <p id="trip-evcons-err" class="tool-error" data-testid="trip-cons-error">{{ i18n.t(err(consP())) }}</p>
+            }
+          </div>
+        } @else {
+          <div class="field">
+            <label for="trip-cons">{{ i18n.t('trip.cons') }}</label>
+            <div class="row">
+              <input
+                id="trip-cons"
+                type="text"
+                inputmode="decimal"
+                autocomplete="off"
+                [placeholder]="i18n.t('trip.cons.ph')"
+                [value]="consumption()"
+                [attr.aria-invalid]="err(consP()) !== ''"
+                [attr.aria-describedby]="err(consP()) ? 'trip-cons-err' : 'trip-cons-hint'"
+                data-testid="trip-consumption"
+                (input)="consumption.set($any($event.target).value)"
+              />
+              <select [attr.aria-label]="i18n.t('trip.cons.unit')" data-testid="trip-cons-unit" (change)="setConsUnit($any($event.target).value)">
+                @for (u of consUnits; track u) {
+                  <option [value]="u" [selected]="consUnit() === u">{{ i18n.t('trip.cons.' + u) }}</option>
+                }
+              </select>
+            </div>
+            @if (err(consP())) {
+              <p id="trip-cons-err" class="tool-error" data-testid="trip-cons-error">{{ i18n.t(err(consP())) }}</p>
+            } @else {
+              <p id="trip-cons-hint" class="hint">{{ i18n.t('trip.cons.hint') }}</p>
+            }
+          </div>
+        }
+
+        <div class="field">
+          <label for="trip-price">{{ i18n.t(isEv() ? 'trip.price.ev' : 'trip.price.' + priceVol()) }}</label>
+          @if (isEv()) {
+            <input
+              id="trip-price"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="i18n.t('trip.price.ph')"
+              [value]="evPrice()"
+              [attr.aria-invalid]="priceErr() !== ''"
+              [attr.aria-describedby]="priceErr() ? 'trip-price-err' : null"
+              data-testid="trip-price"
+              (input)="evPrice.set($any($event.target).value)"
+            />
+          } @else {
+            <input
+              id="trip-price"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="i18n.t('trip.price.ph')"
+              [value]="price()"
+              [attr.aria-invalid]="priceErr() !== ''"
+              [attr.aria-describedby]="priceErr() ? 'trip-price-err' : null"
+              data-testid="trip-price"
+              (input)="price.set($any($event.target).value)"
+            />
+          }
+          @if (priceErr()) {
+            <p id="trip-price-err" class="tool-error" data-testid="trip-price-error">{{ i18n.t(priceErr()) }}</p>
+          } @else if (mode() === 'range' && rangeBy() === 'tank') {
+            <p class="hint">{{ i18n.t('trip.price.opt') }}</p>
+          }
+        </div>
+      }
+
+      @if (mode() === 'cost') {
+        <div class="field">
+          <label for="trip-fixed">{{ i18n.t('trip.fixed') }}</label>
+          <input
+            id="trip-fixed"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            [value]="fixed()"
+            [attr.aria-invalid]="err(fixedP()) !== ''"
+            [attr.aria-describedby]="err(fixedP()) ? 'trip-fixed-err' : 'trip-fixed-hint'"
+            data-testid="trip-fixed"
+            (input)="fixed.set($any($event.target).value)"
+          />
+          @if (err(fixedP())) {
+            <p id="trip-fixed-err" class="tool-error" data-testid="trip-fixed-error">{{ i18n.t(err(fixedP())) }}</p>
+          } @else {
+            <p id="trip-fixed-hint" class="hint">{{ i18n.t('trip.fixed.hint') }}</p>
+          }
+        </div>
+        <div class="field">
+          <label for="trip-people">{{ i18n.t('trip.people') }}</label>
+          <input
+            id="trip-people"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            [max]="maxPeople"
+            [value]="people()"
+            [attr.aria-invalid]="peopleErr() !== ''"
+            [attr.aria-describedby]="peopleErr() ? 'trip-people-err' : null"
+            data-testid="trip-people"
+            (input)="people.set($any($event.target).value)"
+          />
+          @if (peopleErr()) {
+            <p id="trip-people-err" class="tool-error" data-testid="trip-people-error">{{ i18n.t(peopleErr()) }}</p>
+          }
+        </div>
+        <label class="check">
+          <input type="checkbox" [checked]="co2()" data-testid="trip-co2" (change)="co2.set($any($event.target).checked)" />
+          <span>{{ i18n.t('trip.co2') }}</span>
+        </label>
+        @if (co2()) {
+          <p class="note" data-testid="trip-co2-note">{{ i18n.t('trip.co2.note') }}</p>
+        }
+      }
+
+      @if (mode() === 'avg') {
+        <div class="field">
+          <label for="trip-liters">{{ i18n.t('trip.liters') }}</label>
+          <div class="row">
+            <input
+              id="trip-liters"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="i18n.t('trip.liters.ph')"
+              [value]="liters()"
+              [attr.aria-invalid]="err(litersP()) !== ''"
+              [attr.aria-describedby]="err(litersP()) ? 'trip-liters-err' : null"
+              data-testid="trip-liters"
+              (input)="liters.set($any($event.target).value)"
+            />
+            <select [attr.aria-label]="i18n.t('trip.vol.unit')" data-testid="trip-vol-unit" (change)="setVolUnit($any($event.target).value)">
+              @for (u of volUnits; track u) {
+                <option [value]="u" [selected]="volUnit() === u">{{ i18n.t('trip.vol.' + u) }}</option>
+              }
+            </select>
+          </div>
+          @if (err(litersP())) {
+            <p id="trip-liters-err" class="tool-error" data-testid="trip-liters-error">{{ i18n.t(err(litersP())) }}</p>
+          }
+        </div>
+        <div class="field">
+          <label for="trip-spend">{{ i18n.t('trip.spend') }}</label>
+          <input
+            id="trip-spend"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            [value]="spend()"
+            [attr.aria-invalid]="err(spendP()) !== ''"
+            [attr.aria-describedby]="err(spendP()) ? 'trip-spend-err' : 'trip-spend-hint'"
+            data-testid="trip-spend"
+            (input)="spend.set($any($event.target).value)"
+          />
+          @if (err(spendP())) {
+            <p id="trip-spend-err" class="tool-error" data-testid="trip-spend-error">{{ i18n.t(err(spendP())) }}</p>
+          } @else {
+            <p id="trip-spend-hint" class="hint">{{ i18n.t('trip.spend.hint') }}</p>
+          }
+        </div>
+      }
+
+      @if (mode() === 'range') {
+        <div class="field">
+          <app-segmented [label]="i18n.t('trip.by')" [options]="rangeBys()" [(value)]="rangeBy" />
+        </div>
+        @if (rangeBy() === 'budget') {
+          <div class="field">
+            <label for="trip-budget">{{ i18n.t('trip.budget') }}</label>
+            <input
+              id="trip-budget"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="i18n.t('trip.budget.ph')"
+              [value]="budget()"
+              [attr.aria-invalid]="err(budgetP()) !== ''"
+              [attr.aria-describedby]="err(budgetP()) ? 'trip-budget-err' : null"
+              data-testid="trip-budget"
+              (input)="budget.set($any($event.target).value)"
+            />
+            @if (err(budgetP())) {
+              <p id="trip-budget-err" class="tool-error" data-testid="trip-budget-error">{{ i18n.t(err(budgetP())) }}</p>
+            }
+          </div>
+        } @else {
+          <div class="field">
+            <label for="trip-tank">{{ i18n.t(isEv() ? 'trip.tank.ev' : 'trip.tank.' + priceVol()) }}</label>
+            <input
+              id="trip-tank"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              [placeholder]="i18n.t('trip.tank.ph')"
+              [value]="tank()"
+              [attr.aria-invalid]="err(tankP()) !== ''"
+              [attr.aria-describedby]="err(tankP()) ? 'trip-tank-err' : null"
+              data-testid="trip-tank"
+              (input)="tank.set($any($event.target).value)"
+            />
+            @if (err(tankP())) {
+              <p id="trip-tank-err" class="tool-error" data-testid="trip-tank-error">{{ i18n.t(err(tankP())) }}</p>
+            }
+          </div>
+        }
+      }
+
+      <div class="actions">
+        <button type="button" class="btn" data-shortcut="clear" data-testid="trip-clear" (click)="clear()">{{ i18n.t('trip.clear') }}</button>
+      </div>
+    </section>
+
+    <section class="result" aria-live="polite" [attr.aria-label]="i18n.t('trip.result')">
+      @if (calcError()) {
+        <p class="tool-error" data-testid="trip-calc-error">{{ i18n.t(calcError()) }}</p>
+      } @else if (mode() === 'cost' && trip(); as r) {
+        <dl class="facts">
+          <div><dt>{{ i18n.t('trip.r.distance') }}</dt><dd data-testid="trip-r-distance">{{ num(distShown()) }} {{ i18n.t('trip.u.' + distUnit()) }}</dd></div>
+          <div><dt>{{ i18n.t(isEv() ? 'trip.r.energy.ev' : 'trip.r.energy') }}</dt><dd data-testid="trip-r-energy">{{ num(r.energy) }} {{ energyUnit() }}</dd></div>
+          <div><dt>{{ i18n.t(isEv() ? 'trip.r.fuel.ev' : 'trip.r.fuel') }}</dt><dd data-testid="trip-r-fuel">{{ eur(r.fuelCents) }}</dd></div>
+          <div><dt>{{ i18n.t('trip.r.fixed') }}</dt><dd data-testid="trip-r-fixed">{{ eur(r.fixedCents) }}</dd></div>
+          <div class="big"><dt>{{ i18n.t('trip.r.total') }}</dt><dd data-testid="trip-r-total">{{ eur(r.totalCents) }}</dd></div>
+          <div><dt>{{ i18n.t('trip.r.person') }}</dt><dd data-testid="trip-r-person">{{ eur(r.perPersonCents) }}</dd></div>
+          <div><dt>{{ i18n.t(distUnit() === 'mi' ? 'trip.r.perMi' : 'trip.r.perKm') }}</dt><dd data-testid="trip-r-perkm">{{ eurPrecise(perUnitCost()) }}</dd></div>
+          @if (co2() && r.co2Kg !== null) {
+            <div><dt>{{ i18n.t('trip.r.co2') }}</dt><dd data-testid="trip-r-co2">{{ num(r.co2Kg, 1) }} {{ i18n.t('trip.u.kg') }}</dd></div>
+          }
+        </dl>
+        @if (co2() && r.co2Kg !== null) {
+          <p class="note">{{ i18n.t('trip.co2.note') }}</p>
+        }
+        <app-copy-button shortcut="copy" [text]="summary()" [label]="i18n.t('trip.copy')" />
+      } @else if (mode() === 'avg' && avg(); as a) {
+        <dl class="facts">
+          <div class="big"><dt>{{ i18n.t('trip.r.l100') }}</dt><dd data-testid="trip-a-l100">{{ num(a.l100) }}</dd></div>
+          <div><dt>{{ i18n.t('trip.r.kml') }}</dt><dd data-testid="trip-a-kml">{{ num(a.kml) }}</dd></div>
+          <div><dt>{{ i18n.t('trip.r.mpgUk') }}</dt><dd data-testid="trip-a-mpguk">{{ num(a.mpgUk) }}</dd></div>
+          <div><dt>{{ i18n.t('trip.r.mpgUs') }}</dt><dd data-testid="trip-a-mpgus">{{ num(a.mpgUs) }}</dd></div>
+          @if (a.costPerKm !== null) {
+            <div><dt>{{ i18n.t('trip.r.perKm') }}</dt><dd data-testid="trip-a-perkm">{{ eurPrecise(a.costPerKm) }}</dd></div>
+            <div><dt>{{ i18n.t('trip.r.cost100') }}</dt><dd data-testid="trip-a-cost100">{{ eurPrecise(a.costPer100Km ?? 0) }}</dd></div>
+          }
+        </dl>
+        <app-copy-button shortcut="copy" [text]="summary()" [label]="i18n.t('trip.copy')" />
+      } @else if (mode() === 'range' && range(); as g) {
+        <dl class="facts">
+          <div class="big"><dt>{{ i18n.t('trip.r.km') }}</dt><dd data-testid="trip-g-km">{{ num(g.km, 1) }}</dd></div>
+          <div><dt>{{ i18n.t('trip.r.mi') }}</dt><dd data-testid="trip-g-mi">{{ num(rangeMiles(), 1) }}</dd></div>
+          <div><dt>{{ i18n.t(isEv() ? 'trip.r.used.ev' : 'trip.r.used') }}</dt><dd data-testid="trip-g-used">{{ num(g.energy) }} {{ energyUnit() }}</dd></div>
+          @if (g.costCents !== null) {
+            <div><dt>{{ i18n.t('trip.r.cost') }}</dt><dd data-testid="trip-g-cost">{{ eur(g.costCents) }}</dd></div>
+          }
+        </dl>
+        <app-copy-button shortcut="copy" [text]="summary()" [label]="i18n.t('trip.copy')" />
+      } @else {
+        <p class="hint" data-testid="trip-empty">{{ i18n.t('trip.empty') }}</p>
+      }
+    </section>
+  </div>
+</div>

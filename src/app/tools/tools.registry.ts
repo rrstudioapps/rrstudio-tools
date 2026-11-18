@@ -1491,4 +1491,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.lco.title', descriptionKey: 'seo.lco.desc' },
     loadComponent: () => import('./list-converter/list-converter.page').then((m) => m.ListConverterPage),
   },
+  {
+    id: 'trip-cost-calculator',
+    path: 'trip-cost-calculator',
+    icon: 'calculator',
+    category: 'calc',
+    keywords: {
+      it: 'viaggio costo carburante benzina diesel gpl elettrico consumo litri 100 km mpg miglia pedaggi co2 emissioni budget autonomia rifornimento',
+      en: 'trip cost fuel petrol gas diesel lpg electric consumption fuel economy mpg l/100km miles tolls co2 emissions budget range fill-up',
+    },
+    titleKey: 'tool.trip.title',
+    descriptionKey: 'tool.trip.desc',
+    seo: { titleKey: 'seo.trip.title', descriptionKey: 'seo.trip.desc' },
+    loadComponent: () => import('./trip-cost-calculator/trip-cost-calculator.page').then((m) => m.TripCostCalculatorPage),
+  },
 ];

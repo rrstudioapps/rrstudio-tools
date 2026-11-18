@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento: costo del viaggio e consumo carburante, con conversione tra l/100 km, km/l e mpg, stima della CO2 e calcolo dei chilometri con un budget.',
+        en: 'New tool: trip cost and fuel consumption, with conversion between l/100 km, km/l and mpg, a CO2 estimate and a range calculation for a budget.',
+        toolIds: ['trip-cost-calculator'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento «Elenco ↔ riga»: trasforma un elenco in una sola riga con separatori e apici (preset per SQL, JSON, JavaScript, CSV, URL e riga di comando, con gli escape giusti) e una riga in un elenco, rispettando le voci tra apici.',
         en: 'New tool "List ↔ line": turn a list into a single line with separators and quotes (presets for SQL, JSON, JavaScript, CSV, URL and command line, with the right escaping) and a line back into a list, respecting quoted items.',
         toolIds: ['list-converter'],
