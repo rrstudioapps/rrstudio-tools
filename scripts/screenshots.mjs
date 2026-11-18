@@ -69,7 +69,7 @@ try {
       if (!CHECK) await page.screenshot({ path: join(out, name), fullPage: true });
     } catch (e) {
       // un'interazione fallita non ferma gli altri: viene riportata alla fine con exit 1
-      errors.push(prefix + 'interazione fallita: ' + e.message.split('\n')[0]);
+      errors.push(prefix + 'interazione fallita: ' + (process.env.E2E_VERBOSE ? e.message : e.message.split('\n')[0]));
     }
     await ctx.close();
   }
@@ -616,6 +616,8 @@ try {
       dark: false,
       path: '/countdown/',
       setup: async (page) => {
+        // orologio fisso: il numero di giorni passati nello screenshot non deve cambiare da un giorno all'altro
+        await page.clock.setFixedTime(new Date('2026-11-18T12:00:00Z'));
         const text = (id) => page.getByTestId(id).innerText();
         // data fissa nel passato: lo screenshot non mostra mai la data odierna
         await page.fill('#cdt-name', 'Capodanno 2020');
@@ -635,6 +637,8 @@ try {
         await page.fill('#cdt-at', '2020-01-01T00:00');
         await page.waitForTimeout(250);
         if (!/è passato da/i.test(await text('cdt-status'))) throw new Error('countdown: stato finale errato');
+        await page.waitForTimeout(1300); // un tick dell'orologio con l'ora fissa
+
       },
     });
   await shot('split-bill.png', {
@@ -691,6 +695,8 @@ try {
           g.fillRect(40, 40, 120, 80);
           g.fillStyle = '#ffd166';
           g.fillRect(220, 150, 140, 100);
+          g.fillStyle = '#222';
+          for (let x = 228; x < 360; x += 24) g.fillRect(x, 150, 8, 100); // strisce: la pixelatura le mescola
           return c.toDataURL('image/png').split(',')[1];
         });
         await page.setInputFiles('app-file-drop input[type=file]', { name: 'prova.png', mimeType: 'image/png', buffer: Buffer.from(b64, 'base64') });
@@ -717,13 +723,19 @@ try {
         }
         await page.waitForTimeout(150);
         if (!/Rettangoli: 2/.test(await page.locator('.hint[aria-live=polite]').innerText())) throw new Error('image-redact: attesi 2 rettangoli');
-        // annulla e ripristina
-        await seg('Annulla').click();
-        await page.waitForTimeout(150);
-        if (!/Rettangoli: 1/.test(await page.locator('.hint[aria-live=polite]').innerText())) throw new Error('image-redact: annulla non ha tolto il rettangolo');
-        await seg('Ripristina').click();
-        await page.waitForTimeout(150);
-        if (!/Rettangoli: 2/.test(await page.locator('.hint[aria-live=polite]').innerText())) throw new Error('image-redact: ripristina non ha rimesso il rettangolo');
+        // annulla e ripristina: ogni modifica dei campi è un passo, quindi si ripete finché il numero cambia
+        const count = async () => Number(/Rettangoli: (\d+)/.exec(await page.locator('.hint[aria-live=polite]').innerText())?.[1]);
+        for (let i = 0; i < 12 && (await count()) !== 1; i++) {
+          await seg('Annulla').click();
+          await page.waitForTimeout(100);
+        }
+        if ((await count()) !== 1) throw new Error('image-redact: annulla non ha tolto il rettangolo');
+        for (let i = 0; i < 20 && !(await seg('Ripristina').isDisabled()); i++) {
+          await seg('Ripristina').click();
+          await page.waitForTimeout(100);
+        }
+        if ((await count()) !== 2) throw new Error('image-redact: ripristina non ha rimesso il rettangolo');
+        if (!/Pixelatura.*140×100 px in \(220, 150\)/.test(await page.locator('body').innerText())) throw new Error('image-redact: il ripristino non ha riportato la pixelatura impostata');
       },
     });
   await shot('zip-tool.png', {
@@ -762,8 +774,10 @@ try {
           '../fuori.txt': [strToU8('x'), { mtime: fixed }],
         });
         await seg('Estrai').click();
+        await page.waitForSelector('[data-testid=zip-name]', { state: 'detached' }); // la modalità è cambiata
         await page.setInputFiles(fileInput, { name: 'esempio.zip', mimeType: 'application/zip', buffer: Buffer.from(archive) });
-        await page.waitForSelector('[data-testid=zip-table]');
+        await page.waitForSelector('[data-testid=zip-table], [data-testid=zip-error]');
+        if (await page.getByTestId('zip-error').count()) throw new Error('zip-tool: errore in estrazione: ' + (await page.getByTestId('zip-error').innerText()));
         if ((await page.getByTestId('zip-row').count()) !== 4) throw new Error('zip-tool: attese 4 voci');
         if (!/percorso pericoloso/i.test(await page.getByTestId('zip-warn-unsafe').innerText())) throw new Error('zip-tool: manca l\'avviso sul percorso pericoloso');
         await page.fill('#zip-search', 'logo');
@@ -853,7 +867,7 @@ try {
         // prefissi misti
         await page.fill('#tbin-input', '0x43 \\x69,61-6f 20 %C3%A8 F0 9F 98 80');
         v = await out();
-        if (v !== 'Ciao è 😀') throw new Error('prefissi misti errati: ' + v);
+        if (v !== 'Ciao è😀') throw new Error('prefissi misti errati: ' + v); // i byte sono 43 69 61 6F 20 C3 A8 F0…: nessuno spazio tra è e l'emoji
       },
     });
   await shot('text-extractor.png', { width: 1280, dark: false, path: '/text-extractor/', setup: async (page) => {
