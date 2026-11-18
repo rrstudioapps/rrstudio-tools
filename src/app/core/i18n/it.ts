@@ -10,6 +10,7 @@ export const it = {
   'nav.theme.toLight': 'Passa al tema chiaro',
   'nav.theme.toDark': 'Passa al tema scuro',
 
+  'related.title': 'Strumenti correlati',
   'guide.how': 'Come si usa',
   'guide.faq': 'Domande frequenti',
   'guide.privacy': 'Privacy',

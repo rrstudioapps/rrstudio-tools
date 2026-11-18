@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
+import { CHANGELOG } from '../changelog';
 import { SITE_URL } from '../links';
 import { TOOLS } from '../../tools/tools.registry';
 
@@ -115,6 +116,25 @@ export function allSlugs(): string[] {
   return ['', ...TOOLS.map((t) => t.path), ...STATIC_PAGES];
 }
 
+/** Giorno della prima uscita: ultima data nota di una pagina che le Novità non nominano mai. */
+const FIRST_RELEASE = '2026-11-15';
+/** Ultimo aggiornamento dell'informativa sulla privacy (stesso giorno scritto nella pagina). */
+const PRIVACY_UPDATED = '2026-11-17';
+
+/**
+ * Data (AAAA-MM-GG) dell'ultima modifica nota di una pagina, ricavata dalle Novità: per uno strumento l'ultima voce che lo
+ * nomina, per home e Novità la voce più recente. Non è l'ora di una commit: serve solo come `lastmod` della sitemap.
+ */
+export function lastModified(slug: string): string {
+  const newest = CHANGELOG[0].date;
+  if (slug === '' || isChangelogSlug(slug)) return newest;
+  if (slug === 'privacy') return PRIVACY_UPDATED;
+  const tool = TOOLS.find((t) => t.path === slug);
+  if (!tool) return newest;
+  const hit = CHANGELOG.find((v) => v.entries.some((e) => e.toolIds?.includes(tool.id)));
+  return hit?.date ?? FIRST_RELEASE;
+}
+
 /** Sitemap completa: ogni URL italiana e inglese, con i link xhtml:link alternate. */
 export function buildSitemap(): string {
   const entries: string[] = [];
@@ -124,7 +144,7 @@ export function buildSitemap(): string {
       const alts = hreflangLinks(slug)
         .map((a) => `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${a.href}"/>`)
         .join('\n');
-      entries.push(`  <url>\n    <loc>${publicUrl(slug, lang)}</loc>\n${alts}\n  </url>`);
+      entries.push(`  <url>\n    <loc>${publicUrl(slug, lang)}</loc>\n    <lastmod>${lastModified(slug)}</lastmod>\n${alts}\n  </url>`);
     }
   }
   // Novità: slug diverso per lingua, stessi link alternate su entrambe le URL
@@ -132,7 +152,7 @@ export function buildSitemap(): string {
     .map((a) => `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${a.href}"/>`)
     .join('\n');
   for (const lang of LANGS) {
-    entries.push(`  <url>\n    <loc>${publicUrl(CHANGELOG_SLUG[lang], lang)}</loc>\n${alts}\n  </url>`);
+    entries.push(`  <url>\n    <loc>${publicUrl(CHANGELOG_SLUG[lang], lang)}</loc>\n    <lastmod>${lastModified(CHANGELOG_SLUG.it)}</lastmod>\n${alts}\n  </url>`);
   }
   return (
     '<?xml version="1.0" encoding="UTF-8"?>\n' +

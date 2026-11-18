@@ -28,6 +28,11 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     title: { it: 'Codice fiscale, confronto testi e stampa', en: 'Tax code, text comparison and printing' },
     entries: [
       {
+        kind: 'improvement',
+        it: 'In fondo a ogni strumento trovi i collegamenti agli strumenti affini, per passare da uno all\'altro senza tornare alla home.',
+        en: 'At the bottom of every tool you now find links to related tools, to move from one to another without going back to the home page.',
+      },
+      {
         kind: 'new-tool',
         it: 'Timer con conto alla rovescia, cronometro con giri e pomodoro; calcolatrice scientifica con cronologia; generatore di numeri casuali, dadi, estrazioni da un elenco e squadre.',
         en: 'Timer with countdown, stopwatch with laps and Pomodoro; scientific calculator with history; generator of random numbers, dice, draws from a list and teams.',

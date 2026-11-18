@@ -7,7 +7,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { I18nService, Lang } from '../i18n/i18n.service';
 import { Alternate, hasOgImage, hreflangLinks, publicUrl } from '../i18n/lang-routing';
 import { SITE_URL } from '../links';
-import { TOOLS } from '../../tools/tools.registry';
+import { CATEGORIES, TOOLS } from '../../tools/tools.registry';
 
 /** Dati SEO di una route (chiavi i18n), da mettere in `data.seo`. */
 export interface SeoData {
@@ -56,11 +56,16 @@ export class SeoService {
     return found;
   }
 
-  /** JSON-LD WebApplication delle sole pagine strumento (nelle altre pagine viene tolto). */
+  /**
+   * JSON-LD per tipo di pagina: WebApplication e BreadcrumbList (Home › categoria › strumento) nelle pagine strumento,
+   * WebSite nella home. Quelli che non servono alla pagina corrente vengono tolti.
+   */
   private applyAppData(toolId: string | null, seo: SeoData, slug: string, lang: Lang): void {
     const tool = toolId ? TOOLS.find((t) => t.id === toolId) : undefined;
+    this.setJsonLd('site', slug === '' && !seo.noindex ? this.siteData(lang) : null);
     if (!tool) {
       this.setJsonLd('webapp', null);
+      this.setJsonLd('crumbs', null);
       return;
     }
     const category = tool.category === 'dev' ? 'DeveloperApplication' : tool.category === 'media' ? 'MultimediaApplication' : 'UtilitiesApplication';
@@ -77,6 +82,30 @@ export class SeoService {
       inLanguage: lang,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
     });
+    const cat = CATEGORIES.find((c) => c.id === tool.category);
+    const home = publicUrl('', lang);
+    const crumbs = [
+      { name: this.i18n.t('nav.home'), url: home },
+      ...(cat ? [{ name: this.i18n.t(cat.titleKey), url: `${home}#${lang === 'it' ? cat.slug : cat.slugEn}` }] : []),
+      { name: this.i18n.t(tool.titleKey), url: publicUrl(slug, lang) },
+    ];
+    this.setJsonLd('crumbs', {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: c.url })),
+    });
+  }
+
+  /** JSON-LD WebSite della home: nome, indirizzo, lingua ed editore. */
+  private siteData(lang: Lang): object {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'rrstudio Tools',
+      url: publicUrl('', lang),
+      inLanguage: lang,
+      publisher: { '@type': 'Organization', name: 'rrstudio', url: SITE_URL },
+    };
   }
 
   /**

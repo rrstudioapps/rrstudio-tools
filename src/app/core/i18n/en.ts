@@ -11,6 +11,7 @@ export const en: Dict = {
   'nav.theme.toLight': 'Switch to light theme',
   'nav.theme.toDark': 'Switch to dark theme',
 
+  'related.title': 'Related tools',
   'guide.how': 'How to use it',
   'guide.faq': 'Frequently asked questions',
   'guide.privacy': 'Privacy',

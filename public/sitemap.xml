@@ -3,1064 +3,1245 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://tools.rr-dev.eu/</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/csv-dashboard</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csv-dashboard"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/csv-dashboard</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csv-dashboard"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-dashboard"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/qr-code-generator</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/qr-code-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/qr-code-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/qr-code-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/qr-code-generator</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/qr-code-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/qr-code-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/qr-code-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/text-diff</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/text-diff"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/text-diff"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-diff"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/text-diff</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/text-diff"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/text-diff"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-diff"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/markdown-editor</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/markdown-editor"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/markdown-editor"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/markdown-editor"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/markdown-editor</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/markdown-editor"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/markdown-editor"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/markdown-editor"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/word-counter</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/word-counter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/word-counter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/word-counter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/word-counter</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/word-counter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/word-counter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/word-counter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/regex-tester</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/regex-tester"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/regex-tester"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/regex-tester"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/regex-tester</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/regex-tester"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/regex-tester"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/regex-tester"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/csv-json-converter</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csv-json-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csv-json-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-json-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/csv-json-converter</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csv-json-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csv-json-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csv-json-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/base64</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/base64"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/base64"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/base64"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/base64</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/base64"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/base64"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/base64"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/url-encode</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/url-encode"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/url-encode"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/url-encode"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/url-encode</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/url-encode"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/url-encode"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/url-encode"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/json-formatter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-formatter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-formatter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-formatter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/json-formatter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-formatter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-formatter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-formatter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/json-diff</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-diff"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-diff"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-diff"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/json-diff</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-diff"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-diff"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-diff"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/json-viewer</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-viewer"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-viewer"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-viewer"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/json-viewer</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-viewer"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-viewer"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-viewer"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/image-compressor</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-compressor"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-compressor"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-compressor"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/image-compressor</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-compressor"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-compressor"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-compressor"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/pdf-tools</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-tools"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-tools"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-tools"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/pdf-tools</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-tools"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-tools"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-tools"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/images-to-pdf</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/images-to-pdf"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/images-to-pdf"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/images-to-pdf"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/images-to-pdf</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/images-to-pdf"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/images-to-pdf"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/images-to-pdf"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/pdf-to-images</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-to-images"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-to-images"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-to-images"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/pdf-to-images</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-to-images"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-to-images"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-to-images"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/pdf-to-text</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-to-text"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-to-text"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-to-text"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/pdf-to-text</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-to-text"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-to-text"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-to-text"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/exif-viewer</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/exif-viewer"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/exif-viewer"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/exif-viewer"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/exif-viewer</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/exif-viewer"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/exif-viewer"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/exif-viewer"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/password-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/password-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/password-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/password-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/password-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/password-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/password-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/password-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/password-strength-checker</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/password-strength-checker"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/password-strength-checker"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/password-strength-checker"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/password-strength-checker</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/password-strength-checker"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/password-strength-checker"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/password-strength-checker"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/totp-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/totp-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/totp-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/totp-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/totp-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/totp-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/totp-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/totp-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/hmac-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/hmac-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/hmac-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/hmac-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/hmac-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/hmac-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/hmac-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/hmac-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/ssh-key-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/ssh-key-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/ssh-key-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/ssh-key-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/ssh-key-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/ssh-key-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/ssh-key-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/ssh-key-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/csr-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csr-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csr-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csr-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/csr-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/csr-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/csr-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/csr-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/shamir-secret-sharing</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/shamir-secret-sharing"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/shamir-secret-sharing"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/shamir-secret-sharing"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/shamir-secret-sharing</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/shamir-secret-sharing"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/shamir-secret-sharing"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/shamir-secret-sharing"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/file-encrypt</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/file-encrypt"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/file-encrypt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/file-encrypt"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/file-encrypt</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/file-encrypt"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/file-encrypt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/file-encrypt"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/hash-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/hash-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/hash-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/hash-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/hash-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/hash-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/hash-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/hash-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/jwt-decoder</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/jwt-decoder"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/jwt-decoder"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/jwt-decoder"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/jwt-decoder</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/jwt-decoder"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/jwt-decoder"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/jwt-decoder"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/uuid-generator</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/uuid-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/uuid-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/uuid-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/uuid-generator</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/uuid-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/uuid-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/uuid-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/yaml-json-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/yaml-json-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/yaml-json-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/yaml-json-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/yaml-json-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/yaml-json-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/yaml-json-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/yaml-json-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/xml-formatter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-formatter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-formatter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-formatter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/xml-formatter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-formatter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-formatter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-formatter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/sql-formatter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/sql-formatter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/sql-formatter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/sql-formatter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/sql-formatter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/sql-formatter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/sql-formatter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/sql-formatter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/html-entities</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/html-entities"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/html-entities"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/html-entities"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/html-entities</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/html-entities"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/html-entities"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/html-entities"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/case-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/case-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/case-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/case-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/case-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/case-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/case-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/case-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/slug-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/slug-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/slug-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/slug-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/slug-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/slug-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/slug-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/slug-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/lorem-ipsum-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/lorem-ipsum-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/lorem-ipsum-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/lorem-ipsum-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/lorem-ipsum-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/lorem-ipsum-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/lorem-ipsum-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/lorem-ipsum-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/cron-expression</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/cron-expression"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/cron-expression"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/cron-expression"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/cron-expression</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/cron-expression"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/cron-expression"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/cron-expression"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/timestamp-converter</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timestamp-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timestamp-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timestamp-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/timestamp-converter</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timestamp-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timestamp-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timestamp-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/color-contrast-checker</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/color-contrast-checker"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/color-contrast-checker"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/color-contrast-checker"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/color-contrast-checker</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/color-contrast-checker"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/color-contrast-checker"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/color-contrast-checker"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/codice-fiscale</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/codice-fiscale"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/iban-partita-iva</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/iban-partita-iva"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/fattura-elettronica</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/fattura-elettronica"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/calcolo-iva</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/calcolo-iva"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/calcolo-giorni-lavorativi</loc>
+    <lastmod>2026-11-16</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/calcolo-giorni-lavorativi"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/calcolo-ritenuta-acconto</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/calcolo-ritenuta-acconto"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/calcolo-rata-mutuo</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/calcolo-rata-mutuo"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/numeri-in-lettere</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/numeri-in-lettere"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/percentage-calculator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/percentage-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/percentage-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/percentage-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/percentage-calculator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/percentage-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/percentage-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/percentage-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/unit-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/unit-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/unit-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/unit-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/unit-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/unit-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/unit-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/unit-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/date-calculator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/date-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/date-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/date-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/date-calculator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/date-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/date-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/date-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/timezone-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timezone-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timezone-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timezone-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/timezone-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timezone-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timezone-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timezone-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/number-base-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/number-base-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/number-base-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/number-base-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/number-base-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/number-base-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/number-base-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/number-base-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/barcode-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/barcode-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/barcode-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/barcode-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/barcode-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/barcode-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/barcode-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/barcode-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/qr-code-reader</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/qr-code-reader"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/qr-code-reader"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/qr-code-reader"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/qr-code-reader</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/qr-code-reader"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/qr-code-reader"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/qr-code-reader"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/sort-lines</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/sort-lines"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/sort-lines"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/sort-lines"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/sort-lines</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/sort-lines"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/sort-lines"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/sort-lines"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/find-replace</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/find-replace"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/find-replace"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/find-replace"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/find-replace</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/find-replace"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/find-replace"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/find-replace"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/text-to-speech</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/text-to-speech"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/text-to-speech"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-to-speech"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/text-to-speech</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/text-to-speech"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/text-to-speech"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/text-to-speech"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/chmod-calculator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/chmod-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/chmod-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/chmod-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/chmod-calculator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/chmod-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/chmod-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/chmod-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/css-unit-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/css-unit-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/css-unit-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/css-unit-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/css-unit-converter</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/css-unit-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/css-unit-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/css-unit-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/css-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/css-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/css-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/css-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/css-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/css-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/css-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/css-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/svg-optimizer</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/svg-optimizer"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/svg-optimizer"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/svg-optimizer"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/svg-optimizer</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/svg-optimizer"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/svg-optimizer"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/svg-optimizer"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/favicon-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/favicon-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/favicon-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/favicon-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/favicon-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/favicon-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/favicon-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/favicon-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/htpasswd-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/htpasswd-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/htpasswd-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/htpasswd-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/htpasswd-generator</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/htpasswd-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/htpasswd-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/htpasswd-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/fake-data-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/fake-data-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/fake-data-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/fake-data-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/fake-data-generator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/fake-data-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/fake-data-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/fake-data-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/json-query</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-query"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-query"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-query"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/json-query</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/json-query"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/json-query"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-query"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/certificate-decoder</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/certificate-decoder"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/certificate-decoder"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/certificate-decoder"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/certificate-decoder</loc>
+    <lastmod>2026-11-15</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/certificate-decoder"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/certificate-decoder"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/certificate-decoder"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/pdf-sign</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-sign"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-sign"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-sign"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/pdf-sign</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-sign"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-sign"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-sign"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/image-crop</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-crop"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-crop"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-crop"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/image-crop</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-crop"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-crop"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-crop"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/meta-tag-preview</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/meta-tag-preview"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/meta-tag-preview</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/meta-tag-preview"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/meta-tag-preview"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/image-watermark</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-watermark"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-watermark"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-watermark"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/image-watermark</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-watermark"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-watermark"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-watermark"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/image-color-picker</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-color-picker"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-color-picker"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-color-picker"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/image-color-picker</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-color-picker"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-color-picker"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-color-picker"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/svg-to-png</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/svg-to-png"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/svg-to-png"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/svg-to-png"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/svg-to-png</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/svg-to-png"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/svg-to-png"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/svg-to-png"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/image-converter</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/image-converter</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/image-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/image-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/color-converter</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/color-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/color-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/color-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/color-converter</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/color-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/color-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/color-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/curl-converter</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/curl-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/curl-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/curl-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/curl-converter</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/curl-converter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/curl-converter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/curl-converter"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/url-parser</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/url-parser"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/url-parser"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/url-parser"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/url-parser</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/url-parser"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/url-parser"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/url-parser"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/compound-interest</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/compound-interest"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/compound-interest"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/compound-interest"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/compound-interest</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/compound-interest"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/compound-interest"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/compound-interest"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/statistics-calculator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/statistics-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/statistics-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/statistics-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/statistics-calculator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/statistics-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/statistics-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/statistics-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/aspect-ratio-calculator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/aspect-ratio-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/aspect-ratio-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/aspect-ratio-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/aspect-ratio-calculator</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/aspect-ratio-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/aspect-ratio-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/aspect-ratio-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/roman-numerals</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/roman-numerals"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/roman-numerals"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/roman-numerals"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/roman-numerals</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/roman-numerals"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/roman-numerals"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/roman-numerals"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/unicode-inspector</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/unicode-inspector"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/unicode-inspector"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/unicode-inspector"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/unicode-inspector</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/unicode-inspector"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/unicode-inspector"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/unicode-inspector"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/morse-code</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/morse-code"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/morse-code"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/morse-code"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/morse-code</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/morse-code"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/morse-code"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/morse-code"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/classic-ciphers</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/classic-ciphers"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/classic-ciphers"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/classic-ciphers"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/classic-ciphers</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/classic-ciphers"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/classic-ciphers"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/classic-ciphers"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/convertitore-lire-euro</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/convertitore-lire-euro"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/subnet-calculator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/subnet-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/subnet-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/subnet-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/subnet-calculator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/subnet-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/subnet-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/subnet-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/docker-run-to-compose</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/docker-run-to-compose"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/docker-run-to-compose"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/docker-run-to-compose"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/docker-run-to-compose</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/docker-run-to-compose"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/docker-run-to-compose"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/docker-run-to-compose"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/css-clamp-calculator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/css-clamp-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/css-clamp-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/css-clamp-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/css-clamp-calculator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/css-clamp-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/css-clamp-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/css-clamp-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/time-calculator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/time-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/time-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/time-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/time-calculator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/time-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/time-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/time-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/scadenze-fatture</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/scadenze-fatture"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/generatore-codice-fiscale</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/generatore-codice-fiscale"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/timer</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timer"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timer"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timer"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/timer</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timer"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timer"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timer"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/scientific-calculator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/scientific-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/scientific-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/scientific-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/scientific-calculator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/scientific-calculator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/scientific-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/scientific-calculator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/random-number-generator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/random-number-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/random-number-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/random-number-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/random-number-generator</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/random-number-generator"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/random-number-generator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/random-number-generator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/privacy</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/privacy"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/privacy"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/privacy"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/privacy</loc>
+    <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/privacy"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/privacy"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/privacy"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/novita</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/novita"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/changelog"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/changelog"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/changelog</loc>
+    <lastmod>2026-11-18</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/novita"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/changelog"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/changelog"/>

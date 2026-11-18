@@ -2,11 +2,13 @@
 // © 2026 rrstudio — rrstudio Tools
 import { readFileSync, writeFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { CHANGELOG } from '../changelog';
 import { CATEGORIES, TOOLS } from '../../tools/tools.registry';
 import {
   alternatePath,
   allSlugs,
   buildSitemap,
+  lastModified,
   hasLang,
   hreflangLinks,
   langFromPath,
@@ -132,6 +134,19 @@ describe('sitemap', () => {
     expect(block).toContain('hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-tools"');
     const cf = xml.split('<url>').find((b) => b.includes('<loc>https://tools.rr-dev.eu/codice-fiscale</loc>'))!;
     expect(cf.match(/<xhtml:link /g)?.length).toBe(1);
+  });
+  it('ogni URL ha lastmod nel formato AAAA-MM-GG, senza date nel futuro e senza ore', () => {
+    const urls = xml.split('<url>').slice(1);
+    for (const u of urls) expect(u).toMatch(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/);
+    expect(urls.length).toBe((xml.match(/<loc>/g) ?? []).length);
+  });
+  it('lastModified: home e Novità hanno la data più recente, uno strumento quella dell\'ultima voce che lo nomina', () => {
+    expect(lastModified('')).toBe(CHANGELOG[0].date);
+    expect(lastModified('novita')).toBe(CHANGELOG[0].date);
+    const withEntry = CHANGELOG[0].entries.find((e) => e.toolIds?.length)!;
+    const tool = TOOLS.find((t) => t.id === withEntry.toolIds![0])!;
+    expect(lastModified(tool.path)).toBe(CHANGELOG[0].date);
+    expect(lastModified('privacy')).toBe('2026-11-17');
   });
   it('public/sitemap.xml è aggiornato (UPDATE_SITEMAP=1 npm test lo riscrive)', () => {
     const file = 'public/sitemap.xml';
