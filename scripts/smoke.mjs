@@ -3,7 +3,7 @@
 // Smoke test E2E di tutte le pagine (home, privacy, preferiti, ricezione condivisioni, strumenti; IT e /en/) servendo dist/rrstudio-tools/browser.
 // Per ogni pagina, a 360 e 1280 px: nessun errore in console, nessuno scorrimento orizzontale,
 // axe-core senza violazioni critical/serious in tema chiaro e scuro, dati strutturati JSON-LD coerenti
-// (un WebApplication per strumento, FAQPage uguale alle domande visibili, niente sulle altre pagine).
+// (per ogni strumento WebApplication e BreadcrumbList, FAQPage uguale alle domande visibili; WebSite nella home; niente sulle altre pagine).
 // Uso: npm run build && npm run smoke   (serve Chromium di Playwright; CHROMIUM_PATH se non lo trova)
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
@@ -122,7 +122,8 @@ async function checkJsonLd(page, p) {
     }
   }
   if (new Set(types).size !== types.length) out.push('JSON-LD duplicato: ' + types.join(','));
-  const expected = isTool ? ['WebApplication', ...(r.visible.length ? ['FAQPage'] : [])] : [];
+  const isHome = /^(\/en)?\/?$/.test(p);
+  const expected = isTool ? ['WebApplication', 'BreadcrumbList', ...(r.visible.length ? ['FAQPage'] : [])] : isHome ? ['WebSite'] : [];
   if ([...types].sort().join() !== expected.sort().join()) out.push(`JSON-LD: atteso [${expected}], trovato [${types}]`);
   if (faq && JSON.stringify(faq) !== JSON.stringify(r.visible)) out.push('FAQPage diversa dalle domande visibili');
   return out;
@@ -141,7 +142,7 @@ async function checkPrerenderAndNavigation() {
         return 'non valido';
       }
     });
-    if (types.sort().join() !== 'FAQPage,WebApplication') out.push(`${p}: JSON-LD prerenderizzato [${types}]`);
+    if (types.sort().join() !== 'BreadcrumbList,FAQPage,WebApplication') out.push(`${p}: JSON-LD prerenderizzato [${types}]`);
     if (!html.includes('<app-tool-guide') || !/<details/.test(html)) out.push(`${p}: guida assente nell'HTML prerenderizzato`);
   }
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
@@ -150,19 +151,22 @@ async function checkPrerenderAndNavigation() {
   try {
     await page.goto(base + '/word-counter/', { waitUntil: 'networkidle' });
     const count = () => page.locator('script[type="application/ld+json"]').count();
-    if ((await count()) !== 2) out.push('navigazione: attesi 2 JSON-LD sulla prima pagina');
-    // home (via link interno): nessun JSON-LD
+    if ((await count()) !== 3) out.push('navigazione: attesi 3 JSON-LD sulla prima pagina (WebApplication, BreadcrumbList, FAQPage)');
+    // home (via link interno): solo il WebSite, nessun JSON-LD dello strumento
     await page.locator('app-header a[href="/"]').first().click();
     await page.waitForURL(base + '/');
-    if ((await count()) !== 0) out.push('navigazione: JSON-LD rimasti sulla home');
-    // un altro strumento con guida (link interno della home): esattamente un WebApplication e un FAQPage
+    const homeTypes = await page.evaluate(() =>
+      [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent)['@type']).join(),
+    );
+    if (homeTypes !== 'WebSite') out.push(`navigazione: JSON-LD sulla home [${homeTypes}], atteso solo WebSite`);
+    // un altro strumento con guida (link interno della home): esattamente un WebApplication, un BreadcrumbList e un FAQPage
     await page.locator('a[href="/json-formatter"], a[href="/json-formatter/"]').first().click();
     await page.waitForURL(/json-formatter/);
     await page.waitForSelector('app-tool-guide details');
     const types = await page.evaluate(() =>
       [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent)['@type']).sort().join(),
     );
-    if (types !== 'FAQPage,WebApplication') out.push(`navigazione: JSON-LD dopo il secondo strumento [${types}]`);
+    if (types !== 'BreadcrumbList,FAQPage,WebApplication') out.push(`navigazione: JSON-LD dopo il secondo strumento [${types}]`);
   } catch (e) {
     out.push('navigazione: ' + e.message.split('\n')[0]);
   }
