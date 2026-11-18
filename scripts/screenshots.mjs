@@ -540,12 +540,20 @@ try {
       await page.waitForSelector('[data-testid=sci-error]');
       // tastiera a schermo: 7 × 6, poi «=» e un operatore che riparte dal risultato (ans)
       await page.getByTestId('key-clear').click();
+      const field = async (expected, what) => {
+        await page.waitForFunction((v) => document.querySelector('#sci-expr')?.value === v, expected, { timeout: 4000 }).catch(() => {});
+        const got = await page.inputValue('#sci-expr');
+        if (got !== expected) throw new Error(`${what}: atteso «${expected}», nel campo «${got}»`);
+      };
       for (const k of ['7', '×', '6']) await page.getByTestId('key-' + k).click();
-      if ((await page.inputValue('#sci-expr')) !== '7×6') throw new Error('i tasti non scrivono nel campo');
+      await field('7×6', 'i tasti non scrivono nel campo');
       await page.getByTestId('key-eq').click();
       await page.getByTestId('key-+').click();
+      await field('ans+', '«+» dopo «=» non riparte dal risultato');
       await page.getByTestId('key-1').click();
-      if ((await page.inputValue('#sci-expr')) !== 'ans+1' || (await result()) !== '43') throw new Error('«+» dopo «=» non riparte dal risultato');
+      await field('ans+1', 'cifra dopo l\'operatore');
+      await page.waitForFunction(() => document.querySelector('[data-testid=sci-result]')?.textContent.trim() === '43', null, { timeout: 4000 }).catch(() => {});
+      if ((await result()) !== '43') throw new Error('«ans+1» doveva valere 43, vale ' + (await result()));
       await page.getByTestId('key-eq').click();
       await page.waitForFunction(() => document.querySelectorAll('[data-testid=sci-hist-row]').length >= 3);
       await page.fill('#sci-expr', '(1+sqrt(5))/2');
