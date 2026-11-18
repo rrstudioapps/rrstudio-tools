@@ -1,0 +1,151 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.tm.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('tm.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="timer" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="bar">
+    <app-segmented [label]="i18n.t('tm.mode')" [options]="modes()" [(value)]="mode" />
+    <label class="check">
+      <input type="checkbox" [checked]="sound()" (change)="sound.set($any($event.target).checked)" />
+      {{ i18n.t('tm.sound') }}
+    </label>
+  </div>
+
+  @switch (mode()) {
+    @case ('countdown') {
+      <section class="panel" [attr.aria-label]="i18n.t('tm.mode.countdown')">
+        <div class="field">
+          <label for="tm-duration">{{ i18n.t('tm.duration') }}</label>
+          <input
+            id="tm-duration"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            [placeholder]="i18n.t('tm.duration.ph')"
+            [value]="durationText()"
+            [attr.aria-invalid]="durationMs() === null"
+            [attr.aria-describedby]="durationMs() === null ? 'tm-err' : 'tm-hint'"
+            [disabled]="cd().running"
+            data-testid="tm-duration"
+            (input)="setDuration($any($event.target).value)"
+          />
+          @if (durationMs() === null) {
+            <p id="tm-err" class="tool-error" data-testid="tm-error">{{ i18n.t('tm.err.duration') }}</p>
+          } @else {
+            <p id="tm-hint" class="hint">{{ i18n.t('tm.duration.hint') }}</p>
+          }
+        </div>
+        <div class="chips">
+          @for (m of presets; track m) {
+            <button type="button" class="btn small" [disabled]="cd().running" (click)="setPreset(m)">{{ i18n.t('tm.preset', { n: m }) }}</button>
+          }
+        </div>
+        <div class="clock" [class.done]="cdDone()" role="timer" [attr.aria-label]="i18n.t('tm.left')">
+          <span class="digits" data-testid="tm-display">{{ cdText() }}</span>
+          <div class="bar-track" aria-hidden="true"><div class="bar-fill" [style.width]="pct(cdProgress())"></div></div>
+        </div>
+        @if (cdDone()) {
+          <p class="done-msg" role="status" data-testid="tm-done">{{ i18n.t('tm.done') }}</p>
+        }
+        <div class="actions">
+          <button type="button" class="btn primary" data-shortcut="run" data-testid="tm-toggle" [disabled]="!cd().running && durationMs() === null && cd().left <= 0" (click)="toggleCountdown()">
+            {{ cd().running ? i18n.t('tm.pause') : cdStarted() && cdLeft() > 0 ? i18n.t('tm.resume') : i18n.t('tm.start') }}
+          </button>
+          <button type="button" class="btn" data-shortcut="clear" data-testid="tm-reset" (click)="resetCountdown()">{{ i18n.t('tm.reset') }}</button>
+        </div>
+      </section>
+    }
+    @case ('stopwatch') {
+      <section class="panel" [attr.aria-label]="i18n.t('tm.mode.stopwatch')">
+        <div class="clock" role="timer" [attr.aria-label]="i18n.t('tm.elapsed')">
+          <span class="digits" data-testid="sw-display">{{ swText() }}</span>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn primary" data-shortcut="run" data-testid="sw-toggle" (click)="toggleStopwatch()">
+            {{ sw().running ? i18n.t('tm.pause') : sw().elapsed > 0 ? i18n.t('tm.resume') : i18n.t('tm.start') }}
+          </button>
+          <button type="button" class="btn" data-testid="sw-lap" [disabled]="!sw().running" (click)="lap()">{{ i18n.t('tm.lap') }}</button>
+          <button type="button" class="btn" data-shortcut="clear" data-testid="sw-reset" (click)="resetStopwatch()">{{ i18n.t('tm.reset') }}</button>
+        </div>
+        @if (lapRows().length > 0) {
+          <div class="laps">
+            <div class="laps-head">
+              <h2 class="eyebrow">{{ i18n.t('tm.laps') }}</h2>
+              <app-copy-button shortcut="copy" [text]="lapsText()" [label]="i18n.t('tm.lap.copy')" />
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">{{ i18n.t('tm.lap.n') }}</th>
+                  <th scope="col">{{ i18n.t('tm.lap.split') }}</th>
+                  <th scope="col">{{ i18n.t('tm.lap.total') }}</th>
+                  <th scope="col"><span class="sr-only">{{ i18n.t('tm.laps') }}</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (l of lapRows(); track l.n) {
+                  <tr [class]="l.tag" data-testid="sw-lap-row">
+                    <td>{{ l.n }}</td>
+                    <td>{{ l.splitText }}</td>
+                    <td>{{ l.totalText }}</td>
+                    <td class="tag">{{ l.tag ? i18n.t('tm.lap.' + l.tag) : '' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+    }
+    @case ('pomodoro') {
+      <section class="panel" [attr.aria-label]="i18n.t('tm.mode.pomodoro')">
+        <div class="phase" [class.brk]="phase().kind !== 'work'">
+          <span class="eyebrow" data-testid="pm-phase">{{ i18n.t('tm.pm.' + phase().kind) }}</span>
+          <span class="muted">{{ i18n.t('tm.pm.phase', { n: phase().pomodoro }) }} · {{ i18n.t('tm.pm.count', { n: pmDone() }) }}</span>
+        </div>
+        <div class="clock" role="timer" [attr.aria-label]="i18n.t('tm.left')">
+          <span class="digits" data-testid="pm-display">{{ pmText() }}</span>
+          <div class="bar-track" aria-hidden="true"><div class="bar-fill" [style.width]="pct(pmProgress())"></div></div>
+        </div>
+        @if (pmNotice()) {
+          <p class="done-msg" role="status">{{ pmNotice() }}</p>
+        }
+        <div class="actions">
+          <button type="button" class="btn primary" data-shortcut="run" data-testid="pm-toggle" (click)="togglePomodoro()">
+            {{ pm().running ? i18n.t('tm.pause') : i18n.t('tm.start') }}
+          </button>
+          <button type="button" class="btn" data-testid="pm-skip" (click)="skipPhase()">{{ i18n.t('tm.pm.skip') }}</button>
+          <button type="button" class="btn" data-shortcut="clear" (click)="restartPomodoro()">{{ i18n.t('tm.pm.restart') }}</button>
+        </div>
+        <fieldset class="cfg" [disabled]="pm().running">
+          <legend class="eyebrow">{{ i18n.t('tm.pm.cfg') }}</legend>
+          @for (f of pmFields; track f.key) {
+            <div class="field">
+              <label [for]="'tm-cfg-' + f.key">{{ i18n.t('tm.pm.cfg.' + f.key) }}</label>
+              <input
+                [id]="'tm-cfg-' + f.key"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                [max]="f.max"
+                [value]="cfg()[f.key]"
+                (change)="setCfg(f.key, $any($event.target).value, f.max)"
+              />
+            </div>
+          }
+        </fieldset>
+        <label class="check">
+          <input type="checkbox" [checked]="autoNext()" (change)="autoNext.set($any($event.target).checked)" />
+          {{ i18n.t('tm.autoNext') }}
+        </label>
+      </section>
+    }
+  }
+  <p class="hint">{{ i18n.t('tm.hint.bg') }}</p>
+</div>

@@ -1,0 +1,99 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.sci.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('sci.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="scientific-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="sci-layout">
+    <div class="calc">
+      <div class="field">
+        <label for="sci-expr">{{ i18n.t('sci.expr') }}</label>
+        <input
+          #exprField
+          id="sci-expr"
+          type="text"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [placeholder]="i18n.t('sci.expr.ph')"
+          [value]="expr()"
+          [attr.aria-invalid]="errorText() !== ''"
+          [attr.aria-describedby]="errorText() !== '' ? 'sci-err' : null"
+          data-testid="sci-expr"
+          (input)="onType($any($event.target).value)"
+          (keydown)="onKey($event)"
+        />
+      </div>
+
+      <section class="result" [attr.aria-label]="i18n.t('sci.result')" aria-live="polite">
+        @if (outcome().ok) {
+          <p class="big" data-testid="sci-result">{{ resultText() }}</p>
+          <app-copy-button shortcut="copy" [text]="resultText()" />
+        } @else if (errorText() !== '') {
+          <p id="sci-err" class="tool-error" data-testid="sci-error">{{ errorText() }}</p>
+        } @else {
+          <p class="empty">{{ i18n.t('sci.empty') }}</p>
+        }
+      </section>
+
+      <div class="angle">
+        <app-segmented [label]="i18n.t('sci.angle')" [options]="angles()" [(value)]="angle" />
+      </div>
+
+      <div class="keys" role="group" [attr.aria-label]="i18n.t('sci.keys')">
+        <div class="fn-grid">
+          @for (k of fnKeys; track k.label) {
+            <button type="button" class="key fn" [attr.data-testid]="'key-' + k.label" (click)="insert(k.text)">{{ k.label }}</button>
+          }
+        </div>
+        <div class="pad-grid">
+          @for (k of padKeys; track k.label) {
+            @if (k.kind === 'eq') {
+              <button type="button" class="key eq" data-shortcut="run" data-testid="key-eq" [attr.aria-label]="i18n.t('sci.equals')" (click)="equals()">=</button>
+            } @else {
+              <button type="button" class="key" [class.op]="k.kind === 'op'" [attr.data-testid]="'key-' + k.label" (click)="insert(k.text)">{{ k.label }}</button>
+            }
+          }
+          <button type="button" class="key op wide" [attr.aria-label]="i18n.t('sci.back')" data-testid="key-back" (click)="backspace()">⌫</button>
+          <button type="button" class="key op wide" data-shortcut="clear" data-testid="key-clear" [attr.aria-label]="'AC · ' + i18n.t('sci.clear')" (click)="clear()">AC</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <section aria-labelledby="sci-hist">
+        <div class="side-head">
+          <h2 class="eyebrow" id="sci-hist">{{ i18n.t('sci.history') }}</h2>
+          @if (history().length > 0) {
+            <button type="button" class="btn small" (click)="clearHistory()">{{ i18n.t('sci.history.clear') }}</button>
+          }
+        </div>
+        @if (history().length === 0) {
+          <p class="hint">{{ i18n.t('sci.history.empty') }}</p>
+        } @else {
+          <ul class="hist">
+            @for (h of history(); track $index) {
+              <li data-testid="sci-hist-row">
+                <button type="button" class="hist-expr" [attr.aria-label]="i18n.t('sci.history.use', { e: h.expr })" (click)="reuse(h)">{{ h.expr }}</button>
+                <button type="button" class="hist-val" [attr.aria-label]="i18n.t('sci.history.value', { r: h.text })" (click)="useValue(h)">= {{ h.text }}</button>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+      <section aria-labelledby="sci-help">
+        <h2 class="eyebrow" id="sci-help">{{ i18n.t('sci.help.title') }}</h2>
+        <ul class="help">
+          @for (r of helpRules; track r) {
+            <li>{{ i18n.t('sci.help.' + r) }}</li>
+          }
+        </ul>
+      </section>
+    </aside>
+  </div>
+</div>

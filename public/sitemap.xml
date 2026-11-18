@@ -1006,6 +1006,42 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/generatore-codice-fiscale"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/timer</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/timer</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/timer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/timer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/timer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/scientific-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/scientific-calculator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/scientific-calculator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/scientific-calculator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/scientific-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/scientific-calculator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/scientific-calculator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/scientific-calculator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/random-number-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/random-number-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/random-number-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/random-number-generator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/random-number-generator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/random-number-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/random-number-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/random-number-generator"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/privacy</loc>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/privacy"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/privacy"/>

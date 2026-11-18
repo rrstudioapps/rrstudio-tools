@@ -478,6 +478,117 @@ try {
       await page.waitForSelector('[data-testid=ar-ratio]');
     },
   });
+  await shot('timer.png', {
+    width: 1280,
+    dark: false,
+    path: '/timer/',
+    setup: async (page) => {
+      const seg = (name) => page.getByRole('button', { name, exact: true });
+      const text = (id) => page.getByTestId(id).innerText();
+      // cronometro: parte, segna un giro, si ferma e conserva il tempo
+      await seg('Cronometro').click();
+      await page.getByTestId('sw-toggle').click();
+      await page.waitForTimeout(350);
+      await page.getByTestId('sw-lap').click();
+      await page.waitForSelector('[data-testid=sw-lap-row]');
+      await page.getByTestId('sw-toggle').click();
+      await page.waitForTimeout(150); // il display si aggiorna dopo il clic
+      const frozen = await text('sw-display');
+      await page.waitForTimeout(250);
+      if ((await text('sw-display')) !== frozen) throw new Error('il cronometro in pausa continua a contare');
+      if (/^00:00\.00$/.test(frozen)) throw new Error('il cronometro non ha contato');
+      // pomodoro: lavoro 25:00, «Salta» porta alla pausa breve di 5:00
+      await seg('Pomodoro').click();
+      if ((await text('pm-display')) !== '25:00') throw new Error('pomodoro: durata iniziale ' + (await text('pm-display')));
+      await page.getByTestId('pm-skip').click();
+      await page.waitForTimeout(150);
+      if (!/pausa breve/i.test(await text('pm-phase'))) throw new Error('pomodoro: dopo il lavoro manca la pausa breve');
+      if ((await text('pm-display')) !== '05:00') throw new Error('pomodoro: durata della pausa ' + (await text('pm-display')));
+      // timer: durata non valida segnalata, poi 2 secondi che scadono
+      await seg('Timer').click();
+      await page.fill('#tm-duration', '100h');
+      await page.waitForSelector('[data-testid=tm-error]');
+      await page.fill('#tm-duration', '0:02');
+      await page.waitForTimeout(150);
+      if ((await text('tm-display')) !== '00:02') throw new Error('timer: display ' + (await text('tm-display')));
+      await page.getByTestId('tm-toggle').click();
+      await page.waitForSelector('[data-testid=tm-done]', { timeout: 6000 });
+      if ((await text('tm-display')) !== '00:00') throw new Error('timer: scaduto ma display ' + (await text('tm-display')));
+    },
+  });
+  await shot('scientific-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/scientific-calculator/',
+    setup: async (page) => {
+      const result = () => page.getByTestId('sci-result').innerText();
+      const expect = async (expr, out) => {
+        await page.fill('#sci-expr', expr);
+        await page.waitForSelector('[data-testid=sci-result]');
+        const got = await result();
+        if (got !== out) throw new Error(`${expr}: atteso ${out}, ottenuto ${got}`);
+      };
+      await expect('2(3+4)^2/sqrt(16)', '24,5');
+      await page.getByTestId('key-eq').click();
+      await expect('200+10%', '220');
+      await expect('sin(30)', '0,5');
+      await expect('0,1+0,2', '0,3');
+      await page.fill('#sci-expr', '1/0');
+      await page.waitForSelector('[data-testid=sci-error]');
+      // tastiera a schermo: 7 × 6, poi «=» e un operatore che riparte dal risultato (ans)
+      await page.getByTestId('key-clear').click();
+      for (const k of ['7', '×', '6']) await page.getByTestId('key-' + k).click();
+      if ((await page.inputValue('#sci-expr')) !== '7×6') throw new Error('i tasti non scrivono nel campo');
+      await page.getByTestId('key-eq').click();
+      await page.getByTestId('key-+').click();
+      await page.getByTestId('key-1').click();
+      if ((await page.inputValue('#sci-expr')) !== 'ans+1' || (await result()) !== '43') throw new Error('«+» dopo «=» non riparte dal risultato');
+      await page.getByTestId('key-eq').click();
+      await page.waitForFunction(() => document.querySelectorAll('[data-testid=sci-hist-row]').length >= 3);
+      await page.fill('#sci-expr', '(1+sqrt(5))/2');
+      await page.waitForFunction(() => document.querySelector('[data-testid=sci-result]')?.textContent.trim() === '1,61803398875');
+    },
+  });
+  await shot('random-number-generator.png', {
+    width: 1280,
+    dark: false,
+    path: '/random-number-generator/',
+    setup: async (page) => {
+      const seg = (name) => page.getByRole('button', { name, exact: true });
+      // numeri senza ripetizioni: 5 valori diversi tra 1 e 6
+      await page.fill('#rnd-min', '1');
+      await page.fill('#rnd-max', '6');
+      await page.fill('#rnd-count', '5');
+      await page.getByTestId('rnd-unique').check();
+      await page.getByTestId('rnd-go').click();
+      const nums = (await page.locator('[data-testid=rnd-numbers] li').allInnerTexts()).map(Number);
+      if (nums.length !== 5 || new Set(nums).size !== 5 || nums.some((n) => n < 1 || n > 6)) throw new Error('numeri non validi: ' + nums);
+      await page.fill('#rnd-count', '7');
+      await page.getByTestId('rnd-go').click();
+      await page.waitForSelector('[data-testid=rnd-error]');
+      // dadi
+      await seg('Dadi').click();
+      await page.fill('#rnd-dice', '2d6+3');
+      await page.getByTestId('rnd-go').click();
+      const total = Number(await page.getByTestId('rnd-total').innerText());
+      if (!(total >= 5 && total <= 15)) throw new Error('totale dei dadi fuori intervallo: ' + total);
+      // moneta
+      await seg('Moneta').click();
+      await page.fill('#rnd-flips', '100');
+      await page.getByTestId('rnd-go').click();
+      const m = /(\d+) testa, (\d+) croce/.exec(await page.getByTestId('rnd-coin').innerText());
+      if (!m || Number(m[1]) + Number(m[2]) !== 100) throw new Error('lanci di moneta incoerenti');
+      // elenco: sei nomi in due squadre da tre
+      await seg('Elenco').click();
+      await page.fill('#rnd-list', 'Anna\nLuca\nMarta\nGiulia\nPaolo\nSara');
+      await seg('Forma squadre').click();
+      await page.fill('#rnd-teams', '2');
+      await page.getByTestId('rnd-go').click();
+      await page.waitForSelector('[data-testid=rnd-teams-out] section');
+      const sizes = await page.locator('[data-testid=rnd-teams-out] section').evaluateAll((els) => els.map((e) => e.querySelectorAll('li').length));
+      if (sizes.join() !== '3,3') throw new Error('squadre non equilibrate: ' + sizes);
+    },
+  });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

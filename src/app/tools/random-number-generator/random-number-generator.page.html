@@ -1,0 +1,189 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.rnd.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('rnd.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="random-number-generator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="bar">
+    <app-segmented [label]="i18n.t('rnd.mode')" [options]="modes()" [value]="mode()" (valueChange)="setMode($event)" />
+  </div>
+
+  <div class="rnd-layout">
+    <div class="controls">
+      @switch (mode()) {
+        @case ('number') {
+          <div class="row">
+            <div class="field">
+              <label for="rnd-min">{{ i18n.t('rnd.min') }}</label>
+              <input id="rnd-min" type="text" inputmode="decimal" autocomplete="off" [value]="min()" data-testid="rnd-min" (input)="min.set($any($event.target).value)" />
+            </div>
+            <div class="field">
+              <label for="rnd-max">{{ i18n.t('rnd.max') }}</label>
+              <input id="rnd-max" type="text" inputmode="decimal" autocomplete="off" [value]="max()" data-testid="rnd-max" (input)="max.set($any($event.target).value)" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="rnd-count">{{ i18n.t('rnd.count') }}</label>
+              <input id="rnd-count" type="text" inputmode="numeric" autocomplete="off" [value]="count()" data-testid="rnd-count" (input)="count.set($any($event.target).value)" />
+            </div>
+            <div class="field">
+              <label for="rnd-dec">{{ i18n.t('rnd.decimals') }}</label>
+              <select id="rnd-dec" [value]="decimals()" (change)="decimals.set(+$any($event.target).value)">
+                @for (d of decimalOptions; track d) {
+                  <option [value]="d" [selected]="d === decimals()">{{ d }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <label class="check">
+            <input type="checkbox" [checked]="unique()" data-testid="rnd-unique" (change)="unique.set($any($event.target).checked)" />
+            {{ i18n.t('rnd.unique') }}
+          </label>
+          <label class="check">
+            <input type="checkbox" [checked]="sorted()" (change)="sorted.set($any($event.target).checked)" />
+            {{ i18n.t('rnd.sorted') }}
+          </label>
+        }
+        @case ('dice') {
+          <div class="field">
+            <label for="rnd-dice">{{ i18n.t('rnd.dice') }}</label>
+            <input
+              id="rnd-dice"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              [placeholder]="i18n.t('rnd.dice.ph')"
+              [value]="dice()"
+              data-testid="rnd-dice"
+              aria-describedby="rnd-dice-hint"
+              (input)="dice.set($any($event.target).value)"
+            />
+            <p id="rnd-dice-hint" class="hint">{{ i18n.t('rnd.dice.hint') }}</p>
+          </div>
+          <div>
+            <span class="eyebrow">{{ i18n.t('rnd.dice.quick') }}</span>
+            <div class="chips">
+              @for (f of faces; track f) {
+                <button type="button" class="btn small" (click)="setFace(f)">{{ i18n.t('rnd.dice.face', { n: f }) }}</button>
+              }
+            </div>
+          </div>
+        }
+        @case ('list') {
+          <div class="field">
+            <label for="rnd-list">{{ i18n.t('rnd.list') }}</label>
+            <textarea
+              id="rnd-list"
+              rows="8"
+              spellcheck="false"
+              [placeholder]="i18n.t('rnd.list.ph')"
+              [value]="list()"
+              data-testid="rnd-list"
+              (input)="list.set($any($event.target).value)"
+            ></textarea>
+            <p class="hint">{{ i18n.t('rnd.list.items', { n: items().length }) }}</p>
+          </div>
+          <app-segmented [label]="i18n.t('rnd.list.how')" [options]="actions()" [(value)]="action" />
+          @if (action() === 'pick') {
+            <div class="row">
+              <div class="field">
+                <label for="rnd-pick">{{ i18n.t('rnd.pick.n') }}</label>
+                <input id="rnd-pick" type="text" inputmode="numeric" autocomplete="off" [value]="pick()" data-testid="rnd-pick" (input)="pick.set($any($event.target).value)" />
+              </div>
+            </div>
+            <label class="check">
+              <input type="checkbox" [checked]="pickUnique()" (change)="pickUnique.set($any($event.target).checked)" />
+              {{ i18n.t('rnd.pick.unique') }}
+            </label>
+          } @else {
+            <div class="row">
+              <div class="field">
+                <label for="rnd-teams">{{ i18n.t('rnd.teams.n') }}</label>
+                <input id="rnd-teams" type="text" inputmode="numeric" autocomplete="off" [value]="teams()" data-testid="rnd-teams" (input)="teams.set($any($event.target).value)" />
+              </div>
+            </div>
+          }
+        }
+        @case ('coin') {
+          <div class="row">
+            <div class="field">
+              <label for="rnd-flips">{{ i18n.t('rnd.coin.n') }}</label>
+              <input id="rnd-flips" type="text" inputmode="numeric" autocomplete="off" [value]="flips()" data-testid="rnd-flips" (input)="flips.set($any($event.target).value)" />
+            </div>
+          </div>
+        }
+      }
+      <div class="actions">
+        <button type="button" class="btn primary" data-shortcut="run" data-testid="rnd-go" (click)="generate()">{{ goLabel() }}</button>
+      </div>
+      <p class="hint">{{ i18n.t('rnd.note') }}</p>
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('rnd.result')" aria-live="polite">
+      <div class="result-head">
+        <h2 class="eyebrow">{{ i18n.t('rnd.result') }}</h2>
+        @if (shown()) {
+          <app-copy-button shortcut="copy" [text]="copyText()" />
+        }
+      </div>
+      @if (error()) {
+        <p class="tool-error" data-testid="rnd-error">{{ error() }}</p>
+      } @else {
+        @let s = shown();
+        @if (!s) {
+          <p class="empty">{{ i18n.t('rnd.empty') }}</p>
+        } @else {
+          @switch (s.kind) {
+            @case ('numbers') {
+              <ul class="numbers" data-testid="rnd-numbers">
+                @for (v of s.values; track $index) {
+                  <li>{{ v }}</li>
+                }
+              </ul>
+            }
+            @case ('dice') {
+              <p class="label">{{ s.label }} · {{ i18n.t('rnd.dice.rolls') }}: {{ rollsText(s.rolls) }}</p>
+              <p class="big" data-testid="rnd-total">{{ s.total }}</p>
+              <p class="label">{{ i18n.t('rnd.dice.total') }}</p>
+            }
+            @case ('picked') {
+              <p class="label">{{ i18n.t('rnd.picked') }}</p>
+              <ol class="picked" data-testid="rnd-picked">
+                @for (x of s.items; track $index) {
+                  <li>{{ x }}</li>
+                }
+              </ol>
+            }
+            @case ('teams') {
+              <div class="teams" data-testid="rnd-teams-out">
+                @for (t of s.teams; track $index) {
+                  <section class="team">
+                    <h3>{{ i18n.t('rnd.team', { n: $index + 1 }) }}</h3>
+                    <ul>
+                      @for (x of t; track $index) {
+                        <li>{{ x }}</li>
+                      }
+                    </ul>
+                  </section>
+                }
+              </div>
+            }
+            @case ('coin') {
+              @if (s.flips.length === 1) {
+                <p class="big" data-testid="rnd-coin">{{ coinLabel(s) }}</p>
+              } @else {
+                <p class="big" data-testid="rnd-coin">{{ i18n.t('rnd.coin.summary', { h: s.heads, t: s.tails }) }}</p>
+              }
+            }
+          }
+        }
+      }
+    </section>
+  </div>
+</div>

@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Timer con conto alla rovescia, cronometro con giri e pomodoro; calcolatrice scientifica con cronologia; generatore di numeri casuali, dadi, estrazioni da un elenco e squadre.',
+        en: 'Timer with countdown, stopwatch with laps and Pomodoro; scientific calculator with history; generator of random numbers, dice, draws from a list and teams.',
+        toolIds: ['timer', 'scientific-calculator', 'random-number-generator'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Estrazione del testo dai PDF, anche protetti da password: righe, paragrafi e colonne ricostruiti, scarico in TXT o Markdown.',
         en: 'Text extraction from PDFs, password-protected ones too: lines, paragraphs and columns rebuilt, download as TXT or Markdown.',
         toolIds: ['pdf-to-text'],
