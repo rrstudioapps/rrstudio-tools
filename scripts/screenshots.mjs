@@ -492,7 +492,7 @@ try {
       await page.getByTestId('sw-lap').click();
       await page.waitForSelector('[data-testid=sw-lap-row]');
       await page.getByTestId('sw-toggle').click();
-      await page.waitForTimeout(150); // il display si aggiorna dopo il clic
+      await page.waitForTimeout(500); // il display si aggiorna dopo il clic (su CI più lentamente)
       const frozen = await text('sw-display');
       await page.waitForTimeout(250);
       if ((await text('sw-display')) !== frozen) throw new Error('il cronometro in pausa continua a contare');
@@ -501,7 +501,7 @@ try {
       await seg('Pomodoro').click();
       if ((await text('pm-display')) !== '25:00') throw new Error('pomodoro: durata iniziale ' + (await text('pm-display')));
       await page.getByTestId('pm-skip').click();
-      await page.waitForTimeout(150);
+      await page.waitForFunction(() => /pausa breve/i.test(document.querySelector('[data-testid=pm-phase]')?.textContent ?? ''));
       if (!/pausa breve/i.test(await text('pm-phase'))) throw new Error('pomodoro: dopo il lavoro manca la pausa breve');
       if ((await text('pm-display')) !== '05:00') throw new Error('pomodoro: durata della pausa ' + (await text('pm-display')));
       // timer: durata non valida segnalata, poi 2 secondi che scadono
@@ -509,7 +509,7 @@ try {
       await page.fill('#tm-duration', '100h');
       await page.waitForSelector('[data-testid=tm-error]');
       await page.fill('#tm-duration', '0:02');
-      await page.waitForTimeout(150);
+      await page.waitForFunction(() => document.querySelector('[data-testid=tm-display]')?.textContent.trim() === '00:02');
       if ((await text('tm-display')) !== '00:02') throw new Error('timer: display ' + (await text('tm-display')));
       await page.getByTestId('tm-toggle').click();
       await page.waitForSelector('[data-testid=tm-done]', { timeout: 6000 });
@@ -524,7 +524,10 @@ try {
       const result = () => page.getByTestId('sci-result').innerText();
       const expect = async (expr, out) => {
         await page.fill('#sci-expr', expr);
-        await page.waitForSelector('[data-testid=sci-result]');
+        // il risultato precedente resta in pagina finché non arriva il nuovo: si aspetta il valore, non solo l'elemento
+        await page
+          .waitForFunction((o) => document.querySelector('[data-testid=sci-result]')?.textContent.trim() === o, out, { timeout: 5000 })
+          .catch(() => {});
         const got = await result();
         if (got !== out) throw new Error(`${expr}: atteso ${out}, ottenuto ${got}`);
       };
@@ -2454,8 +2457,19 @@ try {
     await page.keyboard.press('Escape');
     await dlg.waitFor({ state: 'hidden' });
     // Pulisci chiede conferma (premere due volte): i dati non spariscono alla prima pressione, né con Esc
+    await page.waitForTimeout(300); // il pannello ha tolto `open` ma l'evento close arriva un attimo dopo
     await page.keyboard.press('Alt+Shift+KeyX');
-    await page.getByTestId('shortcut-status').getByText(/Premi di nuovo/).waitFor();
+    try {
+      await page.getByTestId('shortcut-status').getByText(/Premi di nuovo/).waitFor({ timeout: 8000 });
+    } catch {
+      const st = await page.evaluate(() => ({
+        dialoghiAperti: document.querySelectorAll('dialog[open]').length,
+        avviso: document.querySelector('[data-testid=shortcut-status]')?.textContent?.trim(),
+        focus: document.activeElement?.tagName + '#' + (document.activeElement?.id ?? ''),
+        pulsantiPulisci: document.querySelectorAll('[data-shortcut=clear]').length,
+      }));
+      throw new Error('Pulisci non ha mostrato la conferma: ' + JSON.stringify(st));
+    }
     await page.keyboard.press('Escape');
     must((await page.inputValue('#json-in')).includes('Zoe'), 'Pulisci ha cancellato i dati alla prima pressione');
     await page.keyboard.press('Alt+Shift+KeyX');
