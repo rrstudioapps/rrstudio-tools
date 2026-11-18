@@ -14,6 +14,7 @@
     "og-images": "node scripts/og-images.mjs",
     "pwa-icons": "node scripts/pwa-icons.mjs",
     "pwa-check": "node scripts/pwa-check.mjs",
+    "i18n-check": "node scripts/i18n-check.mjs",
     "licenses": "node scripts/third-party-licenses.mjs",
     "lighthouse": "node scripts/lighthouse.mjs"
   },
