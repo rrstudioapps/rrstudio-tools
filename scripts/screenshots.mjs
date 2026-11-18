@@ -26,12 +26,12 @@ await new Promise((r) => setTimeout(r, 1000));
 // il server va fermato anche se qualcosa fallisce più avanti
 process.on('exit', () => server.kill());
 
-// rete di sicurezza: se qualcosa si blocca lo script finisce comunque e ferma il server
+// rete di sicurezza (15 minuti: con oltre 100 strumenti il giro completo supera i 5): se qualcosa si blocca lo script finisce comunque e ferma il server
 const watchdog = setTimeout(() => {
-  console.error('Timeout: screenshot interrotti dopo 5 minuti');
+  console.error('Timeout: screenshot interrotti dopo 15 minuti');
   server.kill();
   process.exit(1);
-}, 5 * 60 * 1000);
+}, 15 * 60 * 1000);
 watchdog.unref();
 
 let browser;
