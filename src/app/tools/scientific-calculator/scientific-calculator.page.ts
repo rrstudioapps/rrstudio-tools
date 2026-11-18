@@ -61,6 +61,11 @@ export class ScientificCalculatorPage {
   protected readonly ans = signal(0);
   /** Vero subito dopo «=»: il tasto successivo continua dal risultato (operatore) o ricomincia (cifra). */
   private justEvaluated = false;
+  /**
+   * Selezione nel campo, ricordata da noi: un campo che ha perso il focus (cliccando un tasto) non conserva la selezione
+   * in tutti i browser, e i tasti scriverebbero all'inizio. `null` = in fondo all'espressione.
+   */
+  private sel: { start: number; end: number } | null = null;
 
   protected readonly fnKeys = FN_KEYS;
   protected readonly padKeys = PAD_KEYS;
@@ -83,6 +88,7 @@ export class ScientificCalculatorPage {
   protected readonly shareState = (): ShareData => snapshotShare(this.shared);
   protected restoreShared(data: ShareData): void {
     applyShare(data, this.shared);
+    this.sel = null;
   }
 
   constructor() {
@@ -92,11 +98,24 @@ export class ScientificCalculatorPage {
   protected onType(value: string): void {
     this.justEvaluated = false;
     this.expr.set(value);
+    this.remember();
+  }
+
+  /** Ricorda dov'è il cursore (chiamata a ogni modifica, clic, tasto e uscita dal campo). */
+  protected remember(): void {
+    const el = this.field()?.nativeElement;
+    if (el) this.sel = { start: el.selectionStart ?? el.value.length, end: el.selectionEnd ?? el.value.length };
+  }
+
+  /** Posizione di inserimento attuale, sempre dentro il testo. */
+  private selection(): { start: number; end: number } {
+    const len = this.expr().length;
+    if (!this.sel) return { start: len, end: len };
+    return { start: Math.min(this.sel.start, len), end: Math.min(this.sel.end, len) };
   }
 
   /** Inserisce il testo di un tasto dove sta il cursore (o in fondo). */
   protected insert(text: string): void {
-    const el = this.field()?.nativeElement;
     if (this.justEvaluated) {
       // dopo «=»: un operatore continua dal risultato, qualsiasi altro tasto ricomincia
       this.justEvaluated = false;
@@ -105,17 +124,16 @@ export class ScientificCalculatorPage {
       return;
     }
     const value = this.expr();
-    const start = el?.selectionStart ?? value.length;
-    const end = el?.selectionEnd ?? value.length;
+    const { start, end } = this.selection();
     this.setValue(value.slice(0, start) + text + value.slice(end), start + text.length);
   }
 
   protected backspace(): void {
     this.justEvaluated = false;
-    const el = this.field()?.nativeElement;
     const value = this.expr();
-    let start = el?.selectionStart ?? value.length;
-    const end = el?.selectionEnd ?? value.length;
+    const sel = this.selection();
+    const end = sel.end;
+    let start = sel.start;
     if (start === end) start = Math.max(0, start - 1);
     this.setValue(value.slice(0, start) + value.slice(end), start);
   }
@@ -131,6 +149,7 @@ export class ScientificCalculatorPage {
       el.value = value;
       el.setSelectionRange(caret, caret);
     }
+    this.sel = { start: caret, end: caret };
     this.expr.set(value);
   }
 

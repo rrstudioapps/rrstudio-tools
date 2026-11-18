@@ -27,6 +27,9 @@
           data-testid="sci-expr"
           (input)="onType($any($event.target).value)"
           (keydown)="onKey($event)"
+          (keyup)="remember()"
+          (click)="remember()"
+          (blur)="remember()"
         />
       </div>
 
