@@ -16,7 +16,7 @@
         @for (ex of examples; track ex.id) {
           <button type="button" class="btn small" (click)="loadExample(ex.id)"><app-icon name="file" /> {{ i18n.t('jq.example.' + ex.id) }}</button>
         }
-        <button type="button" class="btn small" [disabled]="!json()" (click)="json.set('')"><app-icon name="trash" /> {{ i18n.t('jq.clear') }}</button>
+        <button data-shortcut="clear" type="button" class="btn small" [disabled]="!json()" (click)="json.set('')"><app-icon name="trash" /> {{ i18n.t('jq.clear') }}</button>
       </span>
     </div>
     <label class="visually-hidden" for="jq-json">{{ i18n.t('jq.json') }}</label>
@@ -94,8 +94,8 @@
             <div class="head">
               <h3 class="eyebrow">{{ i18n.t('jq.values') }}</h3>
               <span class="examples">
-                <app-copy-button [text]="valuesText()" [label]="i18n.t('jq.copyValues')" />
-                <button type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
+                <app-copy-button shortcut="copy" [text]="valuesText()" [label]="i18n.t('jq.copyValues')" />
+                <button data-shortcut="download" type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
               </span>
             </div>
             <label class="visually-hidden" for="jq-values">{{ i18n.t('jq.values') }}</label>
@@ -104,7 +104,7 @@
           <div class="col">
             <div class="head">
               <h3 class="eyebrow">{{ i18n.t('jq.paths') }}</h3>
-              <app-copy-button [text]="pathsText()" [label]="i18n.t('jq.copyPaths')" />
+              <app-copy-button shortcut="copy" [text]="pathsText()" [label]="i18n.t('jq.copyPaths')" />
             </div>
             <div class="tablewrap" tabindex="0" role="region" [attr.aria-label]="i18n.t('jq.paths')">
               <table data-testid="jq-paths">
@@ -166,8 +166,8 @@
         <label class="visually-hidden" for="jq-ts-out">{{ i18n.t('jq.ts.title') }}</label>
         <textarea id="jq-ts-out" class="io-textarea out" readonly spellcheck="false" rows="14" wrap="off" data-testid="jq-ts" [value]="tsText()"></textarea>
         <div class="tool-toolbar">
-          <app-copy-button [text]="tsText()" [label]="i18n.t('jq.copy')" />
-          <button type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
+          <app-copy-button shortcut="copy" [text]="tsText()" [label]="i18n.t('jq.copy')" />
+          <button data-shortcut="download" type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
         </div>
         <p class="hint">{{ i18n.t('jq.ts.note') }}</p>
       }
@@ -183,8 +183,8 @@
         <label class="visually-hidden" for="jq-sc-out">{{ i18n.t('jq.schema.title') }}</label>
         <textarea id="jq-sc-out" class="io-textarea out" readonly spellcheck="false" rows="14" wrap="off" data-testid="jq-schema" [value]="schemaText()"></textarea>
         <div class="tool-toolbar">
-          <app-copy-button [text]="schemaText()" [label]="i18n.t('jq.copy')" />
-          <button type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
+          <app-copy-button shortcut="copy" [text]="schemaText()" [label]="i18n.t('jq.copy')" />
+          <button data-shortcut="download" type="button" class="btn small" (click)="download()"><app-icon name="download" /> {{ i18n.t('jq.download') }}</button>
         </div>
         <p class="hint">{{ i18n.t('jq.schema.note') }}</p>
       }

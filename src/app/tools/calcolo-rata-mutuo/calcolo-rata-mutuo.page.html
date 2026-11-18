@@ -102,7 +102,7 @@
     <section class="plan" [attr.aria-label]="i18n.t('mutuo.plan')">
       <div class="plan-head">
         <h2 class="eyebrow">{{ i18n.t('mutuo.plan') }}</h2>
-        <button type="button" class="btn small" (click)="download()">
+        <button data-shortcut="download" type="button" class="btn small" (click)="download()">
           <app-icon name="download" /> {{ i18n.t('mutuo.csv') }}
         </button>
       </div>

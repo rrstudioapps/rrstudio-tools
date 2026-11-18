@@ -12,6 +12,8 @@ import {
   langFromPath,
   publicUrl,
   routePath,
+  SHARE_SLUG,
+  isShareSlug,
   slugFromPath,
   STATIC_PAGES,
 } from './lang-routing';
@@ -49,6 +51,15 @@ describe('URL ↔ lingua', () => {
     expect(alternatePath('/codice-fiscale', 'en')).toBeNull();
     expect(alternatePath('/en/codice-fiscale', 'it')).toBe('/codice-fiscale');
   });
+  it('la pagina di ricezione delle condivisioni: slug per lingua, cambio lingua, fuori da sitemap', () => {
+    expect(SHARE_SLUG).toEqual({ it: 'condividi', en: 'share' });
+    expect(isShareSlug('condividi') && isShareSlug('share') && !isShareSlug('preferiti')).toBe(true);
+    expect(alternatePath('/condividi', 'en')).toBe('/en/share');
+    expect(alternatePath('/en/share', 'it')).toBe('/condividi');
+    expect(allSlugs()).not.toContain('condividi');
+    expect(buildSitemap()).not.toContain('condividi');
+    expect(buildSitemap()).not.toContain('/share');
+  });
   it('hasLang segue il flag italyOnly', () => {
     for (const t of TOOLS) {
       expect(hasLang(t.path, 'it'), t.id).toBe(true);
@@ -71,6 +82,7 @@ describe('URL ↔ lingua', () => {
       'fattura-elettronica',
       'iban-partita-iva',
       'numeri-in-lettere',
+      'scadenze-fatture',
     ]);
     expect(new Set(CATEGORIES.map((c) => c.slugEn)).size).toBe(CATEGORIES.length);
   });

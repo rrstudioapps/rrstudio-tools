@@ -1,0 +1,126 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.scad.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('scad.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="scadenze-fatture" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <section class="card" [attr.aria-label]="i18n.t('scad.params')">
+    <h2 class="eyebrow">{{ i18n.t('scad.params') }}</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="scad-date">{{ i18n.t('scad.date') }}</label>
+        <input id="scad-date" type="date" min="1583-01-01" max="9999-12-31" data-testid="scad-date" [value]="date()" (input)="date.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="scad-terms">{{ i18n.t('scad.terms') }}</label>
+        <input id="scad-terms" type="text" autocomplete="off" data-testid="scad-terms" [placeholder]="i18n.t('scad.terms.ph')" [value]="terms()" (input)="terms.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="scad-total">{{ i18n.t('scad.total') }}</label>
+        <input id="scad-total" type="text" inputmode="decimal" autocomplete="off" data-testid="scad-total" [placeholder]="i18n.t('scad.total.ph')" [value]="total()" (input)="total.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="scad-ref">{{ i18n.t('scad.reference') }}</label>
+        <input id="scad-ref" type="text" maxlength="60" autocomplete="off" [placeholder]="i18n.t('scad.reference.ph')" [value]="reference()" (input)="reference.set($any($event.target).value)" />
+      </div>
+    </div>
+    <div class="presets" role="group" [attr.aria-label]="i18n.t('scad.presets')">
+      @for (p of presets; track p) {
+        <button type="button" class="btn small" [attr.aria-pressed]="terms() === p" (click)="setPreset(p)">{{ p }}</button>
+      }
+      <button type="button" class="btn small" data-testid="scad-sample" (click)="loadSample()">{{ i18n.t('scad.sample') }}</button>
+    </div>
+    <div class="field inline">
+      <span class="label">{{ i18n.t('scad.base') }}</span>
+      <app-segmented [label]="i18n.t('scad.base')" [options]="bases()" [(value)]="base" />
+    </div>
+    <p class="hint">{{ i18n.t('scad.base.hint.' + base()) }}</p>
+    @if (base() === 'dffm') {
+      <div class="field narrow">
+        <label for="scad-extra">{{ i18n.t('scad.extra') }}</label>
+        <input id="scad-extra" type="text" inputmode="numeric" autocomplete="off" data-testid="scad-extra" [value]="extra()" (input)="extra.set($any($event.target).value)" />
+        <span class="hint">{{ i18n.t('scad.extra.hint') }}</span>
+      </div>
+    }
+    <fieldset class="opts">
+      <legend class="label">{{ i18n.t('scad.options') }}</legend>
+      <label class="check"><input type="checkbox" data-testid="scad-shift" [checked]="shift()" (change)="shift.set($any($event.target).checked)" /> {{ i18n.t('scad.shift') }}</label>
+      <label class="check"><input type="checkbox" [checked]="satWork()" (change)="satWork.set($any($event.target).checked)" /> {{ i18n.t('scad.satWork') }}</label>
+    </fieldset>
+    @for (e of errors(); track $index) {
+      <p class="tool-error" role="alert">{{ e }}</p>
+    }
+    @if (rangeError()) {
+      <p class="tool-error" role="alert">{{ rangeError() }}</p>
+    }
+  </section>
+
+  <section class="card" [attr.aria-label]="i18n.t('scad.result')" aria-live="polite">
+    <h2 class="eyebrow">{{ i18n.t('scad.result') }}</h2>
+    @if (hasData()) {
+      <p class="hint" data-testid="scad-summary">{{ summary() }}</p>
+      <div class="table-scroll">
+        <table data-testid="scad-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('scad.col.n') }}</th>
+              <th scope="col" class="num">{{ i18n.t('scad.col.days') }}</th>
+              <th scope="col">{{ i18n.t('scad.col.due') }}</th>
+              <th scope="col" class="num">{{ i18n.t('scad.col.amount') }}</th>
+              <th scope="col">{{ i18n.t('scad.col.note') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of rows(); track r.n) {
+              <tr>
+                <td>{{ r.n }}</td>
+                <td class="num">{{ r.term }}</td>
+                <td>
+                  <strong [attr.data-testid]="'scad-due-' + r.n">{{ r.due }}</strong>
+                  @if (r.shifted) {
+                    <span class="hint block">{{ i18n.t('scad.was', { d: r.theoretical }) }}</span>
+                  }
+                </td>
+                <td class="num code">{{ r.amount }}</td>
+                <td class="hint">{{ r.note }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <app-copy-button [text]="csv()" [label]="i18n.t('scad.copyCsv')" shortcut="copy" />
+        <button type="button" class="btn small" data-shortcut="download" data-testid="scad-csv" (click)="downloadCsv()"><app-icon name="download" /> {{ i18n.t('scad.csv') }}</button>
+        <button type="button" class="btn small" data-testid="scad-ics" (click)="downloadIcs()"><app-icon name="calendar" /> {{ i18n.t('scad.ics') }}</button>
+        <app-send-to from="scadenze-fatture" kind="csv" [text]="csv()" />
+      </div>
+    } @else {
+      <p class="hint">{{ i18n.t('scad.empty') }}</p>
+    }
+  </section>
+
+  <section class="card law" [attr.aria-label]="i18n.t('scad.law.title')">
+    <h2 class="eyebrow">{{ i18n.t('scad.law.title') }}</h2>
+    <p>{{ i18n.t('scad.law.desc') }}</p>
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('scad.info.dffm.title') }}</h2>
+      <p>{{ i18n.t('scad.info.dffm.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('scad.info.shift.title') }}</h2>
+      <p>{{ i18n.t('scad.info.shift.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('scad.info.priv.title') }}</h2>
+      <p>{{ i18n.t('scad.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

@@ -10,6 +10,7 @@ import { IoPanel } from '../../shared/io-panel';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { CertInfo, CsrInfo, DecodeResult, DecodedItem, MAX_INPUT_BYTES, SanEntry, Validity, decode } from './cert';
 import { CERT_DICTIONARIES } from './certificate-decoder.i18n';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 @Component({
   selector: 'app-certificate-decoder',
@@ -40,6 +41,9 @@ export class CertificateDecoderPage {
 
   constructor() {
     this.i18n.register(CERT_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('certificate-decoder');
+    if (rx?.text !== undefined) this.text.set(rx.text.trim());
   }
 
   protected onText(value: string): void {

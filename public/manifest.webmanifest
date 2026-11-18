@@ -13,5 +13,41 @@
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
     { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "share_target": {
+    "action": "/condividi/",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        { "name": "files", "accept": ["image/*", "application/pdf", "text/*", ".csv", ".tsv", ".json", ".yaml", ".yml", ".xml", ".svg", ".pem", ".crt", ".cer", ".md", ".txt"] }
+      ]
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "/condividi/",
+      "accept": {
+        "image/png": [".png"],
+        "image/jpeg": [".jpg", ".jpeg"],
+        "image/webp": [".webp"],
+        "image/gif": [".gif"],
+        "image/avif": [".avif"],
+        "image/svg+xml": [".svg"],
+        "application/pdf": [".pdf"],
+        "text/csv": [".csv"],
+        "text/tab-separated-values": [".tsv"],
+        "application/json": [".json"],
+        "application/yaml": [".yaml", ".yml"],
+        "application/xml": [".xml"],
+        "text/xml": [".xml"],
+        "application/x-pem-file": [".pem"],
+        "application/x-x509-ca-cert": [".crt", ".cer"],
+        "text/plain": [".txt", ".md"]
+      }
+    }
   ]
 }

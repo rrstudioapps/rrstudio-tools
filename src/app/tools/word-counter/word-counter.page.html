@@ -18,13 +18,13 @@
     <span class="spacer"></span>
     <button type="button" class="btn small" (click)="loadSample()">{{ i18n.t('wc.sample') }}</button>
     <button type="button" class="btn small" [disabled]="!canUndo()" (click)="undo()"><app-icon name="rotateCcw" /> {{ i18n.t('wc.undo') }}</button>
-    <button type="button" class="btn small" [disabled]="empty()" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('wc.clear') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" [disabled]="empty()" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('wc.clear') }}</button>
   </div>
 
   <div class="layout">
     <app-io-panel [label]="i18n.t('wc.input')" inputId="wc-in">
       <span panel-actions>
-        <app-copy-button [text]="text()" [disabled]="empty()" />
+        <app-copy-button shortcut="copy" [text]="text()" [disabled]="empty()" />
         <app-send-to from="word-counter" [text]="text()" [disabled]="empty()" />
       </span>
       <textarea
@@ -41,7 +41,7 @@
     <section class="side" [attr.aria-label]="i18n.t('wc.stats')">
       <div class="head">
         <h2 class="eyebrow">{{ i18n.t('wc.stats') }}</h2>
-        <app-copy-button [text]="summary()" [label]="i18n.t('wc.copyStats')" [disabled]="empty()" />
+        <app-copy-button shortcut="copy" [text]="summary()" [label]="i18n.t('wc.copyStats')" [disabled]="empty()" />
       </div>
       <dl class="stats" data-testid="wc-stats" aria-live="polite">
         @for (r of rows(); track r.id) {

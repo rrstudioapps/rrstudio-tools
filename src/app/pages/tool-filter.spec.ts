@@ -44,6 +44,7 @@ describe('filterTools', () => {
       'fattura-elettronica',
       'iban-partita-iva',
       'numeri-in-lettere',
+      'scadenze-fatture',
     ]);
   });
   it('cerca nelle parole chiave', () => {

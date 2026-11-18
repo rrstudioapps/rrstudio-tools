@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, computed, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, PLATFORM_ID, computed, effect, inject, signal, untracked, afterNextRender } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { FileDrop } from '../../shared/file-drop';
@@ -125,6 +125,7 @@ export class HashGeneratorPage {
     this.i18n.register(HASH_DICTIONARIES);
     const rx = inject(ToolHandoff).take('hash-generator');
     if (rx?.text !== undefined) this.text.set(rx.text);
+    else if (rx?.files?.length) afterNextRender(() => void this.onFile(rx.files![0]));
     // Testo: hash live (solo nel browser; la pagina prerenderizzata parte vuota)
     effect(() => {
       const t = this.text();

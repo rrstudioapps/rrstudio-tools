@@ -89,7 +89,7 @@
     <section class="result" [attr.aria-label]="i18n.t('wd.result')" aria-live="polite">
       <div class="head">
         <h2 class="eyebrow">{{ i18n.t('wd.result') }}</h2>
-        <app-copy-button [text]="summary()" [label]="i18n.t('wd.copy')" [disabled]="!hasResult()" />
+        <app-copy-button shortcut="copy" [text]="summary()" [label]="i18n.t('wd.copy')" [disabled]="!hasResult()" />
       </div>
 
       @if (error()) {

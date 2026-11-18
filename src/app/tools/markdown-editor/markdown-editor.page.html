@@ -90,7 +90,7 @@
   <section class="md-export" [attr.aria-label]="i18n.t('md.export')">
     <h2 class="eyebrow">{{ i18n.t('md.export') }}</h2>
     <div class="md-export-row">
-      <button type="button" class="btn small" [disabled]="isEmpty()" (click)="exportMd()"><app-icon name="download" /> {{ i18n.t('md.export.md') }}</button>
+      <button data-shortcut="download" type="button" class="btn small" [disabled]="isEmpty()" (click)="exportMd()"><app-icon name="download" /> {{ i18n.t('md.export.md') }}</button>
       <button type="button" class="btn small" [disabled]="isEmpty()" (click)="exportHtml()"><app-icon name="download" /> {{ i18n.t('md.export.html') }}</button>
       <button type="button" class="btn small" [disabled]="isEmpty()" (click)="exportPdf()"><app-icon name="file" /> {{ i18n.t('md.export.pdf') }}</button>
     </div>
@@ -102,7 +102,7 @@
       <span class="md-meta" data-testid="md-draft-state">{{
         draftState() === 'saved' ? i18n.t('md.draft.saved') : draftState() === 'off' ? i18n.t('md.draft.off') : i18n.t('md.draft.none')
       }}</span>
-      <button type="button" class="btn small" (click)="clearDraft()"><app-icon name="trash" /> {{ i18n.t('md.draft.clear') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" (click)="clearDraft()"><app-icon name="trash" /> {{ i18n.t('md.draft.clear') }}</button>
     </div>
     <p class="md-meta">{{ i18n.t('md.draft.note') }}</p>
   </section>

@@ -46,8 +46,14 @@ const VERSION = createHash('sha256').update(versionInput(hashes)).digest('hex').
 
 const template = readFileSync(join(import.meta.dirname, 'sw-template.js'), 'utf8');
 if (!template.includes('__SW_DATA__')) throw new Error('segnaposto __SW_DATA__ mancante in sw-template.js');
+if (!template.includes('/*__SW_SHARE__*/')) throw new Error('segnaposto __SW_SHARE__ mancante in sw-template.js');
+// logica del Web Share Target (modulo testabile): il SW è uno script classico, quindi si tolgono le `export`
+const shareLogic = readFileSync(join(import.meta.dirname, 'sw-share.mjs'), 'utf8').replace(/^export /gm, '');
 const data = { VERSION, SHELL: shell, ALL: all, SIZE: size };
-writeFileSync(join(dist, 'sw.js'), template.replace('__SW_DATA__', () => JSON.stringify(data)));
+writeFileSync(
+  join(dist, 'sw.js'),
+  template.replace('/*__SW_SHARE__*/', () => shareLogic).replace('__SW_DATA__', () => JSON.stringify(data)),
+);
 
 // riepilogo: dimensioni reali (non compresse) di SHELL e ALL
 const sizeOf = (urls) => {

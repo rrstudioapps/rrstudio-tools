@@ -10,7 +10,7 @@
   <app-file-drop [hint]="i18n.t('cert.drop')" accept=".pem,.crt,.cer,.der,.csr,.req,.txt" (fileSelected)="onFile($event)">
     <app-io-panel [label]="i18n.t('cert.in')" inputId="cert-in" [meta]="fileName() ? i18n.t('cert.file', { name: fileName() }) : ''">
       <span panel-actions>
-        <button type="button" class="btn small" [disabled]="!text() && !fileName()" (click)="clear()">
+        <button data-shortcut="clear" type="button" class="btn small" [disabled]="!text() && !fileName()" (click)="clear()">
           <app-icon name="trash" /> {{ i18n.t('cert.clear') }}
         </button>
       </span>

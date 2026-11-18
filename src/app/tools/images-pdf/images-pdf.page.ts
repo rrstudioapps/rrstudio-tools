@@ -169,8 +169,11 @@ export class ImagesPdfPage {
   constructor() {
     this.i18n.register(IMAGES_PDF_DICTIONARIES);
     // immagini ricevute da un altro strumento: stessa strada del file-drop
-    const rx = inject(ToolHandoff).take('images-pdf');
-    if (rx?.files?.length) afterNextRender(() => void this.onImages(rx.files!));
+    // (l'id dello strumento coincide con la modalità: 'images-to-pdf' o 'pdf-to-images')
+    const rx = inject(ToolHandoff).take(this.mode);
+    if (rx?.files?.length) {
+      afterNextRender(() => void (this.mode === 'images-to-pdf' ? this.onImages(rx.files!) : this.onPdf(rx.files![0])));
+    }
     inject(DestroyRef).onDestroy(() => {
       this.releaseItems();
       this.releaseResults();

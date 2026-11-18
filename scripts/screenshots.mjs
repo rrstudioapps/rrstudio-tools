@@ -524,6 +524,51 @@ try {
       await page.waitForSelector('[data-testid=lire-result]');
     },
   });
+  await shot('subnet-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/subnet-calculator/',
+    setup: async (page) => {
+      await page.fill('#subnet-input', '192.168.10.37/26');
+      await page.fill('#subnet-split', '4');
+      await page.waitForSelector('[data-testid=subnet-split-table]');
+    },
+  });
+  await shot('docker-run-to-compose.png', {
+    width: 1280,
+    dark: false,
+    path: '/docker-run-to-compose/',
+    setup: async (page) => {
+      await page.click('[data-testid=docker-sample]');
+      await page.waitForFunction(() => document.querySelector('#docker-output')?.value.startsWith('services:'));
+    },
+  });
+  await shot('css-clamp-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/css-clamp-calculator/',
+    setup: async (page) => {
+      await page.waitForSelector('[data-testid=clamp-output]');
+    },
+  });
+  await shot('time-calculator.png', {
+    width: 1280,
+    dark: false,
+    path: '/time-calculator/',
+    setup: async (page) => {
+      await page.click('[data-testid=time-sample]');
+      await page.waitForSelector('[data-testid=time-sum-total]');
+    },
+  });
+  await shot('scadenze-fatture.png', {
+    width: 1280,
+    dark: false,
+    path: '/scadenze-fatture/',
+    setup: async (page) => {
+      await page.click('[data-testid=scad-sample]');
+      await page.waitForSelector('[data-testid=scad-table]');
+    },
+  });
   await shot('percentage-calculator.png', {
     width: 1280,
     dark: false,
@@ -1741,6 +1786,91 @@ try {
     await page.waitForURL('**/image-compressor');
     await page.getByText('Ricevuto da Ritaglia e ruota immagini').waitFor();
     await page.locator('li.row[data-status=done]').first().waitFor();
+  });
+  // Scorciatoie da tastiera comuni agli strumenti (pulsanti marcati con data-shortcut). Solo in --check.
+  await handoffCase('scorciatoie json-formatter', '/json-formatter/', async (page) => {
+    await page.fill('#json-in', '{"nome":"Zoe","b":[1,2]}');
+    await page.waitForSelector('#json-out code span');
+    // Ctrl+Invio non rompe nulla (questo strumento formatta già mentre si scrive) e Alt+Maiusc+C copia il risultato
+    await page.keyboard.press('Control+Enter');
+    await page.keyboard.press('Alt+Shift+KeyC');
+    await page.getByText('Copiato', { exact: true }).first().waitFor();
+    // "?" dentro un campo si scrive e basta; fuori dai campi apre il pannello, Esc lo chiude
+    await page.focus('#json-in');
+    await page.keyboard.press('?');
+    must((await page.locator('dialog[open]').count()) === 0, '"?" dentro un campo ha aperto il pannello');
+    await page.locator('h1').click();
+    await page.keyboard.press('?');
+    const dlg = page.getByRole('dialog', { name: 'Scorciatoie da tastiera' });
+    await dlg.waitFor();
+    must((await dlg.innerText()).includes('Copia il risultato'), 'il pannello non elenca la scorciatoia "Copia"');
+    await page.keyboard.press('Escape');
+    await dlg.waitFor({ state: 'hidden' });
+    // Pulisci chiede conferma (premere due volte): i dati non spariscono alla prima pressione, né con Esc
+    await page.keyboard.press('Alt+Shift+KeyX');
+    await page.getByTestId('shortcut-status').getByText(/Premi di nuovo/).waitFor();
+    await page.keyboard.press('Escape');
+    must((await page.inputValue('#json-in')).includes('Zoe'), 'Pulisci ha cancellato i dati alla prima pressione');
+    await page.keyboard.press('Alt+Shift+KeyX');
+    await page.waitForFunction(() => document.querySelector('#json-in').value === '');
+  });
+  // Incolla intelligente e trascinamento di file sulla home: riconoscimento, proposta degli strumenti, passaggio in memoria. Solo in --check.
+  await handoffCase('incolla JSON in home → json-formatter', '/', async (page) => {
+    // Ctrl+V senza focus in un campo: evento paste sul documento (come fa il browser)
+    await page.evaluate(() => {
+      const dt = new DataTransfer();
+      dt.setData('text/plain', '{"a":1,"nome":"Zoe"}');
+      document.body.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));
+    });
+    await page.getByText('Rilevato: JSON').waitFor();
+    await page.getByText('Il contenuto resta in questa scheda').waitFor();
+    must((await page.locator('pre.preview').innerText()).includes('Zoe'), 'anteprima del JSON incollato assente');
+    const names = await page.locator('ul.tools button').allInnerTexts();
+    must(names[0].includes('JSON Formatter'), 'il primo strumento proposto per un JSON non è il formatter: ' + names.join(' | '));
+    await page.locator('ul.tools').getByRole('button', { name: /JSON Formatter e Validator/ }).click();
+    await page.waitForURL('**/json-formatter');
+    await page.waitForFunction(() => document.querySelector('#json-in')?.value.includes('Zoe'));
+  });
+  await handoffCase('incolla nella ricerca (comportamento normale)', '/', async (page) => {
+    await page.fill('#tool-q', 'hash');
+    await page.locator('#tool-q').focus();
+    await page.evaluate(() => {
+      const dt = new DataTransfer();
+      dt.setData('text/plain', '{"a":1}');
+      document.querySelector('#tool-q').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));
+    });
+    await page.waitForTimeout(300);
+    must((await page.getByText('Rilevato:').count()) === 0, 'l\'incolla nel campo di ricerca ha attivato il riconoscimento');
+  });
+  await handoffCase('drop immagine in home → image-compressor', '/', async (page) => {
+    await page.evaluate(async () => {
+      const c = document.createElement('canvas');
+      c.width = 64;
+      c.height = 48;
+      const g = c.getContext('2d');
+      g.fillStyle = '#3399cc';
+      g.fillRect(0, 0, 64, 48);
+      const blob = await new Promise((r) => c.toBlob(r, 'image/png'));
+      const dt = new DataTransfer();
+      dt.items.add(new File([blob], 'foto.png', { type: 'image/png' }));
+      window.__dt = dt;
+      for (const t of ['dragenter', 'dragover']) document.dispatchEvent(new DragEvent(t, { dataTransfer: dt, bubbles: true, cancelable: true }));
+    });
+    await page.getByText('Rilascia qui il file per scegliere lo strumento').waitFor();
+    await page.evaluate(() => document.dispatchEvent(new DragEvent('drop', { dataTransfer: window.__dt, bubbles: true, cancelable: true })));
+    await page.getByText('File: immagine').waitFor();
+    must((await page.getByText('Rilascia qui il file per scegliere lo strumento').count()) === 0, 'l\'overlay di trascinamento è rimasto dopo il rilascio');
+    await page.locator('ul.tools').getByRole('button', { name: /Comprimi e converti immagini/ }).click();
+    await page.waitForURL('**/image-compressor');
+    await page.locator('li.row[data-status=done]').first().waitFor();
+  });
+  await handoffCase('scegli un file in home → csv', '/', async (page) => {
+    await page.setInputFiles('app-smart-intake input[type=file]', [{ name: 'dati.csv', mimeType: 'text/csv', buffer: Buffer.from('a;b\n1;2\n3;4\n') }]);
+    await page.getByText('File: CSV').waitFor();
+    must((await page.locator('ul.tools').getByRole('button', { name: /Hash/ }).count()) > 0, 'hash non proposto per un file qualunque');
+  });
+  await handoffCase('pagina di ricezione dopo un POST senza service worker', '/condividi/?retry=1', async (page) => {
+    await page.getByText(/Non sono riuscito a ricevere il contenuto/).waitFor();
   });
 } finally {
   clearTimeout(watchdog);

@@ -9,6 +9,7 @@ import { IoPanel } from '../../shared/io-panel';
 import { PrivacyNote } from '../../shared/privacy-note';
 import { JsonToken, tokenizeJson } from '../json-formatter/json-tools';
 import { JWT_DICTIONARIES } from './jwt-decoder.i18n';
+import { ToolHandoff } from '../../shared/tool-handoff';
 import {
   DateClaim,
   JweInfo,
@@ -160,6 +161,9 @@ export class JwtDecoderPage {
 
   constructor() {
     this.i18n.register(JWT_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('jwt-decoder');
+    if (rx?.text !== undefined) this.input.set(rx.text.trim());
   }
 
   protected onInput(e: Event): void {

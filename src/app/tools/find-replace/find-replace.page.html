@@ -12,7 +12,7 @@
   <app-io-panel [label]="i18n.t('fr.text')" inputId="fr-text">
     <span panel-actions>
       <button type="button" class="btn small" (click)="loadExample()">{{ i18n.t('fr.example') }}</button>
-      <button type="button" class="btn small" [disabled]="!text()" (click)="text.set('')">{{ i18n.t('fr.clear') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" [disabled]="!text()" (click)="text.set('')">{{ i18n.t('fr.clear') }}</button>
     </span>
     <textarea
       id="fr-text"
@@ -120,10 +120,10 @@
 
   <app-io-panel [label]="i18n.t('fr.out')" inputId="fr-out" [meta]="total()">
     <span panel-actions>
-      <app-copy-button [text]="output()" [disabled]="!output()" />
+      <app-copy-button shortcut="copy" [text]="output()" [disabled]="!output()" />
       <app-send-to from="find-replace" [text]="output()" [disabled]="!output()" />
-      <button type="button" class="btn small" [disabled]="!output()" (click)="download()"><app-icon name="download" /> {{ i18n.t('fr.download') }}</button>
-      <button type="button" class="btn small" [disabled]="!output()" (click)="useAsInput()"><app-icon name="swap" /> {{ i18n.t('fr.use') }}</button>
+      <button data-shortcut="download" type="button" class="btn small" [disabled]="!output()" (click)="download()"><app-icon name="download" /> {{ i18n.t('fr.download') }}</button>
+      <button data-shortcut="swap" type="button" class="btn small" [disabled]="!output()" (click)="useAsInput()"><app-icon name="swap" /> {{ i18n.t('fr.use') }}</button>
     </span>
     <textarea id="fr-out" class="io-textarea" rows="8" readonly spellcheck="false" [value]="output()" data-testid="fr-out"></textarea>
   </app-io-panel>

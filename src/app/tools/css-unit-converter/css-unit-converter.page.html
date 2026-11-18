@@ -126,7 +126,7 @@
       </app-io-panel>
       <app-io-panel [label]="i18n.t('cssu.block.out')" inputId="cssu-out" [meta]="blockMeta()">
         <span panel-actions>
-          <app-copy-button [text]="block()?.css ?? ''" [label]="i18n.t('cssu.block.copy')" [disabled]="!block()" />
+          <app-copy-button shortcut="copy" [text]="block()?.css ?? ''" [label]="i18n.t('cssu.block.copy')" [disabled]="!block()" />
           <button type="button" class="btn small" [disabled]="!block()" (click)="download()">
             <app-icon name="download" /> {{ i18n.t('cssu.block.download') }}
           </button>

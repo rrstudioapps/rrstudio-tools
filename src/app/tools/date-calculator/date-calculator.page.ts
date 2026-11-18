@@ -11,6 +11,7 @@ import { Ymd, addInterval, computeAge, dateDifference, formatIso, isLeapYear, pa
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './date-calculator.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Mode = 'diff' | 'add' | 'age';
 type Dir = 'plus' | 'minus';
@@ -88,6 +89,15 @@ export class DateCalculatorPage {
 
   constructor() {
     this.i18n.register(DC_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('date-calculator');
+    if (rx?.text !== undefined) {
+      // la data ricevuta diventa la data di partenza della differenza (ISO oppure gg/mm/aaaa)
+      const t = rx.text.trim();
+      const dmy = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(t);
+      const iso = dmy ? `${dmy[3]}-${dmy[2].padStart(2, '0')}-${dmy[1].padStart(2, '0')}` : t.slice(0, 10);
+      if (parseIso(iso)) this.diffFrom.set(iso);
+    }
   }
 
   protected bad(text: string): boolean {

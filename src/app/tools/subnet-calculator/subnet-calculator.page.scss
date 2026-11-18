@@ -1,0 +1,110 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  margin-bottom: var(--space-4);
+  > label {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+}
+.row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-wrap: wrap;
+  input {
+    flex: 1 1 18rem;
+    min-width: 0;
+  }
+}
+.code {
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+}
+.hint {
+  margin: 0 0 var(--space-3);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.card {
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  h2 {
+    margin: 0;
+  }
+}
+.kv {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: var(--space-2) var(--space-5);
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-block: var(--space-1);
+    border-bottom: 1px solid var(--line-soft);
+    min-width: 0;
+  }
+  dt {
+    font-size: var(--fs-xs);
+    color: var(--muted);
+  }
+  dd {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    overflow-wrap: anywhere;
+  }
+}
+.bin-scroll {
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  th,
+  td {
+    text-align: left;
+    padding: var(--space-1) var(--space-3);
+    white-space: nowrap;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  th {
+    font-weight: var(--fw-medium);
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+  .num {
+    text-align: right;
+  }
+}
+.oct {
+  display: inline-block;
+}
+.net {
+  color: var(--accent);
+  font-weight: var(--fw-bold);
+}
+.host {
+  color: var(--ink-2);
+}
+.dot {
+  color: var(--muted);
+  padding-inline: 1px;
+}
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}

@@ -39,7 +39,7 @@
         <p class="big" data-testid="lire-result">{{ r.main }}</p>
         <p class="hint">{{ r.note }}</p>
         <p class="hint" data-testid="lire-exact">{{ r.exact }}</p>
-        <div class="actions"><app-copy-button [text]="r.copy" /></div>
+        <div class="actions"><app-copy-button shortcut="copy" [text]="r.copy" /></div>
       } @else {
         <p class="hint">{{ i18n.t('lire.empty') }}</p>
       }

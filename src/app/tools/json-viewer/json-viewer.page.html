@@ -41,13 +41,13 @@
     <button type="button" class="btn small" (click)="loadSample()">
       <app-icon name="braces" /> {{ i18n.t('jv.sample') }}
     </button>
-    <button type="button" class="btn small" [disabled]="!canExport()" (click)="copyAll()">
+    <button data-shortcut="copy" type="button" class="btn small" [disabled]="!canExport()" (click)="copyAll()">
       <app-icon [name]="copied() ? 'check' : 'copy'" /> {{ copied() ? i18n.t('common.copied') : i18n.t('common.copy') }}
     </button>
-    <button type="button" class="btn small" [disabled]="!canExport()" (click)="download()">
+    <button data-shortcut="download" type="button" class="btn small" [disabled]="!canExport()" (click)="download()">
       <app-icon name="download" /> {{ i18n.t('jv.download') }}
     </button>
-    <button type="button" class="btn small" (click)="clear()">
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()">
       <app-icon name="trash" /> {{ i18n.t('common.clear') }}
     </button>
   </div>

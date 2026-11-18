@@ -74,10 +74,10 @@
       <p class="hint">{{ i18n.t('csr.key.new.hint') }}</p>
     }
     <div class="row">
-      <button type="button" class="btn primary" [disabled]="busy()" (click)="generate()" data-testid="csr-generate">
+      <button data-shortcut="run" type="button" class="btn primary" [disabled]="busy()" (click)="generate()" data-testid="csr-generate">
         <app-icon name="key" /> {{ i18n.t('csr.generate') }}
       </button>
-      <button type="button" class="btn small" [disabled]="!result() || busy()" (click)="clear()">{{ i18n.t('csr.clear') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" [disabled]="!result() || busy()" (click)="clear()">{{ i18n.t('csr.clear') }}</button>
     </div>
   </section>
 
@@ -94,8 +94,8 @@
       <h2 class="eyebrow" id="csr-out-title">{{ i18n.t('csr.out.csr') }}</h2>
       <textarea class="keybox mono" rows="10" readonly spellcheck="false" [attr.aria-label]="i18n.t('csr.out.csr')" [value]="r.csrPem" data-testid="csr-output"></textarea>
       <div class="row">
-        <app-copy-button [text]="r.csrPem" [label]="i18n.t('csr.out.csr')" />
-        <button type="button" class="btn small" (click)="downloadCsr()"><app-icon name="download" /> {{ baseName() }}.csr</button>
+        <app-copy-button shortcut="copy" [text]="r.csrPem" [label]="i18n.t('csr.out.csr')" />
+        <button data-shortcut="download" type="button" class="btn small" (click)="downloadCsr()"><app-icon name="download" /> {{ baseName() }}.csr</button>
       </div>
       <p class="hint">{{ i18n.t('csr.out.csr.hint') }}</p>
     </section>
@@ -108,7 +108,7 @@
         </p>
         <textarea class="keybox mono" rows="8" readonly spellcheck="false" [attr.aria-label]="i18n.t('csr.out.key')" [value]="r.keyPem" data-testid="csr-key"></textarea>
         <div class="row">
-          <app-copy-button [text]="r.keyPem" [label]="i18n.t('csr.out.key')" />
+          <app-copy-button shortcut="copy" [text]="r.keyPem" [label]="i18n.t('csr.out.key')" />
           <button type="button" class="btn small" (click)="downloadKey()"><app-icon name="download" /> {{ baseName() }}.key</button>
         </div>
       </section>

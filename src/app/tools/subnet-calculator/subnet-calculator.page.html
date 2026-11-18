@@ -1,0 +1,170 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.subnet.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('subnet.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="subnet-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="field">
+    <label for="subnet-input">{{ i18n.t('subnet.input') }}</label>
+    <div class="row">
+      <input
+        id="subnet-input"
+        type="text"
+        class="code"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        data-testid="subnet-input"
+        [placeholder]="i18n.t('subnet.input.ph')"
+        [value]="input()"
+        [attr.aria-invalid]="error() !== ''"
+        [attr.aria-describedby]="error() ? 'subnet-err' : null"
+        (input)="input.set($any($event.target).value)"
+      />
+      <button type="button" class="btn small" data-testid="subnet-sample" (click)="loadSample()">{{ i18n.t('subnet.sample') }}</button>
+    </div>
+    @if (error()) {
+      <p id="subnet-err" class="tool-error" role="alert" data-testid="subnet-error">{{ error() }}</p>
+    }
+  </div>
+
+  @if (v4() || v6()) {
+    <section class="card" [attr.aria-label]="i18n.t('subnet.result')" data-testid="subnet-result">
+      <h2 class="eyebrow">{{ i18n.t('subnet.result') }}</h2>
+      <dl class="kv">
+        @for (r of v4() ? rows4() : rows6(); track r.label) {
+          <div>
+            <dt>{{ r.label }}</dt>
+            <dd class="code">
+              <span [attr.data-testid]="'subnet-' + $index">{{ r.value }}</span>
+              <app-copy-button [text]="r.value" [compact]="true" [ariaLabel]="i18n.t('subnet.copyRow', { label: r.label })" />
+            </dd>
+          </div>
+        }
+      </dl>
+    </section>
+  }
+
+  @if (v4()) {
+    <section class="card" [attr.aria-label]="i18n.t('subnet.binary')">
+      <h2 class="eyebrow">{{ i18n.t('subnet.binary') }}</h2>
+      <p class="hint">{{ i18n.t('subnet.binary.hint') }}</p>
+      <div class="bin-scroll">
+        <table class="bin" data-testid="subnet-binary">
+          <tbody>
+            @for (b of bin4(); track b.label) {
+              <tr>
+                <th scope="row">{{ b.label }}</th>
+                <td class="code">
+                  @for (o of b.octets; track $index) {
+                    <span class="oct"><span class="net">{{ o.net }}</span><span class="host">{{ o.host }}</span></span>
+                    @if ($index < 3) {
+                      <span class="dot" aria-hidden="true">.</span>
+                    }
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" [attr.aria-label]="i18n.t('subnet.split.title')">
+      <h2 class="eyebrow">{{ i18n.t('subnet.split.title') }}</h2>
+      <app-segmented [label]="i18n.t('subnet.split.mode')" [options]="splitModes()" [(value)]="splitMode" />
+      <div class="field">
+        <label for="subnet-split">{{ i18n.t('subnet.split.value.' + splitMode()) }}</label>
+        <input
+          id="subnet-split"
+          type="text"
+          autocomplete="off"
+          data-testid="subnet-split"
+          [placeholder]="splitHint()"
+          [value]="splitValue()"
+          [attr.aria-invalid]="splitError() !== ''"
+          [attr.aria-describedby]="splitError() ? 'subnet-split-err' : null"
+          (input)="splitValue.set($any($event.target).value)"
+        />
+        @if (splitError()) {
+          <p id="subnet-split-err" class="tool-error" role="alert">{{ splitError() }}</p>
+        }
+      </div>
+      @if (splitRows().length > 0) {
+        <p class="hint" data-testid="subnet-split-summary">{{ splitSummary() }}</p>
+        <div class="bin-scroll">
+          <table class="list" data-testid="subnet-split-table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ i18n.t('subnet.row.network') }}</th>
+                <th scope="col">{{ i18n.t('subnet.row.first') }}</th>
+                <th scope="col">{{ i18n.t('subnet.row.last') }}</th>
+                <th scope="col">{{ i18n.t('subnet.row.broadcast') }}</th>
+                <th scope="col" class="num">{{ i18n.t('subnet.row.hosts') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of splitRows(); track $index) {
+                <tr>
+                  <td>{{ r.label }}</td>
+                  <td class="code">{{ r.network }}</td>
+                  <td class="code">{{ r.first }}</td>
+                  <td class="code">{{ r.last }}</td>
+                  <td class="code">{{ r.broadcast }}</td>
+                  <td class="num">{{ r.hosts }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="actions"><app-copy-button [text]="splitCsv()" [label]="i18n.t('subnet.split.copy')" shortcut="copy" /></div>
+      } @else if (splitSummary()) {
+        <p class="hint">{{ splitSummary() }}</p>
+      }
+    </section>
+  }
+
+  @if (v4() || v6()) {
+    <section class="card" [attr.aria-label]="i18n.t('subnet.check.title')">
+      <h2 class="eyebrow">{{ i18n.t('subnet.check.title') }}</h2>
+      <div class="field">
+        <label for="subnet-check">{{ i18n.t('subnet.check.label') }}</label>
+        <input
+          id="subnet-check"
+          type="text"
+          class="code"
+          autocomplete="off"
+          spellcheck="false"
+          data-testid="subnet-check"
+          [placeholder]="i18n.t(v4() ? 'subnet.check.ph4' : 'subnet.check.ph6')"
+          [value]="checkIp()"
+          (input)="checkIp.set($any($event.target).value)"
+        />
+      </div>
+      @if (check().text) {
+        <p [class]="check().ok === true ? 'tool-ok' : check().ok === false ? 'tool-warn' : 'tool-error'" role="status" data-testid="subnet-check-result">{{ check().text }}</p>
+      }
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('subnet.info.formats.title') }}</h2>
+      <p>{{ i18n.t('subnet.info.formats.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('subnet.info.p2p.title') }}</h2>
+      <p>{{ i18n.t('subnet.info.p2p.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('subnet.info.priv.title') }}</h2>
+      <p>{{ i18n.t('subnet.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

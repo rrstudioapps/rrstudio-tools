@@ -91,7 +91,7 @@
   }
 
   <div class="tool-toolbar">
-    <button type="button" class="btn primary" [disabled]="busy()" (click)="run()" data-testid="fe-run">
+    <button data-shortcut="run" type="button" class="btn primary" [disabled]="busy()" (click)="run()" data-testid="fe-run">
       <app-icon [name]="isEncrypt() ? 'lock' : 'key'" /> {{ runLabel() }}
     </button>
   </div>
@@ -108,7 +108,7 @@
 
   @if (source() === 'text' && output()) {
     <app-io-panel [label]="i18n.t(isEncrypt() ? 'fenc.text.out.encrypt' : 'fenc.text.out.decrypt')" inputId="fe-out">
-      <span panel-actions><app-copy-button [text]="output()" /></span>
+      <span panel-actions><app-copy-button shortcut="copy" [text]="output()" /></span>
       <textarea id="fe-out" class="io-textarea" rows="7" readonly spellcheck="false" [value]="output()" data-testid="fe-out"></textarea>
     </app-io-panel>
   }

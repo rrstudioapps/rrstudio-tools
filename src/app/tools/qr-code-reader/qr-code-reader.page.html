@@ -59,7 +59,7 @@
       <div class="head">
         <h2 class="eyebrow" id="qrr-result-title">{{ i18n.t('qrr.result') }}</h2>
         <span class="kind mono" data-testid="qrr-kind">{{ i18n.t('qrr.kind.' + c.kind) }}</span>
-        <button type="button" class="btn small" (click)="clearAll()">{{ i18n.t('qrr.clear') }}</button>
+        <button data-shortcut="clear" type="button" class="btn small" (click)="clearAll()">{{ i18n.t('qrr.clear') }}</button>
       </div>
       <p class="hint">{{ i18n.t('qrr.safe') }}</p>
 
@@ -127,8 +127,8 @@
                 <app-icon [name]="revealPassword() ? 'eyeOff' : 'eye'" />
                 {{ revealPassword() ? i18n.t('qrr.wifi.hide') : i18n.t('qrr.wifi.reveal') }}
               </button>
-              <app-copy-button [text]="c.wifi.password" [label]="i18n.t('qrr.wifi.password')" />
-              <app-copy-button [text]="c.wifi.ssid" [label]="i18n.t('qrr.wifi.ssid')" />
+              <app-copy-button shortcut="copy" [text]="c.wifi.password" [label]="i18n.t('qrr.wifi.password')" />
+              <app-copy-button shortcut="copy" [text]="c.wifi.ssid" [label]="i18n.t('qrr.wifi.ssid')" />
             </div>
           }
         }
@@ -218,7 +218,7 @@
       <div class="raw">
         <div class="head">
           <label class="eyebrow" for="qrr-raw">{{ i18n.t('qrr.raw') }}</label>
-          <app-copy-button [text]="c.raw" />
+          <app-copy-button shortcut="copy" [text]="c.raw" />
           <app-send-to from="qr-code-reader" [text]="c.raw" />
         </div>
         <textarea id="qrr-raw" class="io-textarea" rows="4" readonly spellcheck="false" [value]="c.raw" data-testid="qrr-raw"></textarea>

@@ -14,6 +14,7 @@ import { IdKind, Inspection, MAX_COUNT, MIN_COUNT, clampCount, formatId, generat
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './uuid-generator.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 @Component({
   selector: 'app-uuid-generator',
@@ -98,6 +99,9 @@ export class UuidGeneratorPage {
 
   constructor() {
     this.i18n.register(UUID_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('uuid-generator');
+    if (rx?.text !== undefined) this.checkInput.set(rx.text.trim());
     // Rigenera al cambio di tipo o quantità (solo nel browser: la pagina prerenderizzata non contiene identificativi)
     effect(() => {
       const kind = this.kind();

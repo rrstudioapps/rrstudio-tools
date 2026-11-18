@@ -35,7 +35,7 @@
         @if (tab() !== 'iban') {
           <button type="button" class="btn small" (click)="useExample('vat')">{{ i18n.t('ibv.example.vat') }}</button>
         }
-        <button type="button" class="btn small" (click)="value.set('')"><app-icon name="trash" /> {{ i18n.t('ibv.clear') }}</button>
+        <button data-shortcut="clear" type="button" class="btn small" (click)="value.set('')"><app-icon name="trash" /> {{ i18n.t('ibv.clear') }}</button>
       </div>
     </section>
 
@@ -60,7 +60,7 @@
               <strong>{{ r.valid ? i18n.t('ibv.valid') : i18n.t('ibv.invalid') }}</strong>
               @if (r.normalized) {
                 <code class="mono" data-testid="ibv-normalized">{{ r.normalized }}</code>
-                <app-copy-button [text]="r.normalized" [compact]="true" [ariaLabel]="i18n.t(r.kind === 'iban' ? 'ibv.iban.copy' : 'ibv.vat.copy')" />
+                <app-copy-button shortcut="copy" [text]="r.normalized" [compact]="true" [ariaLabel]="i18n.t(r.kind === 'iban' ? 'ibv.iban.copy' : 'ibv.vat.copy')" />
               }
             </p>
             @if (r.valid) {
@@ -181,7 +181,7 @@
         <button type="button" class="btn" (click)="exportCsv()" [disabled]="!bulkRows().length" data-testid="ibv-export">
           <app-icon name="download" /> {{ i18n.t('ibv.bulk.export') }}
         </button>
-        <button type="button" class="btn small" (click)="bulkText.set('')"><app-icon name="trash" /> {{ i18n.t('ibv.clear') }}</button>
+        <button data-shortcut="clear" type="button" class="btn small" (click)="bulkText.set('')"><app-icon name="trash" /> {{ i18n.t('ibv.clear') }}</button>
       </div>
     </section>
 

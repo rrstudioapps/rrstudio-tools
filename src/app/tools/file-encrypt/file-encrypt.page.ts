@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, afterNextRender } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { safeFileName, saveBytes } from '../../shared/download';
@@ -20,6 +20,7 @@ import {
   encryptedName,
 } from './crypt';
 import { FE_DICTIONARIES } from './file-encrypt.i18n';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Direction = 'encrypt' | 'decrypt';
 type Source = 'file' | 'text';
@@ -79,6 +80,9 @@ export class FileEncryptPage {
 
   constructor() {
     this.i18n.register(FE_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('file-encrypt');
+    if (rx?.files?.length) afterNextRender(() => this.onFile(rx.files![0]));
   }
 
   protected reset(): void {

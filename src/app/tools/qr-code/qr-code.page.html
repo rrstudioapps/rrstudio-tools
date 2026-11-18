@@ -197,14 +197,14 @@
       </div>
       <p class="info" data-testid="qr-info">{{ info() }}</p>
       <div class="actions">
-        <button type="button" class="btn primary small" data-testid="qr-png" [disabled]="!qr()" (click)="downloadPng()">
+        <button data-shortcut="download" type="button" class="btn primary small" data-testid="qr-png" [disabled]="!qr()" (click)="downloadPng()">
           <app-icon name="download" /> {{ i18n.t('qr.png') }}
         </button>
         <button type="button" class="btn small" data-testid="qr-svg" [disabled]="!qr()" (click)="downloadSvg()">
           <app-icon name="download" /> {{ i18n.t('qr.svg') }}
         </button>
         @if (canCopyImage()) {
-          <button type="button" class="btn small" data-testid="qr-copy" [disabled]="!qr()" (click)="copyImage()">
+          <button data-shortcut="copy" type="button" class="btn small" data-testid="qr-copy" [disabled]="!qr()" (click)="copyImage()">
             <app-icon name="copy" /> {{ i18n.t('qr.copyImage') }}
           </button>
         }

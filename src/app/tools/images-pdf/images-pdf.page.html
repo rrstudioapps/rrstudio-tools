@@ -90,12 +90,12 @@
         </section>
 
         <section class="actions" [attr.aria-label]="i18n.t('ip.create')">
-          <button type="button" class="btn small primary" [disabled]="busy()" (click)="createPdf()">
+          <button data-shortcut="run" type="button" class="btn small primary" [disabled]="busy()" (click)="createPdf()">
             <app-icon name="download" /> {{ i18n.t('ip.create') }}
           </button>
           <span class="mono sum">{{ summary() }}</span>
           <span class="spacer"></span>
-          <button type="button" class="btn small" (click)="clearItems()">
+          <button data-shortcut="clear" type="button" class="btn small" (click)="clearItems()">
             <app-icon name="trash" /> {{ i18n.t('ip.clear') }}
           </button>
         </section>
@@ -187,7 +187,7 @@
       @if (pdf(); as src) {
         <p class="file-line">
           <app-icon name="file" /> <span class="fname-big">{{ pdfLabel() }}</span>
-          <button type="button" class="btn small" (click)="closePdf()"><app-icon name="trash" /> {{ i18n.t('ip.clear') }}</button>
+          <button data-shortcut="clear" type="button" class="btn small" (click)="closePdf()"><app-icon name="trash" /> {{ i18n.t('ip.clear') }}</button>
         </p>
 
         <section class="opts" [attr.aria-label]="i18n.t('ip.pages')">
@@ -235,7 +235,7 @@
                 }
               </select>
             </div>
-            <button type="button" class="btn small primary go" [disabled]="!canConvert()" (click)="convert()">
+            <button data-shortcut="run" type="button" class="btn small primary go" [disabled]="!canConvert()" (click)="convert()">
               <app-icon name="image" /> {{ i18n.t('ip.convert') }}
             </button>
           </div>
@@ -245,7 +245,7 @@
           <div class="pages-head">
             <h2 class="eyebrow">{{ i18n.t('ip.results') }}</h2>
             @if (results().length > 1) {
-              <button type="button" class="btn small primary" [disabled]="busy()" (click)="downloadZip()">
+              <button data-shortcut="download" type="button" class="btn small primary" [disabled]="busy()" (click)="downloadZip()">
                 <app-icon name="download" /> {{ i18n.t('ip.zip') }}
               </button>
             }

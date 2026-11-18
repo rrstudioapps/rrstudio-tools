@@ -125,7 +125,7 @@
           <span class="eyebrow">{{ i18n.t('colc.name') }}</span>
           <input type="text" class="mono" maxlength="30" spellcheck="false" autocomplete="off" data-testid="colc-name" [value]="name()" (input)="setName($any($event.target).value)" />
         </label>
-        <app-copy-button [text]="exportText()" [label]="i18n.t('colc.export.copy')" [ariaLabel]="i18n.t('colc.export.copy')" />
+        <app-copy-button shortcut="copy" [text]="exportText()" [label]="i18n.t('colc.export.copy')" [ariaLabel]="i18n.t('colc.export.copy')" />
       </div>
       <pre class="code mono" data-testid="colc-export" tabindex="0">{{ exportText() }}</pre>
     </section>

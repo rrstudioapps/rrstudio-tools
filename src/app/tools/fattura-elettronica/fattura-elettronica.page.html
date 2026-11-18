@@ -59,12 +59,12 @@
       <button type="button" class="btn small primary" (click)="print()">
         <app-icon name="file" /> {{ i18n.t('fe.print') }}
       </button>
-      <button type="button" class="btn small" (click)="downloadXml()">
+      <button data-shortcut="download" type="button" class="btn small" (click)="downloadXml()">
         <app-icon name="download" /> {{ c.item.from === 'p7m' ? i18n.t('fe.downloadXml.p7m') : i18n.t('fe.downloadXml') }}
       </button>
-      <app-copy-button [text]="summary()" [label]="i18n.t('fe.copySummary')" />
+      <app-copy-button shortcut="copy" [text]="summary()" [label]="i18n.t('fe.copySummary')" />
       <span class="spacer"></span>
-      <button type="button" class="btn small" (click)="reset()">
+      <button data-shortcut="clear" type="button" class="btn small" (click)="reset()">
         <app-icon name="trash" /> {{ i18n.t('fe.reset') }}
       </button>
     </section>

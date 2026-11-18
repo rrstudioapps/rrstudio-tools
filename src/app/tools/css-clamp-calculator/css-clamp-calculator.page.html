@@ -1,0 +1,161 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.clamp.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('clamp.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="css-clamp-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <section class="card" [attr.aria-label]="i18n.t('clamp.params')">
+    <h2 class="eyebrow">{{ i18n.t('clamp.params') }}</h2>
+    <div class="field inline">
+      <span class="label">{{ i18n.t('clamp.unit') }}</span>
+      <app-segmented [label]="i18n.t('clamp.unit')" [options]="units" [(value)]="unit" />
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label for="clamp-min">{{ i18n.t('clamp.min') }}</label>
+        <input id="clamp-min" type="text" inputmode="decimal" autocomplete="off" data-testid="clamp-min" [value]="minSize()" (input)="minSize.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="clamp-max">{{ i18n.t('clamp.max') }}</label>
+        <input id="clamp-max" type="text" inputmode="decimal" autocomplete="off" data-testid="clamp-max" [value]="maxSize()" (input)="maxSize.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="clamp-minvw">{{ i18n.t('clamp.minVw') }}</label>
+        <input id="clamp-minvw" type="text" inputmode="numeric" autocomplete="off" data-testid="clamp-minvw" [value]="minVw()" (input)="minVw.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="clamp-maxvw">{{ i18n.t('clamp.maxVw') }}</label>
+        <input id="clamp-maxvw" type="text" inputmode="numeric" autocomplete="off" data-testid="clamp-maxvw" [value]="maxVw()" (input)="maxVw.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="clamp-root">{{ i18n.t('clamp.root') }}</label>
+        <input id="clamp-root" type="text" inputmode="decimal" autocomplete="off" data-testid="clamp-root" [value]="root()" (input)="root.set($any($event.target).value)" />
+      </div>
+    </div>
+    <p class="hint">{{ i18n.t('clamp.sizeHint') }}</p>
+    @if (error()) {
+      <p class="tool-error" role="alert" data-testid="clamp-error">{{ error() }}</p>
+    }
+  </section>
+
+  @if (fluid(); as f) {
+    <section class="card" [attr.aria-label]="i18n.t('clamp.result')">
+      <h2 class="eyebrow">{{ i18n.t('clamp.result') }}</h2>
+      <pre class="code out" tabindex="0" data-testid="clamp-output">{{ declaration() }}</pre>
+      <div class="actions"><app-copy-button [text]="declaration()" shortcut="copy" /></div>
+      @if (constantNote()) {
+        <p class="hint">{{ constantNote() }}</p>
+      }
+      @if (details().length) {
+        <dl class="kv">
+          @for (d of details(); track d.label) {
+            <div>
+              <dt>{{ d.label }}</dt>
+              <dd class="code">{{ d.value }}</dd>
+            </div>
+          }
+        </dl>
+      }
+      @if (warnings().length) {
+        <ul class="warn" data-testid="clamp-warnings" role="status">
+          @for (w of warnings(); track $index) {
+            <li class="tool-warn">{{ w }}</li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="card" [attr.aria-label]="i18n.t('clamp.preview')">
+      <h2 class="eyebrow">{{ i18n.t('clamp.preview') }}</h2>
+      <div class="field">
+        <label for="clamp-preview">{{ i18n.t('clamp.preview.width') }}: {{ previewVw() }}px</label>
+        <input id="clamp-preview" type="range" min="240" max="1920" step="10" data-testid="clamp-preview" [value]="previewVw()" (input)="onPreview($event)" />
+      </div>
+      <p class="hint" data-testid="clamp-preview-label">{{ previewLabel() }}</p>
+      <div class="stage" tabindex="0">
+        <div class="frame" [style.width.px]="previewVw()">
+          <p class="sample" [style.font-size.px]="previewPx()">{{ i18n.t('clamp.preview.text') }}</p>
+        </div>
+      </div>
+    </section>
+  }
+
+  <section class="card" [attr.aria-label]="i18n.t('clamp.scale.title')">
+    <h2 class="eyebrow">{{ i18n.t('clamp.scale.title') }}</h2>
+    <p class="hint">{{ i18n.t('clamp.scale.hint') }}</p>
+    <div class="grid">
+      <div class="field">
+        <label for="clamp-rmin">{{ i18n.t('clamp.scale.minRatio') }}</label>
+        <input id="clamp-rmin" type="text" inputmode="decimal" list="clamp-ratios" autocomplete="off" data-testid="clamp-rmin" [value]="minRatio()" (input)="minRatio.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="clamp-rmax">{{ i18n.t('clamp.scale.maxRatio') }}</label>
+        <input id="clamp-rmax" type="text" inputmode="decimal" list="clamp-ratios" autocomplete="off" data-testid="clamp-rmax" [value]="maxRatio()" (input)="maxRatio.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="clamp-from">{{ i18n.t('clamp.scale.from') }}</label>
+        <input id="clamp-from" type="text" inputmode="numeric" autocomplete="off" [value]="stepFrom()" (input)="stepFrom.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="clamp-to">{{ i18n.t('clamp.scale.to') }}</label>
+        <input id="clamp-to" type="text" inputmode="numeric" autocomplete="off" [value]="stepTo()" (input)="stepTo.set($any($event.target).value)" />
+      </div>
+    </div>
+    <datalist id="clamp-ratios">
+      @for (p of presets(); track p.value) {
+        <option [value]="p.value">{{ p.label }}</option>
+      }
+    </datalist>
+    @if (scaleError()) {
+      <p class="tool-error" role="alert">{{ scaleError() }}</p>
+    }
+    @if (scale().length) {
+      <div class="table-scroll" tabindex="0">
+        <table data-testid="clamp-scale">
+          <thead>
+            <tr>
+              <th scope="col">{{ i18n.t('clamp.scale.col.var') }}</th>
+              <th scope="col" class="num">{{ i18n.t('clamp.scale.col.min') }}</th>
+              <th scope="col" class="num">{{ i18n.t('clamp.scale.col.max') }}</th>
+              <th scope="col">clamp()</th>
+              <th scope="col">{{ i18n.t('clamp.scale.col.sample') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of scale(); track s.name) {
+              <tr>
+                <td class="code">{{ s.name }}</td>
+                <td class="num">{{ s.min }}</td>
+                <td class="num">{{ s.max }}</td>
+                <td class="code">{{ s.css }}</td>
+                <td><span class="sample-line" [style.font-size.px]="s.nowPx">Aa</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <pre class="code out" tabindex="0" data-testid="clamp-scale-css">{{ scaleCss() }}</pre>
+      <div class="actions"><app-copy-button [text]="scaleCss()" [label]="i18n.t('clamp.scale.copy')" /></div>
+    }
+  </section>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('clamp.info.how.title') }}</h2>
+      <p>{{ i18n.t('clamp.info.how.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('clamp.info.a11y.title') }}</h2>
+      <p>{{ i18n.t('clamp.info.a11y.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('clamp.info.priv.title') }}</h2>
+      <p>{{ i18n.t('clamp.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

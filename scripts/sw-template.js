@@ -8,6 +8,10 @@
 const DATA = __SW_DATA__;
 const { VERSION, SHELL, ALL, SIZE } = DATA;
 
+// Web Share Target: logica pura di scripts/sw-share.mjs, incollata qui da build-sw.mjs.
+/*__SW_SHARE__*/
+const shareStore = new ShareStore();
+
 const PREFIX = 'rrtools-';
 const CACHE = `${PREFIX}v-${VERSION}`; // pagine e asset senza hash: una cache per versione
 const STATIC = `${PREFIX}static`; // file con hash nel nome: immutabili, sopravvivono agli aggiornamenti
@@ -66,8 +70,12 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  if (url.origin === self.location.origin && isShareRequest(req.method, url.pathname)) {
+    event.respondWith(receiveShare(req, event));
+    return;
+  }
+  if (req.method !== 'GET') return;
   if (url.origin !== self.location.origin) return;
   if (url.pathname === '/sw.js' || req.headers.has('range')) return;
 
@@ -138,6 +146,43 @@ async function staleWhileRevalidate(req, event) {
   return (await update) ?? Response.error();
 }
 
+// ---------------------------------------------------------------- condivisione dal sistema (Web Share Target)
+
+/**
+ * Il POST del sistema non va in rete: si leggono i campi, si tengono SOLO in memoria (shareStore) e si rimanda
+ * con un 303 alla pagina di ricezione, che li reclama con un messaggio ('share-claim'). Niente cache, niente IndexedDB.
+ * Il worker resta vivo finché la pagina li ha presi o il tempo è scaduto, poi il contenuto viene dimenticato.
+ */
+async function receiveShare(req, event) {
+  const lang = pickShareLang(req.headers.get('accept-language'));
+  let data = null;
+  try {
+    data = readShare(await req.formData());
+  } catch {
+    data = null;
+  }
+  const to = (state) => new URL(sharePath(lang, state), self.location.origin).href;
+  if (!data) return Response.redirect(to('retry'), 303);
+  shareStore.put(data, Date.now());
+  event.waitUntil(
+    new Promise((resolve) => {
+      const tick = setInterval(() => {
+        if (!shareStore.pending) done();
+      }, 500);
+      const timer = setTimeout(() => {
+        shareStore.clear();
+        done();
+      }, SHARE_TTL);
+      function done() {
+        clearInterval(tick);
+        clearTimeout(timer);
+        resolve();
+      }
+    }),
+  );
+  return Response.redirect(to('received'), 303);
+}
+
 // ---------------------------------------------------------------- pagina offline
 
 const OFFLINE_TEXT = {
@@ -182,6 +227,12 @@ self.addEventListener('message', (event) => {
     case 'skipWaiting':
       self.skipWaiting();
       break;
+    case 'share-claim': {
+      // la pagina di ricezione reclama il contenuto condiviso: una sola volta, poi è dimenticato
+      const d = shareStore.claim(Date.now());
+      event.waitUntil(reply(event, d ? { type: 'share-data', ...d } : { type: 'share-none' }));
+      break;
+    }
     case 'status':
       event.waitUntil(status().then((s) => reply(event, { type: 'status', ...s })));
       break;

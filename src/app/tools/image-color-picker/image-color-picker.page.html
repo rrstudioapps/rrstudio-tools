@@ -96,7 +96,7 @@
               }
             </ul>
             <div class="row">
-              <button type="button" class="btn small" (click)="clearHistory()"><app-icon name="trash" /> {{ i18n.t('cpk.history.clear') }}</button>
+              <button data-shortcut="clear" type="button" class="btn small" (click)="clearHistory()"><app-icon name="trash" /> {{ i18n.t('cpk.history.clear') }}</button>
             </div>
           }
           <p class="hint">{{ i18n.t('cpk.history.note') }}</p>
@@ -140,7 +140,7 @@
           </div>
           <pre class="code mono" data-testid="cpk-export">{{ exportText() }}</pre>
           <div class="row">
-            <app-copy-button [text]="exportText()" [label]="i18n.t('cpk.export.copy')" [ariaLabel]="i18n.t('cpk.export.copy')" />
+            <app-copy-button shortcut="copy" [text]="exportText()" [label]="i18n.t('cpk.export.copy')" [ariaLabel]="i18n.t('cpk.export.copy')" />
           </div>
         }
       </section>

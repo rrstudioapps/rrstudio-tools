@@ -113,12 +113,12 @@
         <div class="bar">
           <p class="progress mono" role="status" aria-live="polite" data-testid="icv-status">{{ statusText() }}</p>
           <span class="spacer"></span>
-          <button type="button" class="btn small primary" data-testid="icv-all" [disabled]="doneCount() === 0 || zipping()" (click)="downloadAll()">
+          <button data-shortcut="download" type="button" class="btn small primary" data-testid="icv-all" [disabled]="doneCount() === 0 || zipping()" (click)="downloadAll()">
             <app-icon name="download" />
             {{ zipping() ? i18n.t('icv.zip.busy') : i18n.t('icv.zip') }}
           </button>
           <app-send-to from="image-converter" kind="image" [files]="doneFiles" [disabled]="doneCount() === 0 || zipping()" />
-          <button type="button" class="btn small" (click)="clearAll()">
+          <button data-shortcut="clear" type="button" class="btn small" (click)="clearAll()">
             <app-icon name="trash" /> {{ i18n.t('icv.clear') }}
           </button>
         </div>

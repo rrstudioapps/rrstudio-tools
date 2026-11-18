@@ -7,7 +7,9 @@
 //  3. un indirizzo non in cache mostra la pagina offline tradotta (IT e EN);
 //  4. aggiornamento: una nuova versione resta in attesa, compare l'avviso e "Aggiorna" la attiva;
 //     chi aveva scaricato tutto ritrova la cache completa;
-//  5. "Svuota la cache offline" cancella le cache.
+//  5. "Svuota la cache offline" cancella le cache;
+//  6. Web Share Target: il POST a /condividi/ è preso dal service worker, il contenuto si consegna una volta sola
+//     e non finisce in cache (verificato dopo il download completo, prima della fase offline).
 // Uso: npm run build && npm run pwa-check   (CHROMIUM_PATH se Chromium non si trova)
 import { chromium } from 'playwright-core';
 import { createServer } from 'node:http';
@@ -87,6 +89,13 @@ try {
   const manifest = await (await page.request.get(base + '/manifest.webmanifest')).json();
   ok(manifest.start_url === '/' && manifest.scope === '/' && manifest.display === 'standalone', 'manifest: start_url, scope, display');
   ok(manifest.icons.some((i) => i.sizes === '512x512' && i.purpose === 'maskable'), 'manifest: icone maskable 512');
+  const st = manifest.share_target;
+  ok(
+    st?.action === '/condividi/' && st.method === 'POST' && st.enctype === 'multipart/form-data' && st.params?.text === 'text' && st.params?.url === 'url' && st.params?.files?.[0]?.name === 'files',
+    'manifest: share_target (POST multipart a /condividi/, title/text/url/files)',
+  );
+  const fh = manifest.file_handlers?.[0];
+  ok(fh?.action === '/condividi/' && !!fh.accept?.['application/pdf'] && !!fh.accept?.['image/png'] && !!fh.accept?.['application/json'], 'manifest: file_handlers per PDF, immagini e JSON');
   for (const i of manifest.icons) {
     const r = await page.request.get(base + i.src);
     ok(r.ok(), `icona ${i.src} raggiungibile`);
@@ -115,13 +124,45 @@ try {
   ok(!data.ALL.some((u) => u.startsWith('/og/') || u === '/sitemap.xml'), 'og/ e sitemap esclusi');
   ok(data.ALL.includes('/en/privacy/') && data.ALL.includes('/base64/'), 'pagine IT ed EN nell\'elenco completo');
   ok(data.ALL.includes('/preferiti/') && data.ALL.includes('/en/favorites/'), 'pagine dei preferiti (IT ed EN) nell\'elenco completo');
+  ok(data.ALL.includes('/condividi/') && data.ALL.includes('/en/share/'), 'pagine di ricezione (IT ed EN) nell\'elenco completo');
+
+  // --- 2b. Web Share Target: il POST non va in rete, lo prende il service worker (contenuto solo in memoria, consegnato una volta)
+  console.log('Share target');
+  const share = await page.evaluate(async () => {
+    const ctrl = navigator.serviceWorker.controller;
+    if (!ctrl) return { controlled: false };
+    const fd = new FormData();
+    fd.set('text', 'testo condiviso');
+    fd.set('url', 'https://example.com/pagina');
+    fd.append('files', new File(['a,b\n1,2'], 'dati.csv', { type: 'text/csv' }));
+    const res = await fetch('/condividi/', { method: 'POST', body: fd, redirect: 'manual', headers: { 'Accept-Language': 'en-US,en;q=0.9' } });
+    const claim = () =>
+      new Promise((resolve) => {
+        const on = (e) => {
+          if (!e.data || (e.data.type !== 'share-data' && e.data.type !== 'share-none')) return;
+          navigator.serviceWorker.removeEventListener('message', on);
+          resolve(e.data.type === 'share-data' ? { type: e.data.type, text: e.data.text, url: e.data.url, files: e.data.files.map((f) => f.name + ':' + f.size) } : { type: e.data.type });
+        };
+        navigator.serviceWorker.addEventListener('message', on);
+        ctrl.postMessage({ type: 'share-claim' });
+      });
+    const first = await claim();
+    const second = await claim();
+    const inCache = [];
+    for (const name of await caches.keys()) for (const r of await (await caches.open(name)).keys()) if (/condividi\/\?|dati\.csv/.test(r.url)) inCache.push(r.url);
+    return { controlled: true, redirect: res.type, first, second, inCache };
+  });
+  ok(share.controlled && share.redirect === 'opaqueredirect', 'share target: il POST è intercettato dal service worker (redirect 303)');
+  ok(share.first?.type === 'share-data' && share.first.text === 'testo condiviso' && share.first.url === 'https://example.com/pagina' && share.first.files?.[0] === 'dati.csv:7', 'share target: la pagina riceve titolo, testo, url e file');
+  ok(share.second?.type === 'share-none', 'share target: il contenuto si consegna una sola volta');
+  ok(share.inCache?.length === 0, 'share target: nulla finisce in cache');
 
   // --- 3. offline: pagina mai visitata, con tutto idratato
   console.log('Offline');
   await ctx.setOffline(true);
   serverDown = true;
   logs.length = 0;
-  for (const url of ['/base64/', '/en/qr-code-generator/', '/pdf-tools/', '/preferiti/', '/en/favorites/']) {
+  for (const url of ['/base64/', '/en/qr-code-generator/', '/pdf-tools/', '/preferiti/', '/en/favorites/', '/condividi/', '/en/share/']) {
     await page.goto(base + url);
     await page.waitForSelector('h1');
     const title = await page.title();

@@ -1,0 +1,301 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.time.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('time.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="time-calculator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('time.mode')" [options]="modes()" [(value)]="mode" />
+  </div>
+
+  @if (mode() === 'sum') {
+    <app-io-panel [label]="i18n.t('time.sum.input')" inputId="time-sum">
+      <span panel-actions>
+        <button type="button" class="btn small" data-testid="time-sample" (click)="loadSample()">{{ i18n.t('time.sample') }}</button>
+        <button type="button" class="btn small" data-shortcut="clear" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('time.clear') }}</button>
+      </span>
+      <textarea
+        id="time-sum"
+        class="io-textarea code"
+        rows="8"
+        spellcheck="false"
+        data-testid="time-sum"
+        [placeholder]="i18n.t('time.sum.ph')"
+        [value]="sumText()"
+        (input)="sumText.set($any($event.target).value)"
+      ></textarea>
+    </app-io-panel>
+    <div class="field inline">
+      <span class="label">{{ i18n.t('time.bare') }}</span>
+      <app-segmented [label]="i18n.t('time.bare')" [options]="bares()" [(value)]="bare" />
+    </div>
+    @if (sumBad().length) {
+      <p class="tool-error" role="alert" data-testid="time-sum-error">{{ i18n.t('time.err.sum', { lines: sumBad().length }) }}</p>
+    }
+
+    <section class="card" [attr.aria-label]="i18n.t('time.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('time.result') }}</h2>
+      @if (sum().count > 0) {
+        <p class="big" data-testid="time-sum-total">{{ sumTotalText() }}</p>
+        <dl class="kv">
+          <div>
+            <dt>{{ i18n.t('time.decimal') }}</dt>
+            <dd class="code" data-testid="time-sum-decimal">{{ dec(sum().total / 3600) }}</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('time.minutes') }}</dt>
+            <dd class="code">{{ dec(sum().total / 60) }}</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('time.lines') }}</dt>
+            <dd class="code">{{ sum().count }}</dd>
+          </div>
+        </dl>
+        <div class="actions"><app-copy-button [text]="sumTotalText()" shortcut="copy" /></div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">{{ i18n.t('time.col.text') }}</th>
+                <th scope="col" class="num">{{ i18n.t('time.col.value') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of sum().rows; track r.line) {
+                <tr [class.bad]="r.error">
+                  <td>{{ r.line }}</td>
+                  <td class="code">{{ r.text }}</td>
+                  <td class="num code">{{ r.seconds === null ? i18n.t('time.invalid') : hms(r.seconds) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="hint">{{ i18n.t('time.sum.empty') }}</p>
+      }
+    </section>
+  }
+
+  @if (mode() === 'sheet') {
+    <app-io-panel [label]="i18n.t('time.sheet.input')" inputId="time-sheet">
+      <span panel-actions>
+        <button type="button" class="btn small" data-testid="time-sample" (click)="loadSample()">{{ i18n.t('time.sample') }}</button>
+        <button type="button" class="btn small" data-shortcut="clear" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('time.clear') }}</button>
+      </span>
+      <textarea
+        id="time-sheet"
+        class="io-textarea code"
+        rows="8"
+        spellcheck="false"
+        data-testid="time-sheet"
+        [placeholder]="i18n.t('time.sheet.ph')"
+        [value]="sheetText()"
+        (input)="sheetText.set($any($event.target).value)"
+      ></textarea>
+    </app-io-panel>
+    <p class="hint">{{ i18n.t('time.sheet.hint') }}</p>
+    @if (sheetErrors().length) {
+      <ul class="tool-error errlist" role="alert" data-testid="time-sheet-error">
+        @for (e of sheetErrors(); track $index) {
+          <li>{{ e }}</li>
+        }
+      </ul>
+    }
+
+    <div class="grid">
+      <div class="field">
+        <label for="time-threshold">{{ i18n.t('time.threshold') }}</label>
+        <input
+          id="time-threshold"
+          type="text"
+          autocomplete="off"
+          data-testid="time-threshold"
+          [value]="threshold()"
+          [attr.aria-invalid]="thresholdBad()"
+          (input)="threshold.set($any($event.target).value)"
+        />
+      </div>
+      <div class="field">
+        <span class="label">{{ i18n.t('time.scope') }}</span>
+        <app-segmented [label]="i18n.t('time.scope')" [options]="scopes()" [(value)]="scope" />
+      </div>
+    </div>
+    @if (thresholdBad()) {
+      <p class="tool-error" role="alert">{{ i18n.t('time.err.threshold') }}</p>
+    }
+
+    <section class="card" [attr.aria-label]="i18n.t('time.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('time.result') }}</h2>
+      @if (sheet().rows.length > 0) {
+        <div class="table-scroll">
+          <table data-testid="time-sheet-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ i18n.t('time.col.day') }}</th>
+                <th scope="col">{{ i18n.t('time.col.in') }}</th>
+                <th scope="col">{{ i18n.t('time.col.out') }}</th>
+                <th scope="col" class="num">{{ i18n.t('time.col.break') }}</th>
+                <th scope="col" class="num">{{ i18n.t('time.col.worked') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of sheetRows(); track r.line) {
+                <tr>
+                  <td>{{ r.day || '#' + r.line }}</td>
+                  <td class="code">{{ r.start }}</td>
+                  <td class="code">{{ r.end }}</td>
+                  <td class="num code">{{ r.brk }}</td>
+                  <td class="num code">{{ r.worked }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        @if (sheetDays().length) {
+          <h3 class="sub">{{ i18n.t('time.daily') }}</h3>
+          <dl class="kv" data-testid="time-sheet-days">
+            @for (d of sheetDays(); track d.name) {
+              <div>
+                <dt>{{ d.name }}</dt>
+                <dd class="code">{{ d.value }}</dd>
+              </div>
+            }
+          </dl>
+        }
+        <h3 class="sub">{{ i18n.t('time.weekly') }}</h3>
+        <p class="big" data-testid="time-sheet-total">{{ sheetTotalText() }}</p>
+        <dl class="kv">
+          <div>
+            <dt>{{ i18n.t('time.decimal') }}</dt>
+            <dd class="code">{{ dec(sheet().total / 3600) }}</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('time.regular') }}</dt>
+            <dd class="code" data-testid="time-sheet-regular">{{ hms(sheet().regular) }}</dd>
+          </div>
+          <div>
+            <dt>{{ i18n.t('time.overtime') }}</dt>
+            <dd class="code" data-testid="time-sheet-overtime">{{ hms(sheet().overtime) }}</dd>
+          </div>
+        </dl>
+        <div class="actions"><app-copy-button [text]="sheetTotalText()" shortcut="copy" /></div>
+      } @else {
+        <p class="hint">{{ i18n.t('time.sheet.empty') }}</p>
+      }
+    </section>
+  }
+
+  @if (mode() === 'convert') {
+    <div class="field">
+      <label for="time-convert">{{ i18n.t('time.convert.input') }}</label>
+      <div class="row">
+        <input
+          id="time-convert"
+          type="text"
+          autocomplete="off"
+          data-testid="time-convert"
+          [placeholder]="i18n.t('time.convert.ph')"
+          [value]="convertIn()"
+          [attr.aria-invalid]="converted()?.error === true"
+          (input)="convertIn.set($any($event.target).value)"
+        />
+        <button type="button" class="btn small" data-shortcut="clear" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('time.clear') }}</button>
+      </div>
+      <p class="hint">{{ i18n.t('time.convert.hint') }}</p>
+    </div>
+    <section class="card" [attr.aria-label]="i18n.t('time.result')" aria-live="polite">
+      <h2 class="eyebrow">{{ i18n.t('time.result') }}</h2>
+      @if (converted(); as c) {
+        @if (c.error) {
+          <p class="tool-error" role="alert" data-testid="time-convert-error">{{ i18n.t('time.err.convert') }}</p>
+        } @else {
+          <dl class="kv">
+            <div>
+              <dt>{{ i18n.t('time.hms') }}</dt>
+              <dd class="code big" data-testid="time-convert-hms">{{ c.hms }}</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('time.decimal') }}</dt>
+              <dd class="code big" data-testid="time-convert-decimal">{{ c.decimal }}</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('time.minutes') }}</dt>
+              <dd class="code">{{ c.minutes }}</dd>
+            </div>
+          </dl>
+          <div class="actions">
+            <app-copy-button [text]="c.from === 'decimal' ? c.hms : c.decimal" shortcut="copy" />
+          </div>
+        }
+      } @else {
+        <p class="hint">{{ i18n.t('time.convert.empty') }}</p>
+      }
+    </section>
+  }
+
+  @if (mode() !== 'convert') {
+    <section class="card" [attr.aria-label]="i18n.t('time.rate.title')">
+      <h2 class="eyebrow">{{ i18n.t('time.rate.title') }}</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="time-rate">{{ i18n.t('time.rate') }}</label>
+          <input
+            id="time-rate"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            data-testid="time-rate"
+            [placeholder]="i18n.t('time.rate.ph')"
+            [value]="rate()"
+            [attr.aria-invalid]="rateBad()"
+            (input)="rate.set($any($event.target).value)"
+          />
+        </div>
+        @if (mode() === 'sheet') {
+          <div class="field">
+            <label for="time-premium">{{ i18n.t('time.premium') }}</label>
+            <input
+              id="time-premium"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              data-testid="time-premium"
+              [placeholder]="i18n.t('time.premium.ph')"
+              [value]="premium()"
+              [attr.aria-invalid]="premiumBad()"
+              (input)="premium.set($any($event.target).value)"
+            />
+          </div>
+        }
+      </div>
+      @if (rateBad() || premiumBad()) {
+        <p class="tool-error" role="alert">{{ i18n.t('time.err.rate') }}</p>
+      }
+      @if (amount()) {
+        <p class="big" data-testid="time-amount">{{ i18n.t('time.amount', { v: amount() }) }}</p>
+      }
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('time.info.formats.title') }}</h2>
+      <p>{{ i18n.t('time.info.formats.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('time.info.sheet.title') }}</h2>
+      <p>{{ i18n.t('time.info.sheet.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('time.info.priv.title') }}</h2>
+      <p>{{ i18n.t('time.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

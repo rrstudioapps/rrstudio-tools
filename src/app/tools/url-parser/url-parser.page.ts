@@ -11,6 +11,7 @@ import type { ShareData } from '../../shared/share-state';
 import { URL_PARSER_DICTIONARIES } from './url-parser.i18n';
 import { SHARE_SCHEMA } from './url-parser.share';
 import { QueryParam, isTrackingParam, moveParam, newParam, parseUrl, rebuildUrl, removeTracking, updateParam } from './url-parser';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 export const SAMPLE_URL = 'https://mario:p%40ss@shop.example.co.uk:8443/prodotti/caff%C3%A8%20macinato/42?colore=rosso&q=due+parole&utm_source=newsletter&utm_medium=email&fbclid=IwAR0abc#recensioni';
 
@@ -83,6 +84,9 @@ export class UrlParserPage {
 
   constructor() {
     this.i18n.register(URL_PARSER_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('url-parser');
+    if (rx?.text !== undefined) this.text.set(rx.text.trim());
   }
 
   protected restoreShared(data: ShareData): void {

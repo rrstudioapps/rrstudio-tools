@@ -16,7 +16,7 @@
   <div class="tool-panels">
     <app-io-panel [label]="i18n.t(mode() === 'encode' ? 'morse.in.text' : 'morse.in.morse')" inputId="morse-in">
       <span panel-actions>
-        <button type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('morse.clear') }}</button>
+        <button data-shortcut="clear" type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('morse.clear') }}</button>
       </span>
       <textarea
         id="morse-in"
@@ -32,7 +32,7 @@
 
     <app-io-panel [label]="i18n.t(mode() === 'encode' ? 'morse.out.morse' : 'morse.out.text')" inputId="morse-out">
       <span panel-actions>
-        <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
         <app-send-to from="morse-code" [text]="output()" [disabled]="output() === ''" />
       </span>
       <textarea id="morse-out" class="io-textarea" rows="8" readonly spellcheck="false" data-testid="morse-out" [value]="output()"></textarea>

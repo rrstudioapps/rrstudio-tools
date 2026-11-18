@@ -56,7 +56,7 @@
             <p class="tool-error">{{ view(c.id).error }}</p>
           } @else if (view(c.id).text) {
             <p class="answer">{{ view(c.id).text }}</p>
-            <app-copy-button [text]="view(c.id).text" [label]="i18n.t('pct.copy')" />
+            <app-copy-button shortcut="copy" [text]="view(c.id).text" [label]="i18n.t('pct.copy')" />
           } @else {
             <p class="empty">{{ i18n.t('pct.empty') }}</p>
           }

@@ -40,7 +40,7 @@
         }
       </select>
     </div>
-    <button type="button" class="btn small swap" [attr.aria-label]="i18n.t('uc.swap')" [attr.title]="i18n.t('uc.swap')" (click)="swap()">
+    <button data-shortcut="swap" type="button" class="btn small swap" [attr.aria-label]="i18n.t('uc.swap')" [attr.title]="i18n.t('uc.swap')" (click)="swap()">
       <app-icon name="swap" />
     </button>
     <div class="field">
@@ -66,7 +66,7 @@
           <span class="eq">=</span>
           <span class="num strong">{{ m.text }} {{ toUnit().symbol }}</span>
         </p>
-        <app-copy-button [text]="m.text" />
+        <app-copy-button shortcut="copy" [text]="m.text" />
       }
     } @else {
       <p class="empty">{{ i18n.t('uc.empty') }}</p>

@@ -33,10 +33,10 @@
           data-testid="ssh-comment"
         />
       </div>
-      <button type="button" class="btn primary" [disabled]="busy()" (click)="generate()" data-testid="ssh-generate">
+      <button data-shortcut="run" type="button" class="btn primary" [disabled]="busy()" (click)="generate()" data-testid="ssh-generate">
         <app-icon name="key" /> {{ i18n.t('ssh.generate') }}
       </button>
-      <button type="button" class="btn small" [disabled]="!result() || busy()" (click)="clear()">{{ i18n.t('ssh.clear') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" [disabled]="!result() || busy()" (click)="clear()">{{ i18n.t('ssh.clear') }}</button>
     </div>
     <p class="hint">{{ i18n.t('ssh.hint') }}</p>
   </section>
@@ -61,8 +61,8 @@
       <p class="desc">{{ i18n.t('ssh.public.desc') }}</p>
       <textarea class="keybox mono" rows="3" readonly spellcheck="false" [attr.aria-label]="i18n.t('ssh.public')" [value]="r.publicKey" data-testid="ssh-public"></textarea>
       <div class="row">
-        <app-copy-button [text]="r.publicKey" [label]="i18n.t('ssh.public')" />
-        <button type="button" class="btn small" (click)="download('pub')"><app-icon name="download" /> {{ baseName() }}.pub</button>
+        <app-copy-button shortcut="copy" [text]="r.publicKey" [label]="i18n.t('ssh.public')" />
+        <button data-shortcut="download" type="button" class="btn small" (click)="download('pub')"><app-icon name="download" /> {{ baseName() }}.pub</button>
       </div>
     </section>
 
@@ -74,13 +74,13 @@
       <h3 class="sub">{{ i18n.t('ssh.openssh') }}</h3>
       <textarea class="keybox mono" rows="8" readonly spellcheck="false" [attr.aria-label]="i18n.t('ssh.openssh')" [value]="r.privateOpenSsh" data-testid="ssh-private"></textarea>
       <div class="row">
-        <app-copy-button [text]="r.privateOpenSsh" [label]="i18n.t('ssh.openssh')" />
+        <app-copy-button shortcut="copy" [text]="r.privateOpenSsh" [label]="i18n.t('ssh.openssh')" />
         <button type="button" class="btn small" (click)="download('openssh')"><app-icon name="download" /> {{ baseName() }}</button>
       </div>
       <h3 class="sub">{{ i18n.t('ssh.pkcs8') }}</h3>
       <textarea class="keybox mono" rows="6" readonly spellcheck="false" [attr.aria-label]="i18n.t('ssh.pkcs8')" [value]="r.privatePkcs8" data-testid="ssh-pkcs8"></textarea>
       <div class="row">
-        <app-copy-button [text]="r.privatePkcs8" [label]="i18n.t('ssh.pkcs8')" />
+        <app-copy-button shortcut="copy" [text]="r.privatePkcs8" [label]="i18n.t('ssh.pkcs8')" />
         <button type="button" class="btn small" (click)="download('pkcs8')"><app-icon name="download" /> {{ baseName() }}.pem</button>
       </div>
       <p class="hint">{{ i18n.t('ssh.passphrase') }}</p>

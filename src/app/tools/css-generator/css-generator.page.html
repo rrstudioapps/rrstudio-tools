@@ -217,7 +217,7 @@
       <section class="block" aria-labelledby="cssg-code-h">
         <div class="head">
           <h2 class="eyebrow" id="cssg-code-h">{{ i18n.t('cssg.css') }}</h2>
-          <app-copy-button [text]="tab() === 'gradient' ? gradientCode() : shadowCode()" [label]="i18n.t('cssg.copy')" />
+          <app-copy-button shortcut="copy" [text]="tab() === 'gradient' ? gradientCode() : shadowCode()" [label]="i18n.t('cssg.copy')" />
         </div>
         <pre class="code mono" data-testid="cssg-code" tabindex="0">{{ tab() === 'gradient' ? gradientCode() : shadowCode() }}</pre>
       </section>

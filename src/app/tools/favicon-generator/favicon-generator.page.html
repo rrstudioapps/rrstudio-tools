@@ -124,7 +124,7 @@
           <p class="hint">{{ i18n.t('fav.preview.tab') }}</p>
         }
         <div class="tool-toolbar">
-          <button type="button" class="btn primary" [disabled]="!canBuild() || busy()" (click)="downloadZip()">
+          <button data-shortcut="download" type="button" class="btn primary" [disabled]="!canBuild() || busy()" (click)="downloadZip()">
             <app-icon name="download" /> {{ i18n.t('fav.zip') }}
           </button>
           <button type="button" class="btn small" [disabled]="!canBuild() || busy()" (click)="downloadIco()">{{ i18n.t('fav.ico.only') }}</button>
@@ -151,12 +151,12 @@
   <section class="block" aria-labelledby="fav-snip-h">
     <div class="head">
       <h2 class="eyebrow" id="fav-snip-h">{{ i18n.t('fav.snippet') }}</h2>
-      <app-copy-button [text]="snippet()" [label]="i18n.t('fav.snippet.copy')" />
+      <app-copy-button shortcut="copy" [text]="snippet()" [label]="i18n.t('fav.snippet.copy')" />
     </div>
     <pre class="code mono" data-testid="fav-snippet" tabindex="0">{{ snippet() }}</pre>
     <div class="head">
       <h2 class="eyebrow" id="fav-man-h">{{ i18n.t('fav.manifest') }}</h2>
-      <app-copy-button [text]="manifest()" [label]="i18n.t('fav.manifest.copy')" />
+      <app-copy-button shortcut="copy" [text]="manifest()" [label]="i18n.t('fav.manifest.copy')" />
     </div>
     <pre class="code mono" tabindex="0" aria-labelledby="fav-man-h">{{ manifest() }}</pre>
   </section>

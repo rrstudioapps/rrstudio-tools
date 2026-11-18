@@ -171,6 +171,11 @@ Codice fiscale, IBAN, VAT number and electronic invoices.
 | [**Roman numerals converter**](https://tools.rr-dev.eu/roman-numerals) | Numbers to Roman numerals and back, 1 to 3,999 (up to 3,999,999 with the overline), with canonical-form validation and explained errors (IIII, VX, IC…). |
 | [**Numbers in words (in Italian)**](https://tools.rr-dev.eu/numeri-in-lettere) | Writes a number (decimals, negatives, up to 999 billion) in correct Italian: ventuno, centottanta, ventitré, milleuno, un milione. Cheque mode gives the cents as digits (`milleduecentotrentaquattro/56`), with an optional "euro". |
 | [**Lire to euro converter (in Italian)**](https://tools.rr-dev.eu/convertitore-lire-euro) | Fixed rate 1 € = 1936.27 lire (Reg. EC 2866/98), both directions, exact integer arithmetic with rounding to the cent or the lira, and a table of historical banknote and coin denominations. Italian only. |
+| [**IP subnet calculator (CIDR)**](https://tools.rr-dev.eu/subnet-calculator) | IPv4 address with prefix or mask: network, broadcast, first and last host, host count, mask and wildcard, class and type (RFC 1918, loopback, link-local, CGNAT, multicast, documentation), highlighted binary; split into N subnets, by host count or with VLSM; "does this IP belong to this network?". IPv6 expansion and RFC 5952 compression, range and type (BigInt). |
+| [**docker run to docker-compose**](https://tools.rr-dev.eu/docker-run-to-compose) | Paste one or more `docker run` commands and get a `docker-compose.yml` (no obsolete `version:`): ports, volumes (named volumes in the top-level section), env, restart, networks (external, with a note), healthcheck, limits, logging and many other options; warnings for what cannot be mapped. Hand-written shell tokenizer, nothing is run. |
+| [**CSS clamp() fluid typography generator**](https://tools.rr-dev.eu/css-clamp-calculator) | `clamp(min, intercept + slope vw, max)` in rem between a minimum and maximum viewport, configurable root size, fluid type scale (steps -2 to +5) exported as CSS variables, preview with a simulated width slider and a WCAG 1.4.4 warning when max/min exceeds 2.5. |
+| [**Time calculator (hours and minutes)**](https://tools.rr-dev.eu/time-calculator) | Add and subtract durations in mixed formats (`1:30`, `1h 30m`, `90m`, `1,5h`), timesheet with start/end/break (night shifts across midnight), daily and weekly totals and overtime over a threshold, decimal hours and hours:minutes conversion, amount from an hourly rate. Receives text from other tools. |
+| [**Invoice due dates (in Italian)**](https://tools.rr-dev.eu/scadenze-fatture) | Due dates from the invoice date with 30/60/90/120 or custom terms, "invoice date" or end of month (D.F.F.M. and end of month + N days), multiple installments with the amount split (rounding on the last one), optional move to the next business day using the computed Italian holidays, informational note on Italian payment-term law (no interest), CSV and `.ics` export. Italian only. |
 
 More tools are coming, with the same rule: nothing leaves your browser.
 
@@ -667,6 +672,31 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Route `/convertitore-lire-euro`, with no `/en/` version. Fixed rate 1 euro = 1,936.27 lire (Reg. EC 2866/98), both directions, with exact integer arithmetic.
 - Results are rounded to the cent (euro) or to the lira, as the regulations require, and the exact value is shown too. A table lists the historical banknote and coin denominations with their value in euro.
 
+### IP subnet calculator (CIDR)
+
+- Route `/subnet-calculator`. IPv4 as `a.b.c.d/24`, `a.b.c.d 255.255.255.0` or alone (/32); IPv6 as soon as there is a colon. Network, broadcast, hosts (/31 per RFC 3021, /32), mask, wildcard, class and type, and the binary form with the network bits highlighted.
+- Splitting into N subnets, by host count or VLSM (largest request first, aligned blocks); membership check. IPv6 uses BigInt, with expansion and RFC 5952 compression. No dependencies.
+
+### docker run to docker-compose
+
+- Route `/docker-run-to-compose`. The shell tokenizer is shared with the cURL converter (`src/app/shared/shell-tokenize.ts`). Several commands (one per line, `;` or `&&`) become several services; named volumes go in the `volumes:` section and non-default networks in `networks:` as `external`, with a note.
+- Options that cannot be mapped (and `--rm`, which has no compose equivalent) are reported; nothing is executed and no variable is expanded. The share link contains the commands, so it carries any secrets in them.
+
+### CSS clamp() fluid typography generator
+
+- Route `/css-clamp-calculator`. Sizes in px or rem (configurable root size) between two viewports; output in rem. The type scale multiplies the base size by a ratio per step (separate ratios at the minimum and maximum viewport) and exports `--step-N` variables.
+- The preview computes the size for a simulated width. A warning appears when max/min is above 2.5 (WCAG 1.4.4, Resize Text), as a rule of thumb rather than a guarantee.
+
+### Time calculator (hours and minutes)
+
+- Route `/time-calculator`. Durations in `1:30`, `01:30:15`, `1h 30m`, `90m`, `1,5h` and more, one per line (`-` subtracts, `#` starts a comment); unitless numbers are hours or minutes as chosen.
+- Timesheet lines `[day] start end [break]`; an end before the start crosses midnight and counts on the day it started. Overtime is the part above a per-week or per-day threshold; the amount uses integer arithmetic (BigInt) with an optional overtime premium.
+
+### Invoice due dates (Italian only)
+
+- Route `/scadenze-fatture`, with no `/en/` version. "Invoice date", D.F.F.M. (days added, then moved to the end of the month, plus optional extra days) or end of month + days. Installments split the total in equal amounts rounded down to the cent, the last one takes the difference.
+- Moving to the next business day is optional and shown in the table; Italian national holidays (Easter computed for each year) come from the working-days tool. The legal-terms note (D.Lgs. 231/2002) is informational, with no late-payment interest. CSV and iCalendar (.ics, one all-day event per due date).
+
 ### Encrypt and decrypt files
 
 ![Encrypt and decrypt files](docs/screenshots/file-encrypt.png)
@@ -783,6 +813,10 @@ Every tool page and every home card has a star button; starred tools appear in a
 
 ![Favorites and custom menus](docs/screenshots/favorites.png)
 
+## Keyboard shortcuts in the tools
+
+Every tool page has the same shortcuts, driven by `data-shortcut` attributes on its buttons (no logic in the pages; `src/app/shared/shortcuts.ts` and `shortcuts.service.ts`): `Ctrl/⌘ + Enter` runs or generates, `Alt + Shift + C` copies the result, `D` downloads it, `S` swaps input and output, `X` clears (press twice to confirm), `O` opens "Send to…", and `?` (outside text fields) opens a help panel that lists only the shortcuts the tool really has. Esc closes panels and never clears data. Keys are read from `event.code`, so they work on macOS where Option changes the typed character. The "Shortcuts" button is hidden on touch devices.
+
 ## Share link
 
 Most text and calculator tools (regex tester, diff, formatters, converters, calculators, generators…) have a "Copy link" button: the tool state (input text and options) is compressed (deflate), encoded in base64url and written in the URL hash (`#s=…`, versioned and per tool); opening the link restores it. The hash is never sent to the server, it is read only in the browser after hydration and validated per tool (types and allowed values, decompressed size capped at 256 KB, links over 8,000 characters are refused with a message). The URL is updated only when the button is pressed. Tools with passwords, keys, personal data or files (password generator and checker, TOTP, file encryption, htpasswd, JWT, hashes, certificates, tax code, IBAN/VAT, e-invoice, EXIF, PDF/image tools…) do not have it. The code is in `src/app/shared/share-state.ts` (codec and validation), `share-link.ts` (button) and one `<tool>.share.ts` schema per tool.
@@ -795,6 +829,14 @@ Most text and calculator tools (regex tester, diff, formatters, converters, calc
 - **Technical server logs.** Like any website, the server that delivers the pages logs IP address, date and time, requested path, user agent and referrer; they are used for security and troubleshooting (never for profiling); every day only aggregate totals are derived from them (page views per page, number of visitors counted and immediately forgotten, referring domains, phone or computer), with no IP addresses, user agents or identifiers and are deleted automatically after 30 days at most. The server is hosted by Hetzner in Finland (EU). Files and text you enter in the tools never reach the server.
 - **Offline cache.** The site uses a service worker and the browser's Cache Storage only to keep the site files (pages, scripts, styles, fonts) so it works offline; nothing you enter in the tools is saved. You can empty it from the "Use offline" panel in the footer or from the browser settings.
 - Full notice (Italian and English): [`/privacy`](https://tools.rr-dev.eu/privacy) and [`/en/privacy`](https://tools.rr-dev.eu/en/privacy).
+
+## Smart paste and drop on the home page
+
+The home page has a "Paste or drop here" box. Press `Ctrl/⌘ + V` anywhere on the page (outside a text field; in the search box and in any other field paste stays the normal browser paste) or paste into the box, and the content is recognised and the right tools are offered, most relevant first. Detectors (pure functions in `src/app/shared/content-detect.ts`, with many specs including false positives) cover JSON, JWT, URL, Base64, CSS colour, cron expression, IBAN, Italian tax code and VAT number (with checksums), SVG, curl and `docker run` commands, CSV/TSV, YAML, XML/HTML, SQL, Unix timestamp, UUID, hex hash (md5/sha*), PEM, IP/CIDR, Roman numeral, Morse code and dates. A short preview is shown as plain text only (never HTML; private key bodies are never shown) with the note that the content stays in the tab. A file can be dropped anywhere on the home page (a full-page overlay) or picked with "Choose a file": the type is read from the MIME type and the extension and tools are proposed (images, PDF, CSV, JSON/YAML/XML/SVG/text, PEM/CRT, and hash/encryption for any file); several files go only to tools that accept several. The content reaches the chosen tool through the in-memory "Send to…" service (`kind` text/json/csv/svg/image/files), so the receiving tools declare the kind in `HANDOFF_ACCEPTS`. Nothing is stored or uploaded. The mapping (`src/app/shared/smart-targets.ts`) is plain data and easy to extend.
+
+## Share to the app and open files with it (PWA)
+
+The manifest declares a Web Share Target (`POST` `multipart/form-data` to `/condividi/` with `title`, `text`, `url` and `files`) and file handlers (images, PDF, CSV, JSON, YAML, XML, PEM, text). When the installed app is chosen from the system share menu, the service worker intercepts the POST (`scripts/sw-share.mjs`, tested in `scripts/sw-share.test.mjs`; `build-sw.mjs` inlines it in `sw.js`), keeps the content **only in memory** and answers with a 303 redirect to the receiving page (`/condividi/`, or `/en/share/` when the first `Accept-Language` is English; `noindex`, not in the sitemap). The page claims the content with a message, once, and shows the same tool choice as paste and drop. Nothing goes to the Cache Storage or IndexedDB, and an unclaimed content is dropped after 60 seconds. Files opened with the app arrive through `launchQueue.setConsumer` on the same page. If the service worker is not active the POST reaches nginx, which answers 303 to the receiving page with a "try again" message without reading the body (`deploy/nginx.conf`).
 
 ## Install and offline use
 
@@ -857,6 +899,12 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
 
 **Link di condivisione.** Molti strumenti di testo e di calcolo hanno il pulsante «Copia link»: lo stato (testo e opzioni) viene compresso, codificato in base64url e scritto nell'hash dell'URL (`#s=…`); aprendo il link si ritrova. L'hash non va mai al server, si legge solo nel browser e viene validato per ogni strumento (tetto di 256 KB decompressi, link oltre 8.000 caratteri rifiutati con un messaggio). Gli strumenti con password, chiavi, dati personali o file non lo hanno.
 
+**Scorciatoie da tastiera negli strumenti.** Ogni strumento ha le stesse scorciatoie, guidate dall'attributo `data-shortcut` sui pulsanti (nessuna logica nelle pagine): `Ctrl/⌘ + Invio` esegue o genera, `Alt + Maiusc + C` copia il risultato, `D` lo scarica, `S` scambia input e output, `X` pulisce (due pressioni per confermare), `O` apre «Invia a…», `?` (fuori dai campi di testo) apre il pannello di aiuto con le sole scorciatoie presenti nello strumento. Esc chiude pannelli e menu e non cancella mai i dati. I tasti si leggono da `event.code`, quindi funzionano anche su macOS; il pulsante «Scorciatoie» è nascosto sui dispositivi touch.
+
+**Incolla e trascina nella home.** Nella home il riquadro «Incolla o trascina qui» riconosce il contenuto e propone gli strumenti adatti: premi `Ctrl/⌘ + V` fuori dai campi di testo (nella ricerca e negli altri campi l'incolla resta quella normale) oppure incolla nel riquadro. I rilevatori (`src/app/shared/content-detect.ts`, con molti test anche sui falsi positivi) riconoscono JSON, JWT, URL, Base64, colori CSS, espressioni cron, IBAN, codice fiscale e partita IVA (con controllo del checksum), SVG, comandi curl e `docker run`, CSV/TSV, YAML, XML/HTML, SQL, timestamp Unix, UUID, hash esadecimali, PEM, IP/CIDR, numeri romani, Morse e date. L'anteprima è solo testo (mai HTML, il corpo delle chiavi private non si mostra) e ricorda che il contenuto resta nella scheda. Un file si trascina su tutta la pagina o si sceglie con «Scegli un file»: il tipo si riconosce da MIME ed estensione; più file vanno solo agli strumenti che li accettano insieme. Il passaggio usa il servizio «Invia a…» (solo memoria): niente viene salvato o caricato.
+
+**Condividi con l'app e apri i file (PWA).** Il manifest dichiara un Web Share Target (POST multipart a `/condividi/`) e i gestori dei file (immagini, PDF, CSV, JSON, YAML, XML, PEM, testo). Il service worker intercetta il POST, tiene il contenuto solo in memoria e rimanda con un 303 alla pagina di ricezione (`/condividi/`, `/en/share/`, `noindex`, fuori dalla sitemap), che lo reclama una volta sola e mostra la stessa scelta degli strumenti; nulla va in cache o IndexedDB e dopo 60 secondi il contenuto non reclamato viene scartato. Se il service worker non è attivo, nginx risponde 303 alla pagina con l'invito a riprovare, senza leggere il corpo. I file aperti con l'app arrivano da `launchQueue`.
+
 **Preferiti e menu personalizzati.** Ogni pagina strumento e ogni card della home ha una stella: gli strumenti scelti compaiono in cima alla home e nel menu «Preferiti» dell'intestazione, insieme ai menu personalizzati. La pagina `/preferiti` (`/en/favorites`, `noindex`, fuori dalla sitemap) permette di creare, rinominare, eliminare e riordinare i menu (trascinamento o pulsanti su/giù da tastiera), aggiungere strumenti con la ricerca, esportare e importare JSON (anteprima, «unisci» o «sostituisci») e creare un link di condivisione con i dati nell'hash (`#d=…`): non viene mai inviato al server e all'apertura chiede conferma. Tutto sta in `localStorage` (chiave `rrtools.favorites`, solo id degli strumenti, nomi e ordine dei menu).
 
 - **Prova online:** [tools.rr-dev.eu](https://tools.rr-dev.eu). Strumenti:
@@ -908,6 +956,9 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   [Numeri romani](https://tools.rr-dev.eu/roman-numerals), [Ispettore Unicode](https://tools.rr-dev.eu/unicode-inspector),
   [Codice Morse](https://tools.rr-dev.eu/morse-code), [Cifrari classici](https://tools.rr-dev.eu/classic-ciphers),
   [Convertitore lire euro](https://tools.rr-dev.eu/convertitore-lire-euro),
+  [Calcolatore subnet IP](https://tools.rr-dev.eu/subnet-calculator), [Da docker run a docker-compose](https://tools.rr-dev.eu/docker-run-to-compose),
+  [Generatore CSS clamp()](https://tools.rr-dev.eu/css-clamp-calculator), [Calcolatrice ore e minuti](https://tools.rr-dev.eu/time-calculator),
+  [Calcolo scadenze fatture](https://tools.rr-dev.eu/scadenze-fatture),
   [Convertitore CSV, JSON ed Excel](https://tools.rr-dev.eu/csv-json-converter), tutti con
   elaborazione solo nel browser.
 - **Installazione:** `npm ci`, poi `npm start` per lo sviluppo e `npm run build` per la build

@@ -51,7 +51,7 @@
       </ul>
 
       <section class="actions" [attr.aria-label]="i18n.t('pdf.actions')">
-        <button
+        <button data-shortcut="run"
           type="button"
           class="btn small primary"
           [disabled]="working()"
@@ -60,7 +60,7 @@
         >
           <app-icon name="download" /> {{ i18n.t('pdf.merge') }}
         </button>
-        <button
+        <button data-shortcut="run"
           type="button"
           class="btn small"
           [disabled]="working() || selectedCount() === 0"
@@ -76,7 +76,7 @@
           {{ allSelected() ? i18n.t('pdf.selectNone') : i18n.t('pdf.selectAll') }}
         </button>
         <span class="spacer"></span>
-        <button type="button" class="btn small" (click)="reset()">
+        <button data-shortcut="clear" type="button" class="btn small" (click)="reset()">
           <app-icon name="trash" /> {{ i18n.t('pdf.reset') }}
         </button>
       </section>
@@ -119,7 +119,7 @@
               />
             </div>
           }
-          <button type="button" class="btn small primary go" [disabled]="!canSplit()" (click)="split()">
+          <button data-shortcut="run" type="button" class="btn small primary go" [disabled]="!canSplit()" (click)="split()">
             <app-icon name="download" /> {{ i18n.t('pdf.split.go') }}
           </button>
         </div>

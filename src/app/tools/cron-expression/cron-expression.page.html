@@ -25,7 +25,7 @@
         [value]="expression()"
         (input)="onExpression($event)"
       />
-      <app-copy-button [text]="expression().trim()" [disabled]="expression().trim() === ''" />
+      <app-copy-button shortcut="copy" [text]="expression().trim()" [disabled]="expression().trim() === ''" />
     </div>
   </section>
 
@@ -104,7 +104,7 @@
         <button type="button" class="btn small" (click)="refresh()">
           <app-icon name="refresh" /> {{ i18n.t('cron.runs.refresh') }}
         </button>
-        <app-copy-button [text]="listText()" [label]="i18n.t('cron.runs.copy')" [disabled]="rows().length === 0" />
+        <app-copy-button shortcut="copy" [text]="listText()" [label]="i18n.t('cron.runs.copy')" [disabled]="rows().length === 0" />
       </div>
       @if (exhausted()) {
         <p class="tool-error" data-testid="cron-exhausted">{{ i18n.t('cron.runs.empty') }}</p>

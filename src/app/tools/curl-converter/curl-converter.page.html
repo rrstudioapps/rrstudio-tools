@@ -13,7 +13,7 @@
   <app-io-panel [label]="i18n.t('curl.input')" inputId="curl-input">
     <span panel-actions>
       <button type="button" class="btn small" data-testid="curl-sample" (click)="loadSample()">{{ i18n.t('curl.sample') }}</button>
-      <button type="button" class="btn small" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('curl.clear') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('curl.clear') }}</button>
     </span>
     <textarea
       id="curl-input"
@@ -37,7 +37,7 @@
   </div>
 
   <app-io-panel [label]="i18n.t('curl.output')" inputId="curl-output">
-    <span panel-actions><app-copy-button [text]="code()" [disabled]="!code()" /></span>
+    <span panel-actions><app-copy-button shortcut="copy" [text]="code()" [disabled]="!code()" /></span>
     <textarea
       id="curl-output"
       class="io-textarea code"

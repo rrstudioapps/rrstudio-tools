@@ -19,8 +19,8 @@
             <option [value]="ex.id">{{ i18n.t('rx.example.' + ex.id) }}</option>
           }
         </select>
-        <app-copy-button [text]="'/' + pattern() + '/' + flags()" [disabled]="pattern() === ''" [label]="i18n.t('rx.copy.pattern')" />
-        <button type="button" class="btn small" [disabled]="pattern() === '' && text() === ''" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('rx.clear') }}</button>
+        <app-copy-button shortcut="copy" [text]="'/' + pattern() + '/' + flags()" [disabled]="pattern() === ''" [label]="i18n.t('rx.copy.pattern')" />
+        <button data-shortcut="clear" type="button" class="btn small" [disabled]="pattern() === '' && text() === ''" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('rx.clear') }}</button>
       </span>
     </div>
     <div class="p-row">
@@ -139,7 +139,7 @@
     </div>
     <p class="hint">{{ i18n.t('rx.replace.hint') }}</p>
     <app-io-panel [label]="i18n.t('rx.replace.out')" inputId="rx-out">
-      <span panel-actions><app-copy-button [text]="replaced()" [label]="i18n.t('rx.copy.result')" [disabled]="!replaced()" /></span>
+      <span panel-actions><app-copy-button shortcut="copy" [text]="replaced()" [label]="i18n.t('rx.copy.result')" [disabled]="!replaced()" /></span>
       <textarea id="rx-out" class="io-textarea short" readonly data-testid="rx-replaced" [value]="replaced()"></textarea>
     </app-io-panel>
   </section>

@@ -13,7 +13,7 @@
   <app-io-panel [label]="i18n.t('meta.html')" inputId="meta-html">
     <span panel-actions>
       <button type="button" class="btn small" data-testid="meta-sample" (click)="loadSample()">{{ i18n.t('meta.sample') }}</button>
-      <button type="button" class="btn small" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('meta.clear') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('meta.clear') }}</button>
     </span>
     <textarea
       id="meta-html"
@@ -171,7 +171,7 @@
   </section>
 
   <app-io-panel [label]="i18n.t('meta.snippet')" inputId="meta-snippet">
-    <span panel-actions><app-copy-button [text]="snippet()" [disabled]="!snippet()" /></span>
+    <span panel-actions><app-copy-button shortcut="copy" [text]="snippet()" [disabled]="!snippet()" /></span>
     <textarea id="meta-snippet" class="io-textarea html" readonly rows="10" spellcheck="false" wrap="off" data-testid="meta-snippet" [value]="snippet()"></textarea>
   </app-io-panel>
 

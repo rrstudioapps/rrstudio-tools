@@ -42,7 +42,7 @@
         </div>
       </div>
       @if (side === 'fg') {
-        <button type="button" class="btn small swap" (click)="swap()" data-testid="cc-swap">
+        <button data-shortcut="swap" type="button" class="btn small swap" (click)="swap()" data-testid="cc-swap">
           <app-icon name="swap" /> {{ i18n.t('cc.swap') }}
         </button>
       }

@@ -7,6 +7,7 @@ import { FavoritesService } from '../core/favorites/favorites.service';
 import { FAVORITES_SLUG } from '../core/i18n/lang-routing';
 import { I18nService } from '../core/i18n/i18n.service';
 import { FavoriteButton } from '../shared/favorite-button';
+import { SmartIntake } from '../shared/smart-intake';
 import { CATEGORIES, TOOLS, ToolCategory, ToolDefinition } from '../tools/tools.registry';
 import { FAV_FILTER_SLUG, HomeFilter, filterTools, groupByCategory, homeFilterFromUrl } from './tool-filter';
 
@@ -18,7 +19,7 @@ interface Pill {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, NgTemplateOutlet, FavoriteButton],
+  imports: [RouterLink, NgTemplateOutlet, FavoriteButton, SmartIntake],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.html',
   styleUrl: './home.scss',

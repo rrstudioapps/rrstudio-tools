@@ -14,7 +14,7 @@
       <button type="button" class="btn small" (click)="loadSample()">
         <app-icon name="type" /> {{ i18n.t('case.sample') }}
       </button>
-      <button type="button" class="btn small" [disabled]="input() === ''" (click)="clear()">
+      <button data-shortcut="clear" type="button" class="btn small" [disabled]="input() === ''" (click)="clear()">
         <app-icon name="trash" /> {{ i18n.t('common.clear') }}
       </button>
     </span>

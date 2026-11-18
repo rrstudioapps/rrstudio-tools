@@ -52,7 +52,7 @@
           </div>
           <div class="row">
             <button type="button" class="btn small" [disabled]="strokeCount() === 0" (click)="undoStroke()"><app-icon name="rotateCcw" /> {{ i18n.t('sign.undo') }}</button>
-            <button type="button" class="btn small" [disabled]="strokeCount() === 0" (click)="clearPad()"><app-icon name="trash" /> {{ i18n.t('sign.clear') }}</button>
+            <button data-shortcut="clear" type="button" class="btn small" [disabled]="strokeCount() === 0" (click)="clearPad()"><app-icon name="trash" /> {{ i18n.t('sign.clear') }}</button>
             <button type="button" class="btn small primary" data-testid="sign-use-draw" (click)="useDrawn()"><app-icon name="plus" /> {{ i18n.t('sign.use') }}</button>
           </div>
         }
@@ -217,7 +217,7 @@
         }
 
         <div class="row">
-          <button type="button" class="btn primary" data-testid="sign-download" [disabled]="placements().length === 0 || working()" (click)="download()">
+          <button data-shortcut="download" type="button" class="btn primary" data-testid="sign-download" [disabled]="placements().length === 0 || working()" (click)="download()">
             <app-icon name="download" /> {{ i18n.t('sign.download') }}
           </button>
           <span class="tool-ok" role="status" aria-live="polite" data-testid="sign-status">{{ status() }}</span>

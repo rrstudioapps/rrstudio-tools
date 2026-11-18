@@ -140,7 +140,7 @@
         <p class="tool-ok" data-testid="bc-value">{{ i18n.t('bc.encoded') }}: <span class="mono">{{ value() }}</span></p>
       }
       <div class="row">
-        <button type="button" class="btn small" [disabled]="!svg()" (click)="downloadSvg()" data-testid="bc-svg">
+        <button data-shortcut="download" type="button" class="btn small" [disabled]="!svg()" (click)="downloadSvg()" data-testid="bc-svg">
           <app-icon name="download" /> {{ i18n.t('bc.svg') }}
         </button>
         <button type="button" class="btn small" [disabled]="!svg()" (click)="downloadPng()" data-testid="bc-png">

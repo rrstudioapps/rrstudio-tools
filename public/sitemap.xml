@@ -926,6 +926,58 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/convertitore-lire-euro"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/subnet-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/subnet-calculator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/subnet-calculator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/subnet-calculator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/subnet-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/subnet-calculator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/subnet-calculator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/subnet-calculator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/docker-run-to-compose</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/docker-run-to-compose"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/docker-run-to-compose"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/docker-run-to-compose"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/docker-run-to-compose</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/docker-run-to-compose"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/docker-run-to-compose"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/docker-run-to-compose"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/css-clamp-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/css-clamp-calculator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/css-clamp-calculator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/css-clamp-calculator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/css-clamp-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/css-clamp-calculator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/css-clamp-calculator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/css-clamp-calculator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/time-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/time-calculator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/time-calculator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/time-calculator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/time-calculator</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/time-calculator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/time-calculator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/time-calculator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/scadenze-fatture</loc>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/scadenze-fatture"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/privacy</loc>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/privacy"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/privacy"/>

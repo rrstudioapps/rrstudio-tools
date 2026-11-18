@@ -25,6 +25,7 @@ import { CRON_DICTIONARIES } from './cron-expression.i18n';
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './cron-expression.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Tz = 'local' | 'utc';
 type Lang = 'it' | 'en';
@@ -192,6 +193,9 @@ export class CronExpressionPage {
 
   constructor() {
     this.i18n.register(CRON_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('cron-expression');
+    if (rx?.text !== undefined) this.expression.set(rx.text.trim());
     afterNextRender(() => {
       this.zone = localZone();
       this.localName.set(this.zone.id);

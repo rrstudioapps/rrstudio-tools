@@ -92,7 +92,7 @@
         }
       </div>
       <div class="actions">
-        <app-copy-button [text]="copyText()" [label]="i18n.t('tz.copy')" />
+        <app-copy-button shortcut="copy" [text]="copyText()" [label]="i18n.t('tz.copy')" />
       </div>
     } @else {
       <p class="empty">{{ i18n.t('tz.empty') }}</p>

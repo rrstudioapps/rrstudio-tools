@@ -47,11 +47,11 @@
   </section>
 
   <div class="tool-toolbar">
-    <button type="button" class="btn primary" (click)="generate()">
+    <button data-shortcut="run" type="button" class="btn primary" (click)="generate()">
       <app-icon name="refresh" /> {{ i18n.t('lorem.generate') }}
     </button>
-    <app-copy-button [text]="text()" [disabled]="!text()" />
-    <button type="button" class="btn small" [disabled]="!text()" (click)="download()">
+    <app-copy-button shortcut="copy" [text]="text()" [disabled]="!text()" />
+    <button data-shortcut="download" type="button" class="btn small" [disabled]="!text()" (click)="download()">
       <app-icon name="download" /> {{ i18n.t('lorem.download') }}
     </button>
     <span class="hint">{{ i18n.t('lorem.shortcut') }}</span>

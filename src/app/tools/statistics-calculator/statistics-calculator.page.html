@@ -30,7 +30,7 @@
   <app-io-panel [label]="i18n.t('stat.input')" inputId="stat-in" [meta]="status()">
     <span panel-actions>
       <button type="button" class="btn small" data-testid="stat-sample" (click)="loadSample()">{{ i18n.t('stat.sample') }}</button>
-      <button type="button" class="btn small" (click)="input.set('')"><app-icon name="trash" /> {{ i18n.t('stat.clear') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" (click)="input.set('')"><app-icon name="trash" /> {{ i18n.t('stat.clear') }}</button>
     </span>
     <textarea
       id="stat-in"
@@ -49,7 +49,7 @@
       <div class="head">
         <h2 class="eyebrow">{{ i18n.t('stat.results') }}</h2>
         <span class="actions">
-          <app-copy-button [text]="summary()" [label]="i18n.t('stat.copy')" />
+          <app-copy-button shortcut="copy" [text]="summary()" [label]="i18n.t('stat.copy')" />
           <app-send-to from="statistics-calculator" [text]="summary()" />
         </span>
       </div>

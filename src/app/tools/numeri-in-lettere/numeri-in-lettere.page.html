@@ -62,7 +62,7 @@
           <p class="hint">{{ i18n.t('nl.note.cheque') }}</p>
         }
         <div class="actions">
-          <app-copy-button [text]="text()" />
+          <app-copy-button shortcut="copy" [text]="text()" />
         </div>
       } @else {
         <p class="empty">{{ i18n.t('nl.empty') }}</p>

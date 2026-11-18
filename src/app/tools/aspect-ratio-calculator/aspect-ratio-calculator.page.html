@@ -67,10 +67,10 @@
           <section class="result">
             <h2 class="eyebrow">{{ i18n.t('ar.css') }}</h2>
             <pre class="code" data-testid="ar-css">{{ f.css }}</pre>
-            <div class="actions"><app-copy-button [text]="f.css" /></div>
+            <div class="actions"><app-copy-button shortcut="copy" [text]="f.css" /></div>
             <p class="hint">{{ i18n.t('ar.css.fallback') }}</p>
             <pre class="code">{{ f.pad }}</pre>
-            <div class="actions"><app-copy-button [text]="f.pad" /></div>
+            <div class="actions"><app-copy-button shortcut="copy" [text]="f.pad" /></div>
           </section>
         } @else {
           <p class="tool-error" role="alert">{{ i18n.t('ar.invalid') }}</p>
@@ -95,7 +95,7 @@
           </div>
         </div>
         <div class="actions">
-          <button type="button" class="btn small" (click)="flip()"><app-icon name="swap" /> {{ i18n.t('ar.flip') }}</button>
+          <button data-shortcut="swap" type="button" class="btn small" (click)="flip()"><app-icon name="swap" /> {{ i18n.t('ar.flip') }}</button>
         </div>
         <div class="field">
           <span class="eyebrow">{{ i18n.t('ar.side') }}</span>
@@ -124,15 +124,15 @@
             @if (s.showError) {
               <p class="hint">{{ i18n.t('ar.solved.error', { e: s.error }) }}</p>
             }
-            <div class="actions"><app-copy-button [text]="s.size" /></div>
+            <div class="actions"><app-copy-button shortcut="copy" [text]="s.size" /></div>
           </section>
           <section class="result">
             <h2 class="eyebrow">{{ i18n.t('ar.css') }}</h2>
             <pre class="code" data-testid="ar-css">{{ s.css }}</pre>
-            <div class="actions"><app-copy-button [text]="s.css" /></div>
+            <div class="actions"><app-copy-button shortcut="copy" [text]="s.css" /></div>
             <p class="hint">{{ i18n.t('ar.css.fallback') }}</p>
             <pre class="code">{{ s.pad }}</pre>
-            <div class="actions"><app-copy-button [text]="s.pad" /></div>
+            <div class="actions"><app-copy-button shortcut="copy" [text]="s.pad" /></div>
           </section>
         } @else {
           <p class="tool-error" role="alert">{{ i18n.t('ar.invalid') }}</p>

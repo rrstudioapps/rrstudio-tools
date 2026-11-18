@@ -126,7 +126,7 @@
             <p class="tool-ok" data-testid="crop-result" aria-live="polite">{{ i18n.t('crop.result', { w: result().width, h: result().height }) }}</p>
             <p class="hint">{{ i18n.t('crop.noMeta') }}</p>
             <div class="row">
-              <button type="button" class="btn primary" data-testid="crop-download" [disabled]="working()" (click)="download()">
+              <button data-shortcut="download" type="button" class="btn primary" data-testid="crop-download" [disabled]="working()" (click)="download()">
                 <app-icon name="download" /> {{ i18n.t('crop.download') }}
               </button>
               <app-send-to from="image-crop" kind="image" [files]="cropFiles" [disabled]="working()" />

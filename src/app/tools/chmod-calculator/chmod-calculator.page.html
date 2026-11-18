@@ -125,7 +125,7 @@
         <span class="eyebrow">{{ i18n.t('chmod.command') }}</span>
         <div class="cmd-row">
           <code class="mono" data-testid="chmod-command">{{ command() }}</code>
-          <app-copy-button [text]="command()" [compact]="true" [ariaLabel]="i18n.t('chmod.command')" />
+          <app-copy-button shortcut="copy" [text]="command()" [compact]="true" [ariaLabel]="i18n.t('chmod.command')" />
         </div>
       </div>
       <div class="cmd">

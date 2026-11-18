@@ -24,7 +24,7 @@
       ></textarea>
       <div class="row">
         <button type="button" class="btn small" data-testid="s2p-sample" (click)="sample()">{{ i18n.t('s2p.sample') }}</button>
-        <button type="button" class="btn small" [disabled]="svg() === ''" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('s2p.clear') }}</button>
+        <button data-shortcut="clear" type="button" class="btn small" [disabled]="svg() === ''" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('s2p.clear') }}</button>
       </div>
     </div>
   </app-file-drop>
@@ -122,7 +122,7 @@
         }
 
         <div class="row">
-          <button type="button" class="btn primary" data-testid="s2p-download" [disabled]="working() || !out()" (click)="download()">
+          <button data-shortcut="download" type="button" class="btn primary" data-testid="s2p-download" [disabled]="working() || !out()" (click)="download()">
             <app-icon name="download" /> {{ i18n.t('s2p.download') }}
           </button>
           <app-send-to from="svg-to-png" kind="image" [files]="imageFiles" [disabled]="working() || !out()" />

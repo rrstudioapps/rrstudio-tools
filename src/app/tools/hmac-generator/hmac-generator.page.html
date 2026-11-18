@@ -69,7 +69,7 @@
       <h2 class="eyebrow" id="hmac-out-title">{{ i18n.t('hmac.result') }}</h2>
       <div class="out">
         <code class="mono" data-testid="hmac-output">{{ output() }}</code>
-        <app-copy-button [text]="output()" />
+        <app-copy-button shortcut="copy" [text]="output()" />
       </div>
     </section>
   }

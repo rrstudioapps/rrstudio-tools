@@ -37,7 +37,7 @@
         <button type="button" class="btn small" (click)="loadSample()">
           <app-icon name="type" /> {{ i18n.t('slug.sample') }}
         </button>
-        <button type="button" class="btn small" [disabled]="input() === ''" (click)="clear()">
+        <button data-shortcut="clear" type="button" class="btn small" [disabled]="input() === ''" (click)="clear()">
           <app-icon name="trash" /> {{ i18n.t('common.clear') }}
         </button>
       </span>
@@ -56,11 +56,11 @@
     <app-io-panel [label]="mode() === 'bulk' ? i18n.t('slug.out.bulk') : i18n.t('slug.out')" inputId="slug-out" [meta]="meta()">
       <span panel-actions>
         @if (mode() === 'bulk') {
-          <button type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+          <button data-shortcut="download" type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
             <app-icon name="download" /> {{ i18n.t('slug.download') }}
           </button>
         }
-        <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
       </span>
       <textarea
         id="slug-out"

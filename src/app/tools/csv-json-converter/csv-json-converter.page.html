@@ -11,7 +11,7 @@
     <app-segmented [label]="i18n.t('cj.target')" [options]="targets()" [value]="target()" (valueChange)="target.set($event)" />
     <span class="spacer"></span>
     <button type="button" class="btn small" (click)="loadSample()">{{ i18n.t('cj.sample') }}</button>
-    <button type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('cj.clear') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('cj.clear') }}</button>
   </div>
 
   <app-file-drop [hint]="i18n.t('cj.drop')" accept=".csv,.tsv,.txt,.json,.xlsx,.xls" (fileSelected)="onFile($event)">
@@ -46,7 +46,7 @@
       <app-io-panel [label]="i18n.t('cj.out')" inputId="cj-out" [meta]="outputMeta()">
         <span panel-actions>
           @if (target() !== 'xlsx') {
-            <app-copy-button [text]="outText()" [disabled]="outText() === ''" />
+            <app-copy-button shortcut="copy" [text]="outText()" [disabled]="outText() === ''" />
             <app-send-to from="csv-json-converter" [kind]="target() === 'csv' ? 'csv' : 'json'" [text]="outText()" [disabled]="outText() === ''" />
           }
           <button type="button" class="btn small" data-testid="cj-download" [disabled]="!canDownload()" (click)="download()">

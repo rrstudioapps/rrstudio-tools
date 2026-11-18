@@ -20,7 +20,7 @@
     <button type="button" class="btn small" (click)="loadSample()">
       <app-icon name="braces" /> {{ i18n.t('json.sample') }}
     </button>
-    <button type="button" class="btn small" (click)="clear()">
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()">
       <app-icon name="trash" /> {{ i18n.t('common.clear') }}
     </button>
   </div>
@@ -53,10 +53,10 @@
 
       <app-io-panel [label]="i18n.t('json.out')" inputId="json-out">
         <span panel-actions>
-          <button type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+          <button data-shortcut="download" type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
             <app-icon name="download" /> {{ i18n.t('json.download') }}
           </button>
-          <app-copy-button [text]="output()" [disabled]="output() === ''" />
+          <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
           <app-send-to from="json-formatter" kind="json" [text]="output()" [disabled]="output() === ''" />
         </span>
         <pre id="json-out" class="out" tabindex="0" aria-labelledby="json-out-label"><code>@if (output() === '') {<span class="ph">{{ i18n.t('json.out.empty') }}</span>} @else if (tokens(); as toks) {@for (t of toks; track $index) {<span [class]="'t-' + t.type">{{ t.text }}</span>}} @else {<span>{{ output() }}</span>}</code></pre>

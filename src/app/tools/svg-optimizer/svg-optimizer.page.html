@@ -80,10 +80,10 @@
     <div class="head">
       <h2 class="eyebrow" id="svgo-files-h">{{ i18n.t('svgo.files.title') }}</h2>
       <span class="actions">
-        <button type="button" class="btn small" [disabled]="okCount() === 0" (click)="downloadZip()">
+        <button data-shortcut="download" type="button" class="btn small" [disabled]="okCount() === 0" (click)="downloadZip()">
           <app-icon name="download" /> {{ i18n.t('svgo.zip') }}
         </button>
-        <button type="button" class="btn small" [disabled]="items().length === 0" (click)="clear()">
+        <button data-shortcut="clear" type="button" class="btn small" [disabled]="items().length === 0" (click)="clear()">
           <app-icon name="trash" /> {{ i18n.t('svgo.clear') }}
         </button>
       </span>
@@ -154,7 +154,7 @@
         <div class="head">
           <label class="eyebrow" for="svgo-code">{{ i18n.t('svgo.code') }}</label>
           <span class="actions">
-            <app-copy-button [text]="r.data" [label]="i18n.t('svgo.copy')" />
+            <app-copy-button shortcut="copy" [text]="r.data" [label]="i18n.t('svgo.copy')" />
             <app-send-to from="svg-optimizer" kind="svg" [text]="r.data" />
             <button type="button" class="btn small" (click)="downloadOne(sel)">
               <app-icon name="download" /> {{ i18n.t('svgo.download') }}

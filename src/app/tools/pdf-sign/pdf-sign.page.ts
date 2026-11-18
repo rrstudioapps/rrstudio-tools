@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, PLATFORM_ID, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, PLATFORM_ID, computed, effect, inject, signal, untracked, viewChild, afterNextRender } from '@angular/core';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { safeFileName, saveBytes } from '../../shared/download';
@@ -38,6 +38,7 @@ import {
 } from './pdf-sign-render';
 import { PDF_SIGN_DICTIONARIES } from './pdf-sign.i18n';
 import { PDFDocument } from 'pdf-lib';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 /** Peso massimo del PDF (il browser deve tenerlo in memoria due volte). */
 const MAX_BYTES = 60 * 1024 * 1024;
@@ -122,6 +123,9 @@ export class PdfSignPage {
 
   constructor() {
     this.i18n.register(PDF_SIGN_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('pdf-sign');
+    if (rx?.files?.length) afterNextRender(() => void this.onPdf(rx.files![0]));
     inject(DestroyRef).onDestroy(() => {
       void this.doc?.loadingTask.destroy();
       for (const s of this.signatures()) URL.revokeObjectURL(s.url);

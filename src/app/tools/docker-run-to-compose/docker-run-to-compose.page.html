@@ -1,0 +1,79 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.docker.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('docker.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="docker-run-to-compose" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+  <p class="hint" role="note">{{ i18n.t('docker.shareWarn') }}</p>
+
+  <app-io-panel [label]="i18n.t('docker.input')" inputId="docker-input">
+    <span panel-actions>
+      <button type="button" class="btn small" data-testid="docker-sample" (click)="loadSample()">{{ i18n.t('docker.sample') }}</button>
+      <button type="button" class="btn small" data-shortcut="clear" (click)="clearAll()"><app-icon name="trash" /> {{ i18n.t('docker.clear') }}</button>
+    </span>
+    <textarea
+      id="docker-input"
+      class="io-textarea code"
+      rows="8"
+      spellcheck="false"
+      wrap="off"
+      data-testid="docker-input"
+      [placeholder]="i18n.t('docker.input.ph')"
+      [value]="command()"
+      [attr.aria-invalid]="error() !== ''"
+      (input)="command.set($any($event.target).value)"
+    ></textarea>
+  </app-io-panel>
+  @if (error(); as e) {
+    <p class="tool-error" role="alert" data-testid="docker-error">{{ e }}</p>
+  }
+
+  <app-io-panel [label]="i18n.t('docker.output')" inputId="docker-output">
+    <span panel-actions>
+      <app-copy-button [text]="yaml()" [disabled]="!yaml()" shortcut="copy" />
+      <button type="button" class="btn small" data-shortcut="download" [disabled]="!yaml()" (click)="download()"><app-icon name="download" /> {{ i18n.t('docker.download') }}</button>
+      <app-send-to from="docker-run-to-compose" [text]="yaml()" [disabled]="!yaml()" />
+    </span>
+    <textarea
+      id="docker-output"
+      class="io-textarea code"
+      readonly
+      rows="16"
+      spellcheck="false"
+      wrap="off"
+      data-testid="docker-output"
+      [placeholder]="i18n.t('docker.empty')"
+      [value]="yaml()"
+    ></textarea>
+  </app-io-panel>
+
+  @if (warnings().length > 0) {
+    <section class="warnings" [attr.aria-label]="i18n.t('docker.warnings')" data-testid="docker-warnings">
+      <h2 class="eyebrow">{{ i18n.t('docker.warnings') }}</h2>
+      <ul>
+        @for (w of warnings(); track $index) {
+          <li>{{ w }}</li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('docker.info.how.title') }}</h2>
+      <p>{{ i18n.t('docker.info.how.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('docker.info.net.title') }}</h2>
+      <p>{{ i18n.t('docker.info.net.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('docker.info.priv.title') }}</h2>
+      <p>{{ i18n.t('docker.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

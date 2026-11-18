@@ -92,7 +92,7 @@
       } @else if (playback() === 'paused') {
         <button type="button" class="btn primary" (click)="resume()" data-testid="tts-resume"><app-icon name="speaker" /> {{ i18n.t('tts.resume') }}</button>
       } @else {
-        <button type="button" class="btn primary" [disabled]="!canPlay()" (click)="play()" data-testid="tts-play"><app-icon name="speaker" /> {{ i18n.t('tts.play') }}</button>
+        <button data-shortcut="run" type="button" class="btn primary" [disabled]="!canPlay()" (click)="play()" data-testid="tts-play"><app-icon name="speaker" /> {{ i18n.t('tts.play') }}</button>
       }
       <button type="button" class="btn" [disabled]="!active()" (click)="stop()" data-testid="tts-stop"><app-icon name="close" /> {{ i18n.t('tts.stop') }}</button>
       @if (hintKey()) {

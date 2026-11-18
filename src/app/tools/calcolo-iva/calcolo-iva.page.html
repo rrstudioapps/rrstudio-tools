@@ -140,7 +140,7 @@
           </div>
         }
         <div class="actions">
-          <app-copy-button [text]="summaryText()" />
+          <app-copy-button shortcut="copy" [text]="summaryText()" />
         </div>
       } @else {
         <p class="empty">{{ i18n.t('iva.empty') }}</p>

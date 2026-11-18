@@ -51,12 +51,12 @@
         @case ('roman') {
           <p class="label">{{ i18n.t('rom.res.roman') }}</p>
           <p class="big" data-testid="rom-result">{{ $any(outcome()).text }}</p>
-          <div class="actions"><app-copy-button [text]="$any(outcome()).text" /></div>
+          <div class="actions"><app-copy-button shortcut="copy" [text]="$any(outcome()).text" /></div>
         }
         @case ('value') {
           <p class="label">{{ i18n.t('rom.res.value') }}</p>
           <p class="big" data-testid="rom-result">{{ $any(outcome()).value }}</p>
-          <div class="actions"><app-copy-button [text]="'' + $any(outcome()).value" /></div>
+          <div class="actions"><app-copy-button shortcut="copy" [text]="'' + $any(outcome()).value" /></div>
         }
         @case ('error') {
           <p id="rom-err" class="tool-error" data-testid="rom-error">{{ $any(outcome()).message }}</p>

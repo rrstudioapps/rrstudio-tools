@@ -15,7 +15,7 @@
   <div class="tool-toolbar">
     <button type="button" class="btn small" (click)="loadSample()">{{ i18n.t('jwt.sample') }}</button>
     <span class="spacer"></span>
-    <button type="button" class="btn small" [disabled]="!input()" (click)="clear()">
+    <button data-shortcut="clear" type="button" class="btn small" [disabled]="!input()" (click)="clear()">
       <app-icon name="trash" /> {{ i18n.t('common.clear') }}
     </button>
   </div>
@@ -81,14 +81,14 @@
       <section class="pane" aria-labelledby="jwt-header-label">
         <div class="pane-head">
           <h2 class="eyebrow" id="jwt-header-label">{{ i18n.t('jwt.header') }}</h2>
-          <app-copy-button [text]="t.headerText" [ariaLabel]="i18n.t('jwt.copy.header')" />
+          <app-copy-button shortcut="copy" [text]="t.headerText" [ariaLabel]="i18n.t('jwt.copy.header')" />
         </div>
         <pre class="out" tabindex="0" [attr.aria-labelledby]="'jwt-header-label'" data-testid="jwt-header"><code>@for (k of headerTokens(); track $index) {<span [class]="'t-' + k.type">{{ k.text }}</span>}</code></pre>
       </section>
       <section class="pane" aria-labelledby="jwt-payload-label">
         <div class="pane-head">
           <h2 class="eyebrow" id="jwt-payload-label">{{ i18n.t('jwt.payload') }}</h2>
-          <app-copy-button [text]="t.payloadText" [ariaLabel]="i18n.t('jwt.copy.payload')" />
+          <app-copy-button shortcut="copy" [text]="t.payloadText" [ariaLabel]="i18n.t('jwt.copy.payload')" />
         </div>
         <pre class="out" tabindex="0" [attr.aria-labelledby]="'jwt-payload-label'" data-testid="jwt-payload"><code>@for (k of payloadTokens(); track $index) {<span [class]="'t-' + k.type">{{ k.text }}</span>}</code></pre>
       </section>
@@ -150,7 +150,7 @@
         <div class="pane">
           <div class="pane-head">
             <h3 class="eyebrow" id="jwe-header-label">{{ i18n.t('jwt.header') }}</h3>
-            <app-copy-button [text]="j.headerText" [ariaLabel]="i18n.t('jwt.copy.header')" />
+            <app-copy-button shortcut="copy" [text]="j.headerText" [ariaLabel]="i18n.t('jwt.copy.header')" />
           </div>
           <pre class="out" tabindex="0" aria-labelledby="jwe-header-label"><code>@for (k of jweHeaderTokens(); track $index) {<span [class]="'t-' + k.type">{{ k.text }}</span>}</code></pre>
         </div>

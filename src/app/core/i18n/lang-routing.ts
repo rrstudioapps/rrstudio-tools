@@ -23,6 +23,14 @@ export const FAVORITES_SLUG: Record<Lang, string> = { it: 'preferiti', en: 'favo
 
 export const isFavoritesSlug = (slug: string): boolean => slug === FAVORITES_SLUG.it || slug === FAVORITES_SLUG.en;
 
+/**
+ * Pagina di ricezione dei contenuti condivisi dal sistema (Web Share Target) e dei file aperti con l'app
+ * (/condividi, /en/share): noindex, fuori da sitemap e hreflang. Il POST arriva sempre a /condividi/ (manifest).
+ */
+export const SHARE_SLUG: Record<Lang, string> = { it: 'condividi', en: 'share' };
+
+export const isShareSlug = (slug: string): boolean => slug === SHARE_SLUG.it || slug === SHARE_SLUG.en;
+
 export interface Alternate {
   hreflang: string;
   href: string;
@@ -73,6 +81,7 @@ export function hasOgImage(slug: string, lang: Lang): boolean {
 export function alternatePath(path: string, target: Lang): string | null {
   const slug = slugFromPath(path);
   if (isFavoritesSlug(slug)) return routePath(FAVORITES_SLUG[target], target);
+  if (isShareSlug(slug)) return routePath(SHARE_SLUG[target], target);
   return hasLang(slug, target) ? routePath(slug, target) : null;
 }
 

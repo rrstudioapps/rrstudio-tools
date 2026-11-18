@@ -23,6 +23,7 @@ import {
 } from './color-convert';
 import { COLOR_CONVERTER_DICTIONARIES } from './color-converter.i18n';
 import { SHARE_SCHEMA } from './color-converter.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type ExportAs = 'css' | 'json';
 
@@ -100,6 +101,9 @@ export class ColorConverterPage {
 
   constructor() {
     this.i18n.register(COLOR_CONVERTER_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('color-converter');
+    if (rx?.text !== undefined) this.text.set(rx.text.trim());
   }
 
   protected pickerValue(): string {

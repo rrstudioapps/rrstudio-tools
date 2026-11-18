@@ -9,8 +9,7 @@ import {
   PLATFORM_ID,
   computed,
   inject,
-  signal,
-} from '@angular/core';
+  signal, afterNextRender } from '@angular/core';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { FileDrop } from '../../shared/file-drop';
@@ -32,6 +31,7 @@ import { baseName, pdfName, splitNames } from './pdf-names';
 import { PDF_TOOLS_DICTIONARIES } from './pdf-tools.i18n';
 import { PasswordProtectedError, openPdf, renderThumb } from './pdf-thumbs';
 import { SplitMode, planSplit } from './split-plan';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 interface Source {
   id: number;
@@ -121,6 +121,9 @@ export class PdfToolsPage {
 
   constructor() {
     this.i18n.register(PDF_TOOLS_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('pdf-tools');
+    if (rx?.files?.length) afterNextRender(() => void this.onFiles(rx.files!));
     inject(DestroyRef).onDestroy(() => this.releaseAll());
   }
 

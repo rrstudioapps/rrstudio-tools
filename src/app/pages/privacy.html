@@ -70,6 +70,13 @@
       memoria di questa scheda del browser, viene consegnato una volta sola e non viene né scritto sul dispositivo né
       inviato a nessuno. Se ricarichi la pagina, va perso.
     </p>
+    <p>
+      Lo stesso vale per ciò che incolli o trascini nella home, e per ciò che condividi con l'app installata
+      («Condividi con…» del sistema) o i file che apri con essa: il contenuto viene riconosciuto nel browser, passa
+      allo strumento che scegli e resta solo nella memoria della scheda. Per la condivisione dal sistema il service
+      worker tiene il contenuto in memoria per pochi secondi, finché la pagina di ricezione non lo prende (una sola
+      volta), poi lo dimentica: non finisce in cache, in IndexedDB né sul server.
+    </p>
 
     <h2>Log tecnici del server</h2>
     <p>
@@ -190,6 +197,13 @@
       With "Send to…" the result of one tool is passed to another tool without being stored: it only stays in the
       memory of this browser tab, is delivered once, and is neither written to your device nor sent to anyone. If you
       reload the page, it is lost.
+    </p>
+    <p>
+      The same goes for what you paste or drop on the home page, and for what you share with the installed app
+      (the system "Share" menu) or files you open with it: the content is recognised in the browser, passed to the
+      tool you pick and only stays in the memory of the tab. For sharing from the system the service worker keeps
+      the content in memory for a few seconds, until the receiving page takes it (once), then forgets it: it never
+      ends up in the cache, in IndexedDB or on the server.
     </p>
 
     <h2>Technical server logs</h2>

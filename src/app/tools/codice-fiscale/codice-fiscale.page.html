@@ -94,7 +94,7 @@
         }
       </div>
       <div class="actions">
-        <button type="button" class="btn small" (click)="clearCompute()"><app-icon name="trash" /> {{ i18n.t('cf.clear') }}</button>
+        <button data-shortcut="clear" type="button" class="btn small" (click)="clearCompute()"><app-icon name="trash" /> {{ i18n.t('cf.clear') }}</button>
       </div>
     </section>
 
@@ -103,7 +103,7 @@
       @if (calc(); as r) {
         <div class="code-row">
           <code class="code mono" data-testid="cf-code">{{ r.code }}</code>
-          <app-copy-button [text]="r.code" [ariaLabel]="i18n.t('cf.result.copy')" />
+          <app-copy-button shortcut="copy" [text]="r.code" [ariaLabel]="i18n.t('cf.result.copy')" />
         </div>
         <div class="table-wrap">
           <table class="parts" [attr.aria-label]="i18n.t('cf.parts.title')">

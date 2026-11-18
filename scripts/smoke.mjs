@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
-// Smoke test E2E di tutte le pagine (home, privacy, preferiti, strumenti; IT e /en/) servendo dist/rrstudio-tools/browser.
+// Smoke test E2E di tutte le pagine (home, privacy, preferiti, ricezione condivisioni, strumenti; IT e /en/) servendo dist/rrstudio-tools/browser.
 // Per ogni pagina, a 360 e 1280 px: nessun errore in console, nessuno scorrimento orizzontale,
 // axe-core senza violazioni critical/serious in tema chiaro e scuro, dati strutturati JSON-LD coerenti
 // (un WebApplication per strumento, FAQPage uguale alle domande visibili, niente sulle altre pagine).
@@ -36,8 +36,8 @@ if (!tools.length || tools.some((t) => !t.path)) {
   process.exit(1);
 }
 const toolPaths = new Set(tools.map((t) => t.path));
-const pages = ['/', '/privacy/', '/preferiti/'];
-const pagesEn = ['/en/', '/en/privacy/', '/en/favorites/'];
+const pages = ['/', '/privacy/', '/preferiti/', '/condividi/'];
+const pagesEn = ['/en/', '/en/privacy/', '/en/favorites/', '/en/share/'];
 for (const t of tools) {
   pages.push(`/${t.path}/`);
   if (!t.italyOnly) pagesEn.push(`/en/${t.path}/`);

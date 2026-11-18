@@ -16,6 +16,7 @@ import { Icon } from './icon';
       [class.compact]="compact()"
       [disabled]="disabled()"
       [attr.aria-label]="ariaLabel() || null"
+      [attr.data-shortcut]="shortcut() || null"
       [attr.title]="compact() ? (ariaLabel() || i18n.t('common.copy')) : null"
       (click)="copy()"
     >
@@ -45,6 +46,8 @@ export class CopyButton {
   readonly compact = input(false);
   readonly ariaLabel = input('');
   readonly disabled = input(false);
+  /** Azione di scorciatoia da tastiera (di solito "copy"): marca il pulsante principale dello strumento. */
+  readonly shortcut = input('');
   protected readonly copied = signal(false);
   private timer: ReturnType<typeof setTimeout> | undefined;
 

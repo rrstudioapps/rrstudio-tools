@@ -12,14 +12,14 @@
   <div class="tool-toolbar">
     <app-segmented [label]="i18n.t('ent.mode')" [options]="modes()" [(value)]="mode" />
     <app-segmented [label]="i18n.t('ent.dir')" [options]="dirs()" [(value)]="dir" />
-    <button type="button" class="btn small" (click)="swap()">
+    <button data-shortcut="swap" type="button" class="btn small" (click)="swap()">
       <app-icon name="swap" /> {{ i18n.t('ent.swap') }}
     </button>
     <span class="spacer"></span>
     <button type="button" class="btn small" (click)="loadSample()">
       <app-icon name="code" /> {{ i18n.t('ent.sample') }}
     </button>
-    <button type="button" class="btn small" (click)="clear()">
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()">
       <app-icon name="trash" /> {{ i18n.t('common.clear') }}
     </button>
   </div>
@@ -64,7 +64,7 @@
 
     <app-io-panel [label]="i18n.t('ent.out')" inputId="ent-out" [meta]="outputMeta()">
       <span panel-actions>
-        <app-copy-button [text]="output()" [disabled]="output() === ''" />
+        <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
         <app-send-to from="html-entities" [text]="output()" [disabled]="output() === ''" />
       </span>
       <textarea

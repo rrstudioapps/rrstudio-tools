@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostListener, PLATFORM_ID, afterNextRender, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, afterNextRender, computed, inject, signal } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';
 import { saveBytes } from '../../shared/download';
@@ -78,14 +78,6 @@ export class LoremIpsumGeneratorPage {
   constructor() {
     this.i18n.register(LOREM_DICTIONARIES);
     afterNextRender(() => this.randomSeedValue.set(randomSeed()));
-  }
-
-  @HostListener('document:keydown', ['$event'])
-  protected onKey(e: KeyboardEvent): void {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !e.altKey) {
-      e.preventDefault();
-      this.generate();
-    }
   }
 
   protected generate(): void {

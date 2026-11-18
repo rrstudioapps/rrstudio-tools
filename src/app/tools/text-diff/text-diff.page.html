@@ -17,8 +17,8 @@
     </fieldset>
     <span class="spacer"></span>
     <button type="button" class="btn small" (click)="loadSample()">{{ i18n.t('diff.sample') }}</button>
-    <button type="button" class="btn small" [disabled]="!hasInput()" (click)="swap()"><app-icon name="swap" /> {{ i18n.t('diff.swap') }}</button>
-    <button type="button" class="btn small" [disabled]="!hasInput()" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('diff.clear') }}</button>
+    <button data-shortcut="swap" type="button" class="btn small" [disabled]="!hasInput()" (click)="swap()"><app-icon name="swap" /> {{ i18n.t('diff.swap') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" [disabled]="!hasInput()" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('diff.clear') }}</button>
   </div>
 
   <div class="tool-panels">
@@ -77,8 +77,8 @@
         <button type="button" class="btn small" data-testid="diff-next" (click)="go(1)"><app-icon name="down" /> {{ i18n.t('diff.next') }}</button>
       }
       @if (patch()) {
-        <app-copy-button [text]="patch()" [label]="i18n.t('diff.copy')" />
-        <button type="button" class="btn small" data-testid="diff-download" (click)="downloadPatch()"><app-icon name="download" /> {{ i18n.t('diff.download') }}</button>
+        <app-copy-button shortcut="copy" [text]="patch()" [label]="i18n.t('diff.copy')" />
+        <button data-shortcut="download" type="button" class="btn small" data-testid="diff-download" (click)="downloadPatch()"><app-icon name="download" /> {{ i18n.t('diff.download') }}</button>
       }
     </div>
 

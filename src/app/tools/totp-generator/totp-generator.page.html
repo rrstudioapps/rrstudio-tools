@@ -25,8 +25,8 @@
         (input)="onSecret($event)"
         data-testid="totp-secret"
       />
-      <button type="button" class="btn small" (click)="generate()"><app-icon name="refresh" /> {{ i18n.t('totp.generate') }}</button>
-      <button type="button" class="btn small" [disabled]="!secretText()" (click)="clear()">{{ i18n.t('totp.clear') }}</button>
+      <button data-shortcut="run" type="button" class="btn small" (click)="generate()"><app-icon name="refresh" /> {{ i18n.t('totp.generate') }}</button>
+      <button data-shortcut="clear" type="button" class="btn small" [disabled]="!secretText()" (click)="clear()">{{ i18n.t('totp.clear') }}</button>
     </div>
     <p class="hint" id="totp-secret-hint">{{ i18n.t('totp.secret.hint') }}</p>
     <div class="tool-status" role="status" aria-live="polite">
@@ -74,7 +74,7 @@
       <h2 class="eyebrow" id="totp-cur-title">{{ i18n.t('totp.current') }}</h2>
       <div class="current">
         <output class="code mono" data-testid="totp-code" [attr.aria-label]="i18n.t('totp.current')">{{ currentShown() }}</output>
-        <app-copy-button [text]="current()" [disabled]="!current()" />
+        <app-copy-button shortcut="copy" [text]="current()" [disabled]="!current()" />
       </div>
       <div
         class="meter"
@@ -146,7 +146,7 @@
             <span class="eyebrow">{{ i18n.t('totp.qr.uri') }}</span>
             <code class="mono" data-testid="totp-uri">{{ uri() }}</code>
             <div class="row">
-              <app-copy-button [text]="uri()" [label]="i18n.t('totp.qr.uri')" />
+              <app-copy-button shortcut="copy" [text]="uri()" [label]="i18n.t('totp.qr.uri')" />
               <button type="button" class="btn small" (click)="downloadQr()"><app-icon name="download" /> {{ i18n.t('totp.qr.download') }}</button>
             </div>
           </div>

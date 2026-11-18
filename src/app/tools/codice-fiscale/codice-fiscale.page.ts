@@ -19,6 +19,7 @@ import {
 import { CF_DICTIONARIES } from './codice-fiscale.i18n';
 import { PlaceCombobox } from './place-combobox';
 import { Place, PlacesFile, PlacesIndex, loadPlaces } from './places';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Mode = 'compute' | 'verify';
 type PlaceKind = 'comune' | 'estero' | 'codice';
@@ -165,6 +166,13 @@ export class CodiceFiscalePage {
 
   constructor() {
     this.i18n.register(CF_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('codice-fiscale');
+    if (rx?.text !== undefined) {
+      // un codice incollato si verifica: passa alla modalità di verifica
+      this.mode.set('verify');
+      this.verifyInput.set(rx.text.trim());
+    }
   }
 
   private isoDate(d: Date): string {

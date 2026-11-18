@@ -141,8 +141,8 @@
     <div class="tool-toolbar">
       <button type="button" class="btn small" (click)="loadBatchSample()">{{ i18n.t('ts.batch.sample') }}</button>
       <span class="spacer"></span>
-      <app-copy-button [text]="batchText()" [label]="i18n.t('ts.batch.copy')" [disabled]="!batchText()" />
-      <button type="button" class="btn small" [disabled]="!batchInput()" (click)="batchInput.set('')">
+      <app-copy-button shortcut="copy" [text]="batchText()" [label]="i18n.t('ts.batch.copy')" [disabled]="!batchText()" />
+      <button data-shortcut="clear" type="button" class="btn small" [disabled]="!batchInput()" (click)="batchInput.set('')">
         <app-icon name="trash" /> {{ i18n.t('common.clear') }}
       </button>
     </div>

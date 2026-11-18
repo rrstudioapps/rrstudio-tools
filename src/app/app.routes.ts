@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
 import { Route, Routes } from '@angular/router';
-import { FAVORITES_SLUG } from './core/i18n/lang-routing';
+import { FAVORITES_SLUG, SHARE_SLUG } from './core/i18n/lang-routing';
 import { ToolFrame } from './shared/tool-frame';
 import { TOOLS, ToolDefinition } from './tools/tools.registry';
 
@@ -41,6 +41,13 @@ const favoritesRoute = (lang: 'it' | 'en'): Route => ({
   data: { seo: { titleKey: 'seo.favorites.title', descriptionKey: 'seo.favorites.desc', noindex: true } },
 });
 
+/** Ricezione dei contenuti condivisi dal sistema e dei file aperti con l'app: /condividi e /en/share (noindex, fuori dalla sitemap). */
+const shareRoute = (lang: 'it' | 'en'): Route => ({
+  path: SHARE_SLUG[lang],
+  loadComponent: () => import('./pages/share').then((m) => m.SharePage),
+  data: { seo: { titleKey: 'seo.share.title', descriptionKey: 'seo.share.desc', noindex: true } },
+});
+
 /**
  * Route generate dal registry dei tool, più la home. La radice è italiana; la versione inglese
  * sta sotto /en/ con gli stessi slug, tranne gli strumenti `italyOnly` (solo in italiano).
@@ -50,6 +57,7 @@ export const routes: Routes = [
   ...TOOLS.map(toRoute),
   PRIVACY,
   favoritesRoute('it'),
+  shareRoute('it'),
   {
     path: 'en',
     children: [
@@ -57,6 +65,7 @@ export const routes: Routes = [
       ...TOOLS.filter((t) => !t.italyOnly).map(toRoute),
       PRIVACY,
       favoritesRoute('en'),
+      shareRoute('en'),
       // /en/<sconosciuto> → home inglese
       { path: '**', redirectTo: '/en' },
     ],

@@ -46,13 +46,13 @@
             <app-icon name="eyeOff" /> {{ i18n.t('ex.clean.all') }}
           </button>
           @if (anyCleaned() > 0) {
-            <button type="button" class="btn small" [disabled]="busy()" (click)="downloadZip()">
+            <button data-shortcut="download" type="button" class="btn small" [disabled]="busy()" (click)="downloadZip()">
               <app-icon name="download" /> {{ i18n.t('ex.zip') }}
             </button>
             <app-send-to from="exif-viewer" kind="image" [files]="cleanedFiles" [disabled]="busy()" />
           }
           <span class="spacer"></span>
-          <button type="button" class="btn small" (click)="reset()"><app-icon name="trash" /> {{ i18n.t('ex.reset') }}</button>
+          <button data-shortcut="clear" type="button" class="btn small" (click)="reset()"><app-icon name="trash" /> {{ i18n.t('ex.reset') }}</button>
         </div>
       </section>
 

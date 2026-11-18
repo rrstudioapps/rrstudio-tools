@@ -10,6 +10,7 @@ import { PrivacyNote } from '../../shared/privacy-note';
 import { Segmented, SegmentOption } from '../../shared/segmented';
 import { MAX_BULK_LINES, ValueKind, ValueResult, analyzeBulk, analyzeValue, detectKind, toCsv } from './detect';
 import { IBV_DICTIONARIES } from './iban-partita-iva.i18n';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Tab = 'auto' | 'iban' | 'vat' | 'bulk';
 type BulkKind = 'auto' | 'iban' | 'vat';
@@ -86,6 +87,9 @@ export class IbanPartitaIvaPage {
 
   constructor() {
     this.i18n.register(IBV_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('iban-partita-iva');
+    if (rx?.text !== undefined) this.value.set(rx.text.trim());
   }
 
   private regionName(cc: string): string {

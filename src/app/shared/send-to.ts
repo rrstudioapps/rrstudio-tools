@@ -35,6 +35,7 @@ const TOOL_ORDER = TOOLS.map((t) => t.id);
         type="button"
         class="btn small"
         [disabled]="disabled()"
+        data-shortcut="send"
         [attr.aria-expanded]="open()"
         [attr.aria-controls]="panelId"
         [attr.aria-label]="i18n.t('send.label')"

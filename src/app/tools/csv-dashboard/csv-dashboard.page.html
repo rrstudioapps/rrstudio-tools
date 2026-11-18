@@ -42,7 +42,7 @@
     <div class="toolbar">
       <span class="info">{{ store.dataset()?.name }} · {{ info() }}</span>
       <span class="spacer"></span>
-      <button type="button" class="btn" [disabled]="exporting()" (click)="exportHtml()">
+      <button data-shortcut="download" type="button" class="btn" [disabled]="exporting()" (click)="exportHtml()">
         <app-icon name="file" /> {{ i18n.t('csv.export.html') }}
       </button>
       <button type="button" class="btn" [disabled]="exporting()" (click)="exportPng()">

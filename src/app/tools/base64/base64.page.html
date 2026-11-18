@@ -22,10 +22,10 @@
       </label>
     }
     <span class="spacer"></span>
-    <button type="button" class="btn small" [disabled]="!canSwap()" (click)="swap()">
+    <button data-shortcut="swap" type="button" class="btn small" [disabled]="!canSwap()" (click)="swap()">
       <app-icon name="swap" /> {{ i18n.t('common.swap') }}
     </button>
-    <button type="button" class="btn small" (click)="clear()">
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()">
       <app-icon name="trash" /> {{ i18n.t('common.clear') }}
     </button>
   </div>
@@ -66,11 +66,11 @@
       >
         <span panel-actions>
           @if (download()) {
-            <button type="button" class="btn small" (click)="downloadFile()">
+            <button data-shortcut="download" type="button" class="btn small" (click)="downloadFile()">
               <app-icon name="download" /> {{ i18n.t('b64.download') }}
             </button>
           }
-          <app-copy-button [text]="fullOutput()" [disabled]="fullOutput() === ''" />
+          <app-copy-button shortcut="copy" [text]="fullOutput()" [disabled]="fullOutput() === ''" />
           <app-send-to from="base64" [text]="fullOutput()" [disabled]="fullOutput() === ''" />
         </span>
         <textarea id="b64-out" class="io-textarea" readonly spellcheck="false" [value]="shownOutput()"></textarea>

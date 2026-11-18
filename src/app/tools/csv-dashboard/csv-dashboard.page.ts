@@ -7,8 +7,7 @@ import {
   computed,
   inject,
   signal,
-  viewChild,
-} from '@angular/core';
+  viewChild, afterNextRender } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { ThemeService } from '../../core/theme/theme.service';
 import { Icon } from '../../shared/icon';
@@ -25,6 +24,7 @@ import { formatNumber, formatPercent } from './format';
 import { KpiCards } from './kpi-cards';
 import { FileError } from './models';
 import { UploadZone } from './upload-zone';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 @Component({
   selector: 'app-csv-dashboard',
@@ -57,6 +57,13 @@ export class CsvDashboardPage {
 
   constructor() {
     this.i18n.register(CSV_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('csv-dashboard');
+    if (rx?.files?.length) afterNextRender(() => void this.onFile(rx.files![0]));
+    else if (rx?.text !== undefined) {
+      const text = rx.text;
+      afterNextRender(() => void this.onFile(new File([text], 'incollato.csv', { type: 'text/csv' })));
+    }
   }
 
   protected onFile(file: File): Promise<void> {

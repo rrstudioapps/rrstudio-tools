@@ -9,6 +9,7 @@ import type { ShareData } from '../../shared/share-state';
 import { fromRoman, toRoman } from './roman';
 import { ROMAN_DICTIONARIES } from './roman-numerals.i18n';
 import { SHARE_SCHEMA } from './roman-numerals.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 type Outcome = { kind: 'empty' } | { kind: 'roman'; text: string; value: number } | { kind: 'value'; value: number; text: string } | { kind: 'error'; message: string };
 
@@ -59,6 +60,9 @@ export class RomanNumeralsPage {
 
   constructor() {
     this.i18n.register(ROMAN_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('roman-numerals');
+    if (rx?.text !== undefined) this.input.set(rx.text.trim());
   }
 
   protected setYear(y: number): void {

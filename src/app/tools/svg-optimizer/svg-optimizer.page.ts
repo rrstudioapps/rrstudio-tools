@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio Tools
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, afterNextRender } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { SendTo } from '../../shared/send-to';
 import { CopyButton } from '../../shared/copy-button';
@@ -23,6 +23,7 @@ import {
   uniqueNames,
 } from './svg-opt';
 import { SVGO_DICTIONARIES } from './svg-optimizer.i18n';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const MAX_FILES = 50;
@@ -87,6 +88,12 @@ export class SvgOptimizerPage {
 
   constructor() {
     this.i18n.register(SVGO_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('svg-optimizer');
+    if (rx?.text !== undefined) {
+      this.pasteText.set(rx.text);
+      afterNextRender(() => void this.addPasted());
+    }
   }
 
   protected size(n: number): string {

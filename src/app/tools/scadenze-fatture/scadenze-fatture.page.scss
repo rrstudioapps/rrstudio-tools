@@ -1,0 +1,122 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+.card {
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  h2 {
+    margin: 0;
+  }
+  &.law p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+  }
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-3);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  > label,
+  .label {
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+  &.inline {
+    align-items: flex-start;
+  }
+  &.narrow {
+    max-width: 14rem;
+  }
+}
+input[type='date'] {
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  color-scheme: light dark;
+  width: 100%;
+  min-width: 0;
+  &:hover {
+    border-color: var(--muted);
+  }
+}
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.opts {
+  legend {
+    padding: 0;
+    margin-bottom: var(--space-2);
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+.hint {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  &.block {
+    display: block;
+  }
+}
+.code {
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.table-scroll {
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  th,
+  td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  th {
+    font-weight: var(--fw-medium);
+    color: var(--ink-2);
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+  }
+  .num {
+    text-align: right;
+    white-space: nowrap;
+  }
+}

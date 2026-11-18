@@ -13,6 +13,7 @@ import { CurlWarning, parseCurl } from './curl';
 import { CurlTarget, TARGETS, generate } from './curl-generate';
 import { CURL_DICTIONARIES } from './curl-converter.i18n';
 import { SHARE_SCHEMA } from './curl-converter.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 /** Esempio nello stile di "Copia come cURL" di Chrome. */
 export const SAMPLE_CURL = `curl 'https://api.example.com/v1/orders?expand=items' \\
@@ -60,6 +61,9 @@ export class CurlConverterPage {
 
   constructor() {
     this.i18n.register(CURL_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('curl-converter');
+    if (rx?.text !== undefined) this.command.set(rx.text.trim());
   }
 
   private texts(ws: CurlWarning[]): string[] {

@@ -29,6 +29,7 @@ import {
 import { ShareLink, applyShare, snapshotShare } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
 import { SHARE_SCHEMA } from './timestamp-converter.share';
+import { ToolHandoff } from '../../shared/tool-handoff';
 
 interface OutRow {
   key: string;
@@ -76,6 +77,14 @@ export class TimestampConverterPage {
 
   constructor() {
     this.i18n.register(TIMESTAMP_DICTIONARIES);
+    // contenuto ricevuto da un altro strumento ("Invia a…", incolla o trascina dalla home)
+    const rx = inject(ToolHandoff).take('timestamp-converter');
+    if (rx?.text !== undefined) {
+      const t = rx.text.trim();
+      // un numero è un timestamp, il resto una data da convertire
+      if (/^\d{9,}(\.\d+)?$/.test(t)) this.tsInput.set(t);
+      else this.dateInput.set(t);
+    }
     afterNextRender(() => {
       try {
         const own = Intl.DateTimeFormat().resolvedOptions().timeZone;
