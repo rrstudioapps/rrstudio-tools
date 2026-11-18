@@ -1,0 +1,211 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.utm.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('utm.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="utm-link-builder" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="bar">
+    <app-segmented [label]="i18n.t('utm.mode')" [options]="modes()" [(value)]="mode" />
+  </div>
+
+  <div class="layout">
+    <section class="panel" [attr.aria-label]="i18n.t('utm.mode.' + mode())">
+      <div class="field">
+        <label for="utm-url">{{ i18n.t('utm.url') }}</label>
+        <input
+          id="utm-url"
+          type="text"
+          inputmode="url"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="500"
+          [placeholder]="i18n.t('utm.url.ph')"
+          [value]="url()"
+          [attr.aria-invalid]="urlError() !== ''"
+          [attr.aria-describedby]="urlError() ? 'utm-url-err' : 'utm-url-hint'"
+          data-testid="utm-url"
+          (input)="url.set($any($event.target).value)"
+        />
+        @if (urlError()) {
+          <p id="utm-url-err" class="tool-error" data-testid="utm-url-error">{{ i18n.t(urlError()) }}</p>
+        } @else {
+          <p id="utm-url-hint" class="hint">{{ i18n.t('utm.url.hint') }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <span class="label" id="utm-presets-label">{{ i18n.t('utm.presets') }}</span>
+        <div class="chips" role="group" aria-labelledby="utm-presets-label">
+          @for (p of presets; track p.id) {
+            <button type="button" class="btn small" [attr.data-testid]="'utm-preset-' + p.id" (click)="applyPreset(p)">{{ i18n.t('utm.preset.' + p.id) }}</button>
+          }
+        </div>
+        <p class="hint">{{ i18n.t('utm.presets.hint.' + mode()) }}</p>
+      </div>
+
+      @if (mode() === 'single') {
+        <div class="field">
+          <label for="utm-source">{{ i18n.t('utm.source') }} <span class="req">({{ i18n.t('utm.required') }})</span></label>
+          <input id="utm-source" type="text" autocomplete="off" spellcheck="false" maxlength="200" aria-required="true"
+            [placeholder]="i18n.t('utm.source.ph')" [value]="source()" data-testid="utm-source" (input)="source.set($any($event.target).value)" />
+        </div>
+        <div class="field">
+          <label for="utm-medium">{{ i18n.t('utm.medium') }} <span class="req">({{ i18n.t('utm.required') }})</span></label>
+          <input id="utm-medium" type="text" autocomplete="off" spellcheck="false" maxlength="200" aria-required="true"
+            [placeholder]="i18n.t('utm.medium.ph')" [value]="medium()" data-testid="utm-medium" (input)="medium.set($any($event.target).value)" />
+        </div>
+      } @else {
+        <div class="field">
+          <label for="utm-bulk">{{ i18n.t('utm.bulk') }} <span class="req">({{ i18n.t('utm.required') }})</span></label>
+          <textarea
+            id="utm-bulk"
+            rows="6"
+            maxlength="3000"
+            spellcheck="false"
+            aria-required="true"
+            [placeholder]="i18n.t('utm.bulk.ph')"
+            [value]="bulk()"
+            [attr.aria-invalid]="bulkErrors().length > 0"
+            [attr.aria-describedby]="bulkErrors().length > 0 ? 'utm-bulk-err' : 'utm-bulk-hint'"
+            data-testid="utm-bulk"
+            (input)="bulk.set($any($event.target).value)"
+          ></textarea>
+          @if (bulkErrors().length > 0) {
+            <ul id="utm-bulk-err" class="tool-error errs" data-testid="utm-bulk-error" [attr.aria-label]="i18n.t('utm.bulk.errors')">
+              @for (e of bulkErrors(); track e.line) {
+                <li>{{ errorLine(e) }}</li>
+              }
+            </ul>
+          } @else {
+            <p id="utm-bulk-hint" class="hint">{{ i18n.t('utm.bulk.hint') }}</p>
+          }
+        </div>
+      }
+
+      <div class="field">
+        <label for="utm-campaign">{{ i18n.t('utm.campaign') }} <span class="req">({{ i18n.t('utm.required') }})</span></label>
+        <input id="utm-campaign" type="text" autocomplete="off" spellcheck="false" maxlength="200" aria-required="true"
+          [placeholder]="i18n.t('utm.campaign.ph')" [value]="campaign()" data-testid="utm-campaign" (input)="campaign.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="utm-term">{{ i18n.t('utm.term') }}</label>
+        <input id="utm-term" type="text" autocomplete="off" spellcheck="false" maxlength="200"
+          [placeholder]="i18n.t('utm.term.ph')" [value]="term()" data-testid="utm-term" (input)="term.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="utm-content">{{ i18n.t('utm.content') }}</label>
+        <input id="utm-content" type="text" autocomplete="off" spellcheck="false" maxlength="200"
+          [placeholder]="i18n.t('utm.content.ph')" [value]="content()" data-testid="utm-content" (input)="content.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="utm-id">{{ i18n.t('utm.id') }}</label>
+        <input id="utm-id" type="text" autocomplete="off" spellcheck="false" maxlength="200"
+          [placeholder]="i18n.t('utm.id.ph')" [value]="id()" data-testid="utm-id" (input)="id.set($any($event.target).value)" />
+      </div>
+
+      <div class="field">
+        <label class="check">
+          <input type="checkbox" [checked]="lowercase()" aria-describedby="utm-lower-hint" data-testid="utm-lowercase" (change)="lowercase.set($any($event.target).checked)" />
+          <span>{{ i18n.t('utm.lowercase') }}</span>
+        </label>
+        <p id="utm-lower-hint" class="hint">{{ i18n.t('utm.lowercase.hint') }}</p>
+      </div>
+      <div class="field">
+        <label for="utm-spaces">{{ i18n.t('utm.spaces') }}</label>
+        <select id="utm-spaces" data-testid="utm-spaces" (change)="setSpaces($any($event.target).value)">
+          @for (s of spacesOptions; track s) {
+            <option [value]="s" [selected]="spaces() === s">{{ i18n.t('utm.spaces.' + s) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn" data-shortcut="clear" data-testid="utm-clear" (click)="clear()">{{ i18n.t('utm.clear') }}</button>
+      </div>
+    </section>
+
+    <section class="result" aria-live="polite" [attr.aria-label]="i18n.t('utm.result')">
+      @if (warnings().length > 0) {
+        <div class="warns" data-testid="utm-warnings">
+          <p class="eyebrow">{{ i18n.t('utm.warnings') }}</p>
+          <ul>
+            @for (w of warnings(); track w) {
+              <li><strong>{{ i18n.t('utm.warn') }}:</strong> {{ w }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      @if (mode() === 'single') {
+        @if (singleError()) {
+          <p class="tool-error" data-testid="utm-error">{{ i18n.t(singleError()) }}</p>
+        } @else if (single(); as r) {
+          <div class="out">
+            <p class="eyebrow">{{ i18n.t('utm.link') }}</p>
+            <p class="link" data-testid="utm-result">{{ r.url }}</p>
+            <div class="actions">
+              <app-copy-button shortcut="copy" [text]="r.url" [label]="i18n.t('utm.copy')" />
+              <a class="btn small" [href]="r.url" target="_blank" rel="noopener noreferrer nofollow" data-testid="utm-open">{{ i18n.t('utm.open') }}</a>
+            </div>
+          </div>
+          <div class="out">
+            <p class="eyebrow">{{ i18n.t('utm.preview') }}</p>
+            <ul class="query" data-testid="utm-query">
+              @for (q of r.query; track $index) {
+                <li><code>{{ q[0] }}</code> = <code>{{ q[1] }}</code></li>
+              }
+            </ul>
+          </div>
+        } @else {
+          <p class="hint" data-testid="utm-empty">{{ i18n.t('utm.empty') }}</p>
+        }
+      } @else {
+        @if (bulkLinks().length > 0) {
+          <p class="hint" data-testid="utm-count">{{ i18n.t('utm.count', { n: bulkOk() }) }}</p>
+          <div class="table-wrap">
+            <table data-testid="utm-table">
+              <thead>
+                <tr>
+                  <th scope="col">{{ i18n.t('utm.col.line') }}</th>
+                  <th scope="col">{{ i18n.t('utm.col.source') }}</th>
+                  <th scope="col">{{ i18n.t('utm.col.medium') }}</th>
+                  <th scope="col">{{ i18n.t('utm.col.content') }}</th>
+                  <th scope="col">{{ i18n.t('utm.col.link') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (l of bulkLinks(); track l.row.line) {
+                  <tr data-testid="utm-row">
+                    <td>{{ l.row.line }}</td>
+                    <td>{{ l.row.source }}</td>
+                    <td>{{ l.row.medium }}</td>
+                    <td>{{ l.row.content }}</td>
+                    <td class="linkcell">
+                      @if (l.result.ok) {
+                        <span class="link" data-testid="utm-row-link">{{ l.result.url }}</span>
+                        <app-copy-button [compact]="true" [text]="l.result.url" [ariaLabel]="i18n.t('utm.copyRow', { n: l.row.line })" />
+                      } @else {
+                        <span class="tool-error" data-testid="utm-row-error">{{ rowError(l.result) }}</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="actions">
+            <app-copy-button shortcut="copy" [text]="bulkText()" [label]="i18n.t('utm.copyAll')" [disabled]="bulkOk() === 0" />
+            <button type="button" class="btn small" data-shortcut="download" data-testid="utm-download" [disabled]="bulkOk() === 0" (click)="downloadCsv()">{{ i18n.t('utm.download') }}</button>
+          </div>
+        } @else {
+          <p class="hint" data-testid="utm-empty">{{ i18n.t('utm.bulk.empty') }}</p>
+        }
+      }
+    </section>
+  </div>
+</div>

@@ -888,6 +888,40 @@ try {
         if ((await out()) !== "('mela', 'O''Brien', 12, '007')") throw new Error('list-converter: secondo scambio inatteso ' + (await out()));
       } });
   await shot('trip-cost-calculator.png', { width: 1280, dark: false, path: '/trip-cost-calculator/', setup: async (page) => { const text = (id) => page.getByTestId(id).innerText(); await page.fill('#trip-distance', '350'); await page.getByTestId('trip-round').check(); await page.fill('#trip-cons', '6,5'); await page.fill('#trip-price', '1,85'); await page.fill('#trip-fixed', '12'); await page.fill('#trip-people', '3'); await page.getByTestId('trip-co2').check(); await page.waitForTimeout(250); if (!/45,5\s*l/.test(await text('trip-r-energy'))) throw new Error('trip-cost: litri ' + (await text('trip-r-energy'))); if (!/84,18\s*€/.test(await text('trip-r-fuel'))) throw new Error('trip-cost: carburante ' + (await text('trip-r-fuel'))); if (!/96,18\s*€/.test(await text('trip-r-total'))) throw new Error('trip-cost: totale ' + (await text('trip-r-total'))); if (!/32,06\s*€/.test(await text('trip-r-person'))) throw new Error('trip-cost: a persona ' + (await text('trip-r-person'))); if (!/105,1\s*kg/.test(await text('trip-r-co2'))) throw new Error('trip-cost: CO2 ' + (await text('trip-r-co2'))); await page.selectOption('[data-testid=trip-cons-unit]', 'mpgUs'); await page.waitForTimeout(250); const mpg = await page.getByTestId('trip-consumption').inputValue(); if (!/^36,1/.test(mpg)) throw new Error('trip-cost: conversione mpg ' + mpg); await page.selectOption('[data-testid=trip-cons-unit]', 'l100'); await page.waitForTimeout(250); await page.getByRole('button', { name: 'Consumo medio', exact: true }).click(); await page.fill('#trip-distance', '450'); await page.fill('#trip-liters', '30'); await page.fill('#trip-spend', '54'); await page.waitForSelector('[data-testid=trip-a-l100]'); await page.waitForTimeout(250); if (!/6,67/.test(await text('trip-a-l100'))) throw new Error('trip-cost: l/100 km ' + (await text('trip-a-l100'))); await page.getByRole('button', { name: 'Costo del viaggio', exact: true }).click(); await page.waitForSelector('[data-testid=trip-r-total]'); } });
+  await shot('utm-link-builder.png', {
+    width: 1280,
+    dark: false,
+    path: '/utm-link-builder/',
+    setup: async (page) => {
+      const text = (id) => page.getByTestId(id).innerText();
+      const seg = (name) => page.getByRole('button', { name, exact: true });
+      const good = 'https://www.esempio.it/offerta?ref=home#prezzi';
+      // un link: canale preimpostato, campagna con maiuscole e spazi, query e frammento mantenuti
+      await page.fill('#utm-url', good);
+      await page.getByTestId('utm-preset-newsletter').click();
+      await page.fill('#utm-campaign', 'Saldi Primavera');
+      await page.waitForSelector('[data-testid=utm-result]');
+      await page.waitForTimeout(250);
+      const expected = 'https://www.esempio.it/offerta?ref=home&utm_source=newsletter&utm_medium=email&utm_campaign=saldi%20primavera#prezzi';
+      if ((await text('utm-result')).trim() !== expected) throw new Error('utm: link ' + (await text('utm-result')));
+      if (!/maiuscole/i.test(await text('utm-warnings'))) throw new Error('utm: avviso maiuscole mancante');
+      // javascript: rifiutato
+      await page.fill('#utm-url', 'javascript:alert(1)');
+      await page.waitForSelector('[data-testid=utm-url-error]');
+      if ((await page.getByTestId('utm-result').count()) !== 0) throw new Error('utm: javascript: non rifiutato');
+      await page.fill('#utm-url', good);
+      // più sorgenti: una riga per canale, la stessa campagna
+      await seg('Più sorgenti').click();
+      await page.fill('#utm-bulk', 'solo');
+      await page.waitForSelector('[data-testid=utm-bulk-error]');
+      if (!/Riga 1/.test(await text('utm-bulk-error'))) throw new Error('utm: errore di riga non mostrato');
+      await page.fill('#utm-bulk', 'facebook,social\ninstagram,social,storia\nnewsletter email');
+      await page.waitForFunction(() => document.querySelectorAll('[data-testid=utm-row]').length === 3);
+      await page.waitForTimeout(250);
+      const links = (await page.getByTestId('utm-row-link').allInnerTexts()).map((t) => t.trim());
+      if (links[1] !== 'https://www.esempio.it/offerta?ref=home&utm_source=instagram&utm_medium=social&utm_campaign=saldi%20primavera&utm_content=storia#prezzi') throw new Error('utm: link riga 2 ' + links[1]);
+    },
+  });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

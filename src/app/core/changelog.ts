@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento: costruttore di link UTM per campagne, con canali predefiniti, avvisi su maiuscole e spazi, più sorgenti insieme e download in .csv.',
+        en: 'New tool: UTM link builder for campaigns, with channel presets, warnings about case and spaces, several sources at once and .csv download.',
+        toolIds: ['utm-link-builder'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento: costo del viaggio e consumo carburante, con conversione tra l/100 km, km/l e mpg, stima della CO2 e calcolo dei chilometri con un budget.',
         en: 'New tool: trip cost and fuel consumption, with conversion between l/100 km, km/l and mpg, a CO2 estimate and a range calculation for a budget.',
         toolIds: ['trip-cost-calculator'],

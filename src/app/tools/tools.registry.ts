@@ -1505,4 +1505,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.trip.title', descriptionKey: 'seo.trip.desc' },
     loadComponent: () => import('./trip-cost-calculator/trip-cost-calculator.page').then((m) => m.TripCostCalculatorPage),
   },
+  {
+    id: 'utm-link-builder',
+    path: 'utm-link-builder',
+    icon: 'link',
+    category: 'web',
+    keywords: {
+      it: 'utm link campagna google analytics parametri tracciamento source medium campaign newsletter social url marketing csv',
+      en: 'utm link campaign google analytics parameters tracking source medium campaign newsletter social url marketing csv',
+    },
+    titleKey: 'tool.utm.title',
+    descriptionKey: 'tool.utm.desc',
+    seo: { titleKey: 'seo.utm.title', descriptionKey: 'seo.utm.desc' },
+    loadComponent: () => import('./utm-link-builder/utm-link-builder.page').then((m) => m.UtmLinkBuilderPage),
+  },
 ];
