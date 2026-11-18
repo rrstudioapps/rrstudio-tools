@@ -545,7 +545,11 @@ try {
         const got = await page.inputValue('#sci-expr');
         if (got !== expected) throw new Error(`${what}: atteso «${expected}», nel campo «${got}»`);
       };
-      for (const k of ['7', '×', '6']) await page.getByTestId('key-' + k).click();
+      for (const k of ['7', '×', '6']) {
+        await page.getByTestId('key-' + k).click();
+        // un campo senza focus non conserva la selezione in tutti i browser (su CI finiva a 0): i tasti devono usare la posizione ricordata
+        await page.evaluate(() => document.querySelector('#sci-expr').setSelectionRange(0, 0));
+      }
       await field('7×6', 'i tasti non scrivono nel campo');
       await page.getByTestId('key-eq').click();
       await page.getByTestId('key-+').click();
