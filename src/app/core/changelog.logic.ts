@@ -6,6 +6,8 @@ import { SITE_NAME, SITE_URL } from './links';
 
 /** Per quanti giorni uno strumento nuovo mostra il badge «Nuovo». */
 export const NEW_TOOL_DAYS = 30;
+/** Tetto ai badge «Nuovo»: se in un giorno escono più strumenti, lo portano i più recenti (le voci stanno dalla più recente). */
+export const MAX_NEW_BADGES = 12;
 /** Numero di versioni nel feed. */
 export const FEED_VERSIONS = 20;
 
@@ -27,14 +29,18 @@ export function isoDay(ms: number): string {
 /**
  * Id degli strumenti con voce `new-tool` nell'ULTIMA versione che contiene strumenti nuovi, solo se quella
  * versione è entro `days` giorni da `today` (AAAA-MM-GG). Una versione futura rispetto a `today` non conta.
+ * Al massimo `max` id, presi dalle voci più recenti (quelle in cima alla versione).
  */
-export function newToolIds(today: string, days = NEW_TOOL_DAYS, log: readonly ChangelogVersion[] = CHANGELOG): Set<string> {
+export function newToolIds(today: string, days = NEW_TOOL_DAYS, log: readonly ChangelogVersion[] = CHANGELOG, max = MAX_NEW_BADGES): Set<string> {
   const ids = new Set<string>();
   const latest = log.find((v) => v.entries.some((e) => e.kind === 'new-tool'));
   if (!latest) return ids;
   const age = daysBetween(latest.date, today);
   if (age < 0 || age >= days) return ids;
-  for (const e of latest.entries) if (e.kind === 'new-tool') e.toolIds?.forEach((id) => ids.add(id));
+  for (const e of latest.entries) {
+    if (e.kind !== 'new-tool') continue;
+    for (const id of e.toolIds ?? []) if (ids.size < max) ids.add(id);
+  }
   return ids;
 }
 

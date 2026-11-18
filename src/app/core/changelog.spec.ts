@@ -78,10 +78,17 @@ describe('badge «Nuovo»', () => {
   it('senza versioni con strumenti nuovi: vuoto', () => {
     expect(newToolIds('2026-11-18', 30, []).size).toBe(0);
   });
-  it('dati reali: oggi gli strumenti nuovi del 18/11', () => {
-    expect([...newToolIds('2026-11-18')].sort()).toEqual(
-      ['generatore-codice-fiscale', 'subnet-calculator', 'docker-run-to-compose', 'css-clamp-calculator', 'time-calculator', 'scadenze-fatture', 'pdf-to-text', 'json-diff', 'timer', 'scientific-calculator', 'random-number-generator', 'text-cleaner', 'list-compare', 'countdown', 'split-bill', 'image-redact', 'zip-tool', 'string-escape', 'text-binary-converter', 'text-extractor', 'list-converter', 'trip-cost-calculator', 'utm-link-builder'].sort(),
-    );
+  it('dati reali: oggi i 12 strumenti più recenti del 18/11 hanno il badge', () => {
+    const ids = [...newToolIds('2026-11-18')];
+    expect(ids.length).toBe(12);
+    expect(ids.slice(0, 3)).toEqual(['utm-link-builder', 'trip-cost-calculator', 'list-converter']);
+    expect(ids).not.toContain('json-diff'); // di una voce più vecchia della stessa versione
+  });
+  it('tetto ai badge: i più recenti, nell\'ordine delle voci', () => {
+    const entries = ['a', 'b', 'c', 'd'].map((id) => ({ kind: 'new-tool' as const, it: id, en: id, toolIds: [id] }));
+    const l = [{ date: '2026-11-18', title: { it: 't', en: 't' }, entries }];
+    expect([...newToolIds('2026-11-18', 30, l, 2)]).toEqual(['a', 'b']);
+    expect(newToolIds('2026-11-18', 30, l).size).toBe(4);
   });
   it('date: differenza in giorni e giorno UTC', () => {
     expect(daysBetween('2026-10-31', '2026-11-01')).toBe(1);
