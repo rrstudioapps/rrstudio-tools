@@ -1393,4 +1393,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.cdt.title', descriptionKey: 'seo.cdt.desc' },
     loadComponent: () => import('./countdown/countdown.page').then((m) => m.CountdownPage),
   },
+  {
+    id: 'split-bill',
+    path: 'split-bill',
+    icon: 'users',
+    category: 'calc',
+    keywords: {
+      it: 'dividi conto ristorante spese alla romana per consumo mancia servizio coperto quota a testa arrotondamento amici cena',
+      en: 'split bill restaurant share expenses by consumption tip service cover charge per person rounding friends dinner',
+    },
+    titleKey: 'tool.bill.title',
+    descriptionKey: 'tool.bill.desc',
+    seo: { titleKey: 'seo.bill.title', descriptionKey: 'seo.bill.desc' },
+    loadComponent: () => import('./split-bill/split-bill.page').then((m) => m.SplitBillPage),
+  },
 ];

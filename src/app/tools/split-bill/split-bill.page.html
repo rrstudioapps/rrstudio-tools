@@ -1,0 +1,197 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.bill.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('bill.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="split-bill" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="bar">
+    <app-segmented [label]="i18n.t('bill.mode')" [options]="modes()" [(value)]="mode" />
+  </div>
+
+  <div class="layout">
+    <section class="panel" [attr.aria-label]="i18n.t('bill.mode.' + mode())">
+      @if (mode() === 'equal') {
+        <div class="field">
+          <label for="bill-total">{{ i18n.t('bill.total') }}</label>
+          <input
+            id="bill-total"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            [placeholder]="i18n.t('bill.total.ph')"
+            [value]="total()"
+            [attr.aria-invalid]="totalInvalid()"
+            [attr.aria-describedby]="totalInvalid() ? 'bill-total-err' : null"
+            data-testid="bill-total"
+            (input)="total.set($any($event.target).value)"
+          />
+          @if (totalInvalid()) {
+            <p id="bill-total-err" class="tool-error" data-testid="bill-total-error">{{ i18n.t('bill.err.total') }}</p>
+          }
+        </div>
+        <div class="field">
+          <label for="bill-people">{{ i18n.t('bill.people') }}</label>
+          <input
+            id="bill-people"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            [max]="maxPeople"
+            [value]="people()"
+            [attr.aria-invalid]="peopleInvalid()"
+            [attr.aria-describedby]="peopleInvalid() ? 'bill-people-err' : null"
+            data-testid="bill-people"
+            (input)="people.set($any($event.target).value)"
+          />
+          @if (peopleInvalid()) {
+            <p id="bill-people-err" class="tool-error" data-testid="bill-people-error">{{ i18n.t('bill.err.people') }}</p>
+          }
+        </div>
+      } @else {
+        <div class="field">
+          <label for="bill-lines">{{ i18n.t('bill.lines') }}</label>
+          <textarea
+            id="bill-lines"
+            rows="7"
+            maxlength="2000"
+            spellcheck="false"
+            [placeholder]="i18n.t('bill.lines.ph')"
+            [value]="lines()"
+            [attr.aria-invalid]="lineErrors().length > 0"
+            [attr.aria-describedby]="lineErrors().length > 0 ? 'bill-lines-err' : 'bill-lines-hint'"
+            data-testid="bill-lines"
+            (input)="lines.set($any($event.target).value)"
+          ></textarea>
+          @if (lineErrors().length > 0) {
+            <ul id="bill-lines-err" class="tool-error errs" data-testid="bill-lines-error">
+              @for (e of lineErrors(); track e.line) {
+                <li>{{ i18n.t('bill.err.line', { n: e.line, text: e.text, reason: i18n.t('bill.err.' + e.reason) }) }}</li>
+              }
+            </ul>
+          } @else {
+            <p id="bill-lines-hint" class="hint">{{ i18n.t('bill.lines.hint') }}</p>
+          }
+        </div>
+        <div class="field">
+          <label for="bill-common">{{ i18n.t('bill.common') }}</label>
+          <input
+            id="bill-common"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            [value]="common()"
+            [attr.aria-invalid]="commonInvalid()"
+            [attr.aria-describedby]="commonInvalid() ? 'bill-common-err' : 'bill-common-hint'"
+            data-testid="bill-common"
+            (input)="common.set($any($event.target).value)"
+          />
+          @if (commonInvalid()) {
+            <p id="bill-common-err" class="tool-error" data-testid="bill-common-error">{{ i18n.t('bill.err.common') }}</p>
+          } @else {
+            <p id="bill-common-hint" class="hint">{{ i18n.t('bill.common.hint') }}</p>
+          }
+        </div>
+      }
+
+      <div class="field">
+        <label for="bill-tip">{{ i18n.t('bill.tip') }}</label>
+        <div class="row">
+          <input
+            id="bill-tip"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            [value]="tip()"
+            [attr.aria-invalid]="tipError() !== ''"
+            [attr.aria-describedby]="tipError() ? 'bill-tip-err' : 'bill-tip-hint'"
+            data-testid="bill-tip"
+            (input)="tip.set($any($event.target).value)"
+          />
+          <app-segmented [label]="i18n.t('bill.tip.kind')" [options]="tipKinds()" [(value)]="tipKind" />
+        </div>
+        @if (tipError()) {
+          <p id="bill-tip-err" class="tool-error" data-testid="bill-tip-error">{{ i18n.t(tipError()) }}</p>
+        } @else {
+          <p id="bill-tip-hint" class="hint">{{ i18n.t('bill.tip.hint') }}</p>
+        }
+      </div>
+
+      @if (mode() === 'equal') {
+        <div class="field">
+          <label for="bill-step">{{ i18n.t('bill.step') }}</label>
+          <select id="bill-step" [value]="step()" data-testid="bill-step" (change)="setStep($any($event.target).value)">
+            @for (s of steps; track s) {
+              <option [value]="s" [selected]="step() === s">{{ fmt(s) }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <div class="actions">
+        <button type="button" class="btn" data-shortcut="clear" data-testid="bill-clear" (click)="clear()">{{ i18n.t('bill.clear') }}</button>
+      </div>
+    </section>
+
+    <section class="result" aria-live="polite" [attr.aria-label]="i18n.t('bill.result')">
+      @if (mode() === 'equal') {
+        @if (equal(); as r) {
+          <dl class="facts">
+            <div><dt>{{ i18n.t('bill.r.tip') }}</dt><dd data-testid="bill-r-tip">{{ fmt(r.tip) }}</dd></div>
+            <div><dt>{{ i18n.t('bill.r.billTip') }}</dt><dd data-testid="bill-r-bill">{{ fmt(r.bill) }}</dd></div>
+            <div class="big"><dt>{{ i18n.t('bill.r.share') }}</dt><dd data-testid="bill-r-share">{{ fmt(r.share) }}</dd></div>
+            <div><dt>{{ i18n.t('bill.r.paid') }}</dt><dd data-testid="bill-r-paid">{{ fmt(r.paid) }}</dd></div>
+            <div><dt>{{ i18n.t('bill.r.surplus') }}</dt><dd data-testid="bill-r-surplus">{{ fmt(r.surplus) }}</dd></div>
+          </dl>
+          <app-copy-button shortcut="copy" [text]="equalText()" [label]="i18n.t('bill.copy')" />
+        } @else {
+          <p class="hint" data-testid="bill-empty">{{ i18n.t('bill.empty') }}</p>
+        }
+      } @else {
+        @if (consumption(); as c) {
+          <div class="table-wrap">
+            <table data-testid="bill-table">
+              <thead>
+                <tr>
+                  <th scope="col">{{ i18n.t('bill.col.name') }}</th>
+                  <th scope="col">{{ i18n.t('bill.col.consumption') }}</th>
+                  <th scope="col">{{ i18n.t('bill.col.common') }}</th>
+                  <th scope="col">{{ i18n.t('bill.col.tip') }}</th>
+                  <th scope="col">{{ i18n.t('bill.col.total') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of c.rows; track row.name) {
+                  <tr data-testid="bill-row">
+                    <th scope="row">{{ row.name }}</th>
+                    <td>{{ fmt(row.consumption) }}</td>
+                    <td>{{ fmt(row.common) }}</td>
+                    <td>{{ fmt(row.tip) }}</td>
+                    <td class="tot" data-testid="bill-row-total">{{ fmt(row.total) }}</td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row">{{ i18n.t('bill.sum') }}</th>
+                  <td>{{ fmt(c.consumption) }}</td>
+                  <td>{{ fmt(c.common) }}</td>
+                  <td>{{ fmt(c.tip) }}</td>
+                  <td class="tot" data-testid="bill-sum">{{ fmt(c.sum) }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <p class="hint" data-testid="bill-check">{{ i18n.t('bill.check.ok', { total: fmt(c.total) }) }}</p>
+          <app-copy-button shortcut="copy" [text]="consumptionText()" [label]="i18n.t('bill.copy')" />
+        } @else {
+          <p class="hint" data-testid="bill-empty">{{ lineErrors().length > 0 ? '' : i18n.t('bill.empty') }}</p>
+        }
+      }
+    </section>
+  </div>
+</div>

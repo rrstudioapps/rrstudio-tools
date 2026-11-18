@@ -637,6 +637,42 @@ try {
         if (!/è passato da/i.test(await text('cdt-status'))) throw new Error('countdown: stato finale errato');
       },
     });
+  await shot('split-bill.png', {
+      width: 1280,
+      dark: false,
+      path: '/split-bill/',
+      setup: async (page) => {
+        const text = (id) => page.getByTestId(id).innerText();
+        const seg = (name) => page.getByRole('button', { name, exact: true });
+        // in parti uguali: 87,50 € + 10% in 4, quota arrotondata per eccesso a 0,10 €
+        await page.fill('#bill-total', '87,50');
+        await page.fill('#bill-people', '4');
+        await page.fill('#bill-tip', '10');
+        await page.selectOption('#bill-step', '10');
+        await page.waitForTimeout(250);
+        if (!/24,10\s*€/.test(await text('bill-r-share'))) throw new Error('split-bill: quota a testa ' + (await text('bill-r-share')));
+        if (!/96,40\s*€/.test(await text('bill-r-paid'))) throw new Error('split-bill: totale pagato ' + (await text('bill-r-paid')));
+        if (!/0,15\s*€/.test(await text('bill-r-surplus'))) throw new Error('split-bill: eccedenza ' + (await text('bill-r-surplus')));
+        // per consumo: costi comuni e mancia del 10% in proporzione, la somma torna al totale
+        await seg('Per consumo').click();
+        await page.fill('#bill-lines', 'Anna: 22,50\nBruno 15,00\nCarla; 18,50\nDario: 31,50');
+        await page.fill('#bill-common', '6');
+        await page.waitForSelector('[data-testid=bill-row]');
+        await page.waitForTimeout(250);
+        const totals = (await page.getByTestId('bill-row-total').allInnerTexts()).map((t) => t.replace(/\s/g, ' '));
+        const expected = ['26,40 €', '18,10 €', '21,98 €', '36,37 €'];
+        if (totals.join('|') !== expected.join('|')) throw new Error('split-bill: quote ' + totals.join('|'));
+        if (!/102,85\s*€/.test(await text('bill-sum'))) throw new Error('split-bill: somma di controllo ' + (await text('bill-sum')));
+        // una riga malformata viene segnalata con il suo numero
+        await page.fill('#bill-lines', 'Anna: 22,50\nBruno\nCarla; 18,50');
+        await page.waitForTimeout(250);
+        if (!/Riga 2/.test(await text('bill-lines-error'))) throw new Error('split-bill: errore di riga non mostrato');
+        // stato finale per lo screenshot
+        await page.fill('#bill-lines', 'Anna: 22,50\nBruno 15,00\nCarla; 18,50\nDario: 31,50');
+        await page.waitForSelector('[data-testid=bill-row]');
+        await page.waitForTimeout(250);
+      },
+    });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

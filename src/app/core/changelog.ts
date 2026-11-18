@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento: dividi il conto alla romana o per consumo, con mancia, costi comuni e arrotondamento della quota.',
+        en: 'New tool: split the bill equally or by consumption, with tip, shared costs and share rounding.',
+        toolIds: ['split-bill'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento: conto alla rovescia a una data, con giorni lavorativi, fusi orari, feste e file calendario .ics.',
         en: 'New tool: countdown to a date, with working days, time zones, holidays and an .ics calendar file.',
         toolIds: ['countdown'],
