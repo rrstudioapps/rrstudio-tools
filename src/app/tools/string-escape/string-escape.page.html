@@ -1,0 +1,107 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.esc.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('esc.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="string-escape" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="esc-bar">
+    <div class="bar-item">
+      <span class="eyebrow">{{ i18n.t('esc.format') }}</span>
+      <app-segmented [label]="i18n.t('esc.format')" [options]="formatOptions()" [value]="format()" (valueChange)="setFormat($event)" />
+    </div>
+    <div class="bar-item">
+      <span class="eyebrow">{{ i18n.t('esc.direction') }}</span>
+      <app-segmented [label]="i18n.t('esc.direction')" [options]="directionOptions()" [(value)]="direction" />
+    </div>
+  </div>
+
+  <p class="hint format-note" data-testid="esc-note">{{ i18n.t('esc.note.' + format()) }}</p>
+  @if (format() === 'sql') {
+    <p class="tool-warn" role="note" data-testid="esc-sql-warn">{{ i18n.t('esc.sql.warn') }}</p>
+  }
+
+  <div class="esc-layout">
+    <div class="side">
+      <div class="field">
+        <label for="esc-input">{{ i18n.t('esc.input') }}</label>
+        <textarea
+          id="esc-input"
+          rows="10"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('esc.input.ph')"
+          [value]="input()"
+          [attr.aria-invalid]="error() ? 'true' : null"
+          [attr.aria-describedby]="error() ? 'esc-error esc-counter' : 'esc-counter'"
+          data-testid="esc-input"
+          (input)="input.set($any($event.target).value)"
+        ></textarea>
+        <p id="esc-counter" class="hint">{{ inputCounter() }}</p>
+      </div>
+
+      @if (showQuote() || showWrap() || showAscii() || showSeparator()) {
+        <fieldset class="options">
+          <legend class="eyebrow">{{ i18n.t('esc.options') }}</legend>
+          @if (showQuote()) {
+            <div class="opt">
+              <span class="eyebrow">{{ i18n.t('esc.quote') }}</span>
+              <app-segmented [label]="i18n.t('esc.quote')" [options]="quoteOptions()" [(value)]="quote" />
+            </div>
+          }
+          @if (showSeparator()) {
+            <div class="opt">
+              <span class="eyebrow">{{ i18n.t('esc.separator') }}</span>
+              <app-segmented [label]="i18n.t('esc.separator')" [options]="separatorOptions()" [(value)]="separator" />
+            </div>
+          }
+          @if (showWrap()) {
+            <label class="check">
+              <input type="checkbox" [checked]="wrap()" data-testid="esc-wrap" (change)="wrap.set($any($event.target).checked)" />
+              {{ wrapLabel() }}
+            </label>
+          }
+          @if (showAscii()) {
+            <label class="check">
+              <input type="checkbox" [checked]="ascii()" data-testid="esc-ascii" (change)="ascii.set($any($event.target).checked)" />
+              {{ i18n.t('esc.opt.ascii') }}
+            </label>
+          }
+        </fieldset>
+      }
+    </div>
+
+    <section class="result" [attr.aria-label]="i18n.t('esc.result')" aria-live="polite">
+      <div class="result-head">
+        <h2 class="eyebrow">{{ i18n.t('esc.result') }}</h2>
+        <div class="actions">
+          <app-copy-button shortcut="copy" [text]="output()" [disabled]="!hasResult()" />
+        </div>
+      </div>
+      @if (error()) {
+        <p id="esc-error" class="tool-error" data-testid="esc-error">{{ error() }}</p>
+      } @else if (input() === '') {
+        <p class="hint">{{ i18n.t('esc.empty') }}</p>
+      } @else {
+        <label class="visually-hidden" for="esc-output">{{ i18n.t('esc.result.label') }}</label>
+        <textarea id="esc-output" rows="10" readonly spellcheck="false" [value]="output()" data-testid="esc-output"></textarea>
+        <p class="hint" data-testid="esc-count">{{ countText() }}</p>
+      }
+      <div class="actions">
+        <button type="button" class="btn small" data-shortcut="swap" data-testid="esc-swap" [disabled]="!hasResult()" (click)="swap()">
+          <app-icon name="swap" /> {{ i18n.t('esc.swap') }}
+        </button>
+        <button type="button" class="btn small" data-shortcut="clear" data-testid="esc-reset" [disabled]="input() === ''" (click)="reset()">
+          <app-icon name="trash" /> {{ i18n.t('esc.reset') }}
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <p class="hint crosslink" data-testid="esc-crosslink">{{ i18n.t('esc.html') }} <a [routerLink]="i18n.link('html-entities')">{{ i18n.t('esc.html.link') }}</a></p>
+</div>

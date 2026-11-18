@@ -29,6 +29,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
+        it: 'Nuovo strumento: escape e unescape di stringhe per JSON, JavaScript, Python, regex, shell, SQL, CSV, Java e PHP, con errori precisi e supporto alle emoji.',
+        en: 'New tool: string escape and unescape for JSON, JavaScript, Python, regex, shell, SQL, CSV, Java and PHP, with precise errors and emoji support.',
+        toolIds: ['string-escape'],
+      },
+      {
+        kind: 'new-tool',
         it: 'Nuovo strumento: crea archivi ZIP da file e cartelle, oppure apri uno ZIP, cerca nell\'elenco e scarica solo ciò che serve, con controlli contro archivi pericolosi.',
         en: 'New tool: create ZIP archives from files and folders, or open a ZIP, search the list and download only what you need, with checks against dangerous archives.',
         toolIds: ['zip-tool'],

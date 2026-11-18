@@ -783,6 +783,40 @@ try {
         await page.waitForTimeout(200);
       },
     });
+  await shot('string-escape.png', {
+      width: 1280,
+      dark: false,
+      path: '/string-escape/',
+      setup: async (page) => {
+        const seg = (name) => page.getByRole('button', { name, exact: true });
+        const out = async () => {
+          await page.waitForTimeout(150);
+          return page.getByTestId('esc-output').inputValue();
+        };
+        // JSON: escape di un testo con a capo, virgolette e backslash
+        await page.fill('#esc-input', 'Riga 1\n"citazione" e C:\\temp\\file');
+        let v = await out();
+        if (v !== 'Riga 1\\n\\"citazione\\" e C:\\\\temp\\\\file') throw new Error('escape JSON errato: ' + v);
+        // regex
+        await seg('Regex').click();
+        await page.fill('#esc-input', 'prezzo (€) 3.50?');
+        v = await out();
+        if (v !== 'prezzo \\(€\\) 3\\.50\\?') throw new Error('escape regex errato: ' + v);
+        // unescape JavaScript con coppia di surrogati
+        await seg('JavaScript').click();
+        await seg('Unescape').click();
+        await page.fill('#esc-input', 'Caff\\u00e8 \\uD83D\\uDE00\\n\\u{1F680}');
+        v = await out();
+        if (v !== 'Caffè 😀\n🚀') throw new Error('unescape JS errato: ' + v);
+        // errore con posizione
+        await page.fill('#esc-input', 'ok \\u12');
+        await page.waitForSelector('[data-testid=esc-error]');
+        if (!/posizione 4/i.test(await page.getByTestId('esc-error').innerText())) throw new Error('posizione dell\'errore mancante');
+        await page.fill('#esc-input', 'Caff\\u00e8 \\uD83D\\uDE00\\n\\u{1F680}');
+        v = await out();
+        if (!v.includes('😀')) throw new Error('risultato finale errato: ' + v);
+      },
+    });
   await shot('roman-numerals.png', {
     width: 1280,
     dark: false,

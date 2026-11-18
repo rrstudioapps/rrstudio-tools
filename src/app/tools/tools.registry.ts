@@ -1435,4 +1435,18 @@ export const TOOLS: readonly ToolDefinition[] = [
     seo: { titleKey: 'seo.zip.title', descriptionKey: 'seo.zip.desc' },
     loadComponent: () => import('./zip-tool/zip-tool.page').then((m) => m.ZipToolPage),
   },
+  {
+    id: 'string-escape',
+    path: 'string-escape',
+    icon: 'braces',
+    category: 'dev',
+    keywords: {
+      it: 'escape unescape stringa stringhe caratteri speciali backslash json javascript python regex shell bash sql csv java php virgolette apici protezione',
+      en: 'escape unescape string strings special characters backslash json javascript python regex shell bash sql csv java php quotes quoting',
+    },
+    titleKey: 'tool.esc.title',
+    descriptionKey: 'tool.esc.desc',
+    seo: { titleKey: 'seo.esc.title', descriptionKey: 'seo.esc.desc' },
+    loadComponent: () => import('./string-escape/string-escape.page').then((m) => m.StringEscapePage),
+  },
 ];
