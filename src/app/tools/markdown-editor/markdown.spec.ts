@@ -1,7 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
-import { ALLOWED_ATTRS, ALLOWED_TAGS, RenderOptions, classifyUrl, renderMarkdown } from './markdown';
+import { ALLOWED_ATTRS, ALLOWED_TAGS, RenderOptions, classifyUrl, demoteHeadings, renderMarkdown } from './markdown';
+
+describe('titoli dell\'anteprima', () => {
+  it('scendono di un livello per i lettori di schermo, h6 resta a 6', () => {
+    expect(demoteHeadings('<h1>A</h1><h2>B</h2><h6>F</h6>')).toBe('<h1 aria-level="2">A</h1><h2 aria-level="3">B</h2><h6 aria-level="6">F</h6>');
+  });
+  it('non tocca il testo né altri tag che iniziano per h', () => {
+    expect(demoteHeadings('<p>&lt;h1&gt;</p><hr><header>x</header>')).toBe('<p>&lt;h1&gt;</p><hr><header>x</header>');
+  });
+});
 
 /** HTML senza a capo tra i tag, per confrontare con i risultati attesi di CommonMark. */
 const md = (s: string, o: Partial<RenderOptions> = {}): string => renderMarkdown(s, o).replace(/>\s+</g, '><').replace(/\s+<(ul|ol)>/g, '<$1>').trim();

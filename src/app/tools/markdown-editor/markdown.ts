@@ -844,6 +844,14 @@ function hasBlankBetweenBlocks(lines: string[]): boolean {
   return false;
 }
 
+/**
+ * Nell'anteprima i titoli dell'utente stanno dentro la pagina, che ha già il suo h1: ogni livello scende di uno per chi usa
+ * un lettore di schermo (aria-level), senza cambiare l'aspetto. Da usare sull'HTML dell'anteprima, non su quello esportato.
+ */
+export function demoteHeadings(html: string): string {
+  return html.replace(/<h([1-6])(?=[\s>])/g, (_, n: string) => `<h${n} aria-level="${Math.min(Number(n) + 1, 6)}"`);
+}
+
 /** Converte un testo Markdown in HTML (vedi l'intestazione del file per la sicurezza). */
 export function renderMarkdown(source: string, options: Partial<RenderOptions> = {}): string {
   const opts: RenderOptions = { ...DEFAULT_RENDER, ...options };

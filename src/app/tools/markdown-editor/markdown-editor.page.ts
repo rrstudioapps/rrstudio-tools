@@ -24,7 +24,7 @@ import { WORDS_PER_MINUTE_READING, countChars, durationSeconds, formatDuration, 
 import { MD_DICTIONARIES } from './markdown-editor.i18n';
 import { buildHtmlDocument, documentTitle } from './markdown-export';
 import { FormatAction, applyFormat } from './markdown-format';
-import { renderMarkdown } from './markdown';
+import { demoteHeadings, renderMarkdown } from './markdown';
 import { sanitizeDom } from './markdown-sanitize';
 import { ShareLink } from '../../shared/share-link';
 import type { ShareData } from '../../shared/share-state';
@@ -79,7 +79,7 @@ export class MarkdownEditorPage {
   /** HTML dell'anteprima: prodotto dal convertitore e riletto in un template inerte (lista bianca) nel browser. */
   protected readonly preview = computed<SafeHtml>(() => {
     const html = this.html();
-    const safe = this.isBrowser ? sanitizeDom(html, document) : html;
+    const safe = demoteHeadings(this.isBrowser ? sanitizeDom(html, document) : html);
     return this.sanitizer.bypassSecurityTrustHtml(safe);
   });
   protected readonly isEmpty = computed(() => this.rendered().trim() === '');

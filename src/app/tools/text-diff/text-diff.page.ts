@@ -65,8 +65,6 @@ export class TextDiffPage {
   protected readonly optsOpen = signal(false);
   /** Pannelli dei testi compressi (solo in memoria, non finisce nel link). */
   protected readonly inputsHidden = signal(false);
-  /** Prima navigazione dopo un nuovo confronto: porta in vista il contenitore. */
-  private navigated = false;
   protected readonly fileError = signal(false);
   protected readonly model = signal<DiffModel | null>(null);
   protected readonly busy = signal(false);
@@ -207,7 +205,6 @@ export class TextDiffPage {
             this.current.set(-1);
             this.limit.set(PAGE_ROWS);
             this.expanded.set(new Set());
-            this.navigated = false;
           })
           .catch((e) => {
             if (!(e instanceof StaleDiff)) throw e;
@@ -342,11 +339,9 @@ export class TextDiffPage {
     const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
     const behavior: ScrollBehavior = smooth ? 'smooth' : 'auto';
     const box = this.host.nativeElement.querySelector<HTMLElement>('.viewer');
-    // la prima volta si porta in vista il contenitore (l'unico movimento della pagina); poi si scorre solo dentro
-    if (!this.navigated) {
-      this.navigated = true;
-      box?.scrollIntoView({ block: 'start', behavior });
-    }
+    // il contenitore va allineato in cima alla finestra (l'unico movimento della pagina) a ogni clic in cui non lo è già:
+    // se l'utente ha fatto scorrere la pagina dopo il primo clic, il contenitore va riportato in vista, non solo la riga
+    if (box && Math.abs(box.getBoundingClientRect().top) > 4) box.scrollIntoView({ block: 'start', behavior });
     // il DOM si aggiorna al ciclo successivo: si cerca la riga dopo il rendering
     setTimeout(() => {
       const el = this.host.nativeElement.querySelector<HTMLElement>(`[data-group="${next}"]`);
