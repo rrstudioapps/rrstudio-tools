@@ -1167,6 +1167,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-compress/pdf-compress.page').then((m) => m.PdfCompressPage),
   },
   {
+    id: 'pdf-crop',
+    path: 'pdf-crop',
+    icon: 'crop',
+    category: 'media',
+    keywords: {
+      it: 'pdf ritaglia margini bordi scala ridimensiona adatta formato a4 a5 letter pagina crop resize',
+      en: 'pdf crop margins borders scale resize fit page size a4 a5 letter crop resize',
+    },
+    titleKey: 'tool.pcr.title',
+    descriptionKey: 'tool.pcr.desc',
+    seo: { titleKey: 'seo.pcr.title', descriptionKey: 'seo.pcr.desc' },
+    loadComponent: () => import('./pdf-crop/pdf-crop.page').then((m) => m.PdfCropPage),
+  },
+  {
     id: 'image-crop',
     path: 'image-crop',
     icon: 'crop',

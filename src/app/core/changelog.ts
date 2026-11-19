@@ -106,6 +106,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['pdf-compress'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Ritaglia e ridimensiona PDF»: togli i margini in millimetri con anteprima, cambia la scala delle pagine o adattale ad A4, A5, A3, Letter e Legal.',
+        en: 'New tool "Crop and resize PDF": remove margins in millimetres with a preview, change the page scale or fit pages to A4, A5, A3, Letter and Legal.',
+        toolIds: ['pdf-crop'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

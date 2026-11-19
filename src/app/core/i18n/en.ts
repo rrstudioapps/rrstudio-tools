@@ -539,6 +539,12 @@ export const en: Dict = {
   'seo.pcz.title': 'Compress PDF online, without uploading it | rrstudio tools',
   'seo.pcz.desc':
     'Compress a PDF online in your browser: recompress images with the quality and size of your choice or turn pages into images. The file is not uploaded.',
+  'tool.pcr.title': 'Crop and resize PDF',
+  'tool.pcr.desc':
+    'Crop a PDF\'s margins with a preview, change the page scale or fit pages to A4, A5, A3, Letter, Legal.',
+  'seo.pcr.title': 'Crop margins and resize a PDF online | rrstudio tools',
+  'seo.pcr.desc':
+    'Crop a PDF\'s margins, change the scale or fit pages to A4, A5, Letter online, with a preview. The file is not uploaded.',
   'tool.crop.title': 'Crop and rotate images',
   'tool.crop.desc':
     'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',

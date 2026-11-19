@@ -1,0 +1,67 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.pcr.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('pcr.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-pdf-source toolId="pdf-crop" (loaded)="onLoaded($event)" (cleared)="onCleared()">
+    @if (pdf(); as p) {
+      <section class="panel" [attr.aria-label]="i18n.t('pcr.what')">
+        <h2 class="eyebrow">{{ i18n.t('pcr.what') }}</h2>
+        <app-segmented [label]="i18n.t('pcr.what')" [options]="modes()" [(value)]="mode" />
+        <p class="hint">{{ i18n.t('pcr.hint.' + mode()) }}</p>
+        @if (mode() === 'crop') {
+          <div class="opts">
+            @for (side of sides; track side) {
+              <label class="fld" [for]="'pcr-' + side">
+                <span>{{ i18n.t('pcr.side.' + side) }} (mm)</span>
+                <input [id]="'pcr-' + side" type="number" min="0" max="500" step="1" [value]="margin(side)" (input)="setMargin(side, $event)" />
+              </label>
+            }
+          </div>
+        } @else if (mode() === 'scale') {
+          <div class="opts">
+            <label class="fld" for="pcr-pct"><span>{{ i18n.t('pcr.percent') }}</span><input id="pcr-pct" type="number" min="10" max="400" [value]="percent()" (input)="percent.set(+$any($event.target).value)" /></label>
+          </div>
+        } @else {
+          <p class="tool-warn" role="note">{{ i18n.t('pcr.fit.warn') }}</p>
+          <div class="opts">
+            <label class="fld" for="pcr-size">
+              <span>{{ i18n.t('pcr.size') }}</span>
+              <select id="pcr-size" (change)="size.set($any($event.target).value)">
+                @for (s of sizeNames; track s) {
+                  <option [value]="s" [selected]="size() === s">{{ s }}</option>
+                }
+              </select>
+            </label>
+            <label class="fld" for="pcr-fm"><span>{{ i18n.t('pcr.fitMargin') }}</span><input id="pcr-fm" type="number" min="0" max="100" [value]="fitMargin()" (input)="fitMargin.set(+$any($event.target).value)" /></label>
+          </div>
+        }
+        <div class="opts">
+          <label class="fld" for="pcr-pages"><span>{{ i18n.t('pcr.pages') }}</span><input id="pcr-pages" type="text" class="pages" autocomplete="off" spellcheck="false" [placeholder]="i18n.t('pcr.pages.ph', { n: p.pages })" [value]="pages()" (input)="pages.set($any($event.target).value)" /></label>
+        </div>
+        @if (thumb(); as t) {
+          <figure class="view" [attr.aria-label]="i18n.t('pcr.preview')">
+            <img [src]="t.url" [alt]="i18n.t('pcr.preview.alt')" data-testid="pcr-thumb" />
+            @if (mode() === 'crop') {
+              <div class="frame" data-testid="pcr-frame" [style.top.%]="frame().top" [style.right.%]="frame().right" [style.bottom.%]="frame().bottom" [style.left.%]="frame().left"></div>
+            }
+          </figure>
+        }
+        <div class="row">
+          <button type="button" class="btn primary" data-testid="pcr-go" [disabled]="busy()" (click)="go()"><app-icon name="download" /> {{ i18n.t('pc.download') }}</button>
+        </div>
+      </section>
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (error()) {
+        <p class="tool-error" role="alert" data-testid="pcr-error">{{ error() }}</p>
+      } @else if (done()) {
+        <p class="tool-ok" data-testid="pcr-done">{{ done() }}</p>
+      }
+    </div>
+  </app-pdf-source>
+</div>

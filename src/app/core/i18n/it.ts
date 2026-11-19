@@ -538,6 +538,12 @@ export const it = {
   'seo.pcz.title': 'Comprimi PDF online, senza caricarlo | rrstudio tools',
   'seo.pcz.desc':
     'Comprimi un PDF online nel browser: ricomprimi le immagini con qualità e dimensione a scelta o trasforma le pagine in immagini. Il file non viene caricato.',
+  'tool.pcr.title': 'Ritaglia e ridimensiona PDF',
+  'tool.pcr.desc':
+    'Ritaglia i margini di un PDF con anteprima, cambia la scala delle pagine o adattale ad A4, A5, A3, Letter, Legal.',
+  'seo.pcr.title': 'Ritaglia margini e ridimensiona PDF online | rrstudio tools',
+  'seo.pcr.desc':
+    'Ritaglia i margini di un PDF, cambia la scala o adatta le pagine ad A4, A5, Letter online, con anteprima. Il file non viene caricato.',
   'tool.crop.title': 'Ritaglia e ruota immagini',
   'tool.crop.desc':
     'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',

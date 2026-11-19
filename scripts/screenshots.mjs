@@ -2090,6 +2090,35 @@ try {
       await page.getByRole('button', { name: 'Ricomprimi le immagini' }).click();
     },
   });
+  await shot('pdf-crop.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-crop/',
+    setup: async (page) => {
+      await loadPdfIn(page, await makePdf('Relazione di esempio', 'Relazione', [[0.18, 0.43, 0.62], [0.7, 0.33, 0.16]], 3));
+      await page.getByTestId('pcr-thumb').waitFor();
+      await page.getByTestId('pcr-frame').waitFor();
+      await page.fill('#pcr-top', '500');
+      await page.getByTestId('pcr-go').click();
+      await page.getByTestId('pcr-error').waitFor();
+      await page.fill('#pcr-top', '20');
+      const cropped = await downloadBuffer(page, () => page.getByTestId('pcr-go').click());
+      const sizes = (await PDFDocument.load(cropped.buffer)).getPages().map((p) => p.getMediaBox());
+      const mm = 72 / 25.4;
+      need(Math.abs(sizes[0].width - (595 - 20 * mm)) < 1 && Math.abs(sizes[0].height - (842 - 30 * mm)) < 1, 'ritaglio: ' + JSON.stringify(sizes[0]));
+      await page.getByRole('button', { name: 'Cambia la scala' }).click();
+      await page.fill('#pcr-pct', '50');
+      const scaled = await downloadBuffer(page, () => page.getByTestId('pcr-go').click());
+      const s0 = (await PDFDocument.load(scaled.buffer)).getPage(0).getSize();
+      need(Math.abs(s0.width - 297.5) < 1, 'scala: ' + s0.width);
+      await page.getByRole('button', { name: 'Adatta al formato' }).click();
+      await page.selectOption('#pcr-size', 'A5');
+      const fit = await downloadBuffer(page, () => page.getByTestId('pcr-go').click());
+      const f = (await PDFDocument.load(fit.buffer)).getPages().map((p) => p.getSize());
+      need(f.length === 3 && Math.abs(f[0].width - 419.53) < 1 && Math.abs(f[2].width - 595.28) < 1, 'adatta: ' + JSON.stringify(f));
+      await page.getByRole('button', { name: 'Ritaglia i margini' }).click();
+    },
+  });
   await shot('pdf-sign.png', {
     width: 1280,
     dark: false,
