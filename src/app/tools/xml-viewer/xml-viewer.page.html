@@ -108,14 +108,18 @@
 
         <div class="split">
           <div
+            #tree
             class="tree"
             role="tree"
             tabindex="0"
             [attr.aria-label]="i18n.t('xv.tree.label')"
             [attr.aria-activedescendant]="'xv-row-' + cursorKey()"
             (keydown)="onTreeKey($event)"
+            (scroll)="onTreeScroll($event)"
           >
-            @for (r of rows(); track r.key) {
+            <div class="sizer" [style.height.px]="sizerH()">
+            @for (w of windowRows(); track w.r.key) {
+              @let r = w.r;
               <div
                 class="row"
                 role="treeitem"
@@ -126,6 +130,7 @@
                 [attr.aria-level]="r.depth + 1"
                 [attr.aria-expanded]="r.expandable ? r.expanded : null"
                 [attr.aria-selected]="r.key === cursorKey()"
+                [style.top.px]="w.i * rowH"
                 [style.padding-left.px]="8 + r.depth * 16"
                 (click)="onRowClick(r)"
               >
@@ -157,6 +162,7 @@
                 }
               </div>
             }
+            </div>
             @if (flat().truncated) {
               <p class="more">{{ i18n.t('xv.truncated', { n: maxRows }) }}</p>
             }

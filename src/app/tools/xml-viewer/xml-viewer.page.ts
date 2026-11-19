@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio tools
-import { ChangeDetectionStrategy, Component, DestroyRef, Injector, afterNextRender, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, Injector, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton, writeClipboard } from '../../shared/copy-button';
 import { saveBytes } from '../../shared/download';
@@ -15,9 +15,9 @@ import { History, canRedo, canUndo, createHistory, pushState, redo, undo } from 
 import { XmlError, formatNodes, minifyNodes, normalizeNewlines, parseXml } from '../xml-formatter/xml';
 import { XML_DICTIONARIES } from '../xml-formatter/xml-formatter.i18n';
 import {
-  Doc, EditResult, MAX_ROWS, NewKind, Path, Row, addChild, breadcrumbs, duplicateNode, editableText, expandLevels, flatten, getNode,
-  moveNode, nearestPath, pathKey, removeAttr, removeNode, renameElement, reveal, searchDoc, setAttr, setText, unescapeXml, visibleChildren,
-  xmlStats, xpathOf,
+  Doc, EditResult, MAX_ROWS, NewKind, Path, ROW_H, Row, addChild, breadcrumbs, duplicateNode, editableText, expandLevels, flatten, getNode,
+  moveNode, nearestPath, pathKey, removeAttr, removeNode, renameElement, reveal, scrollToRow, searchDoc, setAttr, setText, unescapeXml, visibleChildren,
+  visibleWindow, xmlStats, xpathOf,
 } from './xml-tree';
 import { XpItem, XpResult, namespaceMap, resolveNs, runXpath } from './xml-xpath';
 import { XML_VIEWER_DICTIONARIES } from './xml-viewer.i18n';
@@ -105,6 +105,17 @@ export class XmlViewerPage {
   protected readonly flat = computed(() => (this.hasDoc() ? flatten(this.doc(), this.expanded()) : { rows: [] as Row[], truncated: false }));
   protected readonly rows = computed(() => this.flat().rows);
   protected readonly maxRows = MAX_ROWS;
+  protected readonly rowH = ROW_H;
+  // rendering a finestra: nel DOM solo le righe visibili (più un margine), anche con decine di migliaia di nodi
+  private readonly treeEl = viewChild<ElementRef<HTMLElement>>('tree');
+  private readonly scrollTop = signal(0);
+  private readonly viewH = signal(520);
+  protected readonly sizerH = computed(() => this.rows().length * ROW_H);
+  protected readonly windowRows = computed(() => {
+    const rows = this.rows();
+    const w = visibleWindow(rows.length, this.scrollTop(), this.viewH());
+    return rows.slice(w.start, w.end).map((r, k) => ({ r, i: w.start + k }));
+  });
   protected readonly cursorKey = computed(() => pathKey(this.cursor()));
   protected readonly node = computed(() => (this.cursor().length ? getNode(this.doc(), this.cursor()) : null));
   protected readonly xpath = computed(() => xpathOf(this.doc(), this.cursor()));
@@ -201,6 +212,16 @@ export class XmlViewerPage {
     this.i18n.register(XML_VIEWER_DICTIONARIES);
     const rx = inject(ToolHandoff).take('xml-viewer');
     if (rx?.text !== undefined) void this.onFile(new File([rx.text], 'received.xml', { type: 'application/xml' }));
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      const measure = () => {
+        const el = this.treeEl()?.nativeElement;
+        if (el?.clientHeight) this.viewH.set(el.clientHeight);
+      };
+      measure();
+      window.addEventListener('resize', measure);
+      destroyRef.onDestroy(() => window.removeEventListener('resize', measure));
+    });
     inject(DestroyRef).onDestroy(() => {
       clearTimeout(this.searchTimer);
       clearTimeout(this.copyTimer);
@@ -341,7 +362,23 @@ export class XmlViewerPage {
   }
 
   private scrollTo(key: string): void {
-    afterNextRender(() => document.getElementById('xv-row-' + key)?.scrollIntoView({ block: 'nearest' }), { injector: this.injector });
+    afterNextRender(
+      () => {
+        const el = this.treeEl()?.nativeElement;
+        const i = this.rows().findIndex((r) => r.key === key);
+        if (!el || i < 0) return;
+        this.viewH.set(el.clientHeight || this.viewH());
+        el.scrollTop = scrollToRow(i, el.scrollTop, el.clientHeight);
+        this.scrollTop.set(el.scrollTop);
+      },
+      { injector: this.injector },
+    );
+  }
+
+  protected onTreeScroll(e: Event): void {
+    const el = e.target as HTMLElement;
+    this.scrollTop.set(el.scrollTop);
+    if (el.clientHeight && el.clientHeight !== this.viewH()) this.viewH.set(el.clientHeight);
   }
 
   protected toggle(key: string): void {

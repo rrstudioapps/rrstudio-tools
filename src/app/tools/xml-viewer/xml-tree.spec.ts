@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { normalizeNewlines, parseXml } from '../xml-formatter/xml';
 import {
   Doc, addChild, duplicateNode, editableText, escapeAttr, expandLevels, flatten, getNode, moveNode, nearestPath, removeAttr, removeNode,
-  renameElement, rawNodes, reveal, searchDoc, setAttr, setText, unescapeXml, xmlStats, xpathOf,
+  renameElement, rawNodes, reveal, ROW_H, scrollToRow, searchDoc, setAttr, setText, unescapeXml, visibleWindow, xmlStats, xpathOf,
 } from './xml-tree';
 
 const SRC = `<?xml version="1.0"?>
@@ -125,5 +125,49 @@ describe('modifica', () => {
     expect(rawNodes(doc)).toBe(before);
     const lib = r.doc[2] as Extract<(typeof r.doc)[number], { t: 'el' }>;
     expect(lib.inner).toBe(rawNodes(lib.children));
+  });
+});
+
+describe('file grandi: rendering a finestra', () => {
+  const big = (n: number): Doc => load(`<r>${Array.from({ length: n }, (_, i) => `<i id="${i}">v${i}</i>`).join('')}</r>`);
+
+  it('oltre le vecchie 4000 righe l\'albero non si tronca', () => {
+    const doc = big(30_000);
+    const open = expandLevels(doc, 1);
+    const f = flatten(doc, open);
+    expect(f.truncated).toBe(false);
+    expect(f.rows.length).toBe(30_001);
+    expect(f.rows[30_000].node).toMatchObject({ t: 'el', attrs: [{ name: 'id', value: '29999' }] });
+  });
+  it('il tetto di sicurezza tronca e lo segnala', () => {
+    const f = flatten(big(500), expandLevels(big(500), 1), 100);
+    expect(f.rows.length).toBe(100);
+    expect(f.truncated).toBe(true);
+  });
+  it('centomila nodi si appiattiscono in tempi accettabili', () => {
+    const doc = big(100_000);
+    const t0 = performance.now();
+    const f = flatten(doc, expandLevels(doc, 1));
+    expect(f.rows.length).toBe(100_000);
+    expect(f.truncated).toBe(true);
+    expect(performance.now() - t0).toBeLessThan(3000);
+  });
+  it('visibleWindow: righe visibili più il margine, sempre nei limiti', () => {
+    expect(visibleWindow(0, 0, 500)).toEqual({ start: 0, end: 0 });
+    expect(visibleWindow(1000, 0, 280, ROW_H, 4)).toEqual({ start: 0, end: 14 });
+    expect(visibleWindow(1000, 28 * 100, 280, ROW_H, 4)).toEqual({ start: 96, end: 114 });
+    const last = visibleWindow(1000, 28 * 990, 280, ROW_H, 4);
+    expect(last.end).toBe(1000);
+    expect(last.start).toBeLessThan(1000);
+    expect(visibleWindow(5, 99999, 280).end).toBe(5);
+  });
+  it('visibleWindow: poche righe in cima, molte nel DOM solo se visibili', () => {
+    const w = visibleWindow(100_000, 28 * 50_000, 520);
+    expect(w.end - w.start).toBeLessThan(40);
+  });
+  it('scrollToRow: sposta il minimo necessario', () => {
+    expect(scrollToRow(5, 0, 280)).toBe(0); // già visibile
+    expect(scrollToRow(20, 0, 280)).toBe(20 * ROW_H + ROW_H - 280); // sotto: allinea in basso
+    expect(scrollToRow(2, 28 * 50, 280)).toBe(28 * 2); // sopra: allinea in alto
   });
 });

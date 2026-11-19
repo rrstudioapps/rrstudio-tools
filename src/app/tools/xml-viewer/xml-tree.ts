@@ -315,14 +315,34 @@ export interface Row {
   text: string | null;
 }
 
-export const MAX_ROWS = 4000;
+/** Tetto di sicurezza alle righe costruite (l'albero si disegna a finestra: solo quelle visibili finiscono nel DOM). */
+export const MAX_ROWS = 100_000;
+/** Altezza fissa di una riga dell'albero, in pixel: serve al rendering a finestra e deve coincidere con lo SCSS. */
+export const ROW_H = 28;
+const OVERSCAN = 8;
 
-export function flatten(doc: Doc, expanded: ReadonlySet<string>): { rows: Row[]; truncated: boolean } {
+/** Righe da disegnare per la finestra di scorrimento: indici [start, end) con un po' di margine sopra e sotto. */
+export function visibleWindow(total: number, scrollTop: number, viewH: number, rowH = ROW_H, overscan = OVERSCAN): { start: number; end: number } {
+  if (total <= 0) return { start: 0, end: 0 };
+  const first = Math.floor(Math.max(0, scrollTop) / rowH);
+  const last = Math.ceil((Math.max(0, scrollTop) + Math.max(viewH, rowH)) / rowH);
+  return { start: Math.max(0, Math.min(total - 1, first - overscan)), end: Math.min(total, last + overscan) };
+}
+
+/** Nuovo scrollTop che rende visibile la riga `index` con il minimo spostamento (invariato se lo è già). */
+export function scrollToRow(index: number, scrollTop: number, viewH: number, rowH = ROW_H): number {
+  const top = index * rowH;
+  if (top < scrollTop) return top;
+  if (top + rowH > scrollTop + viewH) return top + rowH - viewH;
+  return scrollTop;
+}
+
+export function flatten(doc: Doc, expanded: ReadonlySet<string>, limit = MAX_ROWS): { rows: Row[]; truncated: boolean } {
   const rows: Row[] = [];
   let truncated = false;
   const walk = (list: readonly XmlNode[], base: Path, depth: number): void => {
     for (const { node, index } of visibleChildren(list)) {
-      if (rows.length >= MAX_ROWS) {
+      if (rows.length >= limit) {
         truncated = true;
         return;
       }
