@@ -585,6 +585,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./json-schema-xsd/json-schema-xsd.page').then((m) => m.JsonSchemaXsdPage),
   },
   {
+    id: 'schema-test-data',
+    path: 'schema-test-data',
+    icon: 'dice',
+    category: 'dev',
+    keywords: {
+      it: 'dati di prova generatore json schema xsd fake mock finti seme record csv xml json test',
+      en: 'test data generator json schema xsd fake mock seed records csv xml json sample',
+    },
+    titleKey: 'tool.st.title',
+    descriptionKey: 'tool.st.desc',
+    seo: { titleKey: 'seo.st.title', descriptionKey: 'seo.st.desc' },
+    loadComponent: () => import('./schema-test-data/schema-test-data.page').then((m) => m.SchemaTestDataPage),
+  },
+  {
     id: 'xsd-validator',
     path: 'xsd-validator',
     icon: 'shield',

@@ -470,6 +470,32 @@ try {
       await page.waitForSelector('[data-testid=sx-error]');
     },
   });
+  // Dati di prova da schema: esempio JSON Schema, seme ripetibile, XML e CSV
+  await shot('schema-test-data.png', {
+    width: 1280,
+    dark: false,
+    path: '/schema-test-data/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('[data-testid=st-ok]');
+      const first = await page.locator('[data-testid=st-out]').inputValue();
+      const rec = JSON.parse(first);
+      if (!Array.isArray(rec) || rec.length !== 5 || !/^[A-Z]{3}-\d{4}$/.test(rec[0].codice)) throw new Error('schema-test-data: record inattesi');
+      await page.fill('#st-seed', '9999');
+      await page.waitForFunction((f) => document.querySelector('[data-testid=st-out]')?.value !== f, first);
+      await page.fill('#st-seed', '1234');
+      await page.waitForFunction((f) => document.querySelector('[data-testid=st-out]')?.value === f, first);
+      await page.getByRole('button', { name: 'CSV', exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=st-out]')?.value.startsWith('id,nome'));
+      await page.getByRole('button', { name: 'XML', exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=st-out]')?.value.includes('<records>'));
+      await page.getByRole('button', { name: 'JSON', exact: true }).click();
+      await page.fill('#st-in', '{"type": ');
+      await page.waitForSelector('[data-testid=st-error]');
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('[data-testid=st-ok]');
+    },
+  });
   // Validatore XSD: esempio con più problemi
   await shot('xsd-validator.png', {
     width: 1280,

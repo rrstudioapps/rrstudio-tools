@@ -627,6 +627,12 @@ export const it = {
   'seo.sx.title': 'Convertitore JSON Schema e XSD online | rrstudio tools',
   'seo.sx.desc':
     'Converti JSON Schema in XSD e XSD in JSON Schema online: elementi, attributi, tipi, restrizioni e occorrenze, con l\'elenco di ciò che non si può convertire. Nessun upload.',
+  'tool.st.title': 'Generatore di dati di prova da schema',
+  'tool.st.desc':
+    'Genera dati di prova da un JSON Schema o da un XSD: seme ripetibile, numero di record, esportazione in JSON, XML o CSV.',
+  'seo.st.title': 'Generatore di dati di prova da JSON Schema o XSD | rrstudio tools',
+  'seo.st.desc':
+    'Genera dati di prova da JSON Schema o XSD online: seme ripetibile, numero di record a scelta, esporta in JSON, XML o CSV. Nessun upload.',
   'tool.xsd.title': 'Validatore XSD',
   'tool.xsd.desc':
     'Controlla un XML con uno schema XSD: tipi, faccette, ordine e numero degli elementi, attributi obbligatori e ID, con il percorso XPath di ogni problema.',

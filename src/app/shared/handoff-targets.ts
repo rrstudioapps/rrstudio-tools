@@ -72,6 +72,7 @@ export const HANDOFF_ACCEPTS: Readonly<Record<string, readonly HandoffKind[]>> =
   'yaml-viewer': ['text'],
   'yaml-csv-diff': ['text', 'csv'],
   'json-schema-xsd': ['text', 'json'],
+  'schema-test-data': ['text', 'json'],
   'xsd-validator': ['text'],
   'sql-formatter': ['text'],
   'text-diff': ['text'],

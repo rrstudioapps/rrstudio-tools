@@ -82,6 +82,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['json-schema-xsd'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Generatore di dati di prova da schema»: da un JSON Schema o da un XSD genera record che li rispettano, con seme ripetibile, numero a scelta ed esportazione in JSON, XML o CSV.',
+        en: 'New tool "Test data generator from a schema": from a JSON Schema or an XSD it generates records that conform to it, with a repeatable seed, any number of records and export as JSON, XML or CSV.',
+        toolIds: ['schema-test-data'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

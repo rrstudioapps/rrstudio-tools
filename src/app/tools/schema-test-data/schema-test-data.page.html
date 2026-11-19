@@ -1,0 +1,83 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.st.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('st.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="schema-test-data" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <label class="opt-field">{{ i18n.t('st.seed') }}
+      <input id="st-seed" type="text" class="input seed" maxlength="60" autocomplete="off" spellcheck="false" [value]="seed()" (input)="seed.set($any($event.target).value)" />
+    </label>
+    <button type="button" class="btn small" (click)="newSeed()"><app-icon name="dice" /> {{ i18n.t('st.newSeed') }}</button>
+    <label class="opt-field">{{ i18n.t('st.count') }}
+      <input id="st-count" type="number" class="input count" min="1" [max]="maxRecords" [value]="count()" (input)="count.set($any($event.target).value)" />
+    </label>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()"><app-icon name="braces" /> {{ i18n.t('st.sample') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('common.clear') }}</button>
+  </div>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('st.format')" [options]="formats" [(value)]="format" />
+    @if (format() === 'xml' || kind() === 'xsd') {
+      <app-segmented [label]="i18n.t('st.attrPrefix')" [options]="prefixes" [(value)]="attrPrefix" />
+    }
+  </div>
+
+  <app-file-drop [hint]="i18n.t('st.drop')" accept=".json,.xsd,.xml,application/json,text/xml,application/xml,text/plain" (fileSelected)="onFile($event)">
+    <div class="tool-panels">
+      <app-io-panel [label]="kind() === 'xsd' ? 'XSD' : 'JSON Schema'" inputId="st-in" [meta]="meta(input())">
+        <textarea
+          id="st-in"
+          class="io-textarea"
+          wrap="off"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('st.ph')"
+          [attr.aria-invalid]="errorText() ? 'true' : null"
+          [value]="input()"
+          (input)="onInput($event)"
+        ></textarea>
+      </app-io-panel>
+
+      <app-io-panel [label]="format().toUpperCase()" inputId="st-out" [meta]="meta(output())">
+        <span panel-actions>
+          <button data-shortcut="download" type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('st.download') }}
+          </button>
+          <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
+          <app-send-to from="schema-test-data" [kind]="format() === 'csv' ? 'csv' : format() === 'json' ? 'json' : 'text'" [text]="output()" [disabled]="output() === ''" />
+        </span>
+        <textarea id="st-out" class="io-textarea" readonly wrap="off" spellcheck="false" data-testid="st-out" [placeholder]="i18n.t('st.empty')" [value]="output()"></textarea>
+      </app-io-panel>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (errorText(); as e) {
+      <p class="tool-error" data-testid="st-error">{{ e }}</p>
+    } @else if (output() !== '') {
+      <p class="tool-ok" data-testid="st-ok">{{ warnings().length === 0 ? i18n.t('st.ok', { n: recordCount() }) : i18n.t('st.okWarn', { n: recordCount(), w: warnings().length }) }}</p>
+    }
+  </div>
+
+  @if (warnings().length) {
+    <h2 class="eyebrow">{{ i18n.t('st.warnings') }}</h2>
+    <ul class="warnings" [attr.aria-label]="i18n.t('st.warnings')" data-testid="st-warnings">
+      @for (w of warningTexts(); track $index) {
+        <li>
+          <span>{{ w.text }}</span>
+          @if (w.path) {
+            <code>{{ w.path }}</code>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

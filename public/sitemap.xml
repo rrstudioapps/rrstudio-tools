@@ -562,6 +562,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/json-schema-xsd"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/schema-test-data</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/schema-test-data"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/schema-test-data"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/schema-test-data"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/schema-test-data</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/schema-test-data"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/schema-test-data"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/schema-test-data"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/xsd-validator</loc>
     <lastmod>2026-11-19</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xsd-validator"/>

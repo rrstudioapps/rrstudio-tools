@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio tools
+import type { ToolDictionaries } from '../../core/i18n/i18n.service';
+
+const it = {
+  'st.lead':
+    'Incolla un JSON Schema o un XSD e ottieni dati di prova che lo rispettano: tipi, formati, pattern, intervalli, enumerazioni, liste e oggetti annidati. Con lo stesso seme il risultato è sempre identico. Esporta in JSON, XML o CSV.',
+  'st.seed': 'Seme',
+  'st.newSeed': 'Nuovo seme',
+  'st.count': 'Record',
+  'st.format': 'Formato di uscita',
+  'st.attrPrefix': 'Prefisso degli attributi',
+  'st.sample': 'Esempio',
+  'st.download': 'Scarica',
+  'st.drop': 'Trascina un file .json o .xsd su questa area (massimo 5 MB), oppure',
+  'st.ph': 'Incolla qui il JSON Schema o l\'XSD, o trascina un file…',
+  'st.empty': 'I dati di prova appaiono qui.',
+  'st.ok': '{n} record generati.',
+  'st.okWarn': '{n} record generati, {w} avvisi: controlla l\'elenco qui sotto.',
+  'st.warnings': 'Avvisi',
+  'st.w.patternUnsupported': 'L\'espressione regolare «{detail}» usa una sintassi che il generatore non sa produrre: il valore è una parola qualsiasi.',
+  'st.w.rangeEmpty': 'L\'intervallo dei valori è vuoto (minimo oltre il massimo, o nessun multiplo possibile): usato il minimo.',
+  'st.w.lengthUnmet': 'Il pattern non permette di rispettare minLength e maxLength insieme: il valore può essere fuori misura.',
+  'st.w.uniqueUnmet': 'uniqueItems non è stato possibile: ci sono valori ripetuti nella lista.',
+  'st.err.xml': 'Impossibile scrivere l\'XML: {detail}. Cambia il prefisso degli attributi o il formato.',
+  'st.err.csv': 'Impossibile scrivere il CSV da questi dati.',
+  'guide.schema-test-data.step.1': 'Incolla il JSON Schema o l\'XSD, o trascina un file.',
+  'guide.schema-test-data.step.2': 'Scegli il numero di record, il seme e il formato di uscita (JSON, XML o CSV).',
+  'guide.schema-test-data.step.3': 'Copia o scarica i dati; con lo stesso seme li rigeneri identici, con «Nuovo seme» ne ottieni altri.',
+  'guide.schema-test-data.q.1': 'Perché i dati sono sempre gli stessi?',
+  'guide.schema-test-data.a.1': 'Il generatore usa un seme: stesso schema, stesso seme e stesso numero di record danno lo stesso risultato, utile per test ripetibili. Cambia il seme per avere dati diversi.',
+  'guide.schema-test-data.q.2': 'Quali parti dello schema vengono rispettate?',
+  'guide.schema-test-data.a.2': 'Tipi, required, enum, const, format (data, email, uuid…), pattern semplici, lunghezze, intervalli, multipleOf, minItems/maxItems, uniqueItems, $ref verso $defs, allOf, oneOf e anyOf. Ciò che non si riesce a rispettare è elencato negli avvisi.',
+  'guide.schema-test-data.q.3': 'I dati vengono inviati a un server?',
+  'guide.schema-test-data.a.3': 'No: la generazione avviene nel tuo browser.',
+  'guide.schema-test-data.privacy': 'Lo schema resta nel tuo browser: non viene inviato a nessun server.',
+};
+
+const en: Record<keyof typeof it, string> = {
+  'st.lead':
+    'Paste a JSON Schema or an XSD and get test data that conforms to it: types, formats, patterns, ranges, enumerations, lists and nested objects. With the same seed the result is always identical. Export as JSON, XML or CSV.',
+  'st.seed': 'Seed',
+  'st.newSeed': 'New seed',
+  'st.count': 'Records',
+  'st.format': 'Output format',
+  'st.attrPrefix': 'Attribute prefix',
+  'st.sample': 'Sample',
+  'st.download': 'Download',
+  'st.drop': 'Drop a .json or .xsd file on this area (5 MB max), or',
+  'st.ph': 'Paste the JSON Schema or XSD here, or drop a file…',
+  'st.empty': 'The test data appears here.',
+  'st.ok': '{n} records generated.',
+  'st.okWarn': '{n} records generated, {w} warnings: check the list below.',
+  'st.warnings': 'Warnings',
+  'st.w.patternUnsupported': 'The regular expression "{detail}" uses syntax the generator cannot produce: the value is an arbitrary word.',
+  'st.w.rangeEmpty': 'The value range is empty (minimum above maximum, or no possible multiple): the minimum was used.',
+  'st.w.lengthUnmet': 'The pattern does not allow minLength and maxLength to be met together: the value may be out of range.',
+  'st.w.uniqueUnmet': 'uniqueItems could not be met: the list has repeated values.',
+  'st.err.xml': 'Could not write the XML: {detail}. Change the attribute prefix or the format.',
+  'st.err.csv': 'Could not write the CSV from this data.',
+  'guide.schema-test-data.step.1': 'Paste the JSON Schema or XSD, or drop a file.',
+  'guide.schema-test-data.step.2': 'Choose the number of records, the seed and the output format (JSON, XML or CSV).',
+  'guide.schema-test-data.step.3': 'Copy or download the data; with the same seed you regenerate it identically, "New seed" gives you different data.',
+  'guide.schema-test-data.q.1': 'Why is the data always the same?',
+  'guide.schema-test-data.a.1': 'The generator uses a seed: the same schema, seed and number of records give the same result, which makes tests repeatable. Change the seed to get different data.',
+  'guide.schema-test-data.q.2': 'Which parts of the schema are respected?',
+  'guide.schema-test-data.a.2': 'Types, required, enum, const, format (date, email, uuid…), simple patterns, lengths, ranges, multipleOf, minItems/maxItems, uniqueItems, $ref to $defs, allOf, oneOf and anyOf. Whatever cannot be respected is listed in the warnings.',
+  'guide.schema-test-data.q.3': 'Is my data sent to a server?',
+  'guide.schema-test-data.a.3': 'No: generation runs in your browser.',
+  'guide.schema-test-data.privacy': 'The schema stays in your browser: it is not sent to any server.',
+};
+
+export const SCHEMA_TEST_DATA_DICTIONARIES: ToolDictionaries = { it, en };

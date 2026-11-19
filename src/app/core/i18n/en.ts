@@ -628,6 +628,12 @@ export const en: Dict = {
   'seo.sx.title': 'JSON Schema to XSD and XSD to JSON Schema converter | rrstudio tools',
   'seo.sx.desc':
     'Convert JSON Schema to XSD and XSD to JSON Schema online: elements, attributes, types, restrictions and occurrences, with a list of what cannot be converted. Nothing is uploaded.',
+  'tool.st.title': 'Test data generator from a schema',
+  'tool.st.desc':
+    'Generate test data from a JSON Schema or an XSD: repeatable seed, number of records, export as JSON, XML or CSV.',
+  'seo.st.title': 'Test data generator from JSON Schema or XSD | rrstudio tools',
+  'seo.st.desc':
+    'Generate test data from JSON Schema or XSD online: repeatable seed, any number of records, export as JSON, XML or CSV. Nothing is uploaded.',
   'tool.xsd.title': 'XSD validator',
   'tool.xsd.desc':
     'Check an XML against an XSD schema: types, facets, element order and count, required attributes and IDs, with the XPath of every problem.',
