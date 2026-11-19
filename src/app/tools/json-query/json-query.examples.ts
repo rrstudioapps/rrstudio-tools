@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Esempi pronti: documento JSON (dati inventati) e alcune espressioni da provare. */
 export interface QueryExample {

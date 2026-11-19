@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { MAX_SIDE, MIME, limitSize, rotatedSize, type OutFormat, type Rect, type Size } from './image-crop';
 
 /** Decodifica l'immagine applicando l'orientamento EXIF (il browser ruota i pixel in decodifica). */

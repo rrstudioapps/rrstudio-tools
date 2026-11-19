@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { ColumnInfo, ColumnType } from './models';
 
 /** Soglia di valori non vuoti compatibili per assegnare un tipo a una colonna. */

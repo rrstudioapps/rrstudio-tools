@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Condivisione di un segreto di Shamir sul campo GF(256) (polinomio di AES, 0x11B, generatore 3).

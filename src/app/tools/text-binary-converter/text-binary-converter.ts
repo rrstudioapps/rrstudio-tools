@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { base64ToBytes, bytesToBase64 } from '../../shared/base64';
 
 export type Encoding = 'utf-8' | 'utf-16le' | 'utf-16be' | 'latin1' | 'windows-1252' | 'ascii';

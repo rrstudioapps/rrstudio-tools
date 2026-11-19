@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Logica pura del ritaglio: proporzioni, rettangolo di ritaglio, rotazione e ridimensionamento. Niente DOM. */
 

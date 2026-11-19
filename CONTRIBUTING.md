@@ -1,6 +1,6 @@
 # Contributing / Come contribuire
 
-Thanks for your interest in rrstudio Tools! / Grazie per l'interesse verso rrstudio Tools!
+Thanks for your interest in rrstudio tools! / Grazie per l'interesse verso rrstudio tools!
 
 ## Ground rules / Regole
 
@@ -11,7 +11,7 @@ Thanks for your interest in rrstudio Tools! / Grazie per l'interesse verso rrstu
   with the header / I contributi sono rilasciati con la AGPL-3.0-or-later. Ogni nuovo file sorgente inizia con:
   ```
   // SPDX-License-Identifier: AGPL-3.0-or-later
-  // © 2026 rrstudio — rrstudio Tools
+  // © 2026 rrstudio — rrstudio tools
   ```
 - **Dependencies:** only free and open source libraries with an AGPL-compatible license; list them in
   `THIRD_PARTY_LICENSES.md`. / Solo librerie open source compatibili, elencate in `THIRD_PARTY_LICENSES.md`.

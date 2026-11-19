@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { DOCUMENT } from '@angular/common';
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
@@ -101,7 +101,7 @@ export class SeoService {
     return {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'rrstudio Tools',
+      name: 'rrstudio tools',
       url: publicUrl('', lang),
       inLanguage: lang,
       publisher: { '@type': 'Organization', name: 'rrstudio', url: SITE_URL },

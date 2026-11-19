@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Conteggi di testo e conversioni delle maiuscole. Logica pura, senza dipendenze dal DOM.

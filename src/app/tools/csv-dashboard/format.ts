@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { Granularity } from './models';
 
 /** Formatta un numero secondo la lingua: niente decimali sopra 1000, due altrimenti. */

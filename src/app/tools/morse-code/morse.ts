@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Alfabeto Morse: lettere, cifre, punteggiatura ITU (Raccomandazione ITU-R M.1677) e lettere accentate

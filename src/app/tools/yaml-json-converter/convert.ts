@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { parseAllDocuments, stringify as yamlStringify } from 'yaml';
 import { TomlError, parse as tomlParse, stringify as tomlStringify } from 'smol-toml';
 

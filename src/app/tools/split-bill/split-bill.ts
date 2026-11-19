@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { parseDecimal } from '../../shared/decimal';
 
 /** Importo massimo accettato per un singolo valore: 10 milioni di euro, in centesimi. */

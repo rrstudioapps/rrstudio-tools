@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Cambio irrevocabile fissato dal Regolamento (CE) n. 2866/98: 1 euro = 1936,27 lire. */
 export const RATE_NUM = 193627n;

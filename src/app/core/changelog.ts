@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Tipo di una voce: determina il badge e il filtro della pagina Novità. */
 export type ChangeKind = 'new-tool' | 'feature' | 'improvement' | 'fix';
@@ -146,8 +146,8 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
       },
       {
         kind: 'feature',
-        it: 'Dalla versione installata come app puoi condividere testi e file verso rrstudio Tools e aprirli con gli strumenti giusti.',
-        en: 'With the installed app you can share text and files to rrstudio Tools and open them with the right tools.',
+        it: 'Dalla versione installata come app puoi condividere testi e file verso rrstudio tools e aprirli con gli strumenti giusti.',
+        en: 'With the installed app you can share text and files to rrstudio tools and open them with the right tools.',
       },
       {
         kind: 'feature',

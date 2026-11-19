@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Genera le immagini Open Graph (1200×630, stile "Carta") di ogni strumento e lingua in
 // public/og/<lang>/<slug>.png: nome dello strumento, una riga di descrizione, logo e "tools.rr-dev.eu".
 // Testi presi dai dizionari (it.ts, en.ts) e dal registro; font del progetto (Inter Tight, JetBrains Mono).
@@ -72,7 +72,7 @@ p{margin:0;font-size:34px;line-height:1.3;color:#55555a;letter-spacing:-.01em;ma
 .bot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e4e2dc;padding-top:26px;font-family:JM,monospace;font-size:20px;color:#55555a}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#1c1c1e;margin-right:12px;vertical-align:middle}
 </style></head><body>
-<div class="top"><img src="${logo}" alt="">rrstudio <span>Tools</span></div>
+<div class="top"><img src="${logo}" alt="">rrstudio <span>tools</span></div>
 <div class="mid"><h1 id="t">${esc(j.title)}</h1><p id="d">${esc(j.desc)}</p></div>
 <div class="bot"><span><i class="dot"></i>${esc(j.privacy)}</span><span>tools.rr-dev.eu</span></div>
 </body></html>`;

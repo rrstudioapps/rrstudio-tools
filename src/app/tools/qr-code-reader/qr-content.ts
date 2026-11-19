@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Riconoscimento del contenuto di un QR letto (URL, Wi-Fi, vCard, contatti, testo). Logica pura: nessun contenuto viene mai aperto da solo. */
 

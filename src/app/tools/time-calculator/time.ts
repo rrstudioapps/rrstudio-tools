@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Calcoli su durate e orari: somma e sottrazione di durate in formati misti, foglio ore con passaggio di mezzanotte

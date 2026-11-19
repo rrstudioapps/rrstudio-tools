@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Conversione tra fusi orari IANA usando solo Intl: nessun database dei fusi è incluso, l'elenco viene

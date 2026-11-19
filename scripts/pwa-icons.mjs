@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Genera le icone della PWA in public/: icon-512.png e le versioni "maskable" (192 e 512 px) con
 // sfondo pieno e logo dentro l'area sicura (cerchio del 40% del lato), partendo da public/favicon.svg.
 // Uso: npm run pwa-icons   (serve il Chromium di Playwright già installato; CHROMIUM_PATH se serve)

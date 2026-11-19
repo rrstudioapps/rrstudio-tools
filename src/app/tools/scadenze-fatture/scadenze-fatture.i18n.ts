@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
 /** Strumento solo italiano: la versione inglese esiste per completezza del tipo, ma non viene mai mostrata. */
@@ -59,7 +59,7 @@ const it = {
   'scad.ics.summary': 'Scadenza {n}/{count} · {ref}',
   'scad.ics.summaryAmount': 'Scadenza {n}/{count} · {ref} · {amount}',
   'scad.ics.noRef': 'fattura',
-  'scad.ics.desc': 'Scadenza di pagamento calcolata con rrstudio Tools. Verifica le condizioni concordate nel contratto o nella fattura.',
+  'scad.ics.desc': 'Scadenza di pagamento calcolata con rrstudio tools. Verifica le condizioni concordate nel contratto o nella fattura.',
   'scad.law.title': 'Termini di legge',
   'scad.law.desc': 'Informazione generale, senza calcolo di interessi. Il D.Lgs. 231/2002 (ritardi di pagamento nelle transazioni commerciali) fissa di regola il pagamento a 30 giorni; tra imprese si può arrivare a 60 giorni se pattuito, e termini più lunghi solo con un accordo espresso e non gravemente iniquo per il creditore. Per le pubbliche amministrazioni valgono regole proprie. Gli interessi di mora si calcolano con tassi che cambiano nel tempo: lo strumento non li calcola. Per i casi concreti rivolgiti al commercialista.',
   'scad.info.dffm.title': 'D.F.F.M. e fine mese',

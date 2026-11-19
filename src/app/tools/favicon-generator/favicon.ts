@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Dimensioni incorporate in favicon.ico. */
 export const ICO_SIZES = [16, 32, 48] as const;

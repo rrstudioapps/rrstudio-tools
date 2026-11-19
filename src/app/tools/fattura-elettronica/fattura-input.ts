@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { unzipSync } from 'fflate';
 import { Fattura, FatturaError, decodeXmlBytes, parseFattura } from './fattura-parser';
 import { P7mError, decodeBase64Loose, extractP7m } from './p7m';

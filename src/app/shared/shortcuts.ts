@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Scorciatoie da tastiera comuni agli strumenti. Le pagine non contengono logica: i pulsanti si marcano con

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 export type CssUnit = 'px' | 'rem' | 'em' | 'pt' | 'pc' | 'percent' | 'vw' | 'vh' | 'cm' | 'mm' | 'in';
 

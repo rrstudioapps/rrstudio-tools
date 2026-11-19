@@ -1,4 +1,4 @@
-# © 2026 rrstudio — rrstudio Tools · AGPL-3.0-or-later
+# © 2026 rrstudio — rrstudio tools · AGPL-3.0-or-later
 User-agent: *
 Allow: /
 

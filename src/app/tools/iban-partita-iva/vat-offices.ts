@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 // FILE GENERATO da scripts/update-places.mjs: non modificare a mano.
 // Codici storici di provincia 001-099 (ISTAT, CC BY 4.0, aggiornato al 2026-11-16), usati come codice

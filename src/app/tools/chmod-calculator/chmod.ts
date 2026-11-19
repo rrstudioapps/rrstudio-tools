@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Permessi Unix come numero 0..0o7777 (setuid 0o4000, setgid 0o2000, sticky 0o1000). */
 export const SETUID = 0o4000;

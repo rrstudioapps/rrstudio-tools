@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { PDFDocument } from 'pdf-lib';
 import { describe, expect, it } from 'vitest';
 import { buildJpeg, buildPng } from '../exif-viewer/exif-fixtures';
@@ -86,7 +86,7 @@ describe('buildImagesPdf', () => {
     const { width, height } = doc.getPage(0).getSize();
     expect(width).toBeCloseTo(PAGE_SIZES.a4.width, 1);
     expect(height).toBeCloseTo(PAGE_SIZES.a4.height, 1);
-    expect(doc.getProducer()).toBe('rrstudio Tools');
+    expect(doc.getProducer()).toBe('rrstudio tools');
   });
   it('due per pagina: 2 pagine; Letter orizzontale', async () => {
     const out = await buildImagesPdf(sizes, load, { ...base, format: 'letter', orientation: 'landscape', perPage: 2 });

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import {
   charTable, decodeBytes, encodeText, formatBytes, hexDump, parseBytes, textStats, visibleChar,
   ENCODINGS, type ByteFormat, type Encoding,

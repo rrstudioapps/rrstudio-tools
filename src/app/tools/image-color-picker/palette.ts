@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { cssVarName, toHexOpaque, toHslString, toOklchString, toRgbString, type Rgba } from '../color-converter/color-convert';
 
 // Logica pura del contagocce: lettura di un pixel, spostamento del mirino con la tastiera e palette dominante

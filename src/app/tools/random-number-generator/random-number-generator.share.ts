@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { Schema } from '../../shared/share-state';
 
 /** Impostazioni nel link di condivisione (mai i risultati: sono casuali, chi apre il link ne genera di nuovi). */

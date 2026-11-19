@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { JsonDiffOptions, Outcome, compareTexts } from './json-diff';
 import type { JsonDiffRequest, JsonDiffResponse } from './json-diff.worker';
 

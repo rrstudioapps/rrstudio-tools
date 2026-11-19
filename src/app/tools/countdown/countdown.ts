@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Fuso: «local» = quello del dispositivo, altrimenti un nome IANA. */
 export type Zone = string;
@@ -270,7 +270,7 @@ export function buildIcs(opts: { summary: string; wall: Wall; zone: Zone; now: n
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//rrstudio Tools//Countdown//EN',
+    'PRODID:-//rrstudio tools//Countdown//EN',
     'CALSCALE:GREGORIAN',
     'BEGIN:VEVENT',
     `UID:${start}-${stamp}@rrstudio-tools`,

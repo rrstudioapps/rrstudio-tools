@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { Sex, computeCodiceFiscale, omocodiaVariants } from '../codice-fiscale/codice-fiscale';
 import { CITIES, FEMALE, MALE, SURNAMES, csvCell, dayToParts, fakeVat, hashSeed, int, makeRandom, parseIsoDay, pick, randomSeedText } from '../fake-data-generator/fake-data';
 import { VAT_OFFICES } from '../iban-partita-iva/vat-offices';

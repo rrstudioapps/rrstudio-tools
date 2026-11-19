@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { Inflate as InflateType } from 'fflate';
 import { base64ToBytes, bytesToBase64 } from './base64';
 

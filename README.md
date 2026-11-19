@@ -1,10 +1,10 @@
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
 
 <p align="center">
   <img src="public/rrstudio-logo.svg" width="72" height="72" alt="rrstudio logo">
 </p>
 
-<h1 align="center">rrstudio Tools</h1>
+<h1 align="center">rrstudio tools</h1>
 
 <p align="center">
   Free, open source web tools that run entirely in your browser.<br>
@@ -22,7 +22,7 @@
   <a href="../../actions/workflows/build.yml"><img alt="Build" src="../../actions/workflows/build.yml/badge.svg"></a>
 </p>
 
-![rrstudio Tools home](docs/screenshots/home-light.png)
+![rrstudio tools home](docs/screenshots/home-light.png)
 
 ## Languages and URLs
 
@@ -234,7 +234,7 @@ More tools are coming, with the same rule: nothing leaves your browser.
 - Up to 20 PDFs (100 MB each) by drag & drop or file picker; password-protected files are skipped with a clear message. Every page of every file appears in one grid of thumbnails, with its number and a discreet colour and label for the source file.
 - Per page: rotate left/right, delete, select. Reorder by drag & drop (native HTML5) or with the move buttons / Alt + arrow keys, with screen-reader announcements.
 - Actions: merge everything in the current order and rotation, extract the selected pages, rotate all, or split (every page, every N pages, or by ranges such as `1-3, 5, 8-10`, validated with clear errors). Several output files come as a ZIP (fflate).
-- Output PDFs are built with pdf-lib (MIT); Producer/Creator are "rrstudio Tools" and the title of the first file is kept. Thumbnails are drawn lazily, one at a time, with pdf.js (Apache-2.0); its worker and standard fonts are served from the same origin (no CDN, no `unsafe-eval`).
+- Output PDFs are built with pdf-lib (MIT); Producer/Creator are "rrstudio tools" and the title of the first file is kept. Thumbnails are drawn lazily, one at a time, with pdf.js (Apache-2.0); its worker and standard fonts are served from the same origin (no CDN, no `unsafe-eval`).
 
 ### Images to PDF
 
@@ -913,18 +913,18 @@ JetBrains Mono). Third-party licenses: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LIC
 
 ## License
 
-rrstudio Tools is © 2026 rrstudio and is released under the
+rrstudio tools is © 2026 rrstudio and is released under the
 [GNU Affero General Public License v3.0 or later](LICENSE) (AGPL-3.0-or-later).
 
 - ✅ **Free to use** for any purpose, personal or commercial, and free to study, copy and modify.
 - 🔁 **Share alike.** If you distribute a modified version, **or host it as a service that other people use over a network**, you must release your complete source code under the same license (AGPL-3.0, section 13).
-- 🏷️ **Keep the attribution.** Keep the copyright headers, the [NOTICE](NOTICE) file and a visible "Based on rrstudio Tools by rrstudio" credit linking to this repository. The rrstudio name and logo are not licensed for promoting modified versions.
+- 🏷️ **Keep the attribution.** Keep the copyright headers, the [NOTICE](NOTICE) file and a visible "Based on rrstudio tools by rrstudio" credit linking to this repository. The rrstudio name and logo are not licensed for promoting modified versions.
 
 This is a summary, not legal advice: the [LICENSE](LICENSE) and [NOTICE](NOTICE) files are what count.
 
 ## Support
 
-rrstudio Tools is free and has no ads. If it is useful to you:
+rrstudio tools is free and has no ads. If it is useful to you:
 [buy me a coffee on Ko-fi](https://ko-fi.com/rrstudioapps), or take a look at the
 [premium dashboards](https://demo.rr-dev.eu) (live demos, free download, pay what you want).
 
@@ -932,7 +932,7 @@ rrstudio Tools is free and has no ads. If it is useful to you:
 
 ## In italiano
 
-**rrstudio Tools** è una raccolta di strumenti web gratuiti e open source che funzionano interamente
+**rrstudio tools** è una raccolta di strumenti web gratuiti e open source che funzionano interamente
 nel browser. **I tuoi dati restano sul tuo computer:** nessun backend, nessun upload, nessuna chiamata
 a server esterni, nessun cookie, nessun tracciamento né script di analytics.
 
@@ -1013,7 +1013,7 @@ a server esterni, nessun cookie, nessun tracciamento né script di analytics.
   (`scripts/build-sw.mjs`); `npm run pwa-check` lo verifica nel browser.
 - **Licenza:** AGPL-3.0-or-later. L'uso è libero, anche commerciale. Chi distribuisce una versione
   modificata **o la ospita come servizio online** deve rilasciarne il codice sorgente con la stessa
-  licenza e mantenere l'attribuzione ("Based on rrstudio Tools by rrstudio", file NOTICE e
+  licenza e mantenere l'attribuzione ("Based on rrstudio tools by rrstudio", file NOTICE e
   intestazioni). Dettagli in [LICENSE](LICENSE) e [NOTICE](NOTICE).
 - **Contribuire:** leggi [CONTRIBUTING.md](CONTRIBUTING.md).
 - **Novità:** la pagina [`/novita`](https://tools.rr-dev.eu/novita) elenca strumenti, funzioni e miglioramenti per data, con un feed Atom (`public/changelog.xml`); i dati sono in `src/app/core/changelog.ts`.

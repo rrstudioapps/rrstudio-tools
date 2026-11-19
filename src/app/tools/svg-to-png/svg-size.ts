@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 // Logica pura di "SVG in PNG": lettura di dimensioni e viewBox, calcolo della dimensione di uscita,
 // elenco delle risorse esterne, preparazione dell'SVG per il disegno su canvas e nomi dei file.

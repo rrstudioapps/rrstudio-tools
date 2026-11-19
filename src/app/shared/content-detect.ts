@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { checkChar } from '../tools/codice-fiscale/codice-fiscale';
 import { mod97, normalizeIban } from '../tools/iban-partita-iva/iban';
 

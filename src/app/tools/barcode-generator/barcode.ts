@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Formati di codice a barre, validazione del contenuto, cifra di controllo e piano per la generazione in blocco. Logica pura. */
 

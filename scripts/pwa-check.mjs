@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Controllo E2E della PWA servendo dist/rrstudio-tools/browser (dopo `npm run build`):
 //  1. il manifest è collegato e valido; la home registra il service worker;
 //  2. dopo "Scarica tutto" una pagina mai visitata si apre offline, senza errori in console e con

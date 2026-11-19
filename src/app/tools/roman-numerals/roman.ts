@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Combinazione "linea sopra": moltiplica per mille la lettera che precede (vinculum). */
 export const OVERLINE = '̅';

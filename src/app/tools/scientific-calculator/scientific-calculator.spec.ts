@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { evaluate, formatNumber, type AngleMode } from './scientific-calculator';
 
 const val = (e: string, angle: AngleMode = 'deg', ans = 0) => {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Tokenizzatore di righe di comando in stile shell POSIX (senza espansioni), condiviso dagli strumenti che leggono

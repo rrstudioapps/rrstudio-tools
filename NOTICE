@@ -1,4 +1,4 @@
-rrstudio Tools
+rrstudio tools
 © 2026 rrstudio — https://tools.rr-dev.eu
 Source code: https://github.com/rrstudioapps/rrstudio-tools
 
@@ -17,13 +17,13 @@ Any copy, modified version or network deployment of this program must:
 
   1. keep this NOTICE file and the copyright headers in the source files;
   2. keep, in the user interface (for example in the footer), a visible
-     attribution with the text "Based on rrstudio Tools by rrstudio" linking to
+     attribution with the text "Based on rrstudio tools by rrstudio" linking to
      https://github.com/rrstudioapps/rrstudio-tools;
   3. offer the complete corresponding source code of the version in use to its
      users, under the same license (AGPL-3.0, section 13).
 
 Modified versions must be marked as changed and must not be presented as the
-original rrstudio Tools (section 7(c)).
+original rrstudio tools (section 7(c)).
 
 TRADEMARKS (section 7(e))
 -------------------------

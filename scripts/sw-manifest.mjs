@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Logica pura (senza accesso al disco) con cui build-sw.mjs decide cosa mettere nel service worker:
 // quali file sono pagine, quali asset, quali vanno precaricati all'installazione (SHELL) e quali
 // scaricati su richiesta per l'uso offline completo (ALL). Testata in sw-manifest.test.mjs.

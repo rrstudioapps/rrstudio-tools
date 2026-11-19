@@ -1,6 +1,6 @@
 {
-  "name": "rrstudio Tools",
-  "short_name": "rr Tools",
+  "name": "rrstudio tools",
+  "short_name": "rr tools",
   "description": "Strumenti online gratuiti che funzionano nel browser: i tuoi file non vengono mai caricati. Free online tools that run in your browser.",
   "id": "/",
   "start_url": "/",

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { DEFAULT_FORMAT, formatMorse, morseTimeline, parseMorse, textToWords, totalMs, unitMs, wordsToText } from './morse';
 
 const enc = (t: string) => formatMorse(textToWords(t).words);

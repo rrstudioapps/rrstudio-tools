@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { SHARE_SCHEMA as ASPECT } from '../tools/aspect-ratio-calculator/aspect-ratio-calculator.share';
 import { SHARE_SCHEMA as CIPHERS } from '../tools/classic-ciphers/classic-ciphers.share';

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { extensionForMime, uniqueNames } from '../image-compressor/image-compressor';
 
 // Logica pura della filigrana: impostazioni, posizionamento (9 punti o mosaico), dimensioni e nomi dei file.

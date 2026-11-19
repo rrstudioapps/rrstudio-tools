@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { loadPdfjs } from '../pdf-tools/pdf-thumbs';
 import type { RawItem } from './pdf-to-text';
 

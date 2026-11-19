@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Da comandi `docker run` a un file docker-compose. Logica pura, senza DOM e senza Angular: il comando non viene

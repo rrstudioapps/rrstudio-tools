@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Smoke test E2E di tutte le pagine (home, privacy, preferiti, ricezione condivisioni, strumenti; IT e /en/) servendo dist/rrstudio-tools/browser.
 // Per ogni pagina, a 360 e 1280 px: nessun errore in console, nessuno scorrimento orizzontale,
 // axe-core senza violazioni critical/serious in tema chiaro e scuro, dati strutturati JSON-LD coerenti

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Scadenze di pagamento delle fatture: termini in giorni, "data fattura" o "fine mese" (D.F.F.M.), rate multiple,
@@ -222,7 +222,7 @@ export interface IcsOptions {
 
 /** File iCalendar (.ics) con un evento di tutto il giorno per scadenza. */
 export function toIcs(rows: Installment[], invoice: DayNo, o: IcsOptions): string {
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//rrstudio Tools//Scadenze fatture//IT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//rrstudio tools//Scadenze fatture//IT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
   for (const r of rows) {
     const amount = r.cents === null ? null : o.amount(r.cents);
     lines.push(

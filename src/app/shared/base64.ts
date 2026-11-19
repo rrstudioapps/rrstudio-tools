@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Errore di decodifica con un codice stabile (tradotto dall'interfaccia). */
 export class Base64Error extends Error {

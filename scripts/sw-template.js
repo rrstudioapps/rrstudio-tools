@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Service worker scritto a mano (nessuna libreria). Il file pubblicato è generato da scripts/build-sw.mjs,
 // che sostituisce il segnaposto dei dati con versione ed elenchi dei file. Conserva in cache solo i file del sito
 // (pagine, script, stili, font): non salva nulla di ciò che l'utente inserisce negli strumenti.
@@ -206,7 +206,7 @@ const OFFLINE_TEXT = {
 
 function offlinePage(url) {
   const t = url.pathname === '/en' || url.pathname.startsWith('/en/') ? OFFLINE_TEXT.en : OFFLINE_TEXT.it;
-  const html = `<!doctype html><html lang="${t.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="robots" content="noindex"><title>${t.title} | rrstudio Tools</title><style>
+  const html = `<!doctype html><html lang="${t.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="robots" content="noindex"><title>${t.title} | rrstudio tools</title><style>
 body{margin:0;min-height:100vh;display:grid;place-items:center;padding:1rem;box-sizing:border-box;background:#f7f6f3;color:#1c1c1e;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
 @media (prefers-color-scheme:dark){body{background:#121211;color:#f2f1ed}a,button{color:#f2f1ed!important;border-color:#55555a!important}}
 main{max-width:34rem}h1{font-size:1.6rem;margin:0 0 .75rem}p{margin:0 0 1.25rem;color:inherit;opacity:.85}

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { KINDS, MAX_CHARS, arrange, countOf, extract, findAll, isValidDate, isValidIban, toCsv, toText, type Kind } from './text-extractor';
 
 const values = (text: string, kind: Kind, o: Parameters<typeof extract>[2] = {}): string[] => extract(text, kind, o).items.map((i) => i.value);

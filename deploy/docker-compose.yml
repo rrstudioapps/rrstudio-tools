@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# © 2026 rrstudio — rrstudio Tools
+# © 2026 rrstudio — rrstudio tools
 #
 # Stack di tools.rr-dev.eu per Portainer (Stacks > Add stack > Repository, compose path
 # deploy/docker-compose.yml). Nessuna porta sull'host: Nginx Proxy Manager raggiunge il

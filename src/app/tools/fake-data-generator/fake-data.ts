@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { checkChar as cfCheckChar, computeCodiceFiscale } from '../codice-fiscale/codice-fiscale';
 import { italianCin, ibanCheckDigits } from '../iban-partita-iva/iban';
 import { vatCheckDigit } from '../iban-partita-iva/vat';

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { ToolDictionaries } from '../../core/i18n/i18n.service';
 
 const csvIt = {
@@ -88,7 +88,7 @@ const csvIt = {
   'csv.export.failed': 'Esportazione non riuscita. Riprova.',
   'csv.export.generated': 'Generato il {date}',
   'csv.export.firstRows': 'Prime {n} righe di {total}',
-  'csv.export.credit': 'Creato con rrstudio Tools',
+  'csv.export.credit': 'Creato con rrstudio tools',
 };
 
 export type CsvDict = typeof csvIt;
@@ -179,7 +179,7 @@ const csvEn: CsvDict = {
   'csv.export.failed': 'Export failed. Please try again.',
   'csv.export.generated': 'Generated on {date}',
   'csv.export.firstRows': 'First {n} rows of {total}',
-  'csv.export.credit': 'Made with rrstudio Tools',
+  'csv.export.credit': 'Made with rrstudio tools',
 };
 
 export const CSV_DICTIONARIES: ToolDictionaries = { it: csvIt, en: csvEn };

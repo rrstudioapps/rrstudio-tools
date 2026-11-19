@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Algoritmo di Myers (O(ND)) con la variante a spazio lineare: si cerca la "middle snake" di ogni

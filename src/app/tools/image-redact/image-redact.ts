@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Logica pura dello strumento «Oscura parti di un'immagine»: rettangoli, coordinate ed effetti sui pixel. */
 

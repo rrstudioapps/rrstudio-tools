@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { Aggregation, CategoryPoint, Granularity, PeriodPoint } from './models';
 
 const DAY_MS = 86400000;

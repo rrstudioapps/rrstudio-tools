@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** UUID v4 e v7 (RFC 9562) e ULID: generazione, formattazione e analisi. Casualità solo da crypto.getRandomValues. */
 

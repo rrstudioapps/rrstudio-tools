@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { SHARE_SCHEMA as CALCOLO_IVA } from '../tools/calcolo-iva/calcolo-iva.share';
 import { SHARE_SCHEMA as RATA_MUTUO } from '../tools/calcolo-rata-mutuo/calcolo-rata-mutuo.share';

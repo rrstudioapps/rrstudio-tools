@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Sorgente di numeri casuali: riempie l'array con valori uniformi a 32 bit. */
 export type RandomSource = (buf: Uint32Array<ArrayBuffer>) => void;

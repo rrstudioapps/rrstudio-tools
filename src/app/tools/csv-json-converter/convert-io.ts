@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { Cell, guessDelimiter } from './convert';
 
 /** Lettura e scrittura di CSV (PapaParse) ed Excel (SheetJS), caricate solo quando servono. */

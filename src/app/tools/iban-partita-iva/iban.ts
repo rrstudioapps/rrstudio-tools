@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * IBAN: normalizzazione, lunghezza per paese, controllo mod-97 (ISO 13616 / ISO 7064) e, per gli IBAN

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Estrazione del contenuto da un file .p7m (CMS SignedData, CAdES) con un piccolo lettore ASN.1/DER.

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Esecuzione di un'espressione regolare JavaScript su un testo. Logica pura (gira anche in un Web Worker). */
 

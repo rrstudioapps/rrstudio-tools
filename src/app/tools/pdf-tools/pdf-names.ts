@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Nome senza estensione .pdf e senza caratteri vietati nei nomi di file; mai vuoto. */
 export function baseName(fileName: string, fallback = 'documento'): string {

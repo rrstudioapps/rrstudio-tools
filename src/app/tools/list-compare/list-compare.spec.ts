@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { DEFAULT_OPTIONS, compareLists, duplicatesToText, splitLines, type CompareOptions } from './list-compare';
 
 const opt = (o: Partial<CompareOptions> = {}): CompareOptions => ({ ...DEFAULT_OPTIONS, ...o });

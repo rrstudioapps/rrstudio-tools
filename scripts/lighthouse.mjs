@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Lighthouse (mobile e desktop) su un campione di pagine servendo dist/rrstudio-tools/browser.
 // Soglie: accessibilità = 100, SEO = 100 (salvo pagine noindex), best practices >= 95,
 // performance >= soglia per pagina/preset (vedi PERF più sotto).

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import {
   DEFAULT_OPTIONS, MAX_BULK_LINES, PRESETS, buildBulk, buildUtmLink, bulkToCsv, csvCell, normalizeValue, parseBulkLines, parseQuery,
   type UtmOptions, type UtmParams, type UtmResult,

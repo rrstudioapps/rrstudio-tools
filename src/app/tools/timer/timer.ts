@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Logica pura di timer, cronometro e pomodoro: il tempo arriva da fuori (`now`, in ms), così si testa senza orologio. */
 

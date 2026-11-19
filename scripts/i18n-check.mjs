@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 //
 // Controllo dei dizionari it/en (npm run i18n-check). Il compilatore verifica già che en abbia le chiavi di it;
 // qui si controlla il resto, che altrimenti si vede solo nel browser (una chiave mancante mostra la chiave stessa):

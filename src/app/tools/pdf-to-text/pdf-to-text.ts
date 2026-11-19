@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Ricostruzione del testo da un PDF. Logica pura: parte dagli elementi di testo che pdf.js restituisce

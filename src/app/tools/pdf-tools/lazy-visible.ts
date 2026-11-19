@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { Directive, ElementRef, OnDestroy, afterNextRender, inject, output } from '@angular/core';
 
 /** Emette `appLazyVisible` una sola volta, quando l'elemento si avvicina alla zona visibile. */

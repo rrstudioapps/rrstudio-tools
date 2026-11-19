@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Numeri in lettere, in italiano corretto. Parte intera con BigInt, fino a 999.999.999.999 (miliardi).

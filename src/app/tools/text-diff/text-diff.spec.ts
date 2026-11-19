@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_OPTIONS, computeDiff, inlineDiff, normalizeLine, splitLines, toUnifiedDiff, tokenize } from './diff-core';
 import { ScrollGeometry, lineCount, lineStartOffset, nextGroup, targetScrollTop } from './diff-nav';

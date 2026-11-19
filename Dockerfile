@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# © 2026 rrstudio — rrstudio Tools
+# © 2026 rrstudio — rrstudio tools
 #
 # Immagine per tools.rr-dev.eu: build statica di Angular servita da nginx senza root.
 # Se typecheck, test o build falliscono l'immagine non si crea e il sito resta com'è.

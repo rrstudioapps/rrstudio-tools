@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { Type } from '@angular/core';
 import type { Routes } from '@angular/router';
 import type { IconName } from '../shared/icon';

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { CHANGELOG } from '../changelog';
 import { SITE_URL } from '../links';
 import { TOOLS } from '../../tools/tools.registry';
@@ -156,7 +156,7 @@ export function buildSitemap(): string {
   }
   return (
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->\n' +
+    '<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
     entries.join('\n') +
     '\n</urlset>\n'

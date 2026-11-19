@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Scorciatoie della barra: modificano il testo attorno alla selezione. Logica pura, testata a parte. */
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { CATEGORIES, TOOLS } from '../tools/tools.registry';
 import { categoryFromSlug, categoryFromUrl, filterTools, homeFilterFromUrl, groupByCategory, normalizeText, searchTerms } from './tool-filter';

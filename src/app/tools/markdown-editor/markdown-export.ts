@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { escapeHtml } from './markdown';
 
 /** Titolo del documento: il primo titolo `#` (o setext di livello 1) senza segni di formattazione, o `fallback`. */

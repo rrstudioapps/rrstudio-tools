@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { ShamirError, Share, combineShares, crc32, formatShare, gfAdd, gfDiv, gfInv, gfMul, parseShare, parseShares, splitSecret } from './shamir';
 

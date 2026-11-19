@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { LayoutOptions, layoutPages } from './pdf-layout';
 
 /** Immagine pronta da inserire: byte JPEG o PNG e dimensioni in pixel dopo l'orientamento EXIF. */
@@ -10,7 +10,7 @@ export interface PreparedImage {
   height: number;
 }
 
-export const PRODUCER = 'rrstudio Tools';
+export const PRODUCER = 'rrstudio tools';
 
 /**
  * Crea il PDF con pdf-lib (caricata solo alla prima richiesta). `load(i)` rende l'immagine i-esima solo

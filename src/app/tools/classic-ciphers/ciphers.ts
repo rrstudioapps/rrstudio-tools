@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Cifrari classici: pura logica, solo lettere A–Z (maiuscole e minuscole); gli altri caratteri passano invariati. */
 

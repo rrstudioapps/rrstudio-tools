@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** I 148 nomi di colore CSS (CSS Color Module Level 4) con il loro valore esadecimale. */
 const RAW =

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { ExifTag, IfdName, PhotoMeta } from './exif-parser';
 
 type T = (key: string, params?: Record<string, string | number>) => string;

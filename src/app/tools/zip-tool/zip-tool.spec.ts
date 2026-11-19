@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { strFromU8, strToU8, zipSync } from 'fflate';
 import {
   LIMITS, ZipError, archiveName, checkLimits, checkPath, cleanInputPath, createZip, dosToDate, extractEntry, extractable, filterEntries,

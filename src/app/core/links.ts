@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Link esterni condivisi (footer, home). */
 export const KOFI_URL = 'https://ko-fi.com/rrstudioapps';
@@ -14,4 +14,4 @@ export const LICENSE_URL = `${REPO_URL}/blob/main/LICENSE`;
 
 /** Base pubblica del sito (canonical, og:url, sitemap). */
 export const SITE_URL = 'https://tools.rr-dev.eu';
-export const SITE_NAME = 'rrstudio Tools';
+export const SITE_NAME = 'rrstudio tools';

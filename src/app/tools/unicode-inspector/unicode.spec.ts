@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { blockName, cssEscape, generalCategory, graphemes, htmlEntity, inspectText, invisibleKind, jsEscape, normalizeText, removeInvisibles, scriptOf, unicodeName, utf16Hex, utf8Hex } from './unicode';
 
 describe('rappresentazioni', () => {

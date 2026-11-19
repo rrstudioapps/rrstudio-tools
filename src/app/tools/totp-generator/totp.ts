@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Codici monouso HOTP (RFC 4226) e TOTP (RFC 6238) con HMAC di WebCrypto. Logica pura, tutta nel browser. */
 

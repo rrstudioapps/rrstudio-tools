@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { PDFDocument, StandardFonts, degrees, rgb, type PDFFont } from 'pdf-lib';
 import { EncryptedPdfError, hexToRgb, placementToPdf, sanitizeText, visualSize, type PageBox } from '../pdf-sign/pdf-sign';
 import { cleanText, clamp, fontSize, layout, logoSize, type FontId, type WatermarkSettings } from './image-watermark';

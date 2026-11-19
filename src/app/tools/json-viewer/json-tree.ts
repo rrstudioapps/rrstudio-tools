@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { JsonPath, JsonType, PathKey, isContainer, toJsonPointer, typeOf } from './json-path';
 
 /** Figli mostrati alla volta in ogni nodo (poi "mostra altri"). */

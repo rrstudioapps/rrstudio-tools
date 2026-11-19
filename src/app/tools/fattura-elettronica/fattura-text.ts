@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { TIPO_DOCUMENTO, describeCode } from './fattura-codes';
 import { Fattura, Party, addressLines, formatDate, formatMoney, groupIban, partyName, totals } from './fattura-parser';
 

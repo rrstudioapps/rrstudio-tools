@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Tipi di chiave offerti. */
 export type SshKeyKind = 'ed25519' | 'rsa-2048' | 'rsa-3072' | 'rsa-4096';

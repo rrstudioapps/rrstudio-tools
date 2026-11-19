@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Tipografia fluida con CSS clamp(): calcolo di intercetta e pendenza, scala tipografica e controllo di accessibilità.

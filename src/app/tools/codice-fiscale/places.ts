@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Luogo di nascita: comune attuale, comune soppresso o Stato estero (codice catastale / codice Z). */
 export interface Place {

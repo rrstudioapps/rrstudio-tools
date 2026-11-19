@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Logica pura dell'anteprima dei meta tag: estrazione dall'HTML (DOMParser, senza eseguire script né

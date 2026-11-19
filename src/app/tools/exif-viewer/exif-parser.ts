@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Lettura dei metadati di una foto: EXIF/TIFF (JPEG APP1, PNG eXIf, WebP EXIF), XMP e IPTC.

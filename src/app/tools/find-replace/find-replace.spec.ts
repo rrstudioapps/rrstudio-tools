@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_RULE, MAX_PREVIEW_MATCHES, Rule, buildRuleRegex, escapeRegex, highlightPieces, isActive, runRules } from './find-replace-core';
 

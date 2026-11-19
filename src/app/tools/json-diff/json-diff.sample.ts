@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Esempio del pulsante «Carica esempio»: dati inventati, con modifiche, un tipo cambiato e utenti riordinati. */
 export const SAMPLE_A = `{

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Eseguito DOPO `ng build`: legge dist/rrstudio-tools/browser, calcola versione (hash dei contenuti),
 // SHELL (precaricato all'installazione) e ALL (download completo su richiesta) e scrive sw.js nella radice
 // della build a partire da scripts/sw-template.js. La logica di classificazione sta in sw-manifest.mjs.

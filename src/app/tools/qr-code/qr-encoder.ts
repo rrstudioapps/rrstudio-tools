@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /**
  * Encoder QR Code (ISO/IEC 18004, Model 2) in TypeScript puro: modi numerico, alfanumerico e byte,

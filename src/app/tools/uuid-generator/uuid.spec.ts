@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { webcrypto } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { MAX_COUNT, RandomSource, clampCount, formatId, generateIds, inspectId, newState, ulid, uuidV4, uuidV7 } from './uuid';

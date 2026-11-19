@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Misure (in px) che servono a calcolare dove scorrere il contenitore dei risultati. */
 export interface ScrollGeometry {

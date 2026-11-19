@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { CHANGELOG, ChangeKind, ChangelogVersion } from './changelog';
 import { CHANGELOG_SLUG, Lang, publicUrl } from './i18n/lang-routing';
 import { SITE_NAME, SITE_URL } from './links';
@@ -81,7 +81,7 @@ export function buildFeed(lang: Lang, kindLabel: (k: ChangeKind) => string, log:
   });
   return (
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->\n' +
+    '<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->\n' +
     `<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="${lang}">\n` +
     `  <id>${page}</id>\n` +
     `  <title>${SITE_NAME}: ${lang === 'it' ? 'Novità' : "What's new"}</title>\n` +

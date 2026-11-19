@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Formati supportati. L'HTML non c'è: per le entità c'è lo strumento «Entità HTML». */
 export type EscapeFormat = 'json' | 'js' | 'python' | 'regex' | 'shell' | 'sql' | 'csv' | 'java' | 'php';

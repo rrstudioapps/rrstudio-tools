@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { IBAN_COUNTRIES, analyzeIban, bbanMismatch, formatIban, ibanCheckDigits, italianCin, mod97, normalizeIban } from './iban';
 

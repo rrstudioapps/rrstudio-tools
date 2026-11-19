@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Formati di uscita scelti dall'utente ("original" = lo stesso formato del file di partenza). */
 export type OutputFormat = 'original' | 'jpeg' | 'webp' | 'png' | 'avif';

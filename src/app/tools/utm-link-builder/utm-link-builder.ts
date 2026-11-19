@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Parametri di campagna nell'ordine in cui compaiono nel link (utm_id subito dopo la campagna, come fa Google). */
 export const UTM_FIELDS = ['source', 'medium', 'campaign', 'id', 'term', 'content'] as const;

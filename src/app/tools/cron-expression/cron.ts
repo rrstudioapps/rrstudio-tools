@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import cronstrue from 'cronstrue';
 // solo il locale italiano (l'inglese è già nel pacchetto base): 'cronstrue/i18n' includerebbe una quarantina di lingue
 import 'cronstrue/locales/it';

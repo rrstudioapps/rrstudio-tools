@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import type { EChartsCoreOption } from 'echarts/core';
 import { BarChart, LineChart, PieChart } from 'echarts/charts';

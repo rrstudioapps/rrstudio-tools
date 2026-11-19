@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { RunRequest, RunResult, runRules } from './find-replace-core';
 
 export type WorkerRequest = RunRequest & { id: number };

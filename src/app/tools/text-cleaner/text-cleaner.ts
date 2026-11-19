@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Massimo di caratteri accettati (circa 1 MB di testo). */
 export const MAX_CHARS = 1_000_000;

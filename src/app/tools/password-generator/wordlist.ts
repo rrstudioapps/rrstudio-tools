@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** EFF Large Wordlist (7776 parole), servita dallo stesso sito e caricata solo quando serve. */
 export const WORDLIST_URL = 'wordlists/eff-large.txt';

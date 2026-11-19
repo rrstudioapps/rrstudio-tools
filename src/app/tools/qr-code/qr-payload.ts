@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Costruzione del testo da codificare per ogni tipo di QR (WiFi, vCard, mailto, SMS, geo). */
 

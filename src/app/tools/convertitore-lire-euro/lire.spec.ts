@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { BANKNOTES, COINS, denominationEuro, euroToLire, formatScaled, lireToEuro, toHundredths } from './lire';
 
 const l2e = (x: number) => formatScaled(lireToEuro(toHundredths(x)!).rounded, 2);

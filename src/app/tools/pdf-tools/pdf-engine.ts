@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { PDFDocument } from 'pdf-lib';
 
 /** Pagina da inserire nel PDF di uscita. `rotation` è la rotazione aggiunta a quella già presente nel file. */
@@ -9,7 +9,7 @@ export interface OutPage {
   rotation: number;
 }
 
-export const PRODUCER = 'rrstudio Tools';
+export const PRODUCER = 'rrstudio tools';
 
 /**
  * Costruisce PDF con pdf-lib (caricata solo alla prima richiesta). Tiene in cache i documenti
@@ -34,7 +34,7 @@ export class PdfBuilder {
   }
 
   /**
-   * Crea un PDF con le pagine date, nell'ordine dato. Producer/Creator "rrstudio Tools"; il titolo è
+   * Crea un PDF con le pagine date, nell'ordine dato. Producer/Creator "rrstudio tools"; il titolo è
    * quello di `titleSourceId` (il primo file caricato), se ce l'ha.
    */
   async build(pages: readonly OutPage[], titleSourceId?: number): Promise<Uint8Array> {

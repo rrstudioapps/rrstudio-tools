@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 
 /** Disposizione delle immagini sulle pagine di un PDF (misure in punti PDF: 1 pt = 1/72 pollice). */
 export type PageFormat = 'a4' | 'letter' | 'fit';

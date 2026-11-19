@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { ChangeKind, DiffNode, Difference, NodeStatus, escapePointerToken, formatValue } from './json-diff';
 
 /** Riga dell'albero unito (già "appiattita", pronta per il template). */

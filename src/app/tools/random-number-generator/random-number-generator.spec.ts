@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import {
   cryptoU32, flipCoins, formatDice, parseDice, parseList, pickFromList, randomInt, randomNumbers, rollDice, shuffle, splitTeams, type NumberSpec, type U32,
 } from './random-number-generator';

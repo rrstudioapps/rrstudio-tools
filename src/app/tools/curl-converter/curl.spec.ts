@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { CurlRequest, parseCurl, tokenize, unescapeCmd } from './curl';
 import { TARGETS, generate, goStr, jsonBody, phpStr, pyStr } from './curl-generate';

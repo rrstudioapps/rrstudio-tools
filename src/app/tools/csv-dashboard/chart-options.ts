@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { EChartsCoreOption } from 'echarts/core';
 import { formatNumber, formatPeriod } from './format';
 import { CategoryChartType, CategoryPoint, Granularity, PeriodPoint, TimeChartType } from './models';

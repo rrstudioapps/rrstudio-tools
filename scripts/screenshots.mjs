@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 // Genera gli screenshot in docs/screenshots/ servendo dist/rrstudio-tools/browser in locale.
 // Uso: npm run build && npm run screenshots   (serve Chromium di Playwright già installato)
 // Con --check (npm run e2e) esegue tutte le interazioni ma non scrive nulla; exit 1 se una pagina

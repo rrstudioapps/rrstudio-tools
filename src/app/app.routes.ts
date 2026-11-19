@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { Route, Routes } from '@angular/router';
 import { CHANGELOG_SLUG, FAVORITES_SLUG, SHARE_SLUG } from './core/i18n/lang-routing';
 import { ToolFrame } from './shared/tool-frame';

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { describe, expect, it } from 'vitest';
 import { HmacError, base64ToBytes, bytesToHex, constantTimeEqual, encodeOutput, hexToBytes, hmac, parseExpected, parseKey, verify, HmacAlgorithm } from './hmac';
 
