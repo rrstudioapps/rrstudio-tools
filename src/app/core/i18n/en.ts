@@ -557,6 +557,12 @@ export const en: Dict = {
   'seo.pfm.title': 'Fill in PDF forms online and flatten them | rrstudio tools',
   'seo.pfm.desc':
     'Fill in a PDF form online: text, checkboxes, choices and menus; download the filled or flattened PDF. The file is not uploaded.',
+  'tool.prd.title': 'Black out parts of a PDF',
+  'tool.prd.desc':
+    'Black out names, codes and signatures in a PDF by drawing rectangles or searching for a text: redacted pages become images and the text underneath no longer exists.',
+  'seo.prd.title': 'Redact text and areas in a PDF online | rrstudio tools',
+  'seo.prd.desc':
+    'Redact parts of a PDF online for real: black rectangles or a text search; pages become images and the text underneath is gone. The file is not uploaded.',
   'tool.crop.title': 'Crop and rotate images',
   'tool.crop.desc':
     'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',

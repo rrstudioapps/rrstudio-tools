@@ -2198,6 +2198,38 @@ try {
       await page.getByTestId('pfm-none').waitFor();
     },
   });
+  await shot('pdf-redact.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-redact/',
+    setup: async (page) => {
+      need(await page.getByTestId('prd-warning').isVisible(), 'avviso sull\'oscuramento non visibile');
+      await loadPdfIn(page, await makePdf('Relazione di esempio', 'Relazione', [[0.18, 0.43, 0.62], [0.7, 0.33, 0.16]], 3));
+      await page.getByTestId('prd-stage').locator('canvas').waitFor();
+      await page.waitForFunction(() => (document.querySelector('[data-testid=prd-stage] canvas')?.width ?? 0) > 100);
+      // un rettangolo disegnato con il mouse sulla prima pagina
+      const box = await page.getByTestId('prd-stage').boundingBox();
+      await page.mouse.move(box.x + box.width * 0.1, box.y + box.height * 0.1);
+      await page.mouse.down();
+      await page.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.2, { steps: 5 });
+      await page.mouse.up();
+      await page.waitForSelector('[data-testid=prd-area]');
+      need((await page.getByTestId('prd-total').innerText()).includes('1 aree'), 'totale: ' + (await page.getByTestId('prd-total').innerText()));
+      // ricerca: il testo «Pagina 3» si copre dove compare
+      await page.fill('#prd-q', 'Pagina 3');
+      await page.getByTestId('prd-find').click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=prd-search-note]')?.textContent.includes('1 occorrenze'));
+      const out = await downloadBuffer(page, () => page.getByTestId('prd-go').click());
+      const d = await PDFDocument.load(out.buffer);
+      const pages = d.getPages();
+      const fonts = pages.map((p) => p.node.Resources()?.has(PDFName.of('Font')) ?? false);
+      need(pages.length === 3, 'pagine: ' + pages.length);
+      need(fonts[0] === false && fonts[1] === true && fonts[2] === false, 'pagine oscurate/intatte: ' + fonts.join(','));
+      await page.getByTestId('prd-next').click();
+      await page.getByTestId('prd-whole').click();
+      need((await page.getByTestId('prd-total').innerText()).includes('3 aree'), 'totale dopo tutta la pagina');
+    },
+  });
   await shot('pdf-sign.png', {
     width: 1280,
     dark: false,

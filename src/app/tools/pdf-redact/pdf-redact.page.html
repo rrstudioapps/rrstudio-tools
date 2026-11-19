@@ -1,0 +1,95 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.prd.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('prd.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <p class="tool-warn" role="note" data-testid="prd-warning">
+    <strong>{{ i18n.t('prd.warn.title') }}</strong>
+    <span>{{ i18n.t('prd.warn.text') }}</span>
+  </p>
+
+  <app-pdf-source toolId="pdf-redact" (loaded)="onLoaded($event)" (cleared)="onCleared()">
+    @if (pdf(); as p) {
+      <section class="panel" [attr.aria-label]="i18n.t('prd.pages')">
+        <h2 class="eyebrow">{{ i18n.t('prd.pages') }}</h2>
+        <div class="nav">
+          <button type="button" class="btn small" data-testid="prd-prev" [disabled]="index() === 0" (click)="go(index() - 1)"><app-icon name="left" /> {{ i18n.t('prd.prev') }}</button>
+          <label class="visually-hidden" for="prd-page">{{ i18n.t('prd.page') }}</label>
+          <input id="prd-page" type="number" min="1" [max]="p.pages" [value]="index() + 1" (change)="go(+$any($event.target).value - 1)" />
+          <span class="hint">/ {{ p.pages }}</span>
+          <button type="button" class="btn small" data-testid="prd-next" [disabled]="index() >= p.pages - 1" (click)="go(index() + 1)">{{ i18n.t('prd.next') }} <app-icon name="right" /></button>
+        </div>
+        <p class="hint">{{ i18n.t('prd.draw') }}</p>
+        <div
+          class="stage"
+          data-testid="prd-stage"
+          (pointerdown)="down($event)"
+          (pointermove)="move($event)"
+          (pointerup)="up($event)"
+          (pointercancel)="cancel()"
+        >
+          <canvas #view role="img" [attr.aria-label]="i18n.t('prd.canvas', { n: index() + 1 })"></canvas>
+          @for (r of pageAreas(); track $index) {
+            <div class="area" data-testid="prd-area" [style.left.%]="r.x * 100" [style.top.%]="r.y * 100" [style.width.%]="r.w * 100" [style.height.%]="r.h * 100"></div>
+          }
+          @if (dragRect(); as d) {
+            <div class="drag" [style.left.%]="d.x * 100" [style.top.%]="d.y * 100" [style.width.%]="d.w * 100" [style.height.%]="d.h * 100"></div>
+          }
+        </div>
+        <div class="row">
+          <button type="button" class="btn small" [disabled]="pageAreas().length === 0" (click)="undo()"><app-icon name="rotateCcw" /> {{ i18n.t('prd.undo') }}</button>
+          <button type="button" class="btn small" [disabled]="pageAreas().length === 0" (click)="clearPage()"><app-icon name="trash" /> {{ i18n.t('prd.clearPage') }}</button>
+          <button type="button" class="btn small" data-testid="prd-whole" (click)="wholePage()">{{ i18n.t('prd.whole') }}</button>
+        </div>
+      </section>
+
+      <section class="panel" [attr.aria-label]="i18n.t('prd.search')">
+        <h2 class="eyebrow">{{ i18n.t('prd.search') }}</h2>
+        <div class="search">
+          <label class="visually-hidden" for="prd-q">{{ i18n.t('prd.search') }}</label>
+          <input id="prd-q" type="text" autocomplete="off" spellcheck="false" [placeholder]="i18n.t('prd.search.ph')" [value]="query()" (input)="query.set($any($event.target).value)" (keydown.enter)="findAll()" />
+          <button type="button" class="btn small" data-testid="prd-find" [disabled]="query().trim() === '' || searching()" (click)="findAll()">{{ i18n.t('prd.find') }}</button>
+        </div>
+        @if (searchNote()) {
+          <p class="hint" data-testid="prd-search-note">{{ searchNote() }}</p>
+        }
+      </section>
+
+      <section class="panel" [attr.aria-label]="i18n.t('prd.out')">
+        <h2 class="eyebrow">{{ i18n.t('prd.out') }}</h2>
+        <p class="hint" data-testid="prd-total">{{ i18n.t('prd.total', { areas: totals().areas, pages: totals().pages }) }}</p>
+        <div class="opts">
+          <label class="fld" for="prd-dpi">
+            <span>{{ i18n.t('prd.dpi') }}</span>
+            <select id="prd-dpi" (change)="dpi.set(+$any($event.target).value)">
+              @for (d of dpis; track d) {
+                <option [value]="d" [selected]="dpi() === d">{{ d }} DPI</option>
+              }
+            </select>
+          </label>
+          <label class="fld" for="prd-fmt">
+            <span>{{ i18n.t('prd.format') }}</span>
+            <select id="prd-fmt" (change)="format.set($any($event.target).value)">
+              <option value="jpeg" [selected]="format() === 'jpeg'">{{ i18n.t('prd.format.jpeg') }}</option>
+              <option value="png" [selected]="format() === 'png'">{{ i18n.t('prd.format.png') }}</option>
+            </select>
+          </label>
+          <button type="button" class="btn primary" data-testid="prd-go" [disabled]="busy() || totals().areas === 0" (click)="run()">
+            <app-icon name="download" /> {{ busy() ? progress() || i18n.t('pc.working') : i18n.t('prd.go') }}
+          </button>
+        </div>
+      </section>
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (error()) {
+        <p class="tool-error" role="alert" data-testid="prd-error">{{ error() }}</p>
+      } @else if (done()) {
+        <p class="tool-ok" data-testid="prd-done">{{ done() }}</p>
+      }
+    </div>
+  </app-pdf-source>
+</div>

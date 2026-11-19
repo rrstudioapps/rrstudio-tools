@@ -556,6 +556,12 @@ export const it = {
   'seo.pfm.title': 'Compila moduli PDF online e appiattiscili | rrstudio tools',
   'seo.pfm.desc':
     'Compila un modulo PDF online: testo, caselle, scelte e menu; scarica il PDF compilato o appiattito. Il file non viene caricato.',
+  'tool.prd.title': 'Oscura aree di un PDF',
+  'tool.prd.desc':
+    'Oscura nomi, codici e firme in un PDF disegnando rettangoli o cercando un testo: le pagine oscurate diventano immagini e il testo sotto non esiste più.',
+  'seo.prd.title': 'Oscura testo e aree in un PDF online | rrstudio tools',
+  'seo.prd.desc':
+    'Oscura parti di un PDF online in modo reale: rettangoli neri o ricerca di un testo; le pagine diventano immagini e il testo sotto sparisce. Il file non viene caricato.',
   'tool.crop.title': 'Ritaglia e ruota immagini',
   'tool.crop.desc':
     'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',

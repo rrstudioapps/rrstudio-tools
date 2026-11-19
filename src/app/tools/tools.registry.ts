@@ -1209,6 +1209,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-form/pdf-form.page').then((m) => m.PdfFormPage),
   },
   {
+    id: 'pdf-redact',
+    path: 'pdf-redact',
+    icon: 'eyeOff',
+    category: 'media',
+    keywords: {
+      it: 'pdf oscura oscurare censura nascondi redact redazione privacy nome codice fiscale firma rettangolo nero',
+      en: 'pdf redact redaction black out hide censor privacy name tax code signature black rectangle',
+    },
+    titleKey: 'tool.prd.title',
+    descriptionKey: 'tool.prd.desc',
+    seo: { titleKey: 'seo.prd.title', descriptionKey: 'seo.prd.desc' },
+    loadComponent: () => import('./pdf-redact/pdf-redact.page').then((m) => m.PdfRedactPage),
+  },
+  {
     id: 'image-crop',
     path: 'image-crop',
     icon: 'crop',

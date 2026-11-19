@@ -1,0 +1,93 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio tools
+.panel {
+  display: grid;
+  gap: var(--space-3);
+}
+.form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+.fld {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  input {
+    min-width: 0;
+    color: var(--ink);
+  }
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  input[type='number'] {
+    width: 5rem;
+  }
+}
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  touch-action: none;
+  cursor: crosshair;
+  user-select: none;
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .area,
+  .drag {
+    position: absolute;
+    pointer-events: none;
+  }
+  .area {
+    background: #000;
+    outline: 2px solid #d6336c;
+  }
+  .drag {
+    background: rgb(0 0 0 / 0.45);
+    outline: 2px dashed #d6336c;
+  }
+}
+.search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  input {
+    min-width: 0;
+    width: 16rem;
+  }
+}
+.areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-3);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}

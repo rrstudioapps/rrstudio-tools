@@ -124,6 +124,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['pdf-form'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Oscura aree di un PDF»: rettangoli neri disegnati sulle pagine o ricerca di un testo da coprire ovunque; le pagine oscurate diventano immagini, quindi il testo sotto non esiste più nel file.',
+        en: 'New tool "Black out parts of a PDF": black rectangles drawn on the pages or a text search to cover everywhere; redacted pages become images, so the text underneath no longer exists in the file.',
+        toolIds: ['pdf-redact'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',
