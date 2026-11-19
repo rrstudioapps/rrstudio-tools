@@ -105,7 +105,7 @@ try {
       if (!CHECK) await page.screenshot({ path: join(out, name), fullPage: true });
     } catch (e) {
       // un'interazione fallita non ferma gli altri: viene riportata alla fine con exit 1
-      errors.push(prefix + 'interazione fallita: ' + (process.env.E2E_VERBOSE ? e.message + ' @' + (/screenshots\.mjs:(\d+)/.exec(e.stack ?? '')?.[1] ?? '?') : e.message.split('\n')[0]));
+      errors.push(prefix + 'interazione fallita: ' + (process.env.E2E_VERBOSE ? e.message + ' @' + (/screenshots\.mjs:(\d+)/.exec(e.stack ?? '')?.[1] ?? '?') + ' ' + (e.stack ?? '').split('\n').slice(1, 4).join(' | ').slice(0, 300) : e.message.split('\n')[0]));
     }
     await ctx.close();
   }
@@ -2148,8 +2148,8 @@ try {
       });
       const doc = await PDFDocument.create();
       const pg = doc.addPage([400, 300]);
-      pg.drawImage(await doc.embedJpg(Buffer.from(jpg, 'base64')), { x: 20, y: 150, width: 192, height: 128 });
-      pg.drawImage(await doc.embedPng(Buffer.from(png, 'base64')), { x: 220, y: 150, width: 160, height: 107 });
+      pg.drawImage(await doc.embedJpg(new Uint8Array(Buffer.from(jpg, 'base64'))) /* copia: i Buffer piccoli stanno in un pool condiviso e pdf-lib legge .buffer intero */, { x: 20, y: 150, width: 192, height: 128 });
+      pg.drawImage(await doc.embedPng(new Uint8Array(Buffer.from(png, 'base64'))), { x: 220, y: 150, width: 160, height: 107 });
       await loadPdfIn(page, Buffer.from(await doc.save()));
       await page.waitForSelector('[data-testid=pim-card]');
       need((await page.locator('[data-testid=pim-card]').count()) === 2, 'immagini trovate: ' + (await page.locator('[data-testid=pim-card]').count()));
@@ -2159,7 +2159,7 @@ try {
       need(zip.buffer.subarray(0, 2).toString() === 'PK' && zip.buffer.includes('.jpg') && zip.buffer.includes('.png'), 'ZIP inatteso');
       await page.getByRole('button', { name: 'Deseleziona' }).click();
       await page.locator('[data-testid=pim-card] input[type=checkbox]').first().check();
-      need((await page.getByTestId('pim-zip').innerText()).includes('1'), 'selezione');
+      await page.waitForFunction(() => /Scarica 1 in un ZIP/.test(document.querySelector('[data-testid=pim-zip]')?.textContent ?? ''));
       // PDF senza immagini
       const empty = await PDFDocument.create();
       empty.addPage();
@@ -2222,7 +2222,7 @@ try {
       const out = await downloadBuffer(page, () => page.getByTestId('prd-go').click());
       const d = await PDFDocument.load(out.buffer);
       const pages = d.getPages();
-      const fonts = pages.map((p) => p.node.Resources()?.has(PDFName.of('Font')) ?? false);
+      const fonts = pages.map((p) => (p.node.Resources()?.lookup(PDFName.of('Font'))?.keys().length ?? 0) > 0); // con almeno un carattere: pagina con testo vero
       need(pages.length === 3, 'pagine: ' + pages.length);
       need(fonts[0] === false && fonts[1] === true && fonts[2] === false, 'pagine oscurate/intatte: ' + fonts.join(','));
       await page.getByTestId('prd-next').click();
