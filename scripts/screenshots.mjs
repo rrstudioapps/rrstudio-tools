@@ -2556,6 +2556,83 @@ try {
     await page.waitForURL('**/privacy');
     must((await page.getByText('Ricevuto da').count()) === 0, 'l\'avviso "Ricevuto da" è rimasto dopo la navigazione');
   });
+  // Ctrl+K: palette di ricerca globale (non nei campi di testo, non nella home dove c'è la ricerca della pagina)
+  await handoffCase('palette ctrl+k', '/base64/', async (page) => {
+    await page.locator('#main').focus();
+    await page.keyboard.press('Control+k');
+    const dlg = page.getByRole('dialog', { name: 'Cerca uno strumento' });
+    await dlg.waitFor();
+    await page.getByRole('combobox', { name: 'Cerca tra gli strumenti' }).fill('uuid');
+    await dlg.getByRole('option').first().waitFor();
+    must((await dlg.getByRole('option').first().innerText()).includes('UUID'), 'palette: primo risultato inatteso');
+    await page.keyboard.press('Enter');
+    await page.waitForURL('**/uuid-generator');
+    must((await page.getByRole('dialog').count()) === 0, 'palette ancora aperta');
+    // dentro un campo di testo Ctrl+K resta al browser
+    await page.goto(base + '/json-formatter/');
+    await page.fill('#json-in', 'x');
+    await page.keyboard.press('Control+k');
+    must((await page.locator('dialog[open]').count()) === 0, 'palette aperta da dentro un campo');
+    // il pulsante dell'header apre la palette e Esc la chiude riportando il focus
+    const open = page.getByRole('button', { name: /^Cerca uno strumento/ });
+    await open.click();
+    await page.getByRole('dialog', { name: 'Cerca uno strumento' }).waitFor();
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('dialog[open]'));
+    must(await open.evaluate((el) => el === document.activeElement), 'palette: il focus non torna sul pulsante');
+  });
+  // Catene: creare, salvare, avviare e passare al passo successivo con «Invia a…»
+  await handoffCase('catena json-formatter → json-viewer', '/', async (page) => {
+    await page.getByRole('button', { name: 'Catene di strumenti' }).click();
+    const dlg = page.getByRole('dialog', { name: 'Catene di strumenti' });
+    await dlg.waitFor();
+    await dlg.getByRole('textbox', { name: 'Nome' }).fill('Prova');
+    await dlg.getByLabel('Strumento da aggiungere').selectOption('json-formatter');
+    await dlg.getByRole('button', { name: 'Aggiungi passo' }).click();
+    await dlg.getByLabel('Strumento da aggiungere').selectOption('json-viewer');
+    await dlg.getByRole('button', { name: 'Aggiungi passo' }).click();
+    await dlg.getByRole('button', { name: 'Salva', exact: true }).click();
+    await dlg.getByText('Catena salvata.').waitFor();
+    must(JSON.parse(await page.evaluate(() => localStorage.getItem('rrtools.chains')))[0].steps.join() === 'json-formatter,json-viewer', 'catena non salvata');
+    await dlg.locator('ul.saved').getByRole('button', { name: 'Avvia' }).click();
+    await page.waitForURL('**/json-formatter');
+    const bar = page.getByRole('navigation', { name: 'Catena in corso: Prova' });
+    await bar.locator('li[aria-current=step]', { hasText: '1.' }).waitFor();
+    await page.fill('#json-in', '{"a":1,"b":[1,2,3],"nome":"Mario"}');
+    await page.waitForSelector('#json-out code span');
+    await page.getByRole('button', { name: 'Invia a… un altro strumento' }).click();
+    await page.getByRole('button', { name: /^Passo successivo: JSON Viewer/ }).click();
+    await page.waitForURL('**/json-viewer');
+    await bar.locator('li[aria-current=step]', { hasText: '2.' }).waitFor();
+    await page.locator('#jv-search').waitFor();
+    must((await page.locator('main').innerText()).includes('nome'), 'catena: il JSON non è arrivato');
+    // la catena sopravvive alla navigazione ma non al ricaricamento; si chiude con il pulsante
+    await page.getByRole('button', { name: 'Chiudi catena' }).click();
+    await bar.waitFor({ state: 'detached' });
+    await page.evaluate(() => localStorage.removeItem('rrtools.chains')); // niente di salvato per il controllo sul contenuto
+  });
+  // Impostazioni: esportazione e importazione in un solo file JSON
+  await handoffCase('impostazioni esporta/importa', '/privacy/', async (page) => {
+    await page.getByRole('button', { name: 'Passa al tema scuro' }).click();
+    await page.evaluate(() => localStorage.setItem('rrtools.favorites', JSON.stringify({ v: 1, favorites: ['base64'], groups: [] })));
+    await page.reload();
+    await page.waitForSelector('app-settings-transfer');
+    const [dl] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Esporta impostazioni' }).click()]);
+    const data = JSON.parse(readFileSync(await dl.path(), 'utf8'));
+    must(data.format === 'rrstudio-tools-settings' && data.theme === 'dark' && data.favorites.favorites[0] === 'base64', 'esportazione impostazioni inattesa');
+    must(!/draft|markdown/i.test(JSON.stringify(data)), 'bozze nelle impostazioni');
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    await page.setInputFiles('app-settings-transfer input[type=file]', { name: 's.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(data)) });
+    await page.getByRole('heading', { name: 'Importare queste impostazioni?' }).waitFor();
+    must((await page.evaluate(() => localStorage.getItem('rrtools.favorites'))) === null, 'import automatico');
+    await page.getByRole('button', { name: 'Importa', exact: true }).click();
+    await page.getByText('Impostazioni importate.').waitFor();
+    must(JSON.parse(await page.evaluate(() => localStorage.getItem('rrtools.favorites'))).favorites[0] === 'base64', 'preferiti non importati');
+    must((await page.evaluate(() => localStorage.getItem('rrtools.theme'))) === 'dark', 'tema non importato');
+    await page.setInputFiles('app-settings-transfer input[type=file]', { name: 'x.json', mimeType: 'application/json', buffer: Buffer.from('{"a":1}') });
+    await page.getByText('non è un file di impostazioni').waitFor();
+  });
   await handoffCase('image-crop → image-compressor', '/image-crop/', async (page) => {
     const [photo] = await drawImages(page);
     await page.setInputFiles('input[type=file]', [{ name: 'montagna.jpg', mimeType: 'image/jpeg', buffer: photo.buffer }]);

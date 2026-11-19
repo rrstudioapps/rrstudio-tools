@@ -3,11 +3,14 @@
 import { ChangeDetectionStrategy, Component, afterNextRender, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BuildDay } from './core/build-day';
+import { ChainsService } from './core/chains/chains.service';
 import { FavoritesService } from './core/favorites/favorites.service';
 import { I18nService } from './core/i18n/i18n.service';
 import { PwaService } from './core/pwa/pwa.service';
 import { SeoService } from './core/seo/seo.service';
 import { ThemeService } from './core/theme/theme.service';
+import { ChainBar, ChainsDialog } from './shared/chains-ui';
+import { CommandPalette } from './shared/command-palette';
 import { Footer } from './shared/footer';
 import { HandoffNotice } from './shared/handoff-notice';
 import { Header } from './shared/header';
@@ -16,18 +19,21 @@ import { PwaStatus } from './shared/pwa-status';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Footer, HandoffNotice, LangHint, PwaStatus],
+  imports: [RouterOutlet, Header, Footer, HandoffNotice, LangHint, PwaStatus, CommandPalette, ChainBar, ChainsDialog],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a class="skip" href="#main">{{ i18n.t('nav.skip') }}</a>
     <app-lang-hint />
     <app-header />
+    <app-chain-bar />
     <main id="main" tabindex="-1">
       <app-handoff-notice />
       <router-outlet />
     </main>
     <app-footer />
     <app-pwa-status />
+    <app-command-palette />
+    <app-chains-dialog />
   `,
   styles: `
     :host {
@@ -59,6 +65,7 @@ export class App {
   private readonly theme = inject(ThemeService);
   private readonly pwa = inject(PwaService);
   private readonly favorites = inject(FavoritesService);
+  private readonly chains = inject(ChainsService);
 
   constructor() {
     inject(BuildDay); // fissa il giorno della build nel prerender (badge «Nuovo» senza differenze in idratazione)
@@ -67,6 +74,7 @@ export class App {
     afterNextRender(() => {
       this.theme.initFromBrowser();
       this.favorites.init(); // preferiti dell'utente: solo nel browser, dopo l'idratazione
+      this.chains.init(); // catene salvate dall'utente: solo nel browser
       this.pwa.init(); // service worker: solo nel browser, dopo che l'app è stabile
     });
   }

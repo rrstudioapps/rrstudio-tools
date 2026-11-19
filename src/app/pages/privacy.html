@@ -42,6 +42,10 @@
         <code>rrtools.favorites</code>: i tuoi preferiti e i menu personalizzati, solo se li usi. Contiene soltanto
         gli identificativi degli strumenti che hai scelto e il nome e l'ordine dei menu che hai creato, nient'altro.
       </li>
+      <li>
+        <code>rrtools.chains</code>: le catene di strumenti che hai salvato, solo se le usi. Contiene soltanto un nome
+        e gli identificativi degli strumenti, nient'altro.
+      </li>
     </ul>
     <p>
       Per cancellarli usa il pulsante «Cancella bozza» (per la bozza), il pulsante «Cancella preferiti e menu» nella
@@ -53,6 +57,13 @@
       questa parte dell'indirizzo al server, quindi restano sul tuo dispositivo e su quello di chi apre il link, che
       deve confermare prima che venga importato qualcosa.
     </p>
+    <h3>Esporta o importa le impostazioni</h3>
+    <p>
+      Per portare le tue preferenze su un altro dispositivo puoi esportarle in un file JSON e importarle altrove. Il
+      file contiene solo tema, preferiti e menu, catene di strumenti e la chiusura della barra «available in
+      English»: mai bozze né dati inseriti negli strumenti. Resta sul tuo dispositivo: lo scegli e lo sposti tu.
+    </p>
+    <app-settings-transfer />
     <p>
       Il sito usa un service worker e la Cache Storage del browser solo per conservare i file del sito (pagine,
       script, stili, font) e farlo funzionare anche offline. Nessun dato inserito negli strumenti viene salvato. Per
@@ -183,6 +194,10 @@
         <code>rrtools.favorites</code>: your favorites and custom menus, only if you use them. It contains only the
         identifiers of the tools you picked and the names and order of the menus you created, nothing else.
       </li>
+      <li>
+        <code>rrtools.chains</code>: the tool chains you saved, only if you use them. It contains only a name and the
+        tool identifiers, nothing else.
+      </li>
     </ul>
     <p>
       To remove them use the "Clear draft" button (for the draft), the "Delete favorites and menus" button on the
@@ -194,6 +209,13 @@
       address to the server, so the data stays on your device and on the device of whoever opens the link, who must
       confirm before anything is imported.
     </p>
+    <h3>Export or import your settings</h3>
+    <p>
+      To move your preferences to another device you can export them to a JSON file and import it elsewhere. The file
+      contains only the theme, favorites and menus, tool chains and whether you closed the "available in English" bar:
+      never drafts or data entered in the tools. It stays on your device: you choose it and move it yourself.
+    </p>
+    <app-settings-transfer />
     <p>
       The site uses a service worker and the browser's Cache Storage only to keep the site files (pages, scripts,
       styles, fonts) so that it also works offline. No data entered in the tools is saved. To empty this cache use

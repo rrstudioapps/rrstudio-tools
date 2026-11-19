@@ -38,7 +38,11 @@ export class ThemeService {
   }
 
   toggle(): void {
-    const next: Theme = this.theme() === 'dark' ? 'light' : 'dark';
+    this.set(this.theme() === 'dark' ? 'light' : 'dark');
+  }
+
+  /** Imposta e salva il tema (anche da un'importazione delle impostazioni). */
+  set(next: Theme): void {
     this.ready = true;
     this.theme.set(next);
     try {

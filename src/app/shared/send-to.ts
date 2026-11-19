@@ -2,6 +2,7 @@
 // © 2026 rrstudio — rrstudio tools
 import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { ChainsService } from '../core/chains/chains.service';
 import { I18nService } from '../core/i18n/i18n.service';
 import { TOOLS } from '../tools/tools.registry';
 import { normalizeText } from '../pages/tool-filter';
@@ -46,6 +47,11 @@ const TOOL_ORDER = TOOLS.map((t) => t.id);
       </button>
       @if (open()) {
         <div [id]="panelId" class="panel" role="group" [attr.aria-label]="i18n.t('send.menu')">
+          @if (chainNext(); as n) {
+            <button type="button" class="item chain" (click)="send(n.id, n.path)">
+              <app-icon name="link" /> {{ i18n.t('chain.send', { tool: i18n.t(n.titleKey) }) }}
+            </button>
+          }
           @if (targets().length > FILTER_MIN) {
             <input
               #q
@@ -102,6 +108,10 @@ const TOOL_ORDER = TOOLS.map((t) => t.id);
       font: inherit;
       font-size: var(--fs-sm);
     }
+    .chain {
+      margin-bottom: var(--space-1);
+      font-weight: 600;
+    }
     .empty {
       margin: 0;
       padding: 7px var(--space-3);
@@ -133,6 +143,7 @@ export class SendTo {
   protected readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
   private readonly handoff = inject(ToolHandoff);
+  private readonly chains = inject(ChainsService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
   protected readonly panelId = `send-to-panel-${SendTo.nextId++}`;
@@ -150,6 +161,14 @@ export class SendTo {
   protected readonly targets = computed(() => {
     const ids = handoffTargets(this.kind(), this.from(), TOOL_ORDER);
     return ids.map((id) => TOOLS.find((t) => t.id === id)!).filter((t) => !(this.i18n.lang() === 'en' && t.italyOnly));
+  });
+
+  /** Passo successivo della catena in corso, se lo strumento di partenza è il passo corrente e ne accetta il contenuto. */
+  protected readonly chainNext = computed(() => {
+    const a = this.chains.active();
+    const next = this.chains.nextTool();
+    if (!a || !next || a.steps[a.index] !== this.from()) return null;
+    return this.targets().find((t) => t.id === next) ?? null;
   });
 
   /** Sopra questa soglia il menu mostra il campo per filtrare. */

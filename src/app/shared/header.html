@@ -3,7 +3,7 @@
   <div class="container bar-inner">
     <a class="brand" [routerLink]="i18n.link('')" [attr.aria-label]="'rrstudio tools — ' + i18n.t('nav.home')">
       <img src="favicon.svg" alt="" width="28" height="28" />
-      <span class="name">rrstudio <span class="sub">Tools</span></span>
+      <span class="name">rrstudio <span class="sub">tools</span></span>
     </a>
 
     <nav class="nav" [attr.aria-label]="i18n.t('nav.main')">
@@ -13,6 +13,12 @@
     </nav>
 
     <div class="actions">
+      <button type="button" class="icon-btn" [attr.aria-label]="i18n.t('palette.open')" [attr.title]="i18n.t('palette.open')" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K" (click)="palette.open()">
+        <app-icon name="search" [stroke]="1.6" />
+      </button>
+      <button type="button" class="icon-btn" [attr.aria-label]="i18n.t('chain.open')" [attr.title]="i18n.t('chain.open')" aria-haspopup="dialog" (click)="chains.dialogOpen.set(true)">
+        <app-icon name="link" [stroke]="1.6" />
+      </button>
       <app-favorites-menu />
       <div class="lang" role="group" [attr.aria-label]="i18n.t('nav.lang')">
         @for (l of langs; track l) {

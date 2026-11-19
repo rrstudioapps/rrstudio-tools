@@ -25,7 +25,7 @@ export interface ChangelogVersion {
 export const CHANGELOG: readonly ChangelogVersion[] = [
   {
     date: '2026-11-19',
-    title: { it: 'Strumenti XML e filtro in «Invia a…»', en: 'XML tools and filter in "Send to…"' },
+    title: { it: 'Strumenti XML, ricerca Ctrl+K, catene e impostazioni', en: 'XML tools, Ctrl+K search, chains and settings' },
     entries: [
       {
         kind: 'new-tool',
@@ -55,6 +55,21 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',
+      },
+      {
+        kind: 'improvement',
+        it: 'Ricerca rapida con Ctrl+K (⌘+K su Mac) da qualunque pagina: scrivi il nome di uno strumento, scegli con le frecce e premi Invio. C\'è anche il pulsante con la lente nell\'intestazione.',
+        en: 'Quick search with Ctrl+K (⌘+K on Mac) from any page: type a tool name, pick with the arrow keys and press Enter. There is also a magnifier button in the header.',
+      },
+      {
+        kind: 'improvement',
+        it: 'Catene di strumenti: collega più strumenti in un percorso (ad esempio JSON Formatter → JSON Viewer), salvalo e, dopo ogni passo, «Invia a…» propone per primo il successivo. Nelle catene salvate restano solo nome e strumenti, mai i dati.',
+        en: 'Tool chains: link several tools in a path (for example JSON Formatter → JSON Viewer), save it and, after each step, "Send to…" offers the next one first. Saved chains keep only a name and the tools, never your data.',
+      },
+      {
+        kind: 'improvement',
+        it: 'Esporta e importa tutte le impostazioni (tema, preferiti e menu, catene) in un solo file JSON dalla pagina Privacy, per portarle su un altro dispositivo.',
+        en: 'Export and import all your settings (theme, favorites and menus, chains) in a single JSON file from the Privacy page, to move them to another device.',
       },
     ],
   },
