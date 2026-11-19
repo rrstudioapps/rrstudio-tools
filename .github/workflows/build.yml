@@ -31,6 +31,9 @@ jobs:
         run: npm run smoke
       - name: E2E (tool interactions)
         run: npm run e2e
+        env:
+          # messaggi completi (con riga dello script) quando un'interazione fallisce
+          E2E_VERBOSE: '1'
       - name: PWA (service worker, offline use, update)
         run: npm run pwa-check
       - name: Lighthouse (accessibility, SEO, best practices, performance thresholds)

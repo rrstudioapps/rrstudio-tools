@@ -1715,7 +1715,8 @@ try {
     setup: async (page) => {
       await page.getByRole('button', { name: 'Tramonto' }).click();
       await page.getByRole('button', { name: 'Aggiungi stop' }).click();
-      await page.waitForSelector('[data-testid=cssg-code]');
+      // il codice si aggiorna dopo il clic: senza questa attesa lo snapshot «prima» può essere ancora quello a due stop
+      await page.waitForFunction(() => document.querySelector('[data-testid=cssg-code]')?.textContent.includes('50%'));
     },
   });
   await shot('svg-optimizer.png', {
@@ -2227,7 +2228,7 @@ try {
       need(fonts[0] === false && fonts[1] === true && fonts[2] === false, 'pagine oscurate/intatte: ' + fonts.join(','));
       await page.getByTestId('prd-next').click();
       await page.getByTestId('prd-whole').click();
-      need((await page.getByTestId('prd-total').innerText()).includes('3 aree'), 'totale dopo tutta la pagina');
+      await page.waitForFunction(() => document.querySelector('[data-testid=prd-total]')?.textContent.includes('3 aree'));
     },
   });
   await shot('pdf-protect.png', {
