@@ -112,6 +112,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['pdf-crop'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Estrai immagini da PDF»: le immagini incorporate in qualità originale (JPEG identici, le altre in PNG anche con trasparenza), con anteprima, scelta e download in ZIP.',
+        en: 'New tool "Extract images from PDF": the embedded images at original quality (identical JPEGs, the others as PNG with transparency too), with preview, selection and ZIP download.',
+        toolIds: ['pdf-images'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

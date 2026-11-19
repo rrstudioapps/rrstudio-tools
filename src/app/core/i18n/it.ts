@@ -544,6 +544,12 @@ export const it = {
   'seo.pcr.title': 'Ritaglia margini e ridimensiona PDF online | rrstudio tools',
   'seo.pcr.desc':
     'Ritaglia i margini di un PDF, cambia la scala o adatta le pagine ad A4, A5, Letter online, con anteprima. Il file non viene caricato.',
+  'tool.pim.title': 'Estrai immagini da PDF',
+  'tool.pim.desc':
+    'Estrai le immagini incorporate in un PDF in qualità originale (JPEG o PNG), una per una o tutte in uno ZIP.',
+  'seo.pim.title': 'Estrai immagini da un PDF online | rrstudio tools',
+  'seo.pim.desc':
+    'Estrai le immagini da un PDF online: JPEG identici all\'originale e PNG anche con trasparenza, con anteprima e ZIP. Il file non viene caricato.',
   'tool.crop.title': 'Ritaglia e ruota immagini',
   'tool.crop.desc':
     'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',

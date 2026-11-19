@@ -1,0 +1,51 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.pim.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('pim.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-pdf-source toolId="pdf-images" (loaded)="onLoaded($event)" (cleared)="onCleared()">
+    @if (busy()) {
+      <p class="tool-ok">{{ i18n.t('pim.working') }}</p>
+    }
+    @if (found(); as f) {
+      @if (items().length) {
+        <section class="panel" [attr.aria-label]="i18n.t('pim.found')">
+          <h2 class="eyebrow">{{ i18n.t('pim.found') }}</h2>
+          <p class="hint" data-testid="pim-summary">{{ summary() }}</p>
+          <div class="row">
+            <button type="button" class="btn small" (click)="selectAll(true)">{{ i18n.t('pim.all') }}</button>
+            <button type="button" class="btn small" (click)="selectAll(false)">{{ i18n.t('pim.none') }}</button>
+            <button type="button" class="btn primary" data-testid="pim-zip" [disabled]="selectedCount() === 0 || zipping()" (click)="downloadZip()"><app-icon name="download" /> {{ i18n.t('pim.zip', { n: selectedCount() }) }}</button>
+          </div>
+          <ul class="grid" [attr.aria-label]="i18n.t('pim.found')">
+            @for (it of items(); track it.img.id) {
+              <li class="card" data-testid="pim-card">
+                <div class="thumb">
+                  @if (it.url) {
+                    <img [src]="it.url" [alt]="i18n.t('pim.alt', { n: it.img.id })" loading="lazy" />
+                  } @else {
+                    <span class="hint">{{ i18n.t('pim.nopreview') }}</span>
+                  }
+                </div>
+                <div class="meta">{{ it.img.width }}×{{ it.img.height }} · {{ it.img.format.toUpperCase() }}@if (it.img.alpha) { · α } · {{ sizeText(it.img.bytes.length) }}@if (it.img.page) { · {{ i18n.t('pim.page', { n: it.img.page }) }} }</div>
+                @if (it.img.cmyk) {
+                  <div class="hint">{{ i18n.t('pim.cmyk') }}</div>
+                }
+                <div class="actions">
+                  <label class="check"><input type="checkbox" [checked]="it.on" (change)="toggle(it.img.id, $any($event.target).checked)" /> {{ i18n.t('pim.pick') }}</label>
+                  <button type="button" class="btn small" [attr.aria-label]="i18n.t('pim.download', { n: it.img.id })" (click)="downloadOne(it.img)"><app-icon name="download" /></button>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      } @else {
+        <p class="tool-warn" role="note" data-testid="pim-none">{{ i18n.t('pim.empty') }}</p>
+      }
+    }
+  </app-pdf-source>
+</div>

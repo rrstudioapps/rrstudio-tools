@@ -2119,6 +2119,54 @@ try {
       await page.getByRole('button', { name: 'Ritaglia i margini' }).click();
     },
   });
+  await shot('pdf-images.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-images/',
+    setup: async (page) => {
+      // un PDF con un JPEG e un PNG trasparente (creati in pagina con un canvas)
+      const [jpg, png] = await page.evaluate(async () => {
+        const make = async (type, alpha) => {
+          const c = document.createElement('canvas');
+          c.width = 96;
+          c.height = 64;
+          const x = c.getContext('2d');
+          const g = x.createLinearGradient(0, 0, 96, 64);
+          g.addColorStop(0, '#2b8a3e');
+          g.addColorStop(1, '#1c7ed6');
+          x.fillStyle = g;
+          if (alpha) x.arc(48, 32, 30, 0, 7);
+          x.fill();
+          if (!alpha) x.fillRect(0, 0, 96, 64);
+          const blob = await new Promise((r) => c.toBlob(r, type, 0.9));
+          const buf = new Uint8Array(await blob.arrayBuffer());
+          let s = '';
+          for (const b of buf) s += String.fromCharCode(b);
+          return btoa(s);
+        };
+        return [await make('image/jpeg', false), await make('image/png', true)];
+      });
+      const doc = await PDFDocument.create();
+      const pg = doc.addPage([400, 300]);
+      pg.drawImage(await doc.embedJpg(Buffer.from(jpg, 'base64')), { x: 20, y: 150, width: 192, height: 128 });
+      pg.drawImage(await doc.embedPng(Buffer.from(png, 'base64')), { x: 220, y: 150, width: 160, height: 107 });
+      await loadPdfIn(page, Buffer.from(await doc.save()));
+      await page.waitForSelector('[data-testid=pim-card]');
+      need((await page.locator('[data-testid=pim-card]').count()) === 2, 'immagini trovate: ' + (await page.locator('[data-testid=pim-card]').count()));
+      const meta = await page.locator('[data-testid=pim-card]').allInnerTexts();
+      need(meta.some((t) => /JPG/.test(t)) && meta.some((t) => /PNG/.test(t) && /α/.test(t)), 'formati: ' + meta.join('|'));
+      const zip = await downloadBuffer(page, () => page.getByTestId('pim-zip').click());
+      need(zip.buffer.subarray(0, 2).toString() === 'PK' && zip.buffer.includes('.jpg') && zip.buffer.includes('.png'), 'ZIP inatteso');
+      await page.getByRole('button', { name: 'Deseleziona' }).click();
+      await page.locator('[data-testid=pim-card] input[type=checkbox]').first().check();
+      need((await page.getByTestId('pim-zip').innerText()).includes('1'), 'selezione');
+      // PDF senza immagini
+      const empty = await PDFDocument.create();
+      empty.addPage();
+      await loadPdfIn(page, Buffer.from(await empty.save()));
+      await page.getByTestId('pim-none').waitFor();
+    },
+  });
   await shot('pdf-sign.png', {
     width: 1280,
     dark: false,

@@ -1181,6 +1181,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-crop/pdf-crop.page').then((m) => m.PdfCropPage),
   },
   {
+    id: 'pdf-images',
+    path: 'pdf-images',
+    icon: 'image',
+    category: 'media',
+    keywords: {
+      it: 'pdf estrai immagini foto incorporate salva jpg png zip estrattore',
+      en: 'pdf extract images photos embedded save jpg png zip extractor',
+    },
+    titleKey: 'tool.pim.title',
+    descriptionKey: 'tool.pim.desc',
+    seo: { titleKey: 'seo.pim.title', descriptionKey: 'seo.pim.desc' },
+    loadComponent: () => import('./pdf-images/pdf-images.page').then((m) => m.PdfImagesPage),
+  },
+  {
     id: 'image-crop',
     path: 'image-crop',
     icon: 'crop',

@@ -545,6 +545,12 @@ export const en: Dict = {
   'seo.pcr.title': 'Crop margins and resize a PDF online | rrstudio tools',
   'seo.pcr.desc':
     'Crop a PDF\'s margins, change the scale or fit pages to A4, A5, Letter online, with a preview. The file is not uploaded.',
+  'tool.pim.title': 'Extract images from PDF',
+  'tool.pim.desc':
+    'Extract the images embedded in a PDF at original quality (JPEG or PNG), one by one or all in a ZIP.',
+  'seo.pim.title': 'Extract images from a PDF online | rrstudio tools',
+  'seo.pim.desc':
+    'Extract images from a PDF online: JPEGs identical to the original and PNGs with transparency too, with preview and ZIP. The file is not uploaded.',
   'tool.crop.title': 'Crop and rotate images',
   'tool.crop.desc':
     'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',
