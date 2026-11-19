@@ -24,6 +24,41 @@ export interface ChangelogVersion {
 /** Novità del sito, dalla più recente. Testi per gli utenti, non per gli sviluppatori. */
 export const CHANGELOG: readonly ChangelogVersion[] = [
   {
+    date: '2026-11-19',
+    title: { it: 'Strumenti XML e filtro in «Invia a…»', en: 'XML tools and filter in "Send to…"' },
+    entries: [
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento: editor e visualizzatore XML ad albero, con ricerca tra tag, attributi e testo, query XPath, namespace, modifica di tag, attributi e contenuto, aggiunta, spostamento ed eliminazione di nodi, annulla e ripeti.',
+        en: 'New tool: tree-based XML editor and viewer, with search across tags, attributes and text, XPath queries, namespaces, editing of tags, attributes and content, adding, moving and deleting nodes, undo and redo.',
+        toolIds: ['xml-viewer'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Confronto XML»: le differenze di struttura tra due documenti (elementi aggiunti e tolti, attributi e testo cambiati) con il percorso XPath, senza il rumore di rientri e ordine degli attributi.',
+        en: 'New tool "XML compare": the structural differences between two documents (added and removed elements, changed attributes and text) with the XPath, without the noise of indentation and attribute order.',
+        toolIds: ['xml-diff'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Da XML a tabella e CSV»: scegli l\'elemento che si ripete, appiattisci attributi e figli in colonne, guarda l\'anteprima e scarica il CSV o inviala agli altri strumenti.',
+        en: 'New tool "XML to table and CSV": pick the repeating element, flatten attributes and children into columns, preview it and download the CSV or send it to the other tools.',
+        toolIds: ['xml-to-csv'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Validatore XSD»: controlla un XML con uno schema XSD (tipi, faccette, ordine e numero degli elementi, attributi obbligatori, ID) e mostra ogni problema con il suo percorso XPath.',
+        en: 'New tool "XSD validator": check an XML against an XSD schema (types, facets, element order and count, required attributes, IDs) and see each problem with its XPath.',
+        toolIds: ['xsd-validator'],
+      },
+      {
+        kind: 'improvement',
+        it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
+        en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',
+      },
+    ],
+  },
+  {
     date: '2026-11-18',
     title: { it: 'Codice fiscale, confronto testi e stampa', en: 'Tax code, text comparison and printing' },
     entries: [

@@ -1,0 +1,78 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.xd.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('xd.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="xml-diff" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <label class="check">
+      <input type="checkbox" [checked]="ignoreWs()" (change)="ignoreWs.set($any($event.target).checked)" />
+      {{ i18n.t('xd.ws') }}
+    </label>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()"><app-icon name="code" /> {{ i18n.t('xd.sample') }}</button>
+    <button type="button" class="btn small" [disabled]="a() === '' && b() === ''" (click)="swap()"><app-icon name="swap" /> {{ i18n.t('xd.swap') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('common.clear') }}</button>
+  </div>
+
+  <div class="tool-panels">
+    @for (s of ['a', 'b']; track s) {
+      <app-file-drop [hint]="i18n.t('xd.drop')" accept=".xml,.svg,.rss,.atom,.xhtml,.xsd,.xsl,.xslt,.gpx,.kml,.plist,text/xml,application/xml" (fileSelected)="onFile($event, $any(s))">
+        <app-io-panel [label]="i18n.t(s === 'a' ? 'xd.a' : 'xd.b')" [inputId]="'xd-' + s" [meta]="meta(s === 'a' ? a() : b())">
+          <textarea
+            [id]="'xd-' + s"
+            class="io-textarea"
+            wrap="off"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [placeholder]="i18n.t('xd.ph')"
+            [value]="s === 'a' ? a() : b()"
+            (input)="onInput($event, $any(s))"
+          ></textarea>
+        </app-io-panel>
+      </app-file-drop>
+    }
+  </div>
+
+  <div class="tool-status" aria-live="polite">
+    @if (errorText()) {
+      <p class="tool-error">{{ errorText() }}</p>
+    } @else if (same()) {
+      <p class="tool-ok">{{ i18n.t('xd.same') }}</p>
+    } @else if (changes().length) {
+      <p class="tool-ok">{{ i18n.t('xd.summary', { n: changes().length, added: summary().added, removed: summary().removed, changed: summary().changed }) }}</p>
+    }
+  </div>
+
+  @if (changes().length) {
+    <ul class="changes" [attr.aria-label]="i18n.t('xd.list')">
+      @for (c of changes(); track $index) {
+        <li class="chg" [class]="'chg ' + tone(c)">
+          <span class="kind">{{ kindLabel(c) }}</span>
+          <code class="xp">{{ c.xpath }}</code>
+          @if (c.name) {
+            <code class="nm">&#64;{{ c.name }}</code>
+          }
+          @if (c.before !== undefined) {
+            <code class="val before">{{ c.before }}</code>
+          }
+          @if (c.before !== undefined && c.after !== undefined) {
+            <span class="arrow" aria-hidden="true">→</span>
+          }
+          @if (c.after !== undefined) {
+            <code class="val after">{{ c.after }}</code>
+          }
+        </li>
+      }
+    </ul>
+    @if (truncated()) {
+      <p class="hint">{{ i18n.t('xd.truncated', { n: maxChanges }) }}</p>
+    }
+  }
+</div>

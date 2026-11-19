@@ -153,6 +153,9 @@ export const en: Dict = {
   'send.btn': 'Send to…',
   'send.label': 'Send to… another tool',
   'send.menu': 'Tools to send the result to',
+  'send.filter.label': 'Filter the tools',
+  'send.filter.ph': 'Filter…',
+  'send.filter.empty': 'No tool found',
   'send.received': 'Received from {tool}',
   'intake.title': 'Paste or drop here',
   'intake.hint': 'Paste some text with {key}+V (or drop a file on this page): I recognise the content and suggest the right tools.',
@@ -527,6 +530,30 @@ export const en: Dict = {
   'seo.yj.desc':
     'Convert YAML to JSON, JSON to YAML and TOML in every direction: multiple documents, indentation, errors with line and column. In your browser, nothing is sent.',
 
+  'tool.xd.title': 'XML compare',
+  'tool.xd.desc':
+    'Compare two XML documents by structure: added and removed elements, changed attributes and text, with the XPath of each difference and without the noise of indentation and attribute order.',
+  'seo.xd.title': 'Online XML compare: structural differences | rrstudio Tools',
+  'seo.xd.desc':
+    'Compare two XML files and see the differences in elements, attributes and text with the XPath. Ignores indentation and attribute order. All in your browser.',
+  'tool.x2c.title': 'XML to table and CSV',
+  'tool.x2c.desc':
+    'Turn an XML into a table: pick the repeating element, flatten attributes and children into columns, preview it and download the CSV.',
+  'seo.x2c.title': 'Convert XML to CSV and table online | rrstudio Tools',
+  'seo.x2c.desc':
+    'Convert an XML to a table and CSV: pick the repeating record, flatten attributes and children into columns, choose the delimiter and download. All in your browser.',
+  'tool.xsd.title': 'XSD validator',
+  'tool.xsd.desc':
+    'Check an XML against an XSD schema: types, facets, element order and count, required attributes and IDs, with the XPath of every problem.',
+  'seo.xsd.title': 'Online XSD validator for XML | rrstudio Tools',
+  'seo.xsd.desc':
+    'Validate an XML document against an XSD schema and get the list of problems with the XPath. Supports the most used parts of XSD 1.0. All in your browser.',
+  'tool.xv.title': 'XML editor and viewer',
+  'tool.xv.desc':
+    'Open an XML as a tree: search tags, attributes and text, copy the XPath of nodes and edit them with undo and redo, without the file leaving your browser.',
+  'seo.xv.title': 'Online XML tree editor and viewer | rrstudio Tools',
+  'seo.xv.desc':
+    'View and edit XML as a tree: search tags, attributes and text, copy the XPath, add, move and delete nodes with undo and redo. All in your browser.',
   'tool.xml.title': 'XML formatter and minifier',
   'tool.xml.desc':
     'Format or minify XML with the indentation you want, check it is well-formed and, if needed, convert it to JSON. Comments and CDATA are kept.',

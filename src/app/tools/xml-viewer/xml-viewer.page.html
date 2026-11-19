@@ -1,0 +1,282 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page" (keydown)="onPageKey($event)">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.xv.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('xv.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="xml-viewer" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <!-- selettore a mano: se il passaggio alla vista viene rifiutato per un errore, deve restare dov'è -->
+    <div class="seg" role="group" [attr.aria-label]="i18n.t('xv.view')">
+      @for (o of views(); track o.value) {
+        <button type="button" class="seg-btn" [class.on]="view() === o.value" [attr.aria-pressed]="view() === o.value" (click)="setView(o.value)">
+          {{ o.label }}
+        </button>
+      }
+    </div>
+    @if (view() === 'tree' && hasDoc()) {
+      <button type="button" class="btn small" (click)="expandAll()">{{ i18n.t('xv.expandAll') }}</button>
+      <button type="button" class="btn small" (click)="collapseAll()">{{ i18n.t('xv.collapseAll') }}</button>
+      <button type="button" class="btn small" [disabled]="!canUndo()" (click)="undo()">
+        <app-icon name="rotateCcw" /> {{ i18n.t('xv.undo') }}
+      </button>
+      <button type="button" class="btn small" [disabled]="!canRedo()" (click)="redo()">
+        <app-icon name="rotateCw" /> {{ i18n.t('xv.redo') }}
+      </button>
+    }
+    @if (view() === 'text') {
+      <button type="button" class="btn small" (click)="formatText(false)">{{ i18n.t('xv.format') }}</button>
+      <button type="button" class="btn small" (click)="formatText(true)">{{ i18n.t('xv.minify') }}</button>
+    }
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()">
+      <app-icon name="markup" /> {{ i18n.t('xv.sample') }}
+    </button>
+    <button data-shortcut="copy" type="button" class="btn small" [disabled]="!canExport()" (click)="copyAll()">
+      <app-icon [name]="copied() ? 'check' : 'copy'" /> {{ copied() ? i18n.t('common.copied') : i18n.t('common.copy') }}
+    </button>
+    <button data-shortcut="download" type="button" class="btn small" [disabled]="!canExport()" (click)="download()">
+      <app-icon name="download" /> {{ i18n.t('xv.download') }}
+    </button>
+    <app-send-to from="xml-viewer" [text]="sendText()" [disabled]="!canExport()" />
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <app-file-drop [hint]="i18n.t('xv.drop')" accept=".xml,.svg,.rss,.atom,.xhtml,.xsd,.xsl,.kml,.gpx,application/xml,text/xml" (fileSelected)="onFile($event)">
+    @if (view() === 'tree') {
+      @if (hasDoc()) {
+        <div class="search">
+          <label class="visually-hidden" for="xv-search">{{ i18n.t('xv.search.label') }}</label>
+          <app-icon name="search" />
+          <input
+            id="xv-search"
+            type="search"
+            autocomplete="off"
+            spellcheck="false"
+            [placeholder]="i18n.t('xv.search.ph')"
+            (input)="onSearchInput($event)"
+            (keydown)="onSearchKey($event)"
+          />
+          <button data-shortcut="prev" type="button" class="btn small compact" [disabled]="matches().length === 0" [attr.aria-label]="i18n.t('xv.search.prev')" [attr.title]="i18n.t('xv.search.prev')" (click)="step(-1)">
+            <app-icon name="up" />
+          </button>
+          <button data-shortcut="next" type="button" class="btn small compact" [disabled]="matches().length === 0" [attr.aria-label]="i18n.t('xv.search.next')" [attr.title]="i18n.t('xv.search.next')" (click)="step(1)">
+            <app-icon name="down" />
+          </button>
+          <span class="search-count" role="status" aria-live="polite">{{ searchStatus() }}</span>
+        </div>
+
+        <div class="search">
+          <label class="visually-hidden" for="xv-xp">{{ i18n.t('xv.xp.label') }}</label>
+          <span class="xp-tag" aria-hidden="true">{{ i18n.t('xv.xpath') }}</span>
+          <input
+            id="xv-xp"
+            type="text"
+            class="mono"
+            autocomplete="off"
+            spellcheck="false"
+            [placeholder]="i18n.t('xv.xp.ph')"
+            [value]="xpExpr()"
+            (input)="onXpInput($event)"
+            (keydown)="onXpKey($event)"
+          />
+          <button type="button" class="btn small" (click)="runXp()">{{ i18n.t('xv.xp.run') }}</button>
+          <span class="search-count" role="status" aria-live="polite">{{ xpText() }}</span>
+        </div>
+        @if (xp(); as r) {
+          @if (r.ok && r.kind === 'value') {
+            <p class="xp-value"><span class="chip">{{ i18n.t('xv.xp.value') }}</span> <code>{{ r.value }}</code></p>
+          } @else if (r.ok && r.kind === 'nodes' && r.items.length) {
+            <ul class="xp-list" [attr.aria-label]="i18n.t('xv.xp.results')">
+              @for (it of r.items; track $index) {
+                <li>
+                  <button type="button" class="xp-item" [disabled]="!it.path" (click)="goXp(it)">{{ it.label }}</button>
+                </li>
+              }
+            </ul>
+            @if (r.total > r.items.length) {
+              <p class="hint">{{ i18n.t('xv.xp.more', { n: xpMax, total: r.total }) }}</p>
+            }
+          }
+        }
+
+        <div class="split">
+          <div
+            class="tree"
+            role="tree"
+            tabindex="0"
+            [attr.aria-label]="i18n.t('xv.tree.label')"
+            [attr.aria-activedescendant]="'xv-row-' + cursorKey()"
+            (keydown)="onTreeKey($event)"
+          >
+            @for (r of rows(); track r.key) {
+              <div
+                class="row"
+                role="treeitem"
+                [id]="'xv-row-' + r.key"
+                [class.sel]="r.key === cursorKey()"
+                [class.match]="isMatch(r.key)"
+                [class.cur]="isCurrentMatch(r.key)"
+                [attr.aria-level]="r.depth + 1"
+                [attr.aria-expanded]="r.expandable ? r.expanded : null"
+                [attr.aria-selected]="r.key === cursorKey()"
+                [style.padding-left.px]="8 + r.depth * 16"
+                (click)="onRowClick(r)"
+              >
+                <span class="caret" [class.open]="r.expanded" [class.leaf]="!r.expandable" aria-hidden="true" (click)="onCaret(r, $event)"></span>
+                @switch (r.node.t) {
+                  @case ('el') {
+                    <span class="tag">{{ tagName(r) }}</span>
+                    @if (attrsText(r)) {
+                      <span class="attrs">{{ attrsText(r) }}</span>
+                    }
+                    @if (r.text) {
+                      <span class="txt">{{ leafText(r) }}</span>
+                    } @else if (r.count > 0 && !r.expanded) {
+                      <span class="sum">{{ countLabel(r) }}</span>
+                    }
+                  }
+                  @case ('text') {
+                    <span class="txt">{{ leafText(r) }}</span>
+                  }
+                  @case ('comment') {
+                    <span class="cmt">{{ commentText(r) }}</span>
+                  }
+                  @case ('cdata') {
+                    <span class="txt"><span class="chip">{{ i18n.t('xv.kind.cdata') }}</span> {{ leafText(r) }}</span>
+                  }
+                  @default {
+                    <span class="cmt">{{ leafText(r) }}</span>
+                  }
+                }
+              </div>
+            }
+            @if (flat().truncated) {
+              <p class="more">{{ i18n.t('xv.truncated', { n: maxRows }) }}</p>
+            }
+          </div>
+
+          @if (node(); as n) {
+            <section class="panel" [attr.aria-label]="i18n.t('xv.node')">
+              <nav class="crumbs" [attr.aria-label]="i18n.t('xv.crumbs')">
+                @for (c of crumbs(); track c.path.join('.')) {
+                  <button type="button" class="crumb" [attr.aria-current]="$last ? 'location' : null" (click)="select(c.path, true)">{{ c.label }}</button>
+                }
+              </nav>
+              <dl class="facts">
+                <div class="fact">
+                  <dt>{{ i18n.t('xv.xpath') }}</dt>
+                  <dd>
+                    <span class="chip">{{ kindLabel() }}</span>
+                    <code>{{ xpath() }}</code>
+                    <app-copy-button [compact]="true" [text]="xpath()" [ariaLabel]="i18n.t('xv.xpath')" />
+                  </dd>
+                </div>
+                @if (ns(); as nsi) {
+                  <div class="fact">
+                    <dt>{{ i18n.t('xv.ns') }}</dt>
+                    <dd>
+                      <code>{{ nsi.uri ?? i18n.t('xv.ns.none') }}</code>
+                    </dd>
+                  </div>
+                }
+                @if (isElement()) {
+                  <div class="fact">
+                    <dt><label for="xv-tag">{{ i18n.t('xv.tag') }}</label></dt>
+                    <dd>
+                      <input id="xv-tag" type="text" class="fld" autocomplete="off" spellcheck="false" data-f="name" [value]="nodeName()" (change)="rename($event)" />
+                    </dd>
+                  </div>
+                }
+                @if (content() !== null) {
+                  <div class="fact top">
+                    <dt><label for="xv-content">{{ i18n.t('xv.content') }}</label></dt>
+                    <dd>
+                      <textarea id="xv-content" class="fld" rows="3" spellcheck="false" data-f="text" [value]="content()" (change)="editContent($event)"></textarea>
+                    </dd>
+                  </div>
+                } @else if (isElement() && childCount() > 0) {
+                  <p class="hint">{{ i18n.t('xv.content.mixed') }}</p>
+                }
+              </dl>
+
+              @if (isElement()) {
+                <fieldset class="attrs-box">
+                  <legend>{{ i18n.t('xv.attrs') }}</legend>
+                  @for (a of nodeAttrs(); track cursorKey() + ':' + $index) {
+                    <div class="attr">
+                      <input type="text" class="fld name" autocomplete="off" spellcheck="false" [attr.aria-label]="i18n.t('xv.attr.name')" [value]="a.name" (change)="editAttr($event, $index, 'name', a)" />
+                      <input type="text" class="fld" autocomplete="off" spellcheck="false" [attr.aria-label]="i18n.t('xv.attr.value')" [value]="a.value" (change)="editAttr($event, $index, 'value', a)" />
+                      <button type="button" class="btn small compact" [attr.aria-label]="i18n.t('xv.attr.remove', { name: a.name })" [attr.title]="i18n.t('xv.attr.remove', { name: a.name })" (click)="removeAttr($index)">
+                        <app-icon name="trash" />
+                      </button>
+                    </div>
+                  } @empty {
+                    <p class="hint">{{ i18n.t('xv.attr.none') }}</p>
+                  }
+                  <div class="attr">
+                    <input #newName type="text" class="fld name" autocomplete="off" spellcheck="false" [attr.aria-label]="i18n.t('xv.attr.name')" [placeholder]="i18n.t('xv.attr.ph.name')" (keydown.enter)="addAttr(newName, newVal)" />
+                    <input #newVal type="text" class="fld" autocomplete="off" spellcheck="false" [attr.aria-label]="i18n.t('xv.attr.value')" [placeholder]="i18n.t('xv.attr.ph.value')" (keydown.enter)="addAttr(newName, newVal)" />
+                    <button type="button" class="btn small compact" [attr.aria-label]="i18n.t('xv.attr.add')" [attr.title]="i18n.t('xv.attr.add')" (click)="addAttr(newName, newVal)">
+                      <app-icon name="plus" />
+                    </button>
+                  </div>
+                </fieldset>
+              }
+
+              <div class="actions" role="toolbar" [attr.aria-label]="i18n.t('xv.actions')">
+                @if (isElement()) {
+                  <button type="button" class="btn small" (click)="add('el')"><app-icon name="plus" /> {{ i18n.t('xv.act.addEl') }}</button>
+                  <button type="button" class="btn small" (click)="add('text')"><app-icon name="plus" /> {{ i18n.t('xv.act.addText') }}</button>
+                  <button type="button" class="btn small" (click)="add('comment')"><app-icon name="plus" /> {{ i18n.t('xv.act.addComment') }}</button>
+                }
+                <button type="button" class="btn small" [disabled]="isRoot()" (click)="duplicateNode()"><app-icon name="copy" /> {{ i18n.t('xv.act.dup') }}</button>
+                <button type="button" class="btn small" [disabled]="!canMove(-1)" (click)="moveNode(-1)"><app-icon name="up" /> {{ i18n.t('xv.act.up') }}</button>
+                <button type="button" class="btn small" [disabled]="!canMove(1)" (click)="moveNode(1)"><app-icon name="down" /> {{ i18n.t('xv.act.down') }}</button>
+                <button type="button" class="btn small" [disabled]="isRoot()" (click)="deleteNode()"><app-icon name="trash" /> {{ i18n.t('xv.act.del') }}</button>
+              </div>
+            </section>
+          }
+        </div>
+      } @else {
+        <p class="empty">{{ i18n.t('xv.tree.empty') }}</p>
+      }
+    } @else {
+      <div class="textbox">
+        <label class="eyebrow" for="xv-text">{{ i18n.t('xv.text.label') }}</label>
+        <textarea
+          id="xv-text"
+          class="code"
+          wrap="off"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('xv.text.ph')"
+          [attr.aria-invalid]="parseError() !== null"
+          [value]="text()"
+          (input)="onTextInput($event)"
+        ></textarea>
+      </div>
+    }
+  </app-file-drop>
+
+  <div class="tool-status" aria-live="polite">
+    @if (busy()) {
+      <p class="tool-ok">{{ i18n.t('xv.loading') }}</p>
+    } @else if (errorText()) {
+      <p class="tool-error">{{ errorText() }}</p>
+    } @else if (editErrorText()) {
+      <p class="tool-error">{{ editErrorText() }}</p>
+    } @else if (statusText()) {
+      <p class="tool-ok">{{ statusText() }}</p>
+    } @else if (view() === 'text' && text().trim() !== '') {
+      <p class="tool-ok">{{ i18n.t('xv.ok') }}</p>
+    }
+  </div>
+</div>

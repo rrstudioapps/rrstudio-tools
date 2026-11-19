@@ -3,10 +3,17 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
   <id>https://tools.rr-dev.eu/en/changelog</id>
   <title>rrstudio tools: What's new</title>
-  <updated>2026-11-18T00:00:00Z</updated>
+  <updated>2026-11-19T00:00:00Z</updated>
   <link rel="self" type="application/atom+xml" href="https://tools.rr-dev.eu/changelog.en.xml"/>
   <link rel="alternate" type="text/html" href="https://tools.rr-dev.eu/en/changelog"/>
   <author><name>rrstudio</name></author>
+  <entry>
+    <id>https://tools.rr-dev.eu/en/changelog#2026-11-19</id>
+    <title>XML tools and filter in &quot;Send to…&quot;</title>
+    <updated>2026-11-19T00:00:00Z</updated>
+    <link rel="alternate" type="text/html" href="https://tools.rr-dev.eu/en/changelog#v-2026-11-19"/>
+    <content type="html">&lt;ul&gt;&lt;li&gt;&lt;strong&gt;New tool&lt;/strong&gt;: New tool: tree-based XML editor and viewer, with search across tags, attributes and text, XPath queries, namespaces, editing of tags, attributes and content, adding, moving and deleting nodes, undo and redo.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;New tool&lt;/strong&gt;: New tool &amp;quot;XML compare&amp;quot;: the structural differences between two documents (added and removed elements, changed attributes and text) with the XPath, without the noise of indentation and attribute order.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;New tool&lt;/strong&gt;: New tool &amp;quot;XML to table and CSV&amp;quot;: pick the repeating element, flatten attributes and children into columns, preview it and download the CSV or send it to the other tools.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;New tool&lt;/strong&gt;: New tool &amp;quot;XSD validator&amp;quot;: check an XML against an XSD schema (types, facets, element order and count, required attributes, IDs) and see each problem with its XPath.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Improvement&lt;/strong&gt;: The &amp;quot;Send to…&amp;quot; menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
   <entry>
     <id>https://tools.rr-dev.eu/en/changelog#2026-11-18</id>
     <title>Tax code, text comparison and printing</title>

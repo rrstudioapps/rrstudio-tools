@@ -3,14 +3,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://tools.rr-dev.eu/</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/"/>
@@ -448,6 +448,62 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-formatter"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-formatter"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-formatter"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/xml-viewer</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-viewer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-viewer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-viewer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/xml-viewer</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-viewer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-viewer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-viewer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/xml-diff</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-diff"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-diff"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-diff"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/xml-diff</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-diff"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-diff"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-diff"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/xml-to-csv</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-to-csv"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-to-csv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-to-csv"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/xml-to-csv</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xml-to-csv"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xml-to-csv"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-to-csv"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/xsd-validator</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xsd-validator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xsd-validator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xsd-validator"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/xsd-validator</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xsd-validator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/xsd-validator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xsd-validator"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/sql-formatter</loc>
@@ -1402,14 +1458,14 @@
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/novita</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/novita"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/changelog"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/changelog"/>
   </url>
   <url>
     <loc>https://tools.rr-dev.eu/en/changelog</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/novita"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/changelog"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/changelog"/>

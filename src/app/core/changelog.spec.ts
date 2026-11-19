@@ -78,11 +78,9 @@ describe('badge «Nuovo»', () => {
   it('senza versioni con strumenti nuovi: vuoto', () => {
     expect(newToolIds('2026-11-18', 30, []).size).toBe(0);
   });
-  it('dati reali: oggi i 12 strumenti più recenti del 18/11 hanno il badge', () => {
-    const ids = [...newToolIds('2026-11-18')];
-    expect(ids.length).toBe(12);
-    expect(ids.slice(0, 3)).toEqual(['utm-link-builder', 'trip-cost-calculator', 'list-converter']);
-    expect(ids).not.toContain('json-diff'); // di una voce più vecchia della stessa versione
+  it('dati reali: oggi ha il badge gli strumenti dell\'ultima versione, il 19/11', () => {
+    expect([...newToolIds('2026-11-19')]).toEqual(['xml-viewer', 'xml-diff', 'xml-to-csv', 'xsd-validator']);
+    expect(newToolIds('2026-11-18').size).toBe(0); // la versione è più recente di «oggi»
   });
   it('tetto ai badge: i più recenti, nell\'ordine delle voci', () => {
     const entries = ['a', 'b', 'c', 'd'].map((id) => ({ kind: 'new-tool' as const, it: id, en: id, toolIds: [id] }));

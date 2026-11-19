@@ -30,7 +30,7 @@ export const TEXT_TARGETS: Readonly<Record<ContentType, readonly string[]>> = {
   'docker-run': ['docker-run-to-compose'],
   csv: ['csv-json-converter', 'csv-dashboard', 'statistics-calculator', 'sort-lines'],
   yaml: ['yaml-json-converter'],
-  xml: ['xml-formatter', 'html-entities'],
+  xml: ['xml-formatter', 'xml-viewer', 'xml-to-csv', 'html-entities'],
   sql: ['sql-formatter'],
   'unix-timestamp': ['timestamp-converter', 'date-calculator'],
   uuid: ['uuid-generator'],

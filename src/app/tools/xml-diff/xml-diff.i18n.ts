@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// © 2026 rrstudio — rrstudio Tools
+import type { ToolDictionaries } from '../../core/i18n/i18n.service';
+
+const it = {
+  'xd.lead':
+    'Incolla due XML o trascina i file: ottieni l\'elenco delle differenze di struttura (elementi aggiunti e tolti, attributi, testo) con il percorso XPath di ciascuna, senza il rumore di rientri e ordine degli attributi.',
+  'xd.a': 'Originale',
+  'xd.b': 'Modificato',
+  'xd.ph': 'Incolla qui l\'XML o trascina un file…',
+  'xd.drop': 'Trascina un file .xml su questo riquadro (massimo 5 MB), oppure',
+  'xd.ws': 'Ignora gli spazi nel testo',
+  'xd.sample': 'Esempio',
+  'xd.swap': 'Scambia',
+  'xd.list': 'Differenze trovate',
+  'xd.same': 'I due documenti hanno la stessa struttura e gli stessi valori.',
+  'xd.summary': '{n} differenze: {added} aggiunte, {removed} rimosse, {changed} modificate.',
+  'xd.truncated': 'Sono mostrate le prime {n} differenze.',
+  'xd.kind.added': 'aggiunto',
+  'xd.kind.removed': 'rimosso',
+  'xd.kind.text': 'testo',
+  'xd.kind.attr-added': 'attr. aggiunto',
+  'xd.kind.attr-removed': 'attr. rimosso',
+  'xd.kind.attr-changed': 'attr. cambiato',
+  'xd.kind.renamed': 'rinominato',
+  'xd.err.side': '{side}, riga {line}, colonna {col}: {msg}',
+  'guide.xml-diff.step.1': 'Incolla l\'XML originale a sinistra e quello modificato a destra, oppure trascina due file.',
+  'guide.xml-diff.step.2': 'Leggi l\'elenco: ogni riga dice cosa è cambiato e dove, con il percorso XPath dell\'elemento.',
+  'guide.xml-diff.step.3': 'Lascia attiva «Ignora gli spazi nel testo» per non vedere differenze dovute ai rientri.',
+  'guide.xml-diff.q.1': 'Conta l\'ordine degli attributi?',
+  'guide.xml-diff.a.1': 'No: gli attributi si confrontano per nome. Conta invece l\'ordine degli elementi figli, ma l\'allineamento riconosce un elemento aggiunto o tolto anche in mezzo a una lista, usando il nome e l\'attributo id o name.',
+  'guide.xml-diff.q.2': 'Commenti e istruzioni vengono confrontati?',
+  'guide.xml-diff.a.2': 'No: il confronto riguarda elementi, attributi e testo. Commenti, istruzioni di elaborazione e DOCTYPE vengono ignorati.',
+  'guide.xml-diff.q.3': 'I dati vengono inviati a un server?',
+  'guide.xml-diff.a.3': 'No: il confronto avviene nel tuo browser.',
+  'guide.xml-diff.privacy': 'I documenti restano nel tuo browser: non vengono inviati a nessun server.',
+};
+
+const en: Record<keyof typeof it, string> = {
+  'xd.lead':
+    'Paste two XML documents or drop the files: you get the list of structural differences (added and removed elements, attributes, text) with the XPath of each, without the noise of indentation and attribute order.',
+  'xd.a': 'Original',
+  'xd.b': 'Modified',
+  'xd.ph': 'Paste the XML here or drop a file…',
+  'xd.drop': 'Drop an .xml file on this box (5 MB max), or',
+  'xd.ws': 'Ignore whitespace in text',
+  'xd.sample': 'Sample',
+  'xd.swap': 'Swap',
+  'xd.list': 'Differences found',
+  'xd.same': 'The two documents have the same structure and the same values.',
+  'xd.summary': '{n} differences: {added} added, {removed} removed, {changed} changed.',
+  'xd.truncated': 'The first {n} differences are shown.',
+  'xd.kind.added': 'added',
+  'xd.kind.removed': 'removed',
+  'xd.kind.text': 'text',
+  'xd.kind.attr-added': 'attr. added',
+  'xd.kind.attr-removed': 'attr. removed',
+  'xd.kind.attr-changed': 'attr. changed',
+  'xd.kind.renamed': 'renamed',
+  'xd.err.side': '{side}, line {line}, column {col}: {msg}',
+  'guide.xml-diff.step.1': 'Paste the original XML on the left and the modified one on the right, or drop two files.',
+  'guide.xml-diff.step.2': 'Read the list: each row says what changed and where, with the XPath of the element.',
+  'guide.xml-diff.step.3': 'Keep "Ignore whitespace in text" on to avoid differences caused by indentation.',
+  'guide.xml-diff.q.1': 'Does attribute order matter?',
+  'guide.xml-diff.a.1': 'No: attributes are compared by name. Child element order does matter, but the alignment recognises an element added or removed in the middle of a list, using the name and the id or name attribute.',
+  'guide.xml-diff.q.2': 'Are comments and instructions compared?',
+  'guide.xml-diff.a.2': 'No: the comparison covers elements, attributes and text. Comments, processing instructions and DOCTYPE are ignored.',
+  'guide.xml-diff.q.3': 'Is my data sent to a server?',
+  'guide.xml-diff.a.3': 'No: the comparison runs in your browser.',
+  'guide.xml-diff.privacy': 'The documents stay in your browser: they are not sent to any server.',
+};
+
+export const XML_DIFF_DICTIONARIES: ToolDictionaries = { it, en };

@@ -49,6 +49,21 @@ const errors = [];
 try {
   // ONLY=home-light.png,base64.png limita gli screenshot a quelli elencati
   const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
+  /**
+   * Aspetta che l'elemento abbia il testo (o il valore, per input e textarea) atteso. Dopo un clic il DOM si aggiorna con ritardo e il
+   * valore precedente resta in pagina: sulla CI, più lenta, si legge quello vecchio. Se il valore non arriva, l'errore riporta cosa c'è.
+   */
+  async function expectValue(page, selector, expected, what = selector, timeout = 5000) {
+    // la funzione gira nel browser: deve bastare a sé stessa (niente variabili di questo file)
+    const read = ([sel]) => {
+      const el = document.querySelector(sel);
+      return (el && 'value' in el ? el.value : (el?.textContent ?? '')).trim();
+    };
+    await page.waitForFunction(`(${read})(${JSON.stringify([selector])}) === ${JSON.stringify(expected)}`, null, { timeout }).catch(() => {});
+    const got = await page.evaluate(read, [selector]);
+    if (got !== expected) throw new Error(`${what}: atteso «${expected}», trovato «${got}»`);
+  }
+
   async function shot(name, { width, dark, path = '/', setup }) {
     if (only && !only.includes(name)) return;
     const ctx = await browser.newContext({
@@ -229,6 +244,127 @@ try {
       await page.waitForSelector('.tree .row');
       await page.locator('.tree .row', { hasText: 'Mario Rossi' }).first().click();
       await page.waitForTimeout(300);
+    },
+  });
+  // XML viewer: esempio, selezione, modifica (tag, attributo, testo), annulla/ripeti, ricerca e vista Testo
+  await shot('xml-viewer.png', {
+    width: 1280,
+    dark: false,
+    path: '/xml-viewer/',
+    setup: async (page) => {
+      const must = (c, msg) => {
+        if (!c) throw new Error('xml-viewer: ' + msg);
+      };
+      await page.getByRole('button', { name: 'Prova con un esempio' }).click();
+      await page.waitForSelector('.tree .row');
+      must((await page.locator('.tree .row').count()) >= 6, 'albero troppo corto');
+      await page.locator('.tree .row', { hasText: 'Il nome della rosa' }).first().click();
+      await page.waitForTimeout(200);
+      must(/\/biblioteca\/libro\[2\]\/titolo/.test(await page.locator('.facts code').first().innerText()), 'XPath');
+      // rinomina il tag di un libro
+      await page.locator('.tree .row', { hasText: 'b1' }).first().click();
+      await page.fill('#xv-tag', 'volume');
+      await page.press('#xv-tag', 'Enter');
+      await page.waitForFunction(() => document.querySelector('.tree')?.textContent.includes('volume'));
+      // tag non valido: rifiutato con messaggio e valore ripristinato
+      await page.fill('#xv-tag', '1x');
+      await page.press('#xv-tag', 'Enter');
+      await page.waitForSelector('.tool-error');
+      must((await page.inputValue('#xv-tag')) === 'volume', 'valore non ripristinato');
+      // testo di un elemento
+      await page.locator('.tree .row', { hasText: 'I promessi sposi' }).first().click();
+      await page.fill('#xv-content', 'Titolo <nuovo> & prova');
+      await page.press('#xv-content', 'Tab');
+      await page.waitForFunction(() => document.querySelector('.tree')?.textContent.includes('Titolo <nuovo> & prova'));
+      // annulla e ripeti
+      await page.getByRole('button', { name: 'Annulla' }).click();
+      await page.waitForFunction(() => !document.querySelector('.tree')?.textContent.includes('Titolo <nuovo>'));
+      await page.getByRole('button', { name: 'Ripeti' }).click();
+      await page.waitForFunction(() => document.querySelector('.tree')?.textContent.includes('Titolo <nuovo> & prova'));
+      // query XPath: i risultati portano al nodo
+      await page.fill('#xv-xp', "//libro[@id='b3']/autore");
+      await page.press('#xv-xp', 'Enter');
+      await page.waitForSelector('.xp-item');
+      await page.locator('.xp-item').first().click();
+      await page.waitForFunction(() => document.querySelector('.row.sel')?.textContent.includes('Italo Calvino'));
+      await page.fill('#xv-xp', 'count(//autore)');
+      await page.press('#xv-xp', 'Enter');
+      await page.waitForFunction(() => document.querySelector('.xp-value code')?.textContent === '3');
+      // ricerca
+      await page.fill('#xv-search', 'calvino');
+      await page.waitForFunction(() => document.querySelector('.search-count')?.textContent.includes('1 di 1'));
+      // vista Testo: il documento modificato, con le entità
+      await page.getByRole('button', { name: 'Testo', exact: true }).click();
+      const t = await page.inputValue('#xv-text');
+      must(t.includes('<volume id="b1"') && t.includes('Titolo &lt;nuovo&gt; &amp; prova'), 'testo non aggiornato: ' + t.slice(0, 120));
+      must(await page.locator('.tool-ok').count() > 0, 'messaggio ben formato');
+      // errore di buona formazione nel testo: la vista Albero non si apre
+      await page.fill('#xv-text', '<a><b></a>');
+      await page.waitForSelector('.tool-error');
+      await page.getByRole('button', { name: 'Albero', exact: true }).click();
+      must((await page.locator('#xv-text').count()) === 1, 'è passato all\'albero con un XML non valido');
+      await page.fill('#xv-text', '<?xml version="1.0"?><r a="1"><x/></r>');
+      await page.getByRole('button', { name: 'Albero', exact: true }).click();
+      await page.waitForSelector('.tree .row');
+      await page.getByRole('button', { name: 'Aggiungi elemento' }).click();
+      await page.waitForFunction(() => document.querySelectorAll('.tree .row').length >= 3);
+      await page.locator('.tree .row', { hasText: 'r' }).first().click();
+      await page.waitForTimeout(150);
+      // ritorna all'esempio per lo screenshot
+      await page.getByRole('button', { name: 'Prova con un esempio' }).click();
+      await page.locator('.tree .row', { hasText: 'Umberto Eco' }).first().click();
+      await page.waitForTimeout(300);
+    },
+  });
+  // Confronto XML: esempio con aggiunte, rimozioni e modifiche
+  await shot('xml-diff.png', {
+    width: 1280,
+    dark: false,
+    path: '/xml-diff/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('.changes .chg');
+      const text = await page.locator('.changes').innerText();
+      for (const part of ['/catalogo/libro[1]', '/catalogo/libro[3]/note', 'versione', '13.50'])
+        if (!text.includes(part)) throw new Error('xml-diff: manca ' + part + ' in ' + text.slice(0, 200));
+      await page.fill('#xd-b', await page.inputValue('#xd-a'));
+      await page.waitForSelector('.tool-ok');
+      if ((await page.locator('.changes .chg').count()) !== 0) throw new Error('xml-diff: documenti uguali con differenze');
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('.changes .chg');
+    },
+  });
+  // Da XML a tabella: record scelto, colonne, CSV
+  await shot('xml-to-csv.png', {
+    width: 1280,
+    dark: false,
+    path: '/xml-to-csv/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('.scroll table tbody tr');
+      const head = await page.locator('.scroll thead').innerText();
+      for (const c of ['@id', 'titolo', 'prezzo/@valuta'])
+        if (!head.includes(c)) throw new Error('xml-to-csv: manca la colonna ' + c);
+      if ((await page.locator('.scroll tbody tr').count()) !== 3) throw new Error('xml-to-csv: righe');
+      await page.selectOption('.out-bar select', ';');
+      await page.waitForTimeout(300);
+    },
+  });
+  // Validatore XSD: esempio con più problemi
+  await shot('xsd-validator.png', {
+    width: 1280,
+    dark: false,
+    path: '/xsd-validator/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('.issues li');
+      const t = await page.locator('.issues').innerText();
+      for (const part of ['/ordine/@data', '/ordine/riga[2]/@codice', '/ordine/riga[2]/quantita', '/ordine/nota'])
+        if (!t.includes(part)) throw new Error('xsd-validator: manca ' + part + ' in ' + t.slice(0, 300));
+      await page.fill('#xsd-xml', '<ordine data="2026-11-19"><cliente>A</cliente><riga codice="AB123"><prodotto>P</prodotto><quantita>2</quantita><prezzo>1.50</prezzo></riga></ordine>');
+      await page.waitForSelector('.tool-ok');
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('.issues li');
     },
   });
   await shot('password-generator.png', {
@@ -524,12 +660,7 @@ try {
       const result = () => page.getByTestId('sci-result').innerText();
       const expect = async (expr, out) => {
         await page.fill('#sci-expr', expr);
-        // il risultato precedente resta in pagina finché non arriva il nuovo: si aspetta il valore, non solo l'elemento
-        await page
-          .waitForFunction((o) => document.querySelector('[data-testid=sci-result]')?.textContent.trim() === o, out, { timeout: 5000 })
-          .catch(() => {});
-        const got = await result();
-        if (got !== out) throw new Error(`${expr}: atteso ${out}, ottenuto ${got}`);
+        await expectValue(page, '[data-testid=sci-result]', out, expr);
       };
       await expect('2(3+4)^2/sqrt(16)', '24,5');
       await page.getByTestId('key-eq').click();
@@ -540,11 +671,7 @@ try {
       await page.waitForSelector('[data-testid=sci-error]');
       // tastiera a schermo: 7 × 6, poi «=» e un operatore che riparte dal risultato (ans)
       await page.getByTestId('key-clear').click();
-      const field = async (expected, what) => {
-        await page.waitForFunction((v) => document.querySelector('#sci-expr')?.value === v, expected, { timeout: 4000 }).catch(() => {});
-        const got = await page.inputValue('#sci-expr');
-        if (got !== expected) throw new Error(`${what}: atteso «${expected}», nel campo «${got}»`);
-      };
+      const field = (expected, what) => expectValue(page, '#sci-expr', expected, what, 4000);
       for (const k of ['7', '×', '6']) {
         await page.getByTestId('key-' + k).click();
         // un campo senza focus non conserva la selezione in tutti i browser (su CI finiva a 0): i tasti devono usare la posizione ricordata
@@ -1140,6 +1267,24 @@ try {
     setup: async (page) => {
       await page.getByRole('button', { name: 'Carica un esempio' }).click();
       await page.waitForSelector('table.diff');
+      // «Successiva» porta il contenitore in cima alla finestra a ogni clic, non solo al primo
+      // allineato = in cima alla finestra, oppure la pagina è già scesa al massimo (non può scorrere oltre)
+      const aligned = () =>
+        page.evaluate(() => {
+          const top = document.querySelector('.viewer').getBoundingClientRect().top;
+          const max = document.documentElement.scrollHeight - innerHeight;
+          return { ok: Math.abs(top) <= 4 || scrollY >= max - 1, top: Math.round(top), y: Math.round(scrollY), max };
+        });
+      for (const [i, scrollTo] of [0, 0, 400].entries()) {
+        await page.evaluate((y) => window.scrollTo(0, y), scrollTo);
+        await page.getByTestId('diff-next').click();
+        await page
+          .waitForFunction(() => Math.abs(document.querySelector('.viewer').getBoundingClientRect().top) <= 4 || scrollY >= document.documentElement.scrollHeight - innerHeight - 1, null, { timeout: 4000 })
+          .catch(() => {});
+        const r = await aligned();
+        if (!r.ok) throw new Error(`clic ${i + 1} su «Successiva»: il contenitore è a ${r.top}px dalla cima (pagina a ${r.y} di ${r.max}), non allineato`);
+      }
+      await page.evaluate(() => window.scrollTo(0, 0));
     },
   });
   await shot('json-diff.png', {

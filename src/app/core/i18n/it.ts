@@ -152,6 +152,9 @@ export const it = {
   'send.btn': 'Invia a…',
   'send.label': 'Invia a… un altro strumento',
   'send.menu': 'Strumenti a cui inviare il risultato',
+  'send.filter.label': 'Filtra gli strumenti',
+  'send.filter.ph': 'Filtra…',
+  'send.filter.empty': 'Nessuno strumento trovato',
   'send.received': 'Ricevuto da {tool}',
   'intake.title': 'Incolla o trascina qui',
   'intake.hint': 'Incolla un testo con {key}+V (o trascina un file su questa pagina): riconosco il contenuto e ti propongo gli strumenti adatti.',
@@ -526,6 +529,30 @@ export const it = {
   'seo.yj.desc':
     'Converti YAML in JSON, JSON in YAML e TOML in ogni direzione: documenti multipli, indentazione, errori con riga e colonna. Tutto nel browser, senza invii.',
 
+  'tool.xd.title': 'Confronto XML',
+  'tool.xd.desc':
+    'Confronta due XML per struttura: elementi aggiunti e tolti, attributi e testo cambiati, con il percorso XPath di ogni differenza e senza il rumore di rientri e ordine degli attributi.',
+  'seo.xd.title': 'Confronto XML online: differenze di struttura | rrstudio Tools',
+  'seo.xd.desc':
+    'Confronta due file XML e vedi le differenze di elementi, attributi e testo con il percorso XPath. Ignora rientri e ordine degli attributi. Tutto nel browser.',
+  'tool.x2c.title': 'Da XML a tabella e CSV',
+  'tool.x2c.desc':
+    'Trasforma un XML in una tabella: scegli l\'elemento che si ripete, appiattisci attributi e figli in colonne, guarda l\'anteprima e scarica il CSV.',
+  'seo.x2c.title': 'Converti XML in CSV e tabella online | rrstudio Tools',
+  'seo.x2c.desc':
+    'Converti un XML in tabella e CSV: scegli il record che si ripete, appiattisci attributi e figli in colonne, scegli il separatore e scarica. Tutto nel browser.',
+  'tool.xsd.title': 'Validatore XSD',
+  'tool.xsd.desc':
+    'Controlla un XML con uno schema XSD: tipi, faccette, ordine e numero degli elementi, attributi obbligatori e ID, con il percorso XPath di ogni problema.',
+  'seo.xsd.title': 'Validatore XSD online per XML | rrstudio Tools',
+  'seo.xsd.desc':
+    'Valida un documento XML con uno schema XSD e ottieni l\'elenco dei problemi con il percorso XPath. Supporta le parti più usate di XSD 1.0. Tutto nel browser.',
+  'tool.xv.title': 'Editor e visualizzatore XML',
+  'tool.xv.desc':
+    'Apri un XML come albero: cerca tra tag, attributi e testo, copia l\'XPath dei nodi e modificali con annulla e ripeti, senza che il file lasci il tuo browser.',
+  'seo.xv.title': 'Editor e visualizzatore XML online ad albero | rrstudio Tools',
+  'seo.xv.desc':
+    'Visualizza e modifica un XML come albero: cerca tag, attributi e testo, copia l\'XPath, aggiungi, sposta ed elimina nodi con annulla e ripeti. Tutto nel browser.',
   'tool.xml.title': 'Formatta e minifica XML',
   'tool.xml.desc':
     'Formatta o minifica un XML con l\'indentazione che vuoi, controlla che sia ben formato e, se serve, convertilo in JSON. Commenti e CDATA restano.',

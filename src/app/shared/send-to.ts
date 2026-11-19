@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input
 import { Router } from '@angular/router';
 import { I18nService } from '../core/i18n/i18n.service';
 import { TOOLS } from '../tools/tools.registry';
+import { normalizeText } from '../pages/tool-filter';
 import { HandoffKind, handoffTargets } from './handoff-targets';
 import { Icon } from './icon';
 import { ToolHandoff } from './tool-handoff';
@@ -45,10 +46,25 @@ const TOOL_ORDER = TOOLS.map((t) => t.id);
       </button>
       @if (open()) {
         <div [id]="panelId" class="panel" role="group" [attr.aria-label]="i18n.t('send.menu')">
-          @for (t of targets(); track t.id) {
+          @if (targets().length > FILTER_MIN) {
+            <input
+              #q
+              type="search"
+              class="q"
+              autocomplete="off"
+              [value]="query()"
+              [placeholder]="i18n.t('send.filter.ph')"
+              [attr.aria-label]="i18n.t('send.filter.label')"
+              (input)="query.set(q.value)"
+              (keydown.enter)="sendFirst($event)"
+            />
+          }
+          @for (t of visible(); track t.id) {
             <button type="button" class="item" (click)="send(t.id, t.path)">
               <app-icon [name]="t.icon" /> {{ i18n.t(t.titleKey) }}
             </button>
+          } @empty {
+            <p class="empty">{{ i18n.t('send.filter.empty') }}</p>
           }
         </div>
       }
@@ -75,6 +91,22 @@ const TOOL_ORDER = TOOLS.map((t) => t.id);
       border-radius: var(--radius-sm);
       background: var(--surface);
       box-shadow: 0 12px 32px rgb(0 0 0 / 14%);
+    }
+    .q {
+      margin-bottom: var(--space-2);
+      padding: 6px var(--space-3);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--ink);
+      font: inherit;
+      font-size: var(--fs-sm);
+    }
+    .empty {
+      margin: 0;
+      padding: 7px var(--space-3);
+      color: var(--ink-2);
+      font-size: var(--fs-sm);
     }
     .item {
       display: flex;
@@ -120,8 +152,34 @@ export class SendTo {
     return ids.map((id) => TOOLS.find((t) => t.id === id)!).filter((t) => !(this.i18n.lang() === 'en' && t.italyOnly));
   });
 
+  /** Sopra questa soglia il menu mostra il campo per filtrare. */
+  protected readonly FILTER_MIN = 6;
+  protected readonly query = signal('');
+  private readonly q = viewChild<ElementRef<HTMLInputElement>>('q');
+
+  protected readonly visible = computed(() => {
+    const terms = normalizeText(this.query()).split(/\s+/).filter(Boolean);
+    if (!terms.length) return this.targets();
+    return this.targets().filter((t) => {
+      const name = normalizeText(this.i18n.t(t.titleKey));
+      return terms.every((w) => name.includes(w));
+    });
+  });
+
   protected toggle(): void {
-    this.open.update((o) => !o);
+    const opening = !this.open();
+    this.query.set('');
+    this.open.set(opening);
+    // il campo esiste dopo il rendering: porta lì il focus per scrivere subito
+    if (opening) setTimeout(() => this.q()?.nativeElement.focus());
+  }
+
+  /** Invio nel campo: invia al primo risultato. */
+  protected sendFirst(e: Event): void {
+    const t = this.visible()[0];
+    if (!t) return;
+    e.preventDefault();
+    void this.send(t.id, t.path);
   }
 
   protected async send(to: string, path: string): Promise<void> {
@@ -152,8 +210,11 @@ export class SendTo {
   /** Frecce su/giù: sposta il focus tra pulsante e voci del menu. */
   protected move(e: Event, step: number): void {
     if (!this.open()) return;
-    const items = [this.btn()!.nativeElement, ...Array.from(this.host.nativeElement.querySelectorAll<HTMLButtonElement>('.item'))];
-    const i = items.indexOf(document.activeElement as HTMLButtonElement);
+    const items = [
+      this.btn()!.nativeElement,
+      ...Array.from(this.host.nativeElement.querySelectorAll<HTMLElement>('.q, .item')),
+    ];
+    const i = items.indexOf(document.activeElement as HTMLElement);
     const next = items[Math.min(items.length - 1, Math.max(0, i + step))];
     e.preventDefault();
     next.focus();

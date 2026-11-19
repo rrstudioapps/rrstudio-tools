@@ -1,0 +1,61 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio Tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.xsd.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('xsd.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="xsd-validator" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()"><app-icon name="code" /> {{ i18n.t('xsd.sample') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('common.clear') }}</button>
+  </div>
+
+  <div class="tool-panels">
+    @for (s of ['xsd', 'xml']; track s) {
+      <app-file-drop [hint]="i18n.t('xsd.drop')" [accept]="s === 'xsd' ? '.xsd,.xml,text/xml,application/xml' : '.xml,.svg,.rss,.atom,.xhtml,.gpx,.kml,text/xml,application/xml'" (fileSelected)="onFile($event, $any(s))">
+        <app-io-panel [label]="i18n.t(s === 'xsd' ? 'xsd.schema' : 'xsd.doc')" [inputId]="'xsd-' + s" [meta]="meta(s === 'xsd' ? xsd() : xml())">
+          <textarea
+            [id]="'xsd-' + s"
+            class="io-textarea"
+            wrap="off"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [placeholder]="i18n.t(s === 'xsd' ? 'xsd.ph.schema' : 'xsd.ph.doc')"
+            [value]="s === 'xsd' ? xsd() : xml()"
+            (input)="onInput($event, $any(s))"
+          ></textarea>
+        </app-io-panel>
+      </app-file-drop>
+    }
+  </div>
+
+  <div class="tool-status" aria-live="polite">
+    @if (errorText()) {
+      <p class="tool-error">{{ errorText() }}</p>
+    } @else if (valid()) {
+      <p class="tool-ok">{{ i18n.t('xsd.valid') }}</p>
+    } @else if (issues().length) {
+      <p class="tool-error">{{ i18n.t('xsd.invalid', { n: issues().length }) }}</p>
+    }
+  </div>
+
+  @if (issues().length) {
+    <ol class="issues" [attr.aria-label]="i18n.t('xsd.list')">
+      @for (i of issues(); track $index) {
+        <li>
+          <code class="xp">{{ i.xpath }}</code>
+          <span class="msg">{{ message(i) }}</span>
+        </li>
+      }
+    </ol>
+    @if (truncated()) {
+      <p class="hint">{{ i18n.t('xsd.truncated', { n: maxIssues }) }}</p>
+    }
+  }
+</div>
