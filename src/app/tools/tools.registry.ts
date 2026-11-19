@@ -557,6 +557,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./yaml-viewer/yaml-viewer.page').then((m) => m.YamlViewerPage),
   },
   {
+    id: 'yaml-csv-diff',
+    path: 'yaml-csv-diff',
+    icon: 'swap',
+    category: 'data',
+    keywords: {
+      it: 'yaml csv confronto confronta differenze diff file righe colonne chiave configurazione tabella',
+      en: 'yaml csv compare comparison differences diff file rows columns key configuration table',
+    },
+    titleKey: 'tool.yc.title',
+    descriptionKey: 'tool.yc.desc',
+    seo: { titleKey: 'seo.yc.title', descriptionKey: 'seo.yc.desc' },
+    loadComponent: () => import('./yaml-csv-diff/yaml-csv-diff.page').then((m) => m.YamlCsvDiffPage),
+  },
+  {
     id: 'xsd-validator',
     path: 'xsd-validator',
     icon: 'shield',

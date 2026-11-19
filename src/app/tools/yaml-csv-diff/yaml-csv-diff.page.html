@@ -1,0 +1,107 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.yc.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('yc.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="yaml-csv-diff" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('yc.mode')" [options]="modes" [value]="mode()" (valueChange)="setMode($event)" />
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()"><app-icon name="code" /> {{ i18n.t('yc.sample') }}</button>
+    <button type="button" class="btn small" [disabled]="a() === '' && b() === ''" (click)="swap()"><app-icon name="swap" /> {{ i18n.t('yc.swap') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('common.clear') }}</button>
+  </div>
+
+  <div class="opts">
+    @if (mode() === 'yaml') {
+      <label class="field">
+        {{ i18n.t('yc.arrays') }}
+        <select id="yc-arrays" (change)="arrayMode.set($any($event.target).value)">
+          @for (m of arrayModes; track m) {
+            <option [value]="m" [selected]="arrayMode() === m">{{ i18n.t('yc.arrays.' + m) }}</option>
+          }
+        </select>
+      </label>
+      @if (arrayMode() === 'key') {
+        <label class="field">
+          {{ i18n.t('yc.key') }}
+          <input id="yc-key" type="text" autocomplete="off" spellcheck="false" [placeholder]="i18n.t('yc.key.ph')" [value]="key()" (input)="key.set($any($event.target).value)" />
+        </label>
+      }
+    } @else {
+      <label class="field">
+        {{ i18n.t('yc.keyCols') }}
+        <input id="yc-keycols" type="text" autocomplete="off" spellcheck="false" [placeholder]="i18n.t('yc.keyCols.ph')" [value]="keyCols()" (input)="keyCols.set($any($event.target).value)" />
+      </label>
+      <label class="check">
+        <input type="checkbox" [checked]="trim()" (change)="trim.set($any($event.target).checked)" />
+        {{ i18n.t('yc.trim') }}
+      </label>
+    }
+    <label class="check">
+      <input type="checkbox" [checked]="ignoreCase()" (change)="ignoreCase.set($any($event.target).checked)" />
+      {{ i18n.t('yc.case') }}
+    </label>
+  </div>
+
+  <div class="tool-panels">
+    @for (s of ['a', 'b']; track s) {
+      <app-file-drop [hint]="i18n.t('yc.drop.' + mode())" [accept]="mode() === 'yaml' ? '.yaml,.yml,.json,text/yaml,text/plain' : '.csv,.tsv,.txt,text/csv,text/plain'" (fileSelected)="onFile($event, $any(s))">
+        <app-io-panel [label]="i18n.t(s === 'a' ? 'yc.a' : 'yc.b')" [inputId]="'yc-' + s" [meta]="meta(s === 'a' ? a() : b())">
+          <textarea
+            [id]="'yc-' + s"
+            class="io-textarea"
+            wrap="off"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [placeholder]="i18n.t('yc.ph.' + mode())"
+            [value]="s === 'a' ? a() : b()"
+            (input)="onInput($event, $any(s))"
+          ></textarea>
+        </app-io-panel>
+      </app-file-drop>
+    }
+  </div>
+
+  <div class="tool-status" aria-live="polite">
+    @if (errorText()) {
+      <p class="tool-error" data-testid="yc-error">{{ errorText() }}</p>
+    } @else if (same()) {
+      <p class="tool-ok" data-testid="yc-same">{{ i18n.t('yc.same') }}</p>
+    } @else if (rows().length) {
+      <p class="tool-ok" data-testid="yc-summary">{{ i18n.t('yc.summary', { n: total(), added: summary().added, removed: summary().removed, changed: summary().changed }) }}</p>
+    }
+  </div>
+
+  @if (rows().length) {
+    <ul class="changes" [attr.aria-label]="i18n.t('yc.list')">
+      @for (r of rows(); track $index) {
+        <li [class]="'chg ' + tone(r)">
+          <span class="kind">{{ i18n.t('yc.kind.' + r.kind) }}</span>
+          <code class="xp">{{ r.path === '' ? i18n.t('yc.root') : r.path }}</code>
+          @if (r.before !== undefined) {
+            <code class="val before">{{ r.before }}</code>
+          }
+          @if (r.before !== undefined && r.after !== undefined) {
+            <span class="arrow" aria-hidden="true">→</span>
+          }
+          @if (r.after !== undefined) {
+            <code class="val after">{{ r.after }}</code>
+          }
+        </li>
+      }
+    </ul>
+    @if (truncated()) {
+      <p class="hint">{{ i18n.t('yc.truncated', { n: maxRows, total: total() }) }}</p>
+    }
+    <div class="actions-row">
+      <app-copy-button [text]="reportText()" />
+    </div>
+  }
+</div>

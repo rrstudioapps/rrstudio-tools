@@ -615,6 +615,12 @@ export const it = {
   'seo.yv.title': 'Editor e visualizzatore YAML e TOML ad albero | rrstudio tools',
   'seo.yv.desc':
     'Visualizza e modifica YAML e TOML come albero online: ricerca, percorso di ogni nodo, modifica di chiavi e valori, annulla e ripeti, conversione tra i formati. Nessun upload.',
+  'tool.yc.title': 'Confronto YAML e CSV',
+  'tool.yc.desc':
+    'Confronta due YAML o due CSV: differenze con il percorso, liste per chiave, righe dei CSV abbinate per le colonne che scegli.',
+  'seo.yc.title': 'Confronto di due YAML o due CSV online | rrstudio tools',
+  'seo.yc.desc':
+    'Confronta due file YAML o CSV online: differenze strutturali con percorso, liste abbinate per chiave, righe CSV abbinate per colonna chiave. Nessun upload.',
   'tool.xsd.title': 'Validatore XSD',
   'tool.xsd.desc':
     'Controlla un XML con uno schema XSD: tipi, faccette, ordine e numero degli elementi, attributi obbligatori e ID, con il percorso XPath di ogni problema.',

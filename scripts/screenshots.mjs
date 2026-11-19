@@ -428,6 +428,29 @@ try {
       await page.waitForSelector('[role=tree]');
     },
   });
+  // Confronto YAML e CSV: esempio YAML con liste per chiave, poi CSV con colonna chiave
+  await shot('yaml-csv-diff.png', {
+    width: 1280,
+    dark: false,
+    path: '/yaml-csv-diff/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('[data-testid=yc-summary]');
+      const list = await page.locator('.changes').innerText();
+      if (!list.includes('repliche') || !list.includes('utenti')) throw new Error('yaml-csv-diff: elenco YAML ' + list.slice(0, 200));
+      await page.fill('#yc-a', 'a: [1\n');
+      await page.waitForSelector('[data-testid=yc-error]');
+      await page.getByRole('button', { name: 'CSV', exact: true }).click();
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForFunction(() => document.querySelector('.changes')?.textContent?.includes('[id=1].prezzo'));
+      const csv = await page.locator('.changes').innerText();
+      if (!csv.includes('iva') || !csv.includes('[id=4]')) throw new Error('yaml-csv-diff: elenco CSV ' + csv.slice(0, 200));
+      await page.fill('#yc-keycols', 'sku');
+      await page.waitForSelector('[data-testid=yc-error]');
+      await page.fill('#yc-keycols', 'id');
+      await page.waitForSelector('[data-testid=yc-summary]');
+    },
+  });
   // Validatore XSD: esempio con più problemi
   await shot('xsd-validator.png', {
     width: 1280,

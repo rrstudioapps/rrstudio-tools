@@ -70,6 +70,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['yaml-viewer'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Confronto YAML e CSV»: le differenze tra due YAML (con percorso, liste abbinate per chiave) o tra due CSV, con le righe abbinate per le colonne chiave che scegli.',
+        en: 'New tool "YAML and CSV compare": the differences between two YAML files (with path, lists matched by key) or two CSV files, with rows matched by the key columns you choose.',
+        toolIds: ['yaml-csv-diff'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

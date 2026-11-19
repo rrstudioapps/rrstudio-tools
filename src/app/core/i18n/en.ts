@@ -616,6 +616,12 @@ export const en: Dict = {
   'seo.yv.title': 'YAML and TOML tree viewer and editor | rrstudio tools',
   'seo.yv.desc':
     'View and edit YAML and TOML as a tree online: search, path of each node, edit keys and values, undo and redo, convert between the formats. Nothing is uploaded.',
+  'tool.yc.title': 'YAML and CSV compare',
+  'tool.yc.desc':
+    'Compare two YAML or two CSV files: differences with their path, lists matched by key, CSV rows matched by the columns you choose.',
+  'seo.yc.title': 'Compare two YAML or CSV files online | rrstudio tools',
+  'seo.yc.desc':
+    'Compare two YAML or CSV files online: structural differences with path, lists matched by key, CSV rows matched by key column. Nothing is uploaded.',
   'tool.xsd.title': 'XSD validator',
   'tool.xsd.desc':
     'Check an XML against an XSD schema: types, facets, element order and count, required attributes and IDs, with the XPath of every problem.',
