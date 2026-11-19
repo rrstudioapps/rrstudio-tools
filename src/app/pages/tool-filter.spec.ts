@@ -63,7 +63,7 @@ describe('filterTools', () => {
   });
   it('combina categoria e ricerca', () => {
     // tra gli strumenti per sviluppatori parlano di JSON il decodificatore JWT, le entità e l'escape di stringhe; YAML/XML sono in Dati
-    expect(filterTools(TOOLS, 'dev', 'json', texts).map((t) => t.id).sort()).toEqual(['html-entities', 'jwt-decoder', 'string-escape']);
+    expect(filterTools(TOOLS, 'dev', 'json', texts).map((t) => t.id).sort()).toEqual(['html-entities', 'jwt-decoder', 'schema-test-data', 'string-escape']);
     expect(filterTools(TOOLS, 'data', 'json', texts).map((t) => t.id)).toContain('xml-formatter');
     expect(filterTools(TOOLS, 'data', 'json', texts).length).toBeGreaterThanOrEqual(3);
   });
