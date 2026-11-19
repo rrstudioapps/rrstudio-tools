@@ -20,7 +20,7 @@ export const en: Dict = {
 
   'footer.coffee': 'Buy me a coffee',
   'footer.tools': 'Tools',
-  'footer.dashboards': 'Dashboards',
+  'footer.dashboards': 'Demos',
   'footer.apps': 'Apps',
   'footer.github': 'GitHub',
   'footer.license': 'AGPL-3.0 license',

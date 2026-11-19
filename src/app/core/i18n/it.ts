@@ -19,7 +19,7 @@ export const it = {
 
   'footer.coffee': 'Offrimi un caffè',
   'footer.tools': 'Tools',
-  'footer.dashboards': 'Dashboard',
+  'footer.dashboards': 'Demo',
   'footer.apps': 'App',
   'footer.github': 'GitHub',
   'footer.license': 'Licenza AGPL-3.0',
