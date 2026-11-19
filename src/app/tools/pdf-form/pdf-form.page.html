@@ -1,0 +1,88 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.pfm.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('pfm.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-pdf-source toolId="pdf-form" (loaded)="onLoaded($event)" (cleared)="onCleared()">
+    @if (info(); as inf) {
+      @if (inf.xfa) {
+        <p class="tool-warn" role="note" data-testid="pfm-xfa">{{ i18n.t('pfm.xfa') }}</p>
+      }
+      @if (inf.fields.length === 0) {
+        <p class="tool-warn" role="note" data-testid="pfm-none">{{ i18n.t('pfm.none') }}</p>
+      } @else {
+        <section class="panel" [attr.aria-label]="i18n.t('pfm.fields')">
+          <h2 class="eyebrow">{{ i18n.t('pfm.fields') }} ({{ inf.fields.length }})</h2>
+          <ul class="fields">
+            @for (f of inf.fields; track f.name; let i = $index) {
+              <li class="fld">
+                <label [for]="'pfm-f' + i">{{ f.name }}@if (f.required) { <span aria-hidden="true"> *</span> } <span class="kind">{{ i18n.t('pfm.kind.' + f.kind) }}</span></label>
+                @switch (f.kind) {
+                  @case ('text') {
+                    @if (f.multiline) {
+                      <textarea [id]="'pfm-f' + i" rows="3" [disabled]="f.readOnly" [attr.maxlength]="f.maxLength" [value]="str(f)" (input)="set(f.name, $any($event.target).value)"></textarea>
+                    } @else {
+                      <input [id]="'pfm-f' + i" type="text" autocomplete="off" [disabled]="f.readOnly" [attr.maxlength]="f.maxLength" [value]="str(f)" (input)="set(f.name, $any($event.target).value)" />
+                    }
+                  }
+                  @case ('checkbox') {
+                    <label class="check"><input [id]="'pfm-f' + i" type="checkbox" [disabled]="f.readOnly" [checked]="bool(f)" (change)="set(f.name, $any($event.target).checked)" /> {{ i18n.t('pfm.checked') }}</label>
+                  }
+                  @case ('radio') {
+                    <select [id]="'pfm-f' + i" [disabled]="f.readOnly" (change)="set(f.name, $any($event.target).value)">
+                      <option value="" [selected]="str(f) === ''">—</option>
+                      @for (o of f.options; track o) {
+                        <option [value]="o" [selected]="str(f) === o">{{ o }}</option>
+                      }
+                    </select>
+                  }
+                  @case ('dropdown') {
+                    <select [id]="'pfm-f' + i" [disabled]="f.readOnly" (change)="set(f.name, $any($event.target).value)">
+                      <option value="" [selected]="str(f) === ''">—</option>
+                      @for (o of f.options; track o) {
+                        <option [value]="o" [selected]="str(f) === o">{{ o }}</option>
+                      }
+                    </select>
+                  }
+                  @case ('list') {
+                    <select [id]="'pfm-f' + i" multiple [disabled]="f.readOnly" (change)="setList(f.name, $any($event.target))">
+                      @for (o of f.options; track o) {
+                        <option [value]="o" [selected]="list(f).includes(o)">{{ o }}</option>
+                      }
+                    </select>
+                  }
+                  @default {
+                    <span class="hint">{{ i18n.t('pfm.noedit') }}</span>
+                  }
+                }
+              </li>
+            }
+          </ul>
+          <div class="row">
+            <button type="button" class="btn primary" data-testid="pfm-save" [disabled]="busy()" (click)="save(false)"><app-icon name="download" /> {{ i18n.t('pfm.save') }}</button>
+            <button type="button" class="btn" data-testid="pfm-flatten" [disabled]="busy()" (click)="save(true)"><app-icon name="download" /> {{ i18n.t('pfm.flatten') }}</button>
+          </div>
+          <p class="hint">{{ i18n.t('pfm.flatten.hint') }}</p>
+        </section>
+      }
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (error()) {
+        <p class="tool-error" role="alert" data-testid="pfm-error">{{ error() }}</p>
+      } @else if (done()) {
+        <p class="tool-ok" data-testid="pfm-done">{{ done() }}</p>
+      }
+      @if (problems().length) {
+        <ul class="problems" data-testid="pfm-problems">
+          @for (p of problems(); track p.name) {
+            <li>{{ i18n.t('pfm.problem.' + p.reason, { name: p.name }) }}</li>
+          }
+        </ul>
+      }
+    </div>
+  </app-pdf-source>
+</div>

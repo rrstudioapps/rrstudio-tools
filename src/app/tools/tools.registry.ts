@@ -1195,6 +1195,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-images/pdf-images.page').then((m) => m.PdfImagesPage),
   },
   {
+    id: 'pdf-form',
+    path: 'pdf-form',
+    icon: 'pencil',
+    category: 'media',
+    keywords: {
+      it: 'pdf modulo moduli compila compilare campi appiattisci flatten acroform form casella testo',
+      en: 'pdf form forms fill in fields flatten acroform checkbox text dropdown',
+    },
+    titleKey: 'tool.pfm.title',
+    descriptionKey: 'tool.pfm.desc',
+    seo: { titleKey: 'seo.pfm.title', descriptionKey: 'seo.pfm.desc' },
+    loadComponent: () => import('./pdf-form/pdf-form.page').then((m) => m.PdfFormPage),
+  },
+  {
     id: 'image-crop',
     path: 'image-crop',
     icon: 'crop',

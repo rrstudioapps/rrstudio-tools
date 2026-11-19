@@ -550,6 +550,12 @@ export const it = {
   'seo.pim.title': 'Estrai immagini da un PDF online | rrstudio tools',
   'seo.pim.desc':
     'Estrai le immagini da un PDF online: JPEG identici all\'originale e PNG anche con trasparenza, con anteprima e ZIP. Il file non viene caricato.',
+  'tool.pfm.title': 'Compila e appiattisci moduli PDF',
+  'tool.pfm.desc':
+    'Compila i campi di un modulo PDF e scarica il file compilato oppure appiattito, con i valori fissati nella pagina.',
+  'seo.pfm.title': 'Compila moduli PDF online e appiattiscili | rrstudio tools',
+  'seo.pfm.desc':
+    'Compila un modulo PDF online: testo, caselle, scelte e menu; scarica il PDF compilato o appiattito. Il file non viene caricato.',
   'tool.crop.title': 'Ritaglia e ruota immagini',
   'tool.crop.desc':
     'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',

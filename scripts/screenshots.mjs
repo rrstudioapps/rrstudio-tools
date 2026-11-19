@@ -2167,6 +2167,37 @@ try {
       await page.getByTestId('pim-none').waitFor();
     },
   });
+  await shot('pdf-form.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-form/',
+    setup: async (page) => {
+      const doc = await PDFDocument.create();
+      const pg = doc.addPage([400, 300]);
+      const form = doc.getForm();
+      form.createTextField('nome').addToPage(pg, { x: 20, y: 250, width: 200, height: 20 });
+      form.createCheckBox('accetto').addToPage(pg, { x: 20, y: 220, width: 16, height: 16 });
+      const dd = form.createDropdown('citta');
+      dd.addOptions(['Roma', 'Milano']);
+      dd.addToPage(pg, { x: 20, y: 180, width: 120, height: 20 });
+      await loadPdfIn(page, Buffer.from(await doc.save()));
+      await page.waitForSelector('#pfm-f0');
+      need((await page.locator('.fields > li').count()) === 3, 'campi del modulo');
+      await page.fill('#pfm-f0', 'Mario Rossi');
+      await page.check('#pfm-f1');
+      await page.selectOption('#pfm-f2', 'Milano');
+      const filled = await downloadBuffer(page, () => page.getByTestId('pfm-save').click());
+      const f = (await PDFDocument.load(filled.buffer)).getForm();
+      need(f.getTextField('nome').getText() === 'Mario Rossi' && f.getCheckBox('accetto').isChecked() && f.getDropdown('citta').getSelected()[0] === 'Milano', 'valori non scritti');
+      const flat = await downloadBuffer(page, () => page.getByTestId('pfm-flatten').click());
+      need((await PDFDocument.load(flat.buffer)).getForm().getFields().length === 0, 'campi non appiattiti');
+      // PDF senza moduli
+      const plain = await PDFDocument.create();
+      plain.addPage();
+      await loadPdfIn(page, Buffer.from(await plain.save()));
+      await page.getByTestId('pfm-none').waitFor();
+    },
+  });
   await shot('pdf-sign.png', {
     width: 1280,
     dark: false,

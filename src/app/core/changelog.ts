@@ -118,6 +118,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['pdf-images'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Compila e appiattisci moduli PDF»: compila testo, caselle, scelte e menu di un modulo e scarica il PDF compilato oppure appiattito, con i valori fissati nella pagina.',
+        en: 'New tool "Fill in and flatten PDF forms": fill in a form\'s text, checkboxes, choices and menus and download the filled or flattened PDF, with the values fixed on the page.',
+        toolIds: ['pdf-form'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

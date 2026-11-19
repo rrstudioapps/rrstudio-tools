@@ -551,6 +551,12 @@ export const en: Dict = {
   'seo.pim.title': 'Extract images from a PDF online | rrstudio tools',
   'seo.pim.desc':
     'Extract images from a PDF online: JPEGs identical to the original and PNGs with transparency too, with preview and ZIP. The file is not uploaded.',
+  'tool.pfm.title': 'Fill in and flatten PDF forms',
+  'tool.pfm.desc':
+    'Fill in a PDF form\'s fields and download the filled or flattened file, with the values fixed on the page.',
+  'seo.pfm.title': 'Fill in PDF forms online and flatten them | rrstudio tools',
+  'seo.pfm.desc':
+    'Fill in a PDF form online: text, checkboxes, choices and menus; download the filled or flattened PDF. The file is not uploaded.',
   'tool.crop.title': 'Crop and rotate images',
   'tool.crop.desc':
     'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',
