@@ -29,42 +29,6 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
     entries: [
       {
         kind: 'new-tool',
-        it: 'Nuovo strumento: editor e visualizzatore XML ad albero, con ricerca tra tag, attributi e testo, query XPath, namespace, modifica di tag, attributi e contenuto, aggiunta, spostamento ed eliminazione di nodi, annulla e ripeti.',
-        en: 'New tool: tree-based XML editor and viewer, with search across tags, attributes and text, XPath queries, namespaces, editing of tags, attributes and content, adding, moving and deleting nodes, undo and redo.',
-        toolIds: ['xml-viewer'],
-      },
-      {
-        kind: 'new-tool',
-        it: 'Nuovo strumento «Confronto XML»: le differenze di struttura tra due documenti (elementi aggiunti e tolti, attributi e testo cambiati) con il percorso XPath, senza il rumore di rientri e ordine degli attributi.',
-        en: 'New tool "XML compare": the structural differences between two documents (added and removed elements, changed attributes and text) with the XPath, without the noise of indentation and attribute order.',
-        toolIds: ['xml-diff'],
-      },
-      {
-        kind: 'new-tool',
-        it: 'Nuovo strumento «Da XML a tabella e CSV»: scegli l\'elemento che si ripete, appiattisci attributi e figli in colonne, guarda l\'anteprima e scarica il CSV o inviala agli altri strumenti.',
-        en: 'New tool "XML to table and CSV": pick the repeating element, flatten attributes and children into columns, preview it and download the CSV or send it to the other tools.',
-        toolIds: ['xml-to-csv'],
-      },
-      {
-        kind: 'new-tool',
-        it: 'Nuovo strumento «Validatore XSD»: controlla un XML con uno schema XSD (tipi, faccette, ordine e numero degli elementi, attributi obbligatori, ID) e mostra ogni problema con il suo percorso XPath.',
-        en: 'New tool "XSD validator": check an XML against an XSD schema (types, facets, element order and count, required attributes, IDs) and see each problem with its XPath.',
-        toolIds: ['xsd-validator'],
-      },
-      {
-        kind: 'new-tool',
-        it: 'Nuovo strumento «XML ↔ JSON»: converte XML in JSON e JSON in XML nei due sensi, con attributi, testo ed elementi ripetuti; prefisso, array e tipi (numeri e booleani) a scelta, errori con riga e colonna.',
-        en: 'New tool "XML ↔ JSON": converts XML to JSON and JSON to XML both ways, with attributes, text and repeated elements; prefix, arrays and types (numbers and booleans) of your choice, errors with line and column.',
-        toolIds: ['xml-json-converter'],
-      },
-      {
-        kind: 'new-tool',
-        it: 'Nuovo strumento «Visualizzatore HTML e DOM»: la pagina come albero DOM, query con selettori CSS e XPath, percorso XPath e CSS di ogni nodo; nessuno script viene eseguito.',
-        en: 'New tool "HTML and DOM viewer": the page as a DOM tree, queries with CSS selectors and XPath, XPath and CSS path of each node; no script is run.',
-        toolIds: ['html-dom-viewer'],
-      },
-      {
-        kind: 'new-tool',
         it: 'Nuovo strumento «Editor e visualizzatore YAML e TOML»: il file come albero con ricerca, percorso di ogni nodo, modifica di chiavi, valori e tipi, annulla e ripeti e conversione tra YAML e TOML.',
         en: 'New tool "YAML and TOML viewer and editor": the file as a tree with search, the path of each node, editing of keys, values and types, undo and redo, and conversion between YAML and TOML.',
         toolIds: ['yaml-viewer'],
@@ -134,6 +98,42 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         it: 'Nuovo strumento «Proteggi PDF con password»: password per aprire il file con cifratura AES a 256 bit e limiti facoltativi di stampa, copia e modifica, tutto nel browser.',
         en: 'New tool "Protect a PDF with a password": a password to open the file with 256-bit AES encryption and optional print, copy and edit restrictions, all in your browser.',
         toolIds: ['pdf-protect'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento: editor e visualizzatore XML ad albero, con ricerca tra tag, attributi e testo, query XPath, namespace, modifica di tag, attributi e contenuto, aggiunta, spostamento ed eliminazione di nodi, annulla e ripeti.',
+        en: 'New tool: tree-based XML editor and viewer, with search across tags, attributes and text, XPath queries, namespaces, editing of tags, attributes and content, adding, moving and deleting nodes, undo and redo.',
+        toolIds: ['xml-viewer'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Confronto XML»: le differenze di struttura tra due documenti (elementi aggiunti e tolti, attributi e testo cambiati) con il percorso XPath, senza il rumore di rientri e ordine degli attributi.',
+        en: 'New tool "XML compare": the structural differences between two documents (added and removed elements, changed attributes and text) with the XPath, without the noise of indentation and attribute order.',
+        toolIds: ['xml-diff'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Da XML a tabella e CSV»: scegli l\'elemento che si ripete, appiattisci attributi e figli in colonne, guarda l\'anteprima e scarica il CSV o inviala agli altri strumenti.',
+        en: 'New tool "XML to table and CSV": pick the repeating element, flatten attributes and children into columns, preview it and download the CSV or send it to the other tools.',
+        toolIds: ['xml-to-csv'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Validatore XSD»: controlla un XML con uno schema XSD (tipi, faccette, ordine e numero degli elementi, attributi obbligatori, ID) e mostra ogni problema con il suo percorso XPath.',
+        en: 'New tool "XSD validator": check an XML against an XSD schema (types, facets, element order and count, required attributes, IDs) and see each problem with its XPath.',
+        toolIds: ['xsd-validator'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «XML ↔ JSON»: converte XML in JSON e JSON in XML nei due sensi, con attributi, testo ed elementi ripetuti; prefisso, array e tipi (numeri e booleani) a scelta, errori con riga e colonna.',
+        en: 'New tool "XML ↔ JSON": converts XML to JSON and JSON to XML both ways, with attributes, text and repeated elements; prefix, arrays and types (numbers and booleans) of your choice, errors with line and column.',
+        toolIds: ['xml-json-converter'],
+      },
+      {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Visualizzatore HTML e DOM»: la pagina come albero DOM, query con selettori CSS e XPath, percorso XPath e CSS di ogni nodo; nessuno script viene eseguito.',
+        en: 'New tool "HTML and DOM viewer": the page as a DOM tree, queries with CSS selectors and XPath, XPath and CSS path of each node; no script is run.',
+        toolIds: ['html-dom-viewer'],
       },
       {
         kind: 'improvement',
