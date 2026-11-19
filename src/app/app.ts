@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // © 2026 rrstudio — rrstudio tools
-import { ChangeDetectionStrategy, Component, afterNextRender, inject } from '@angular/core';
+import { ApplicationRef, ChangeDetectionStrategy, Component, afterNextRender, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BuildDay } from './core/build-day';
 import { ChainsService } from './core/chains/chains.service';
@@ -66,6 +66,7 @@ export class App {
   private readonly pwa = inject(PwaService);
   private readonly favorites = inject(FavoritesService);
   private readonly chains = inject(ChainsService);
+  private readonly appRef = inject(ApplicationRef);
 
   constructor() {
     inject(BuildDay); // fissa il giorno della build nel prerender (badge «Nuovo» senza differenze in idratazione)
@@ -76,6 +77,8 @@ export class App {
       this.favorites.init(); // preferiti dell'utente: solo nel browser, dopo l'idratazione
       this.chains.init(); // catene salvate dall'utente: solo nel browser
       this.pwa.init(); // service worker: solo nel browser, dopo che l'app è stabile
+      // Marcatore «idratazione finita»: la pagina statica è visibile prima, ma input ed eventi funzionano solo da qui in poi (lo usa l'e2e)
+      void this.appRef.whenStable().then(() => document.documentElement.setAttribute('data-hydrated', ''));
     });
   }
 }

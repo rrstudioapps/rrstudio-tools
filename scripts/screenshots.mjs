@@ -45,6 +45,25 @@ try {
   console.error(e.message);
   process.exit(1);
 }
+// Ogni page.goto aspetta che l'app sia idratata (marcatore data-hydrated su <html>, messo da App quando l'app è stabile):
+// le pagine statiche sono già visibili prima, ma input ed eventi (fill, setInputFiles, clic) si perdono finché Angular non è partito.
+// È la causa dell'instabilità sotto carico (con E2E_SLOW_JS=2500 si riproduce sempre).
+const newContext = browser.newContext.bind(browser);
+browser.newContext = async (opts) => {
+  const ctx = await newContext(opts);
+  const newPage = ctx.newPage.bind(ctx);
+  ctx.newPage = async () => {
+    const p = await newPage();
+    const goto = p.goto.bind(p);
+    p.goto = async (url, o) => {
+      const r = await goto(url, o);
+      await p.waitForSelector('html[data-hydrated]', { state: 'attached', timeout: 20000 }).catch(() => undefined);
+      return r;
+    };
+    return p;
+  };
+  return ctx;
+};
 const errors = [];
 try {
   // ONLY=home-light.png,base64.png limita gli screenshot a quelli elencati
@@ -71,6 +90,8 @@ try {
       colorScheme: dark ? 'dark' : 'light',
       locale: 'it-IT',
     });
+    // E2E_SLOW_JS=<ms>: rallenta ogni script per riprodurre un avvio lento (server sotto carico)
+    if (process.env.E2E_SLOW_JS) await ctx.route(/\.js(\?.*)?$/, async (route) => (await new Promise((r) => setTimeout(r, Number(process.env.E2E_SLOW_JS))), route.continue()));
     const page = await ctx.newPage();
     page.setDefaultTimeout(20000);
     const prefix = `[${name}] `;
@@ -84,7 +105,7 @@ try {
       if (!CHECK) await page.screenshot({ path: join(out, name), fullPage: true });
     } catch (e) {
       // un'interazione fallita non ferma gli altri: viene riportata alla fine con exit 1
-      errors.push(prefix + 'interazione fallita: ' + (process.env.E2E_VERBOSE ? e.message : e.message.split('\n')[0]));
+      errors.push(prefix + 'interazione fallita: ' + (process.env.E2E_VERBOSE ? e.message + ' @' + (/screenshots\.mjs:(\d+)/.exec(e.stack ?? '')?.[1] ?? '?') : e.message.split('\n')[0]));
     }
     await ctx.close();
   }
@@ -310,6 +331,20 @@ try {
       await page.waitForFunction(() => document.querySelectorAll('.tree .row').length >= 3);
       await page.locator('.tree .row', { hasText: 'r' }).first().click();
       await page.waitForTimeout(150);
+      // file grande (30000 elementi): rendering a finestra, nel DOM poche righe, nessun troncamento, si arriva fino all'ultimo
+      await page.getByRole('button', { name: 'Testo', exact: true }).click();
+      await page.fill('#xv-text', '<r>' + Array.from({ length: 30000 }, (_, i) => `<i n="${i}">v${i}</i>`).join('') + '</r>');
+      await page.getByRole('button', { name: 'Albero', exact: true }).click();
+      await page.waitForSelector('.tree .row');
+      const rowsInDom = await page.locator('.tree .row').count();
+      must(rowsInDom > 5 && rowsInDom < 120, 'righe nel DOM con 30000 elementi: ' + rowsInDom);
+      must(!(await page.locator('.tree').innerText()).includes('molto grande'), 'albero troncato con 30000 elementi');
+      await page.locator('.tree').focus();
+      await page.keyboard.press('End');
+      await page.waitForFunction(() => document.querySelector('.tree .row.sel')?.textContent.includes('v29999'));
+      must((await page.locator('.tree .row').count()) < 120, 'dopo End le righe nel DOM sono troppe');
+      await page.keyboard.press('Home');
+      await page.waitForFunction(() => document.querySelector('.tree .row.sel')?.textContent.includes('<r>') || document.querySelector('.tree .row.sel')?.textContent.trim().startsWith('r'));
       // ritorna all'esempio per lo screenshot
       await page.getByRole('button', { name: 'Prova con un esempio' }).click();
       await page.locator('.tree .row', { hasText: 'Umberto Eco' }).first().click();
@@ -849,6 +884,7 @@ try {
       await page.fill('#rnd-count', '5');
       await page.getByTestId('rnd-unique').check();
       await page.getByTestId('rnd-go').click();
+      await page.waitForSelector('[data-testid=rnd-numbers] li');
       const nums = (await page.locator('[data-testid=rnd-numbers] li').allInnerTexts()).map(Number);
       if (nums.length !== 5 || new Set(nums).size !== 5 || nums.some((n) => n < 1 || n > 6)) throw new Error('numeri non validi: ' + nums);
       await page.fill('#rnd-count', '7');
@@ -1843,22 +1879,31 @@ try {
     dark: false,
     path: '/qr-code-reader/',
     setup: async (page) => {
+      const t0 = Date.now();
+      const tr = (m) => process.env.E2E_TRACE && console.error(`[qr +${Date.now() - t0}ms] ${m}`);
       // il QR da leggere viene creato con il generatore QR dello stesso sito e scaricato come PNG
       const gen = await page.context().newPage();
       await gen.goto(base + '/qr-code-generator/');
+      tr('generatore caricato');
       await gen.fill('#qr-url', 'https://example.com/ciao?da=qr');
       await gen.waitForSelector('[data-testid=qr-preview]', { timeout: 60000 });
+      tr('anteprima');
       // sotto carico il QR può non essere ancora disegnato: il pulsante PNG deve essere attivo prima del clic
       const pngBtn = gen.getByRole('button', { name: /PNG/ }).first();
       await pngBtn.waitFor({ state: 'visible', timeout: 60000 });
       await gen.waitForFunction(() => [...document.querySelectorAll('button')].some((b) => /PNG/.test(b.textContent ?? '') && !b.disabled), null, { timeout: 60000 });
+      tr('pulsante PNG attivo');
       const [download] = await Promise.all([gen.waitForEvent('download', { timeout: 60000 }), pngBtn.click()]);
+      tr('download partito');
       const stream = await download.createReadStream();
       const chunks = [];
       for await (const c of stream) chunks.push(c);
+      tr('download letto: ' + chunks.length + ' pezzi');
       await gen.close();
       await page.setInputFiles('input[type=file]', [{ name: 'qr.png', mimeType: 'image/png', buffer: Buffer.concat(chunks) }]);
+      tr('file inserito');
       await page.waitForSelector('[data-testid=qrr-result]', { timeout: 60000 });
+      tr('risultato');
     },
   });
   await shot('sort-lines.png', {
@@ -2331,7 +2376,8 @@ try {
       const readKey = () => page.evaluate(() => localStorage.getItem('rrtools.favorites'));
       // 1. due preferiti dalle card della home
       const star = (title) => page.getByRole('button', { name: 'Aggiungi ai preferiti: ' + title, exact: true });
-      await page.waitForFunction(() => !document.querySelector('app-favorite-button button:disabled'));
+      // con l'idratazione incrementale i pulsanti delle categorie fuori schermo restano disabilitati finché non compaiono: basta che i primi siano attivi
+      await page.waitForFunction(() => document.querySelector('app-favorite-button button:not(:disabled)'));
       must((await page.locator('.pills button.pill', { hasText: 'Preferiti' }).count()) === 0, 'filtro Preferiti senza preferiti');
       await star('Base64 Encode/Decode').click();
       await star('Hash e checksum').click();

@@ -5,6 +5,7 @@
 // performance >= soglia per pagina/preset (vedi PERF più sotto).
 // Uso: npm run build && npm run lighthouse   (CHROMIUM_PATH se Chromium non si trova)
 // Variabili: LH_RUNS=3 (mediana di più misure), LH_ONLY=csv-dashboard,privacy (filtra per indirizzo),
+//            LH_PRESET=mobile (solo un preset), LH_ONLY=/ (solo la home it),
 //            LH_REPORT=1 (stampa solo i numeri senza fallire: serve a misurare, non a fare da gate).
 import lighthouse from 'lighthouse';
 import desktopConfig from 'lighthouse/core/config/desktop-config.js';
@@ -35,7 +36,9 @@ const PAGES = [
   '/cron-expression/',
 ];
 const only = process.env.LH_ONLY?.split(',').filter(Boolean);
-const pages = PAGES.filter((p) => !only || only.some((o) => p.includes(o)));
+// LH_ONLY='/' = solo la home italiana (corrispondenza esatta); gli altri valori filtrano per sottostringa
+const pages = PAGES.filter((p) => !only || only.some((o) => p === o || (o !== '/' && p.includes(o))));
+const presets = process.env.LH_PRESET ? [process.env.LH_PRESET] : ['mobile', 'desktop']; // LH_PRESET=mobile misura solo il mobile
 
 // Soglie di performance (0-100), misurate il 17/11/2026 su questa VPS ARM sotto carico (mediana di 3 run):
 //  mobile  : da 78 (cron-expression, csv-dashboard) a 96 (calcolo-iva); home EN fino a 67 nei run più disturbati
@@ -109,7 +112,7 @@ try {
     chromePath: process.env.CHROMIUM_PATH || chromium.executablePath(),
     chromeFlags: ['--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'],
   });
-  for (const preset of ['mobile', 'desktop']) {
+  for (const preset of presets) {
     for (const page of pages) {
       const url = base + page;
       const noindex = /<meta[^>]+name="robots"[^>]+noindex/i.test(readFileSync(join(root, page, 'index.html'), 'utf8'));
@@ -127,6 +130,8 @@ try {
           bp: lhr.categories['best-practices'].score * 100,
           seo: lhr.categories.seo.score * 100,
           tbt: lhr.audits['total-blocking-time'].numericValue,
+          // dettaglio dell'esecuzione (solo con LH_REPORT=1): script che occupano più tempo di CPU
+          boot: REPORT_ONLY ? (lhr.audits['bootup-time'].details?.items ?? []).slice(0, 6).map((i) => `${String(i.url).split('/').pop()?.slice(0, 40)} ${Math.round(i.scripting)}ms script / ${Math.round(i.total)}ms`) : [],
           lcp: lhr.audits['largest-contentful-paint'].numericValue,
           failed: Object.values(lhr.audits)
             .filter((a) => a.score !== null && a.score < 1 && a.scoreDisplayMode === 'binary')
@@ -146,6 +151,7 @@ try {
         `${preset.padEnd(7)} ${page.padEnd(30)} perf ${fmt(row.perf)} (min ${perfMin(preset, page)})  a11y ${fmt(row.a11y)}  bp ${fmt(row.bp)}  seo ${fmt(row.seo)}` +
           `  TBT ${fmt(row.tbt)} ms  LCP ${fmt(row.lcp)} ms${bad.length ? '  <-- KO' : ''}`,
       );
+      if (REPORT_ONLY) for (const b of runs[0].boot) console.log('    ' + b);
     }
   }
 } finally {
