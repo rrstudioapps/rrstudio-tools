@@ -609,6 +609,12 @@ export const it = {
   'seo.hd.title': 'Visualizzatore HTML e DOM online con query CSS e XPath | rrstudio tools',
   'seo.hd.desc':
     'Visualizza un documento HTML come albero DOM online: query con selettori CSS e XPath, percorso di ogni nodo, nessuno script eseguito e nessun dato inviato.',
+  'tool.yv.title': 'Editor e visualizzatore YAML e TOML',
+  'tool.yv.desc':
+    'Esplora e modifica un file YAML o TOML come albero: cerca tra chiavi e valori, copia il percorso, annulla e ripeti, converti tra i due formati.',
+  'seo.yv.title': 'Editor e visualizzatore YAML e TOML ad albero | rrstudio tools',
+  'seo.yv.desc':
+    'Visualizza e modifica YAML e TOML come albero online: ricerca, percorso di ogni nodo, modifica di chiavi e valori, annulla e ripeti, conversione tra i formati. Nessun upload.',
   'tool.xsd.title': 'Validatore XSD',
   'tool.xsd.desc':
     'Controlla un XML con uno schema XSD: tipi, faccette, ordine e numero degli elementi, attributi obbligatori e ID, con il percorso XPath di ogni problema.',

@@ -610,6 +610,12 @@ export const en: Dict = {
   'seo.hd.title': 'HTML and DOM viewer online with CSS and XPath queries | rrstudio tools',
   'seo.hd.desc':
     'View an HTML document as a DOM tree online: CSS selector and XPath queries, path of each node, no script run and no data sent.',
+  'tool.yv.title': 'YAML and TOML viewer and editor',
+  'tool.yv.desc':
+    'Explore and edit a YAML or TOML file as a tree: search keys and values, copy the path, undo and redo, convert between the two formats.',
+  'seo.yv.title': 'YAML and TOML tree viewer and editor | rrstudio tools',
+  'seo.yv.desc':
+    'View and edit YAML and TOML as a tree online: search, path of each node, edit keys and values, undo and redo, convert between the formats. Nothing is uploaded.',
   'tool.xsd.title': 'XSD validator',
   'tool.xsd.desc':
     'Check an XML against an XSD schema: types, facets, element order and count, required attributes and IDs, with the XPath of every problem.',

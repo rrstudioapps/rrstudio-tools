@@ -64,6 +64,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['html-dom-viewer'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Editor e visualizzatore YAML e TOML»: il file come albero con ricerca, percorso di ogni nodo, modifica di chiavi, valori e tipi, annulla e ripeti e conversione tra YAML e TOML.',
+        en: 'New tool "YAML and TOML viewer and editor": the file as a tree with search, the path of each node, editing of keys, values and types, undo and redo, and conversion between YAML and TOML.',
+        toolIds: ['yaml-viewer'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

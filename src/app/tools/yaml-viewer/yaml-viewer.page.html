@@ -1,0 +1,296 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page" (keydown)="onViewerKey($event)">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.yv.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('yv.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="yaml-viewer" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <div class="seg" role="group" [attr.aria-label]="i18n.t('yv.fmt')">
+      @for (f of formats; track f) {
+        <button type="button" class="seg-btn" [class.on]="format() === f" [attr.aria-pressed]="format() === f" (click)="setFormat(f)">{{ f === 'yaml' ? 'YAML' : 'TOML' }}</button>
+      }
+    </div>
+    <!-- selettore a mano (non app-segmented): se il passaggio al testo/albero viene rifiutato per un errore, deve restare dov'è -->
+    <div class="seg" role="group" [attr.aria-label]="i18n.t('yv.view')">
+      @for (o of views(); track o.value) {
+        <button type="button" class="seg-btn" [class.on]="view() === o.value" [attr.aria-pressed]="view() === o.value" (click)="setView(o.value)">
+          {{ o.label }}
+        </button>
+      }
+    </div>
+    @if (view() === 'tree' && hasDoc()) {
+      <button type="button" class="btn small" (click)="expandAll()">{{ i18n.t('yv.expandAll') }}</button>
+      <button type="button" class="btn small" (click)="collapseAll()">{{ i18n.t('yv.collapseAll') }}</button>
+      <span class="levelbox">
+        <label for="yv-level">{{ i18n.t('yv.level') }}</label>
+        <input id="yv-level" type="number" min="1" max="99" [value]="level()" (input)="onLevelInput($event)" />
+        <button type="button" class="btn small" (click)="expandLevels(level())">{{ i18n.t('yv.levelBtn') }} {{ level() }}</button>
+      </span>
+      <button type="button" class="btn small" [disabled]="!canUndo()" (click)="undo()">
+        <app-icon name="rotateCcw" /> {{ i18n.t('yv.undo') }}
+      </button>
+      <button type="button" class="btn small" [disabled]="!canRedo()" (click)="redo()">
+        <app-icon name="rotateCw" /> {{ i18n.t('yv.redo') }}
+      </button>
+    }
+    @if (view() === 'text') {
+      <button type="button" class="btn small" (click)="formatText()">{{ i18n.t('yv.format') }}</button>
+    }
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()">
+      <app-icon name="braces" /> {{ i18n.t('yv.sample') }}
+    </button>
+    <button data-shortcut="copy" type="button" class="btn small" [disabled]="!canExport()" (click)="copyAll()">
+      <app-icon [name]="copied() ? 'check' : 'copy'" /> {{ copied() ? i18n.t('common.copied') : i18n.t('common.copy') }}
+    </button>
+    <button data-shortcut="download" type="button" class="btn small" [disabled]="!canExport()" (click)="download()">
+      <app-icon name="download" /> {{ i18n.t('yv.download') }}
+    </button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <app-file-drop [hint]="i18n.t('yv.drop')" accept=".yaml,.yml,.toml,text/yaml,text/plain" (fileSelected)="onFile($event)">
+    @if (view() === 'tree') {
+      @if (hasDoc()) {
+        <div class="search">
+          <label class="visually-hidden" for="yv-search">{{ i18n.t('yv.search.label') }}</label>
+          <app-icon name="search" />
+          <input
+            id="yv-search"
+            type="search"
+            autocomplete="off"
+            spellcheck="false"
+            [placeholder]="i18n.t('yv.search.ph')"
+            [value]="query()"
+            (input)="onSearchInput($event)"
+            (keydown)="onSearchKey($event)"
+          />
+          <button data-shortcut="prev" type="button" class="btn small compact" [disabled]="results().matches.length === 0" [attr.aria-label]="i18n.t('yv.search.prev')" [attr.title]="i18n.t('yv.search.prev')" (click)="step(-1)">
+            <app-icon name="up" />
+          </button>
+          <button data-shortcut="next" type="button" class="btn small compact" [disabled]="results().matches.length === 0" [attr.aria-label]="i18n.t('yv.search.next')" [attr.title]="i18n.t('yv.search.next')" (click)="step(1)">
+            <app-icon name="down" />
+          </button>
+          <span class="search-count" role="status" aria-live="polite">{{ searchStatus() }}</span>
+        </div>
+
+        <div
+          #tree
+          class="tree"
+          role="tree"
+          tabindex="0"
+          [attr.aria-label]="i18n.t('yv.tree.label')"
+          [attr.aria-activedescendant]="activeDescendant()"
+          (keydown)="onTreeKey($event)"
+          (scroll)="onScroll($event)"
+        >
+          <div class="sizer" [style.height.px]="sizerH()">
+            @for (w of windowRows(); track w.id) {
+              @if (w.node; as r) {
+                <div
+                  class="row"
+                  role="treeitem"
+                  [id]="'tv-' + w.i"
+                  [class.sel]="r.id === cursorId()"
+                  [class.match]="isMatch(r.id)"
+                  [class.cur]="isCurrentMatch(r.id)"
+                  [attr.aria-level]="r.depth + 1"
+                  [attr.aria-posinset]="r.index + 1"
+                  [attr.aria-setsize]="r.size"
+                  [attr.aria-expanded]="r.count > 0 ? r.expanded : null"
+                  [attr.aria-selected]="r.id === cursorId()"
+                  [style.top.px]="w.i * rowH"
+                  [style.padding-left.px]="8 + r.depth * indent"
+                  (click)="onRowClick(r, $event)"
+                  (dblclick)="onRowDblClick(r, $event)"
+                >
+                  <span class="caret" [class.open]="r.expanded" [class.leaf]="r.count === 0" aria-hidden="true" (click)="onCaret(r, $event)"></span>
+                  @if (r.key !== null) {
+                    @if (edit(); as ed) {
+                      @if (ed.id === r.id && ed.mode === 'key') {
+                        <ng-container *ngTemplateOutlet="editor; context: { $implicit: ed, label: 'yv.edit.key' }" />
+                      } @else {
+                        <ng-container *ngTemplateOutlet="keyTpl; context: { $implicit: r }" />
+                      }
+                    } @else {
+                      <ng-container *ngTemplateOutlet="keyTpl; context: { $implicit: r }" />
+                    }
+                    <span class="p">:</span>
+                  }
+                  @if (isContainerRow(r)) {
+                    <span class="sum">{{ summary(r) }}</span>
+                  } @else if (edit(); as ed) {
+                    @if (ed.id === r.id && ed.mode === 'value') {
+                      <ng-container *ngTemplateOutlet="editor; context: { $implicit: ed, label: 'yv.edit.value' }" />
+                    } @else {
+                      <ng-container *ngTemplateOutlet="valueTpl; context: { $implicit: r }" />
+                    }
+                  } @else {
+                    <ng-container *ngTemplateOutlet="valueTpl; context: { $implicit: r }" />
+                  }
+                </div>
+              } @else if (w.more; as m) {
+                <div
+                  class="row more"
+                  role="treeitem"
+                  [id]="'tv-' + w.i"
+                  [class.sel]="m.id === cursorId()"
+                  [attr.aria-level]="m.depth + 1"
+                  [attr.aria-selected]="m.id === cursorId()"
+                  [style.top.px]="w.i * rowH"
+                  [style.padding-left.px]="8 + m.depth * indent + 20"
+                  (click)="onRowClick(m, $event)"
+                >
+                  <span class="more-btn">{{ moreLabel(m.remaining) }}</span>
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        <ng-template #keyTpl let-r>
+          <span class="k" [class.idx]="r.parentType === 'array'">
+            @if (r.parentType === 'array') {
+              {{ r.key }}
+            } @else {
+              <ng-container *ngTemplateOutlet="hl; context: { $implicit: keyText(r) }" />
+            }
+          </span>
+        </ng-template>
+        <ng-template #valueTpl let-r>
+          <span class="v" [class]="'t-' + r.type">
+            <ng-container *ngTemplateOutlet="hl; context: { $implicit: valueText(r) }" />
+          </span>
+        </ng-template>
+        <ng-template #hl let-text>
+          @for (p of parts(text); track $index) {
+            <span [class.hl]="p.match">{{ p.text }}</span>
+          }
+        </ng-template>
+        <ng-template #editor let-ed let-label="label">
+          <input
+            id="yv-edit"
+            class="inline"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            [value]="ed.text"
+            [attr.aria-label]="i18n.t(label)"
+            [attr.aria-invalid]="ed.error ? 'true' : null"
+            (input)="onEditInput($event)"
+            (keydown)="onEditKey($event)"
+            (blur)="onEditBlur()"
+            (click)="$event.stopPropagation()"
+            (dblclick)="$event.stopPropagation()"
+          />
+        </ng-template>
+
+        @if (node(); as n) {
+          <section class="panel" [attr.aria-label]="i18n.t('yv.node')">
+            <nav class="crumbs" [attr.aria-label]="i18n.t('yv.crumbs')">
+              @for (c of crumbs(); track $index) {
+                <button type="button" class="crumb" [attr.aria-current]="$last ? 'location' : null" (click)="selectPath(c.path)">{{ c.label }}</button>
+              }
+            </nav>
+            <dl class="facts">
+              <div class="fact">
+                <dt>{{ i18n.t('yv.path.js') }}</dt>
+                <dd>
+                  <code>{{ jsPath() }}</code>
+                  <app-copy-button [compact]="true" [text]="jsPath()" [ariaLabel]="pathKind('JavaScript')" />
+                </dd>
+              </div>
+              <div class="fact">
+                <dt>{{ i18n.t('yv.path.ptr') }}</dt>
+                <dd>
+                  <code>{{ pointer() === '' ? i18n.t('yv.path.root') : pointer() }}</code>
+                  <app-copy-button [compact]="true" [text]="pointer()" [disabled]="pointer() === ''" [ariaLabel]="pathKind('JSON Pointer')" />
+                </dd>
+              </div>
+              <div class="fact">
+                <dt>{{ i18n.t('yv.value') }}</dt>
+                <dd>
+                  <span class="chip">{{ typeName(n.type) }}</span>
+                  <code class="val">{{ valuePreview() }}</code>
+                </dd>
+              </div>
+            </dl>
+            <div class="actions" role="toolbar" [attr.aria-label]="i18n.t('yv.actions')">
+              <button type="button" class="btn small" [disabled]="!canEditValue()" (click)="startEditValue()">
+                <app-icon name="pencil" /> {{ i18n.t('yv.act.edit') }}
+              </button>
+              <button type="button" class="btn small" [disabled]="!canRename()" (click)="startRename()">
+                <app-icon name="pencil" /> {{ i18n.t('yv.act.rename') }}
+              </button>
+              <button type="button" class="btn small" [disabled]="!canAdd()" (click)="addNode()">
+                <app-icon name="plus" /> {{ n.type === 'array' ? i18n.t('yv.act.addItem') : i18n.t('yv.act.addKey') }}
+              </button>
+              <button type="button" class="btn small" [disabled]="isRoot()" (click)="duplicateNode()">
+                <app-icon name="copy" /> {{ i18n.t('yv.act.dup') }}
+              </button>
+              <button type="button" class="btn small" [disabled]="!canMoveUp()" (click)="moveNode(-1)">
+                <app-icon name="up" /> {{ i18n.t('yv.act.up') }}
+              </button>
+              <button type="button" class="btn small" [disabled]="!canMoveDown()" (click)="moveNode(1)">
+                <app-icon name="down" /> {{ i18n.t('yv.act.down') }}
+              </button>
+              <button type="button" class="btn small" [disabled]="isRoot()" (click)="deleteNode()">
+                <app-icon name="trash" /> {{ i18n.t('yv.act.del') }}
+              </button>
+              <label class="typesel">
+                {{ i18n.t('yv.act.type') }}
+                <select (change)="onTypeChange($event)">
+                  @for (o of typeOptions(); track o.value) {
+                    <option [value]="o.value" [selected]="o.value === n.type">{{ o.label }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+          </section>
+        }
+      } @else {
+        <p class="empty">{{ i18n.t('yv.tree.empty') }}</p>
+      }
+    } @else {
+      <div class="textbox">
+        <label class="eyebrow" for="yv-text">{{ i18n.t('yv.text.label') }}</label>
+        <div class="editor" [style.--gw]="(showGutter() ? gutterWidth() + 2 : 0) + 'ch'">
+          @if (bandTop() !== null && showGutter()) {
+            <div class="band" [style.top.px]="bandTop()" [style.height.px]="lineHeight" aria-hidden="true"></div>
+          }
+          @if (showGutter()) {
+            <div class="gutter" aria-hidden="true">
+              <pre [style.transform]="'translateY(' + -scrollTopText() + 'px)'">{{ gutterText() }}</pre>
+            </div>
+          }
+          <textarea
+            id="yv-text"
+            class="code"
+            wrap="off"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+            [placeholder]="i18n.t('yv.text.ph')"
+            [attr.aria-invalid]="errorLine() !== null"
+            [value]="text()"
+            (input)="onTextInput($event)"
+            (scroll)="onTextScroll($event)"
+          ></textarea>
+        </div>
+      </div>
+    }
+  </app-file-drop>
+
+  <div class="tool-status" aria-live="polite">
+    @if (status(); as s) {
+      <p [class]="s.kind === 'ok' ? 'tool-ok' : 'tool-error'">{{ s.text }}</p>
+    }
+  </div>
+</div>

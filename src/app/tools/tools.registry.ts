@@ -543,6 +543,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./html-dom-viewer/html-dom-viewer.page').then((m) => m.HtmlDomViewerPage),
   },
   {
+    id: 'yaml-viewer',
+    path: 'yaml-viewer',
+    icon: 'tree',
+    category: 'data',
+    keywords: {
+      it: 'yaml yml toml albero visualizzatore editor modifica configurazione chiavi valori ricerca percorso',
+      en: 'yaml yml toml tree viewer editor edit configuration keys values search path',
+    },
+    titleKey: 'tool.yv.title',
+    descriptionKey: 'tool.yv.desc',
+    seo: { titleKey: 'seo.yv.title', descriptionKey: 'seo.yv.desc' },
+    loadComponent: () => import('./yaml-viewer/yaml-viewer.page').then((m) => m.YamlViewerPage),
+  },
+  {
     id: 'xsd-validator',
     path: 'xsd-validator',
     icon: 'shield',

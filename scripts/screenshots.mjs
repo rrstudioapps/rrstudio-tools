@@ -405,6 +405,29 @@ try {
       await page.waitForTimeout(200);
     },
   });
+  // Editor YAML/TOML ad albero: esempio, ricerca, modifica con annulla, passaggio a TOML
+  await shot('yaml-viewer.png', {
+    width: 1280,
+    dark: false,
+    path: '/yaml-viewer/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Prova con un esempio' }).click();
+      await page.waitForSelector('[role=tree]');
+      const tree = async () => page.locator('[role=tree]').innerText();
+      if (!(await tree()).includes('servizio')) throw new Error('yaml-viewer: albero senza servizio');
+      await page.fill('#yv-search', 'Anna');
+      await page.waitForFunction(() => document.querySelector('.search-count')?.textContent?.includes('1'));
+      await page.getByRole('button', { name: 'Elimina' }).click().catch(() => {});
+      await page.getByRole('button', { name: 'Testo', exact: true }).click();
+      const yaml = await page.locator('#yv-text').inputValue();
+      if (!yaml.includes('ambiente:')) throw new Error('yaml-viewer: testo YAML inatteso');
+      await page.getByRole('button', { name: 'TOML', exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('#yv-text')?.value.includes('[ambiente]'));
+      if (!(await page.locator('#yv-text').inputValue()).includes('[[utenti]]')) throw new Error('yaml-viewer: TOML senza [[utenti]]');
+      await page.getByRole('button', { name: 'Albero', exact: true }).click();
+      await page.waitForSelector('[role=tree]');
+    },
+  });
   // Validatore XSD: esempio con più problemi
   await shot('xsd-validator.png', {
     width: 1280,
