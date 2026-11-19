@@ -100,6 +100,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['pdf-page-text'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Comprimi PDF»: ricomprime le immagini del PDF (qualità e dimensione a scelta), ottimizza il file o trasforma le pagine in immagini, e mostra il risparmio prima del download.',
+        en: 'New tool "Compress PDF": recompresses the PDF\'s images (quality and size of your choice), optimises the file or turns pages into images, and shows the saving before the download.',
+        toolIds: ['pdf-compress'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

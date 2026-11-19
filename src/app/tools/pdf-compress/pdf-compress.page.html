@@ -1,0 +1,71 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.pcz.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('pcz.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-pdf-source toolId="pdf-compress" (loaded)="onLoaded($event)" (cleared)="onCleared()">
+    @if (pdf(); as p) {
+      <section class="panel" [attr.aria-label]="i18n.t('pcz.mode')">
+        <h2 class="eyebrow">{{ i18n.t('pcz.mode') }}</h2>
+        <app-segmented [label]="i18n.t('pcz.mode')" [options]="modes()" [(value)]="mode" />
+        <p class="hint">{{ i18n.t('pcz.mode.' + mode() + '.hint') }}</p>
+        @if (mode() === 'images') {
+          <div class="opts">
+            <label class="fld" for="pcz-q"><span>{{ i18n.t('pcz.quality') }}: {{ quality() }}%</span><input id="pcz-q" type="range" min="30" max="95" step="5" [value]="quality()" (input)="quality.set(+$any($event.target).value)" /></label>
+            <label class="fld" for="pcz-side">
+              <span>{{ i18n.t('pcz.side') }}</span>
+              <select id="pcz-side" (change)="maxSide.set(+$any($event.target).value)">
+                @for (s of sides; track s) {
+                  <option [value]="s" [selected]="maxSide() === s">{{ s === 0 ? i18n.t('pcz.side.keep') : s + ' px' }}</option>
+                }
+              </select>
+            </label>
+          </div>
+        } @else if (mode() === 'raster') {
+          <p class="tool-warn" role="note">{{ i18n.t('pcz.raster.warn') }}</p>
+          <div class="opts">
+            <label class="fld" for="pcz-dpi">
+              <span>{{ i18n.t('pcz.dpi') }}</span>
+              <select id="pcz-dpi" (change)="dpi.set(+$any($event.target).value)">
+                @for (d of dpis; track d) {
+                  <option [value]="d" [selected]="dpi() === d">{{ d }} DPI</option>
+                }
+              </select>
+            </label>
+            <label class="fld" for="pcz-q2"><span>{{ i18n.t('pcz.quality') }}: {{ quality() }}%</span><input id="pcz-q2" type="range" min="30" max="95" step="5" [value]="quality()" (input)="quality.set(+$any($event.target).value)" /></label>
+          </div>
+        }
+        <div class="row">
+          <button type="button" class="btn primary" data-testid="pcz-go" [disabled]="busy()" (click)="run()">{{ busy() ? progress() || i18n.t('pc.working') : i18n.t('pcz.go') }}</button>
+        </div>
+      </section>
+
+      @if (result(); as r) {
+        <section class="panel" data-testid="pcz-result" [attr.aria-label]="i18n.t('pcz.result')">
+          <h2 class="eyebrow">{{ i18n.t('pcz.result') }}</h2>
+          <p class="sizes">
+            <span class="big mono">{{ sizeText(r.before) }}</span> → <span class="big mono">{{ sizeText(r.after) }}</span>
+            <span class="chip" [class.bad]="r.after >= r.before">{{ savedText(r) }}</span>
+          </p>
+          @if (r.detail) {
+            <p class="hint">{{ r.detail }}</p>
+          }
+          @if (r.after < r.before) {
+            <div class="row"><button type="button" class="btn primary" data-testid="pcz-download" (click)="download()"><app-icon name="download" /> {{ i18n.t('pc.download') }}</button></div>
+          } @else {
+            <p class="tool-warn" role="note">{{ i18n.t('pcz.nogain') }}</p>
+          }
+        </section>
+      }
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (error()) {
+        <p class="tool-error" role="alert" data-testid="pcz-error">{{ error() }}</p>
+      }
+    </div>
+  </app-pdf-source>
+</div>

@@ -532,6 +532,12 @@ export const it = {
   'seo.pt.title': 'Numeri di pagina e intestazioni PDF online | rrstudio tools',
   'seo.pt.desc':
     'Aggiungi numeri di pagina, intestazione e piè di pagina a un PDF online: sinistra, centro, destra, segnaposto, anteprima. Il file non viene caricato.',
+  'tool.pcz.title': 'Comprimi PDF: riduci il peso',
+  'tool.pcz.desc':
+    'Riduci il peso di un PDF ricomprimendo le immagini o trasformando le pagine in immagini, con il risparmio mostrato prima di scaricare.',
+  'seo.pcz.title': 'Comprimi PDF online, senza caricarlo | rrstudio tools',
+  'seo.pcz.desc':
+    'Comprimi un PDF online nel browser: ricomprimi le immagini con qualità e dimensione a scelta o trasforma le pagine in immagini. Il file non viene caricato.',
   'tool.crop.title': 'Ritaglia e ruota immagini',
   'tool.crop.desc':
     'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',

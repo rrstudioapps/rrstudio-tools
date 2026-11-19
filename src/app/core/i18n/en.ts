@@ -533,6 +533,12 @@ export const en: Dict = {
   'seo.pt.title': 'Add page numbers and headers to a PDF online | rrstudio tools',
   'seo.pt.desc':
     'Add page numbers, a header and a footer to a PDF online: left, centre, right, placeholders, preview. The file is not uploaded.',
+  'tool.pcz.title': 'Compress PDF: make it lighter',
+  'tool.pcz.desc':
+    'Make a PDF lighter by recompressing its images or turning pages into images, with the saving shown before you download.',
+  'seo.pcz.title': 'Compress PDF online, without uploading it | rrstudio tools',
+  'seo.pcz.desc':
+    'Compress a PDF online in your browser: recompress images with the quality and size of your choice or turn pages into images. The file is not uploaded.',
   'tool.crop.title': 'Crop and rotate images',
   'tool.crop.desc':
     'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',

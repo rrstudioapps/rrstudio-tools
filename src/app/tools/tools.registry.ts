@@ -1153,6 +1153,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-page-text/pdf-page-text.page').then((m) => m.PdfPageTextPage),
   },
   {
+    id: 'pdf-compress',
+    path: 'pdf-compress',
+    icon: 'file',
+    category: 'media',
+    keywords: {
+      it: 'pdf comprimi compressione riduci peso dimensione leggero ottimizza immagini scansione mb',
+      en: 'pdf compress compression reduce size weight lighter optimize images scan mb',
+    },
+    titleKey: 'tool.pcz.title',
+    descriptionKey: 'tool.pcz.desc',
+    seo: { titleKey: 'seo.pcz.title', descriptionKey: 'seo.pcz.desc' },
+    loadComponent: () => import('./pdf-compress/pdf-compress.page').then((m) => m.PdfCompressPage),
+  },
+  {
     id: 'image-crop',
     path: 'image-crop',
     icon: 'crop',

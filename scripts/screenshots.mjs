@@ -2042,6 +2042,54 @@ try {
       await page.getByTestId('pt-preview-img').waitFor();
     },
   });
+  await shot('pdf-compress.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-compress/',
+    setup: async (page) => {
+      // PDF di 2 pagine con una foto rumorosa (JPEG pesante) creata in pagina con un canvas
+      const jpegB64 = await page.evaluate(async () => {
+        const c = document.createElement('canvas');
+        c.width = 1600;
+        c.height = 1200;
+        const x = c.getContext('2d');
+        const img = x.createImageData(1600, 1200);
+        for (let i = 0; i < img.data.length; i += 4) {
+          img.data[i] = (Math.sin(i * 0.0007) * 127 + 128 + Math.random() * 90) & 255;
+          img.data[i + 1] = (i / 4) % 256;
+          img.data[i + 2] = Math.random() * 255;
+          img.data[i + 3] = 255;
+        }
+        x.putImageData(img, 0, 0);
+        const blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.95));
+        const buf = new Uint8Array(await blob.arrayBuffer());
+        let s = '';
+        for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode(...buf.subarray(i, i + 0x8000));
+        return btoa(s);
+      });
+      const doc = await PDFDocument.create();
+      const jpg = await doc.embedJpg(Buffer.from(jpegB64, 'base64'));
+      for (let i = 0; i < 2; i++) doc.addPage([595, 842]).drawImage(jpg, { x: 20, y: 300, width: 555, height: 416 });
+      const src = Buffer.from(await doc.save());
+      await loadPdfIn(page, src);
+      await page.selectOption('#pcz-side', '800');
+      await page.getByTestId('pcz-go').click();
+      await page.getByTestId('pcz-result').waitFor();
+      const out = await downloadBuffer(page, () => page.getByTestId('pcz-download').click());
+      const d = await PDFDocument.load(out.buffer);
+      need(d.getPageCount() === 2, 'pagine dopo la compressione');
+      need(out.buffer.length < src.length * 0.6, 'riduzione insufficiente: ' + src.length + ' -> ' + out.buffer.length);
+      // solo ottimizzazione: nessun guadagno per un file già compatto, niente download offerto
+      await page.getByRole('button', { name: 'Solo ottimizza il file' }).click();
+      await page.getByTestId('pcz-go').click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=pcz-result]') !== null);
+      // pagine come immagini
+      await page.getByRole('button', { name: 'Pagine come immagini' }).click();
+      await page.getByTestId('pcz-go').click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=pcz-download]') !== null || document.querySelector('.tool-warn')?.textContent.includes('Il PDF non diventa'));
+      await page.getByRole('button', { name: 'Ricomprimi le immagini' }).click();
+    },
+  });
   await shot('pdf-sign.png', {
     width: 1280,
     dark: false,
