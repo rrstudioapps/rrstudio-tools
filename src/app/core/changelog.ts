@@ -130,6 +130,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['pdf-redact'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Proteggi PDF con password»: password per aprire il file con cifratura AES a 256 bit e limiti facoltativi di stampa, copia e modifica, tutto nel browser.',
+        en: 'New tool "Protect a PDF with a password": a password to open the file with 256-bit AES encryption and optional print, copy and edit restrictions, all in your browser.',
+        toolIds: ['pdf-protect'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

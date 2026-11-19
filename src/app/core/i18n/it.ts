@@ -562,6 +562,12 @@ export const it = {
   'seo.prd.title': 'Oscura testo e aree in un PDF online | rrstudio tools',
   'seo.prd.desc':
     'Oscura parti di un PDF online in modo reale: rettangoli neri o ricerca di un testo; le pagine diventano immagini e il testo sotto sparisce. Il file non viene caricato.',
+  'tool.ppw.title': 'Proteggi PDF con password',
+  'tool.ppw.desc':
+    'Proteggi un PDF con una password per aprirlo (AES a 256 bit) e limita stampa, copia e modifica, tutto nel browser.',
+  'seo.ppw.title': 'Proteggi un PDF con password online | rrstudio tools',
+  'seo.ppw.desc':
+    'Proteggi un PDF con una password online: cifratura AES a 256 bit, limiti di stampa, copia e modifica. Il file e la password non lasciano il tuo browser.',
   'tool.crop.title': 'Ritaglia e ruota immagini',
   'tool.crop.desc':
     'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',

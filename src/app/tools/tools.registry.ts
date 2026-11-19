@@ -1223,6 +1223,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-redact/pdf-redact.page').then((m) => m.PdfRedactPage),
   },
   {
+    id: 'pdf-protect',
+    path: 'pdf-protect',
+    icon: 'lock',
+    category: 'media',
+    keywords: {
+      it: 'pdf password proteggi proteggere cifra cifratura aes blocca permessi stampa copia riservato',
+      en: 'pdf password protect encrypt encryption aes lock permissions print copy confidential',
+    },
+    titleKey: 'tool.ppw.title',
+    descriptionKey: 'tool.ppw.desc',
+    seo: { titleKey: 'seo.ppw.title', descriptionKey: 'seo.ppw.desc' },
+    loadComponent: () => import('./pdf-protect/pdf-protect.page').then((m) => m.PdfProtectPage),
+  },
+  {
     id: 'image-crop',
     path: 'image-crop',
     icon: 'crop',

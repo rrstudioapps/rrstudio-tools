@@ -2230,6 +2230,31 @@ try {
       need((await page.getByTestId('prd-total').innerText()).includes('3 aree'), 'totale dopo tutta la pagina');
     },
   });
+  await shot('pdf-protect.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-protect/',
+    setup: async (page) => {
+      need(await page.getByTestId('ppw-warning').isVisible(), 'avviso sulla password perduta non visibile');
+      await loadPdfIn(page, await makePdf('Relazione di esempio', 'Relazione', [[0.18, 0.43, 0.62]], 2));
+      await page.getByTestId('ppw-go').click();
+      await page.getByTestId('ppw-error').waitFor(); // nessuna password e nessun limite
+      await page.fill('#ppw-user', 'segreta');
+      await page.fill('#ppw-user2', 'diversa');
+      await page.getByTestId('ppw-go').click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=ppw-error]')?.textContent.includes('non coincidono'));
+      await page.fill('#ppw-user2', 'segreta');
+      await page.uncheck('#ppw-copy');
+      const out = await downloadBuffer(page, () => page.getByTestId('ppw-go').click());
+      need(out.name.endsWith('-protetto.pdf') && out.buffer.includes('/AESV3') && out.buffer.includes('/Encrypt'), 'PDF non cifrato');
+      let rejected = false;
+      await PDFDocument.load(out.buffer).catch(() => (rejected = true));
+      need(rejected, 'pdf-lib apre il PDF cifrato');
+      // il PDF protetto non è più accettato dagli altri strumenti PDF (serve la password): messaggio chiaro
+      await page.setInputFiles('app-file-drop input[type=file]', [{ name: 'protetto.pdf', mimeType: 'application/pdf', buffer: out.buffer }]);
+      await page.getByTestId('pdf-error').waitFor();
+    },
+  });
   await shot('pdf-sign.png', {
     width: 1280,
     dark: false,

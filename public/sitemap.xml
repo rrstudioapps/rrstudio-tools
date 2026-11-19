@@ -1120,6 +1120,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-redact"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/pdf-protect</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-protect"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-protect"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-protect"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/pdf-protect</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-protect"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-protect"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-protect"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/image-crop</loc>
     <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-crop"/>

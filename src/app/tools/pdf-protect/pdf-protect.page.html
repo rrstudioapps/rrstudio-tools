@@ -1,0 +1,60 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.ppw.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('ppw.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <p class="tool-warn" role="note" data-testid="ppw-warning">
+    <strong>{{ i18n.t('ppw.warn.title') }}</strong>
+    <span>{{ i18n.t('ppw.warn.text') }}</span>
+  </p>
+
+  <app-pdf-source toolId="pdf-protect" (loaded)="onLoaded($event)" (cleared)="onCleared()">
+    @if (pdf()) {
+      <section class="panel" [attr.aria-label]="i18n.t('ppw.passwords')">
+        <h2 class="eyebrow">{{ i18n.t('ppw.passwords') }}</h2>
+        <div class="form">
+          <label class="fld" for="ppw-user">
+            <span>{{ i18n.t('ppw.user') }}</span>
+            <span class="pw">
+              <input id="ppw-user" [type]="show() ? 'text' : 'password'" autocomplete="new-password" spellcheck="false" [value]="user()" (input)="user.set($any($event.target).value)" />
+            </span>
+          </label>
+          <label class="fld" for="ppw-user2">
+            <span>{{ i18n.t('ppw.user2') }}</span>
+            <input id="ppw-user2" [type]="show() ? 'text' : 'password'" autocomplete="new-password" spellcheck="false" [value]="user2()" (input)="user2.set($any($event.target).value)" />
+          </label>
+          <label class="fld" for="ppw-owner">
+            <span>{{ i18n.t('ppw.owner') }}</span>
+            <input id="ppw-owner" [type]="show() ? 'text' : 'password'" autocomplete="new-password" spellcheck="false" [value]="owner()" (input)="owner.set($any($event.target).value)" />
+          </label>
+        </div>
+        <label class="check"><input type="checkbox" [checked]="show()" (change)="show.set($any($event.target).checked)" /> {{ i18n.t('ppw.show') }}</label>
+        <p class="hint">{{ i18n.t('ppw.owner.hint') }}</p>
+      </section>
+
+      <section class="panel" [attr.aria-label]="i18n.t('ppw.allow')">
+        <h2 class="eyebrow">{{ i18n.t('ppw.allow') }}</h2>
+        <div class="perms">
+          @for (k of permKeys; track k) {
+            <label class="check"><input type="checkbox" [id]="'ppw-' + k" [checked]="allow()[k]" (change)="setAllow(k, $any($event.target).checked)" /> {{ i18n.t('ppw.allow.' + k) }}</label>
+          }
+        </div>
+        <p class="hint">{{ i18n.t('ppw.allow.hint') }}</p>
+        <div class="row">
+          <button type="button" class="btn primary" data-testid="ppw-go" [disabled]="busy()" (click)="run()"><app-icon name="lock" /> {{ i18n.t('ppw.go') }}</button>
+        </div>
+      </section>
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (error()) {
+        <p class="tool-error" role="alert" data-testid="ppw-error">{{ error() }}</p>
+      } @else if (done()) {
+        <p class="tool-ok" data-testid="ppw-done">{{ done() }}</p>
+      }
+    </div>
+  </app-pdf-source>
+</div>

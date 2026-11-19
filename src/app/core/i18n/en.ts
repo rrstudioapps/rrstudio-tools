@@ -563,6 +563,12 @@ export const en: Dict = {
   'seo.prd.title': 'Redact text and areas in a PDF online | rrstudio tools',
   'seo.prd.desc':
     'Redact parts of a PDF online for real: black rectangles or a text search; pages become images and the text underneath is gone. The file is not uploaded.',
+  'tool.ppw.title': 'Protect a PDF with a password',
+  'tool.ppw.desc':
+    'Protect a PDF with a password to open it (256-bit AES) and restrict printing, copying and editing, all in your browser.',
+  'seo.ppw.title': 'Password-protect a PDF online | rrstudio tools',
+  'seo.ppw.desc':
+    'Password-protect a PDF online: 256-bit AES encryption, print, copy and edit restrictions. The file and the password never leave your browser.',
   'tool.crop.title': 'Crop and rotate images',
   'tool.crop.desc':
     'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',
