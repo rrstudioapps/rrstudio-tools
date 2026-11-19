@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { XmlError, XmlNode, normalizeNewlines, parseXml } from '../xml-formatter/xml';
 import { El, unescapeXml } from '../xml-viewer/xml-tree';
 

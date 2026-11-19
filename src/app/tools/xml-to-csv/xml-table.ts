@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import type { Cell, Table } from '../csv-json-converter/convert';
 import { typedCell } from '../csv-json-converter/convert';
 import type { XmlNode } from '../xml-formatter/xml';

@@ -304,7 +304,7 @@ export const en: Dict = {
   'settings.err.tooBig': 'The file is too large to be a settings file.',
   'settings.err.read': 'The file could not be read.',
   'settings.err.json': 'The file is not valid JSON.',
-  'settings.err.shape': 'The file is not an rrstudio Tools settings file.',
+  'settings.err.shape': 'The file is not an rrstudio tools settings file.',
   'settings.err.nothing': 'The file contains no settings to import.',
   'shortcuts.or': 'or',
   'shortcuts.done.run': 'Done',
@@ -589,25 +589,31 @@ export const en: Dict = {
   'tool.xd.title': 'XML compare',
   'tool.xd.desc':
     'Compare two XML documents by structure: added and removed elements, changed attributes and text, with the XPath of each difference and without the noise of indentation and attribute order.',
-  'seo.xd.title': 'Online XML compare: structural differences | rrstudio Tools',
+  'seo.xd.title': 'Online XML compare: structural differences | rrstudio tools',
   'seo.xd.desc':
     'Compare two XML files and see the differences in elements, attributes and text with the XPath. Ignores indentation and attribute order. All in your browser.',
   'tool.x2c.title': 'XML to table and CSV',
   'tool.x2c.desc':
     'Turn an XML into a table: pick the repeating element, flatten attributes and children into columns, preview it and download the CSV.',
-  'seo.x2c.title': 'Convert XML to CSV and table online | rrstudio Tools',
+  'seo.x2c.title': 'Convert XML to CSV and table online | rrstudio tools',
   'seo.x2c.desc':
     'Convert an XML to a table and CSV: pick the repeating record, flatten attributes and children into columns, choose the delimiter and download. All in your browser.',
+  'tool.xj.title': 'XML ↔ JSON',
+  'tool.xj.desc':
+    'Convert XML to JSON and JSON to XML with attributes, text and repeated elements: prefix, arrays and types of your choice, in the browser.',
+  'seo.xj.title': 'XML JSON converter online, both ways | rrstudio tools',
+  'seo.xj.desc':
+    'Convert XML to JSON and JSON to XML online: configurable attributes, arrays and types, errors with line and column, no data sent to a server.',
   'tool.xsd.title': 'XSD validator',
   'tool.xsd.desc':
     'Check an XML against an XSD schema: types, facets, element order and count, required attributes and IDs, with the XPath of every problem.',
-  'seo.xsd.title': 'Online XSD validator for XML | rrstudio Tools',
+  'seo.xsd.title': 'Online XSD validator for XML | rrstudio tools',
   'seo.xsd.desc':
     'Validate an XML document against an XSD schema and get the list of problems with the XPath. Supports the most used parts of XSD 1.0. All in your browser.',
   'tool.xv.title': 'XML editor and viewer',
   'tool.xv.desc':
     'Open an XML as a tree: search tags, attributes and text, copy the XPath of nodes and edit them with undo and redo, without the file leaving your browser.',
-  'seo.xv.title': 'Online XML tree editor and viewer | rrstudio Tools',
+  'seo.xv.title': 'Online XML tree editor and viewer | rrstudio tools',
   'seo.xv.desc':
     'View and edit XML as a tree: search tags, attributes and text, copy the XPath, add, move and delete nodes with undo and redo. All in your browser.',
   'tool.xml.title': 'XML formatter and minifier',

@@ -67,6 +67,7 @@ export const HANDOFF_ACCEPTS: Readonly<Record<string, readonly HandoffKind[]>> =
   'xml-viewer': ['text'],
   'xml-diff': ['text'],
   'xml-to-csv': ['text'],
+  'xml-json-converter': ['json', 'text'],
   'xsd-validator': ['text'],
   'sql-formatter': ['text'],
   'text-diff': ['text'],

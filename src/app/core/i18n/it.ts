@@ -303,7 +303,7 @@ export const it = {
   'settings.err.tooBig': 'Il file è troppo grande per essere un file di impostazioni.',
   'settings.err.read': 'Non è stato possibile leggere il file.',
   'settings.err.json': 'Il file non è un JSON valido.',
-  'settings.err.shape': 'Il file non è un file di impostazioni di rrstudio Tools.',
+  'settings.err.shape': 'Il file non è un file di impostazioni di rrstudio tools.',
   'settings.err.nothing': 'Il file non contiene impostazioni da importare.',
   'shortcuts.or': 'oppure',
   'shortcuts.done.run': 'Eseguito',
@@ -588,25 +588,31 @@ export const it = {
   'tool.xd.title': 'Confronto XML',
   'tool.xd.desc':
     'Confronta due XML per struttura: elementi aggiunti e tolti, attributi e testo cambiati, con il percorso XPath di ogni differenza e senza il rumore di rientri e ordine degli attributi.',
-  'seo.xd.title': 'Confronto XML online: differenze di struttura | rrstudio Tools',
+  'seo.xd.title': 'Confronto XML online: differenze di struttura | rrstudio tools',
   'seo.xd.desc':
     'Confronta due file XML e vedi le differenze di elementi, attributi e testo con il percorso XPath. Ignora rientri e ordine degli attributi. Tutto nel browser.',
   'tool.x2c.title': 'Da XML a tabella e CSV',
   'tool.x2c.desc':
     'Trasforma un XML in una tabella: scegli l\'elemento che si ripete, appiattisci attributi e figli in colonne, guarda l\'anteprima e scarica il CSV.',
-  'seo.x2c.title': 'Converti XML in CSV e tabella online | rrstudio Tools',
+  'seo.x2c.title': 'Converti XML in CSV e tabella online | rrstudio tools',
   'seo.x2c.desc':
     'Converti un XML in tabella e CSV: scegli il record che si ripete, appiattisci attributi e figli in colonne, scegli il separatore e scarica. Tutto nel browser.',
+  'tool.xj.title': 'XML ↔ JSON',
+  'tool.xj.desc':
+    'Converti XML in JSON e JSON in XML con attributi, testo ed elementi ripetuti: prefisso, array e tipi a scelta, nel browser.',
+  'seo.xj.title': 'Convertitore XML JSON online, nei due sensi | rrstudio tools',
+  'seo.xj.desc':
+    'Converti XML in JSON e JSON in XML online: attributi, array e tipi configurabili, errori con riga e colonna, nessun dato inviato a un server.',
   'tool.xsd.title': 'Validatore XSD',
   'tool.xsd.desc':
     'Controlla un XML con uno schema XSD: tipi, faccette, ordine e numero degli elementi, attributi obbligatori e ID, con il percorso XPath di ogni problema.',
-  'seo.xsd.title': 'Validatore XSD online per XML | rrstudio Tools',
+  'seo.xsd.title': 'Validatore XSD online per XML | rrstudio tools',
   'seo.xsd.desc':
     'Valida un documento XML con uno schema XSD e ottieni l\'elenco dei problemi con il percorso XPath. Supporta le parti più usate di XSD 1.0. Tutto nel browser.',
   'tool.xv.title': 'Editor e visualizzatore XML',
   'tool.xv.desc':
     'Apri un XML come albero: cerca tra tag, attributi e testo, copia l\'XPath dei nodi e modificali con annulla e ripeti, senza che il file lasci il tuo browser.',
-  'seo.xv.title': 'Editor e visualizzatore XML online ad albero | rrstudio Tools',
+  'seo.xv.title': 'Editor e visualizzatore XML online ad albero | rrstudio tools',
   'seo.xv.desc':
     'Visualizza e modifica un XML come albero: cerca tag, attributi e testo, copia l\'XPath, aggiungi, sposta ed elimina nodi con annulla e ripeti. Tutto nel browser.',
   'tool.xml.title': 'Formatta e minifica XML',

@@ -515,6 +515,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./xml-to-csv/xml-to-csv.page').then((m) => m.XmlToCsvPage),
   },
   {
+    id: 'xml-json-converter',
+    path: 'xml-json-converter',
+    icon: 'braces',
+    category: 'data',
+    keywords: {
+      it: 'xml json converti convertitore da a conversione attributi array testo oggetto parser',
+      en: 'xml json convert converter to from conversion attributes array text object parser',
+    },
+    titleKey: 'tool.xj.title',
+    descriptionKey: 'tool.xj.desc',
+    seo: { titleKey: 'seo.xj.title', descriptionKey: 'seo.xj.desc' },
+    loadComponent: () => import('./xml-json-converter/xml-json-converter.page').then((m) => m.XmlJsonConverterPage),
+  },
+  {
     id: 'xsd-validator',
     path: 'xsd-validator',
     icon: 'shield',

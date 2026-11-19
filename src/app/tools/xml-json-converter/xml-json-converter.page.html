@@ -1,0 +1,102 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.xj.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('xj.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="xml-json-converter" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('xj.mode')" [options]="modes()" [(value)]="mode" />
+    <button data-shortcut="swap" type="button" class="btn small" (click)="swap()">
+      <app-icon name="swap" /> {{ i18n.t('xj.swap') }}
+    </button>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()">
+      <app-icon name="braces" /> {{ i18n.t('xj.sample') }}
+    </button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()">
+      <app-icon name="trash" /> {{ i18n.t('common.clear') }}
+    </button>
+  </div>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('xj.attrPrefix')" [options]="prefixes()" [(value)]="attrPrefix" />
+    @if (mode() === 'x2j') {
+      <label class="check"><input type="checkbox" [checked]="forceArrays()" (change)="forceArrays.set($any($event.target).checked)" /> {{ i18n.t('xj.arrays') }}</label>
+      <label class="check"><input type="checkbox" [checked]="infer()" (change)="infer.set($any($event.target).checked)" /> {{ i18n.t('xj.infer') }}</label>
+    } @else {
+      <label class="check"><input type="checkbox" [checked]="declaration()" (change)="declaration.set($any($event.target).checked)" /> {{ i18n.t('xj.declaration') }}</label>
+      <label class="root-name">{{ i18n.t('xj.rootName') }}
+        <input type="text" class="input" maxlength="60" autocomplete="off" spellcheck="false" [value]="rootName()" (input)="rootName.set($any($event.target).value)" />
+      </label>
+    }
+    <app-segmented [label]="i18n.t('xj.indent')" [options]="indents()" [(value)]="indent" />
+  </div>
+
+  <app-file-drop [hint]="i18n.t('xj.drop')" accept=".xml,.json,.svg,.rss,.atom,text/xml,application/xml,application/json,text/plain" (fileSelected)="onFile($event)">
+    <div class="tool-panels">
+      <app-io-panel [label]="mode() === 'x2j' ? 'XML' : 'JSON'" inputId="xj-in" [meta]="inputMeta()">
+        <textarea
+          #inputEl
+          id="xj-in"
+          class="io-textarea"
+          wrap="off"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('xj.ph.' + mode())"
+          [attr.aria-invalid]="error() ? 'true' : null"
+          [attr.aria-describedby]="error() ? 'xj-status' : null"
+          [value]="input()"
+          (input)="onInput($event)"
+        ></textarea>
+      </app-io-panel>
+
+      <app-io-panel [label]="mode() === 'x2j' ? 'JSON' : 'XML'" inputId="xj-out" [meta]="outputMeta()">
+        <span panel-actions>
+          <button data-shortcut="download" type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('xj.download') }}
+          </button>
+          <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
+          <app-send-to from="xml-json-converter" [kind]="mode() === 'x2j' ? 'json' : 'text'" [text]="output()" [disabled]="output() === ''" />
+        </span>
+        <textarea id="xj-out" class="io-textarea" readonly wrap="off" spellcheck="false" data-testid="xj-out" [placeholder]="i18n.t('xj.empty')" [value]="output()"></textarea>
+      </app-io-panel>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" id="xj-status" role="status" aria-live="polite">
+    @if (error(); as e) {
+      <p class="tool-error" data-testid="xj-error">
+        @if (e.title) {
+          <strong>{{ e.title }}.</strong>
+        }
+        {{ e.text }}
+        @if (e.line) {
+          <button type="button" class="btn small goto" (click)="goToError()">{{ i18n.t('xj.goto') }}</button>
+        }
+      </p>
+    } @else if (note()) {
+      <p class="tool-ok">{{ note() }}</p>
+    }
+  </div>
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('xj.info.rules.title') }}</h2>
+      <p>{{ i18n.t('xj.info.rules.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('xj.info.limits.title') }}</h2>
+      <p>{{ i18n.t('xj.info.limits.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('xj.info.priv.title') }}</h2>
+      <p>{{ i18n.t('xj.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

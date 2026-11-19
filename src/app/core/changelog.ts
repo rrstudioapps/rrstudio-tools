@@ -52,6 +52,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['xsd-validator'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «XML ↔ JSON»: converte XML in JSON e JSON in XML nei due sensi, con attributi, testo ed elementi ripetuti; prefisso, array e tipi (numeri e booleani) a scelta, errori con riga e colonna.',
+        en: 'New tool "XML ↔ JSON": converts XML to JSON and JSON to XML both ways, with attributes, text and repeated elements; prefix, arrays and types (numbers and booleans) of your choice, errors with line and column.',
+        toolIds: ['xml-json-converter'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

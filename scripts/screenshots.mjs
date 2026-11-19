@@ -350,6 +350,29 @@ try {
       await page.waitForTimeout(300);
     },
   });
+  // XML ↔ JSON: andata, JSON, ritorno con «Inverti»
+  await shot('xml-json-converter.png', {
+    width: 1280,
+    dark: false,
+    path: '/xml-json-converter/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=xj-out]')?.value.includes('"@id": "1"'));
+      const json = JSON.parse(await page.inputValue('[data-testid=xj-out]'));
+      if (json.catalogo.libro.length !== 2 || json.catalogo.libro[0].prezzo['#text'] !== '12.50') throw new Error('xml-json: struttura inattesa');
+      await page.getByLabel('Numeri e booleani').check();
+      await page.waitForFunction(() => document.querySelector('[data-testid=xj-out]')?.value.includes('"@id": 1'));
+      await page.getByLabel('Numeri e booleani').uncheck();
+      await page.getByRole('button', { name: 'Inverti', exact: true }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=xj-out]')?.value.startsWith('<?xml'));
+      const xml = await page.inputValue('[data-testid=xj-out]');
+      if (!xml.includes('<libro id="1" disponibile="true">') || !xml.includes('<prezzo valuta="EUR">12.50</prezzo>')) throw new Error('xml-json: ritorno inatteso ' + xml.slice(0, 200));
+      await page.fill('#xj-in', '{"a b": 1}');
+      await page.waitForSelector('[data-testid=xj-error]');
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('.tool-ok');
+    },
+  });
   // Validatore XSD: esempio con più problemi
   await shot('xsd-validator.png', {
     width: 1280,

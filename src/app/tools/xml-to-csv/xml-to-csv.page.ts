@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { CopyButton } from '../../shared/copy-button';

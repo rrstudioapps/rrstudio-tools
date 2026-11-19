@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// © 2026 rrstudio — rrstudio Tools
+// © 2026 rrstudio — rrstudio tools
 import { Doc, El, Path, rawNodes, unescapeXml } from './xml-tree';
 import type { XmlNode } from '../xml-formatter/xml';
 

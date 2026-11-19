@@ -16,7 +16,7 @@ export const MAX_SUGGESTIONS = 8;
 
 /** Strumenti per tipo di contenuto, dal più pertinente. */
 export const TEXT_TARGETS: Readonly<Record<ContentType, readonly string[]>> = {
-  json: ['json-formatter', 'json-viewer', 'json-query', 'json-diff', 'yaml-json-converter', 'csv-json-converter'],
+  json: ['json-formatter', 'json-viewer', 'json-query', 'json-diff', 'yaml-json-converter', 'csv-json-converter', 'xml-json-converter'],
   jwt: ['jwt-decoder', 'base64'],
   url: ['url-parser', 'url-encode', 'qr-code-generator'],
   base64: ['base64'],
@@ -30,7 +30,7 @@ export const TEXT_TARGETS: Readonly<Record<ContentType, readonly string[]>> = {
   'docker-run': ['docker-run-to-compose'],
   csv: ['csv-json-converter', 'csv-dashboard', 'statistics-calculator', 'sort-lines'],
   yaml: ['yaml-json-converter'],
-  xml: ['xml-formatter', 'xml-viewer', 'xml-to-csv', 'html-entities'],
+  xml: ['xml-formatter', 'xml-viewer', 'xml-to-csv', 'xml-json-converter', 'html-entities'],
   sql: ['sql-formatter'],
   'unix-timestamp': ['timestamp-converter', 'date-calculator'],
   uuid: ['uuid-generator'],
