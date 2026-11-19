@@ -88,6 +88,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['schema-test-data'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Metadati PDF»: guarda e modifica titolo, autore e date di un PDF, oppure togli tutti i metadati (anche XMP e chiavi personalizzate) prima di condividerlo.',
+        en: 'New tool "PDF metadata": view and edit a PDF\'s title, author and dates, or remove all metadata (XMP and custom keys too) before sharing it.',
+        toolIds: ['pdf-metadata'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

@@ -520,6 +520,12 @@ export const it = {
   'seo.sign.title': 'Firma PDF online gratis, senza caricare il file | rrstudio tools',
   'seo.sign.desc':
     'Firma un PDF online: disegna la firma con mouse o dito, digitala o caricala da un\'immagine, posizionala su più pagine con la data. Il file resta nel tuo browser. Firma grafica, non digitale.',
+  'tool.pm.title': 'Metadati PDF: guarda, modifica, rimuovi',
+  'tool.pm.desc':
+    'Guarda e modifica titolo, autore e date di un PDF oppure togli tutti i metadati (anche XMP) prima di condividerlo.',
+  'seo.pm.title': 'Metadati PDF online: modifica o rimuovi | rrstudio tools',
+  'seo.pm.desc':
+    'Guarda, modifica e rimuovi i metadati di un PDF online: titolo, autore, parole chiave, programma di creazione, date e XMP. Il file non viene caricato.',
   'tool.crop.title': 'Ritaglia e ruota immagini',
   'tool.crop.desc':
     'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',

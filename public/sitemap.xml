@@ -1022,6 +1022,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-sign"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/pdf-metadata</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-metadata"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-metadata"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-metadata"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/pdf-metadata</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/pdf-metadata"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/pdf-metadata"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/pdf-metadata"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/image-crop</loc>
     <lastmod>2026-11-17</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/image-crop"/>

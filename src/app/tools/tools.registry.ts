@@ -1125,6 +1125,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-sign/pdf-sign.page').then((m) => m.PdfSignPage),
   },
   {
+    id: 'pdf-metadata',
+    path: 'pdf-metadata',
+    icon: 'file',
+    category: 'media',
+    keywords: {
+      it: 'pdf metadati metadata autore titolo proprietà rimuovi privacy xmp info documento',
+      en: 'pdf metadata author title properties remove privacy xmp info document',
+    },
+    titleKey: 'tool.pm.title',
+    descriptionKey: 'tool.pm.desc',
+    seo: { titleKey: 'seo.pm.title', descriptionKey: 'seo.pm.desc' },
+    loadComponent: () => import('./pdf-metadata/pdf-metadata.page').then((m) => m.PdfMetadataPage),
+  },
+  {
     id: 'image-crop',
     path: 'image-crop',
     icon: 'crop',

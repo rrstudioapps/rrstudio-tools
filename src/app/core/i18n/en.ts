@@ -521,6 +521,12 @@ export const en: Dict = {
   'seo.sign.title': 'Sign a PDF online for free, without uploading it | rrstudio tools',
   'seo.sign.desc':
     'Sign a PDF online: draw your signature with a mouse or finger, type it or upload it from an image, place it on several pages with the date. The file stays in your browser. Graphic signature, not digital.',
+  'tool.pm.title': 'PDF metadata: view, edit, remove',
+  'tool.pm.desc':
+    'View and edit a PDF\'s title, author and dates or remove all metadata (XMP too) before sharing it.',
+  'seo.pm.title': 'Edit or remove PDF metadata online | rrstudio tools',
+  'seo.pm.desc':
+    'View, edit and remove a PDF\'s metadata online: title, author, keywords, creating program, dates and XMP. The file is not uploaded.',
   'tool.crop.title': 'Crop and rotate images',
   'tool.crop.desc':
     'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',

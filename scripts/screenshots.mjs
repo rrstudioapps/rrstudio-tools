@@ -1979,6 +1979,33 @@ try {
       for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
       return btoa(s);
     });
+  // Strumenti PDF a un solo file (blocco comune: PdfSource); ogni caso carica un PDF di prova e controlla il file scaricato
+  const loadPdfIn = async (page, buffer, name = 'documento.pdf') => {
+    await page.setInputFiles('app-file-drop input[type=file]', [{ name, mimeType: 'application/pdf', buffer }]);
+    await page.waitForSelector('[data-testid=pdf-info]');
+  };
+  await shot('pdf-metadata.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-metadata/',
+    setup: async (page) => {
+      await loadPdfIn(page, await makePdf('Contratto di esempio', 'Contratto', [[0.18, 0.43, 0.62]], 2));
+      need((await page.inputValue('#pm-title')) === 'Contratto di esempio', 'titolo non letto');
+      await page.fill('#pm-author', 'Mario Rossi');
+      await page.fill('#pm-created', 'ieri');
+      await page.getByTestId('pm-save').click();
+      await page.getByTestId('pm-error').waitFor();
+      await page.fill('#pm-created', '2026-01-02T03:04:05Z');
+      const saved = await downloadBuffer(page, () => page.getByTestId('pm-save').click());
+      const d1 = await PDFDocument.load(saved.buffer, { updateMetadata: false });
+      need(d1.getAuthor() === 'Mario Rossi' && d1.getTitle() === 'Contratto di esempio', 'metadati non scritti');
+      need(d1.getCreationDate()?.toISOString() === '2026-01-02T03:04:05.000Z', 'data non scritta');
+      const wiped = await downloadBuffer(page, () => page.getByTestId('pm-wipe').click());
+      const d2 = await PDFDocument.load(wiped.buffer, { updateMetadata: false });
+      need(!d2.getTitle() && !d2.getAuthor() && d2.getPageCount() === 2, 'metadati non rimossi');
+      await page.waitForSelector('[data-testid=pm-done]');
+    },
+  });
   await shot('pdf-sign.png', {
     width: 1280,
     dark: false,

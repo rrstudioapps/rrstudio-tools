@@ -1,0 +1,49 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.pm.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('pm.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-pdf-source toolId="pdf-metadata" (loaded)="onLoaded($event)" (cleared)="onCleared()">
+    @if (pdf(); as p) {
+      <section class="panel" [attr.aria-label]="i18n.t('pm.fields')">
+        <h2 class="eyebrow">{{ i18n.t('pm.fields') }}</h2>
+        <div class="form">
+          @for (f of textFields; track f) {
+            <label class="fld" [for]="'pm-' + f">
+              <span>{{ i18n.t('pm.f.' + f) }}</span>
+              <input [id]="'pm-' + f" type="text" autocomplete="off" spellcheck="false" [value]="meta()[f]" (input)="setField(f, $event)" />
+            </label>
+          }
+          @for (f of dateFields; track f) {
+            <label class="fld" [for]="'pm-' + f">
+              <span>{{ i18n.t('pm.f.' + f) }}</span>
+              <input [id]="'pm-' + f" type="text" class="mono" autocomplete="off" spellcheck="false" placeholder="2026-11-19T10:00:00Z" [value]="meta()[f]" [attr.aria-invalid]="badDate() === f ? 'true' : null" (input)="setField(f, $event)" />
+            </label>
+          }
+        </div>
+        @if (hasXmp()) {
+          <label class="check"><input type="checkbox" [checked]="removeXmp()" (change)="removeXmp.set($any($event.target).checked)" /> {{ i18n.t('pm.xmp') }}</label>
+        }
+        @if (customKeys().length) {
+          <label class="check"><input type="checkbox" [checked]="removeCustom()" (change)="removeCustom.set($any($event.target).checked)" /> {{ i18n.t('pm.custom', { keys: customKeys().join(', ') }) }}</label>
+        }
+        <div class="row">
+          <button type="button" class="btn primary" data-testid="pm-save" [disabled]="busy()" (click)="save(false)"><app-icon name="download" /> {{ i18n.t('pm.save') }}</button>
+          <button type="button" class="btn" data-testid="pm-wipe" [disabled]="busy()" (click)="save(true)"><app-icon name="trash" /> {{ i18n.t('pm.wipe') }}</button>
+          <button type="button" class="btn" [disabled]="busy()" (click)="restore()"><app-icon name="rotateCcw" /> {{ i18n.t('pm.restore') }}</button>
+        </div>
+      </section>
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (dateError()) {
+        <p class="tool-error" role="alert" data-testid="pm-error">{{ i18n.t('pm.err.date', { field: i18n.t('pm.f.' + dateError()) }) }}</p>
+      } @else if (done()) {
+        <p class="tool-ok" data-testid="pm-done">{{ done() }}</p>
+      }
+    </div>
+  </app-pdf-source>
+</div>
