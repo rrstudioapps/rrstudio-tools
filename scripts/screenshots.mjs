@@ -373,6 +373,38 @@ try {
       await page.waitForSelector('.tool-ok');
     },
   });
+  // Visualizzatore HTML/DOM: albero, query CSS e XPath, nodo scelto con i suoi percorsi
+  await shot('html-dom-viewer.png', {
+    width: 1280,
+    dark: false,
+    path: '/html-dom-viewer/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('[data-testid=hd-stats]');
+      if (!(await page.locator('[role=tree]').innerText()).includes('article')) throw new Error('html-dom: albero senza article');
+      await page.fill('#hd-q', 'article.post h2');
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => document.querySelector('[data-testid=hd-q-count]')?.textContent?.includes('2 nodi'));
+      await page.locator('.xp-item', { hasText: 'h2' }).nth(1).click();
+      await page.waitForSelector('[data-testid=hd-html]');
+      if (!(await page.locator('[data-testid=hd-html]').innerText()).includes('Secondo')) throw new Error('html-dom: nodo scelto inatteso');
+      const panel = await page.locator('section.panel').innerText();
+      if (!panel.includes('/html/body/main/article[2]/h2') || !panel.includes('article:nth-of-type(2) > h2')) throw new Error('html-dom: percorsi ' + panel.slice(0, 300));
+      await page.getByRole('button', { name: 'XPath', exact: true }).click();
+      await page.fill('#hd-q', 'count(//li)');
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => document.querySelector('.xp-value code')?.textContent === '3');
+      await page.fill('#hd-q', '//li[');
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => document.querySelector('[data-testid=hd-q-count]')?.textContent?.includes('non valida'));
+      await page.fill('#hd-q', '//a[@class="on"]/@href');
+      await page.keyboard.press('Enter');
+      await page.locator('.xp-item', { hasText: '@href' }).waitFor();
+      await page.locator('[role=tree]').focus();
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(200);
+    },
+  });
   // Validatore XSD: esempio con più problemi
   await shot('xsd-validator.png', {
     width: 1280,

@@ -79,7 +79,7 @@ describe('badge «Nuovo»', () => {
     expect(newToolIds('2026-11-18', 30, []).size).toBe(0);
   });
   it('dati reali: oggi ha il badge gli strumenti dell\'ultima versione, il 19/11', () => {
-    expect([...newToolIds('2026-11-19')]).toEqual(['xml-viewer', 'xml-diff', 'xml-to-csv', 'xsd-validator', 'xml-json-converter']);
+    expect([...newToolIds('2026-11-19')]).toEqual(['xml-viewer', 'xml-diff', 'xml-to-csv', 'xsd-validator', 'xml-json-converter', 'html-dom-viewer']);
     expect(newToolIds('2026-11-18').size).toBe(0); // la versione è più recente di «oggi»
   });
   it('tetto ai badge: i più recenti, nell\'ordine delle voci', () => {

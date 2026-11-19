@@ -1,0 +1,145 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.hd.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('hd.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="html-dom-viewer" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <button type="button" class="btn small" (click)="loadSample()"><app-icon name="braces" /> {{ i18n.t('hd.sample') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('common.clear') }}</button>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" [disabled]="!doc()" (click)="expandAll()">{{ i18n.t('hd.expand') }}</button>
+    <button type="button" class="btn small" [disabled]="!doc()" (click)="collapseAll()">{{ i18n.t('hd.collapse') }}</button>
+  </div>
+
+  <app-file-drop [hint]="i18n.t('hd.drop')" accept=".html,.htm,.xhtml,text/html,text/plain" (fileSelected)="onFile($event)">
+    <app-io-panel [label]="i18n.t('hd.in')" inputId="hd-in">
+      <textarea id="hd-in" class="io-textarea input-box" wrap="off" spellcheck="false" autocomplete="off" autocapitalize="off" [placeholder]="i18n.t('hd.ph')" [value]="text()" (input)="onInput($event)"></textarea>
+    </app-io-panel>
+  </app-file-drop>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (fileErrorText()) {
+      <p class="tool-error">{{ fileErrorText() }}</p>
+    } @else if (statusText()) {
+      <p class="tool-ok" data-testid="hd-stats">{{ statusText() }}</p>
+    }
+  </div>
+
+  @if (doc()) {
+    <div class="search">
+      <app-segmented [label]="i18n.t('hd.q.mode')" [options]="modes()" [value]="mode()" (valueChange)="setMode($event)" />
+      <label class="visually-hidden" for="hd-q">{{ i18n.t('hd.q.label') }}</label>
+      <input id="hd-q" type="text" class="mono" autocomplete="off" spellcheck="false" [placeholder]="i18n.t('hd.q.ph.' + mode())" [value]="query()" (input)="onQuery($event)" (keydown)="onQueryKey($event)" />
+      <button type="button" class="btn small" (click)="runQ()">{{ i18n.t('hd.q.run') }}</button>
+      <span class="search-count" role="status" aria-live="polite" data-testid="hd-q-count">{{ queryText() }}</span>
+    </div>
+    @if (result(); as r) {
+      @if (r.ok && r.kind === 'value') {
+        <p class="xp-value"><span class="chip">{{ i18n.t('hd.q.value') }}</span> <code>{{ r.value }}</code></p>
+      } @else if (r.ok && r.kind === 'nodes' && r.hits.length) {
+        <ul class="xp-list" [attr.aria-label]="i18n.t('hd.q.results')">
+          @for (h of r.hits; track $index) {
+            <li><button type="button" class="xp-item" (click)="goHit(h)">{{ h.label }}</button></li>
+          }
+        </ul>
+        @if (r.total > r.hits.length) {
+          <p class="hint">{{ i18n.t('hd.q.more', { n: maxResults, total: r.total }) }}</p>
+        }
+      }
+    }
+
+    <div class="split">
+      <div class="tree" role="tree" tabindex="0" [attr.aria-label]="i18n.t('hd.tree.label')" [attr.aria-activedescendant]="cursorId() === null ? null : 'dv-row-' + cursorId()" (keydown)="onTreeKey($event)">
+        @for (r of rows(); track r.id) {
+          <div
+            class="row"
+            role="treeitem"
+            [id]="'dv-row-' + r.id"
+            [class.sel]="r.id === cursorId()"
+            [attr.aria-level]="r.depth + 1"
+            [attr.aria-expanded]="r.hasChildren ? r.open : null"
+            [attr.aria-selected]="r.id === cursorId()"
+            [style.padding-left.px]="8 + r.depth * 16"
+            (click)="onRowClick(r)"
+          >
+            <span class="caret" [class.open]="r.open" [class.leaf]="!r.hasChildren" aria-hidden="true" (click)="onCaret(r, $event)"></span>
+            @switch (r.kind) {
+              @case ('el') {
+                <span class="tag">{{ r.label }}</span>
+                @if (attrsText(r)) {
+                  <span class="attrs">{{ attrsText(r) }}</span>
+                }
+              }
+              @case ('text') {
+                <span class="txt">{{ r.label }}</span>
+              }
+              @default {
+                <span class="cmt">{{ commentText(r) }}</span>
+              }
+            }
+          </div>
+        }
+        @if (flat().truncated) {
+          <p class="more">{{ i18n.t('hd.truncated', { n: maxRows }) }}</p>
+        }
+      </div>
+
+      @if (nodeInfo(); as n) {
+        <section class="panel" [attr.aria-label]="i18n.t('hd.node')">
+          <dl class="facts">
+            <div class="fact"><dt>{{ i18n.t('hd.f.kind') }}</dt><dd>{{ n.kind }}@if (n.name) { · {{ n.name }} }</dd></div>
+            <div class="fact">
+              <dt>{{ i18n.t('hd.xpath') }}</dt>
+              <dd><code>{{ n.xpath }}</code> <app-copy-button [text]="n.xpath" /></dd>
+            </div>
+            @if (n.css) {
+              <div class="fact">
+                <dt>{{ i18n.t('hd.css') }}</dt>
+                <dd><code>{{ n.css }}</code> <app-copy-button [text]="n.css" /></dd>
+              </div>
+              <div class="fact"><dt>{{ i18n.t('hd.f.children') }}</dt><dd>{{ n.children }}</dd></div>
+            }
+            @if (n.text) {
+              <div class="fact top"><dt>{{ i18n.t('hd.f.text') }}</dt><dd>{{ n.text }}</dd></div>
+            }
+          </dl>
+          @if (n.attrs.length) {
+            <h2 class="eyebrow">{{ i18n.t('hd.f.attrs') }}</h2>
+            <dl class="facts">
+              @for (a of n.attrs; track a.name) {
+                <div class="fact"><dt>{{ a.name }}</dt><dd>{{ a.value }}</dd></div>
+              }
+            </dl>
+          }
+          <h2 class="eyebrow">{{ i18n.t('hd.f.html') }}</h2>
+          <pre class="pre-box" data-testid="hd-html">{{ n.html }}</pre>
+          <div class="actions-row">
+            <app-copy-button [text]="n.html" />
+            <app-send-to from="html-dom-viewer" kind="text" [text]="n.html" />
+          </div>
+        </section>
+      }
+    </div>
+  }
+
+  <section class="tool-info">
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('hd.info.what.title') }}</h2>
+      <p>{{ i18n.t('hd.info.what.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('hd.info.safe.title') }}</h2>
+      <p>{{ i18n.t('hd.info.safe.desc') }}</p>
+    </div>
+    <div>
+      <h2 class="eyebrow">{{ i18n.t('hd.info.priv.title') }}</h2>
+      <p>{{ i18n.t('hd.info.priv.desc') }}</p>
+    </div>
+  </section>
+</div>

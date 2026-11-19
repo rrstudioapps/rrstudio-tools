@@ -58,6 +58,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['xml-json-converter'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Visualizzatore HTML e DOM»: la pagina come albero DOM, query con selettori CSS e XPath, percorso XPath e CSS di ogni nodo; nessuno script viene eseguito.',
+        en: 'New tool "HTML and DOM viewer": the page as a DOM tree, queries with CSS selectors and XPath, XPath and CSS path of each node; no script is run.',
+        toolIds: ['html-dom-viewer'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

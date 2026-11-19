@@ -603,6 +603,12 @@ export const it = {
   'seo.xj.title': 'Convertitore XML JSON online, nei due sensi | rrstudio tools',
   'seo.xj.desc':
     'Converti XML in JSON e JSON in XML online: attributi, array e tipi configurabili, errori con riga e colonna, nessun dato inviato a un server.',
+  'tool.hd.title': 'Visualizzatore HTML e DOM',
+  'tool.hd.desc':
+    'Guarda una pagina HTML come albero DOM, cerca con selettori CSS o XPath e copia il percorso di ogni elemento, nel browser.',
+  'seo.hd.title': 'Visualizzatore HTML e DOM online con query CSS e XPath | rrstudio tools',
+  'seo.hd.desc':
+    'Visualizza un documento HTML come albero DOM online: query con selettori CSS e XPath, percorso di ogni nodo, nessuno script eseguito e nessun dato inviato.',
   'tool.xsd.title': 'Validatore XSD',
   'tool.xsd.desc':
     'Controlla un XML con uno schema XSD: tipi, faccette, ordine e numero degli elementi, attributi obbligatori e ID, con il percorso XPath di ogni problema.',

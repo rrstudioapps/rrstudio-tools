@@ -506,6 +506,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/xml-json-converter"/>
   </url>
   <url>
+    <loc>https://tools.rr-dev.eu/html-dom-viewer</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/html-dom-viewer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/html-dom-viewer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/html-dom-viewer"/>
+  </url>
+  <url>
+    <loc>https://tools.rr-dev.eu/en/html-dom-viewer</loc>
+    <lastmod>2026-11-19</lastmod>
+    <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/html-dom-viewer"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tools.rr-dev.eu/en/html-dom-viewer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tools.rr-dev.eu/en/html-dom-viewer"/>
+  </url>
+  <url>
     <loc>https://tools.rr-dev.eu/xsd-validator</loc>
     <lastmod>2026-11-19</lastmod>
     <xhtml:link rel="alternate" hreflang="it" href="https://tools.rr-dev.eu/xsd-validator"/>

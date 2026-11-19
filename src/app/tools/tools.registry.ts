@@ -529,6 +529,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./xml-json-converter/xml-json-converter.page').then((m) => m.XmlJsonConverterPage),
   },
   {
+    id: 'html-dom-viewer',
+    path: 'html-dom-viewer',
+    icon: 'tree',
+    category: 'dev',
+    keywords: {
+      it: 'html dom albero visualizzatore ispeziona selettore css xpath query nodo elemento pagina sorgente',
+      en: 'html dom tree viewer inspect selector css xpath query node element page source',
+    },
+    titleKey: 'tool.hd.title',
+    descriptionKey: 'tool.hd.desc',
+    seo: { titleKey: 'seo.hd.title', descriptionKey: 'seo.hd.desc' },
+    loadComponent: () => import('./html-dom-viewer/html-dom-viewer.page').then((m) => m.HtmlDomViewerPage),
+  },
+  {
     id: 'xsd-validator',
     path: 'xsd-validator',
     icon: 'shield',

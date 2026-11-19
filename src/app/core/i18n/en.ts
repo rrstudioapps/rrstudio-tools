@@ -604,6 +604,12 @@ export const en: Dict = {
   'seo.xj.title': 'XML JSON converter online, both ways | rrstudio tools',
   'seo.xj.desc':
     'Convert XML to JSON and JSON to XML online: configurable attributes, arrays and types, errors with line and column, no data sent to a server.',
+  'tool.hd.title': 'HTML and DOM viewer',
+  'tool.hd.desc':
+    'See an HTML page as a DOM tree, search with CSS selectors or XPath and copy the path of each element, in the browser.',
+  'seo.hd.title': 'HTML and DOM viewer online with CSS and XPath queries | rrstudio tools',
+  'seo.hd.desc':
+    'View an HTML document as a DOM tree online: CSS selector and XPath queries, path of each node, no script run and no data sent.',
   'tool.xsd.title': 'XSD validator',
   'tool.xsd.desc':
     'Check an XML against an XSD schema: types, facets, element order and count, required attributes and IDs, with the XPath of every problem.',
