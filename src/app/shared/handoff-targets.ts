@@ -49,6 +49,7 @@ export const HANDOFF_ACCEPTS: Readonly<Record<string, readonly HandoffKind[]>> =
   'pdf-tools': ['files'],
   'pdf-sign': ['files'],
   'pdf-metadata': ['files'],
+  'pdf-page-text': ['files'],
   'pdf-to-images': ['files'],
   'pdf-to-text': ['files'],
   'url-encode': ['text'],

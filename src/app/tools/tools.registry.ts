@@ -1139,6 +1139,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./pdf-metadata/pdf-metadata.page').then((m) => m.PdfMetadataPage),
   },
   {
+    id: 'pdf-page-text',
+    path: 'pdf-page-text',
+    icon: 'file',
+    category: 'media',
+    keywords: {
+      it: 'pdf numeri di pagina numerazione intestazione piè di pagina footer header paginazione stampa',
+      en: 'pdf page numbers numbering header footer pagination stamp text',
+    },
+    titleKey: 'tool.pt.title',
+    descriptionKey: 'tool.pt.desc',
+    seo: { titleKey: 'seo.pt.title', descriptionKey: 'seo.pt.desc' },
+    loadComponent: () => import('./pdf-page-text/pdf-page-text.page').then((m) => m.PdfPageTextPage),
+  },
+  {
     id: 'image-crop',
     path: 'image-crop',
     icon: 'crop',

@@ -94,6 +94,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['pdf-metadata'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Numeri di pagina e intestazioni PDF»: scrivi numero, totale, data o testo in alto e in basso su ogni pagina, con anteprima, scelta delle pagine, copertina saltata e pagine ruotate.',
+        en: 'New tool "PDF page numbers, headers and footers": write the number, total, date or text at the top and bottom of every page, with preview, page selection, a skipped cover and rotated pages.',
+        toolIds: ['pdf-page-text'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

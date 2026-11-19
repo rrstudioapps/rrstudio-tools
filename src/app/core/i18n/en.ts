@@ -527,6 +527,12 @@ export const en: Dict = {
   'seo.pm.title': 'Edit or remove PDF metadata online | rrstudio tools',
   'seo.pm.desc':
     'View, edit and remove a PDF\'s metadata online: title, author, keywords, creating program, dates and XMP. The file is not uploaded.',
+  'tool.pt.title': 'PDF page numbers, headers and footers',
+  'tool.pt.desc':
+    'Add page numbers, a header and a footer to a PDF, with preview, page selection and rotated pages.',
+  'seo.pt.title': 'Add page numbers and headers to a PDF online | rrstudio tools',
+  'seo.pt.desc':
+    'Add page numbers, a header and a footer to a PDF online: left, centre, right, placeholders, preview. The file is not uploaded.',
   'tool.crop.title': 'Crop and rotate images',
   'tool.crop.desc':
     'Crop a photo with fixed aspect ratios (including 35×45 ID photo), rotate, flip, resize and export as PNG, JPEG or WebP, without uploading anything.',

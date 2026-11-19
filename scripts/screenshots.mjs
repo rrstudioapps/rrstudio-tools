@@ -8,7 +8,7 @@ import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { PDFDocument, PDFName, StandardFonts, decodePDFRawStream, rgb } from 'pdf-lib';
+import { PDFDocument, PDFName, StandardFonts, decodePDFRawStream, rgb, PDFRawStream } from 'pdf-lib';
 
 const HOST = process.env.HOST ?? '127.0.0.1';
 const PORT = 4377;
@@ -2004,6 +2004,42 @@ try {
       const d2 = await PDFDocument.load(wiped.buffer, { updateMetadata: false });
       need(!d2.getTitle() && !d2.getAuthor() && d2.getPageCount() === 2, 'metadati non rimossi');
       await page.waitForSelector('[data-testid=pm-done]');
+    },
+  });
+  // testo (in chiaro) scritto nelle pagine di un PDF creato da pdf-lib: i flussi sono compressi e le stringhe in esadecimale
+  const pageTexts = async (buffer) => {
+    const doc = await PDFDocument.load(buffer);
+    return doc.getPages().map((pg) => {
+      const c = pg.node.Contents();
+      const refs = c?.asArray?.() ?? (c ? [c] : []);
+      return refs
+        .map((r) => doc.context.lookup(r))
+        .filter((st) => st instanceof PDFRawStream)
+        .map((st) => Buffer.from(decodePDFRawStream(st).decode()).toString('latin1'))
+        .join('\n')
+        .replace(/<([0-9A-F]+)> Tj/g, (_, h) => '(' + Buffer.from(h, 'hex').toString('latin1') + ') Tj');
+    });
+  };
+  await shot('pdf-page-text.png', {
+    width: 1280,
+    dark: false,
+    path: '/pdf-page-text/',
+    setup: async (page) => {
+      await loadPdfIn(page, await makePdf('Relazione di esempio', 'Relazione', [[0.18, 0.43, 0.62], [0.7, 0.33, 0.16]], 3));
+      await page.getByTestId('pt-preset-nm').click();
+      await page.fill('#pt-header-left', '{name}');
+      await page.fill('#pt-pages', '9');
+      await page.getByTestId('pt-go').click();
+      await page.getByTestId('pt-error').waitFor();
+      await page.fill('#pt-pages', '');
+      await page.check('text=Salta la prima pagina (copertina)');
+      const out = await downloadBuffer(page, () => page.getByTestId('pt-go').click());
+      const t = await pageTexts(out.buffer);
+      need(t.length === 3, 'pagine');
+      need(!t[0].includes('(1 / 3) Tj') && t[1].includes('(2 / 3) Tj') && t[2].includes('(3 / 3) Tj'), 'numeri di pagina: ' + t.map((x) => x.length));
+      need(t[1].includes('(documento.pdf) Tj'), 'nome del file nell\'intestazione');
+      await page.getByTestId('pt-preview').click();
+      await page.getByTestId('pt-preview-img').waitFor();
     },
   });
   await shot('pdf-sign.png', {

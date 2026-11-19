@@ -1,0 +1,70 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.pt.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('pt.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-pdf-source toolId="pdf-page-text" (loaded)="onLoaded($event)" (cleared)="onCleared()">
+    @if (pdf(); as p) {
+      <section class="panel" [attr.aria-label]="i18n.t('pt.text')">
+        <h2 class="eyebrow">{{ i18n.t('pt.text') }}</h2>
+        <p class="hint">{{ i18n.t('pt.tokens') }}</p>
+        <div class="row">
+          <button type="button" class="btn small" data-testid="pt-preset-nm" (click)="preset('nm')">{{ i18n.t('pt.preset.nm') }}</button>
+          <button type="button" class="btn small" (click)="preset('n')">{{ i18n.t('pt.preset.n') }}</button>
+          <button type="button" class="btn small" (click)="preset('page')">{{ i18n.t('pt.preset.page') }}</button>
+          <button type="button" class="btn small" (click)="preset('head')">{{ i18n.t('pt.preset.head') }}</button>
+          <button type="button" class="btn small" (click)="preset('none')">{{ i18n.t('pt.preset.none') }}</button>
+        </div>
+        @for (row of rows; track row) {
+          <h3 class="eyebrow">{{ i18n.t('pt.' + row) }}</h3>
+          <div class="slots">
+            @for (pos of positions; track pos) {
+              <label class="fld" [for]="'pt-' + row + '-' + pos">
+                <span>{{ i18n.t('pt.pos.' + pos) }}</span>
+                <input [id]="'pt-' + row + '-' + pos" type="text" autocomplete="off" spellcheck="false" [value]="slot(row, pos)" (input)="setSlot(row, pos, $event)" />
+              </label>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="panel" [attr.aria-label]="i18n.t('pt.look')">
+        <h2 class="eyebrow">{{ i18n.t('pt.look') }}</h2>
+        <div class="opts">
+          <label class="fld" for="pt-font">
+            <span>{{ i18n.t('pt.font') }}</span>
+            <select id="pt-font" (change)="font.set($any($event.target).value)">
+              @for (f of fonts; track f) {
+                <option [value]="f" [selected]="font() === f">{{ f === 'TimesRoman' ? 'Times' : f }}</option>
+              }
+            </select>
+          </label>
+          <label class="fld" for="pt-size"><span>{{ i18n.t('pt.size') }}</span><input id="pt-size" type="number" min="4" max="72" [value]="size()" (input)="size.set(+$any($event.target).value)" /></label>
+          <label class="fld" for="pt-color"><span>{{ i18n.t('pt.color') }}</span><input id="pt-color" type="color" [value]="color()" (input)="color.set($any($event.target).value)" /></label>
+          <label class="fld" for="pt-margin"><span>{{ i18n.t('pt.margin') }}</span><input id="pt-margin" type="number" min="0" max="200" [value]="margin()" (input)="margin.set(+$any($event.target).value)" /></label>
+          <label class="fld" for="pt-start"><span>{{ i18n.t('pt.start') }}</span><input id="pt-start" type="number" min="0" max="99999" [value]="startAt()" (input)="startAt.set(+$any($event.target).value)" /></label>
+          <label class="fld" for="pt-pages"><span>{{ i18n.t('pt.pages') }}</span><input id="pt-pages" type="text" class="pages" autocomplete="off" spellcheck="false" [placeholder]="i18n.t('pt.pages.ph', { n: p.pages })" [value]="pages()" (input)="pages.set($any($event.target).value)" /></label>
+          <label class="check"><input type="checkbox" [checked]="skipFirst()" (change)="skipFirst.set($any($event.target).checked)" /> {{ i18n.t('pt.skip') }}</label>
+        </div>
+        <div class="row">
+          <button type="button" class="btn" data-testid="pt-preview" [disabled]="busy()" (click)="makePreview()"><app-icon name="eye" /> {{ i18n.t('pt.preview') }}</button>
+          <button type="button" class="btn primary" data-testid="pt-go" [disabled]="busy()" (click)="go()"><app-icon name="download" /> {{ i18n.t('pc.download') }}</button>
+        </div>
+        @if (previewUrl(); as u) {
+          <figure class="preview"><img [src]="u" [alt]="i18n.t('pt.preview.alt')" data-testid="pt-preview-img" /></figure>
+        }
+      </section>
+    }
+    <div class="tool-status" role="status" aria-live="polite">
+      @if (error()) {
+        <p class="tool-error" role="alert" data-testid="pt-error">{{ error() }}</p>
+      } @else if (done()) {
+        <p class="tool-ok" data-testid="pt-done">{{ done() }}</p>
+      }
+    </div>
+  </app-pdf-source>
+</div>

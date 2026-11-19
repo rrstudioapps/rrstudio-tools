@@ -526,6 +526,12 @@ export const it = {
   'seo.pm.title': 'Metadati PDF online: modifica o rimuovi | rrstudio tools',
   'seo.pm.desc':
     'Guarda, modifica e rimuovi i metadati di un PDF online: titolo, autore, parole chiave, programma di creazione, date e XMP. Il file non viene caricato.',
+  'tool.pt.title': 'Numeri di pagina e intestazioni PDF',
+  'tool.pt.desc':
+    'Aggiungi numeri di pagina, intestazione e piè di pagina a un PDF, con anteprima, scelta delle pagine e pagine ruotate.',
+  'seo.pt.title': 'Numeri di pagina e intestazioni PDF online | rrstudio tools',
+  'seo.pt.desc':
+    'Aggiungi numeri di pagina, intestazione e piè di pagina a un PDF online: sinistra, centro, destra, segnaposto, anteprima. Il file non viene caricato.',
   'tool.crop.title': 'Ritaglia e ruota immagini',
   'tool.crop.desc':
     'Ritaglia una foto con proporzioni fisse (anche tessera 35×45), ruota, rifletti, ridimensiona ed esporta in PNG, JPEG o WebP, senza caricare nulla.',
