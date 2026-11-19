@@ -76,6 +76,12 @@ export const CHANGELOG: readonly ChangelogVersion[] = [
         toolIds: ['yaml-csv-diff'],
       },
       {
+        kind: 'new-tool',
+        it: 'Nuovo strumento «Convertitore JSON Schema ↔ XSD»: converte nei due sensi elementi, attributi, tipi, restrizioni e occorrenze; ciò che non ha un equivalente è elencato negli avvisi con la sua posizione.',
+        en: 'New tool "JSON Schema ↔ XSD converter": converts elements, attributes, types, restrictions and occurrences both ways; anything with no equivalent is listed in the warnings with its location.',
+        toolIds: ['json-schema-xsd'],
+      },
+      {
         kind: 'improvement',
         it: 'Il menu «Invia a…» ha un campo per filtrare gli strumenti quando l\'elenco è lungo: scrivi una parte del nome e premi Invio per inviare al primo risultato.',
         en: 'The "Send to…" menu has a field to filter tools when the list is long: type part of the name and press Enter to send to the first result.',

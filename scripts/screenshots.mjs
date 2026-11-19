@@ -451,6 +451,25 @@ try {
       await page.waitForSelector('[data-testid=yc-summary]');
     },
   });
+  // JSON Schema ↔ XSD: esempio con avviso, inversione e ritorno
+  await shot('json-schema-xsd.png', {
+    width: 1280,
+    dark: false,
+    path: '/json-schema-xsd/',
+    setup: async (page) => {
+      await page.getByRole('button', { name: 'Esempio' }).click();
+      await page.waitForSelector('[data-testid=sx-ok]');
+      const xsd = await page.locator('[data-testid=sx-out]').inputValue();
+      if (!xsd.includes('<xs:element name="ordine">') || !xsd.includes('maxOccurs="unbounded"')) throw new Error('json-schema-xsd: XSD inatteso ' + xsd.slice(0, 200));
+      if (!(await page.locator('[data-testid=sx-warnings]').innerText()).includes('uniqueItems')) throw new Error('json-schema-xsd: manca l\'avviso uniqueItems');
+      await page.getByRole('button', { name: 'Inverti' }).click();
+      await page.waitForFunction(() => document.querySelector('[data-testid=sx-out]')?.value.includes('"$schema"'));
+      const js = await page.locator('[data-testid=sx-out]').inputValue();
+      if (!js.includes('"@n"') || !js.includes('"ordine"')) throw new Error('json-schema-xsd: JSON Schema inatteso');
+      await page.fill('#sx-in', '<a/>');
+      await page.waitForSelector('[data-testid=sx-error]');
+    },
+  });
   // Validatore XSD: esempio con più problemi
   await shot('xsd-validator.png', {
     width: 1280,

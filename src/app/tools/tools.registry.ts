@@ -571,6 +571,20 @@ export const TOOLS: readonly ToolDefinition[] = [
     loadComponent: () => import('./yaml-csv-diff/yaml-csv-diff.page').then((m) => m.YamlCsvDiffPage),
   },
   {
+    id: 'json-schema-xsd',
+    path: 'json-schema-xsd',
+    icon: 'swap',
+    category: 'data',
+    keywords: {
+      it: 'json schema xsd xml schema converti convertitore conversione tipi restrizioni validazione',
+      en: 'json schema xsd xml schema convert converter conversion types restrictions validation',
+    },
+    titleKey: 'tool.sx.title',
+    descriptionKey: 'tool.sx.desc',
+    seo: { titleKey: 'seo.sx.title', descriptionKey: 'seo.sx.desc' },
+    loadComponent: () => import('./json-schema-xsd/json-schema-xsd.page').then((m) => m.JsonSchemaXsdPage),
+  },
+  {
     id: 'xsd-validator',
     path: 'xsd-validator',
     icon: 'shield',

@@ -1,0 +1,83 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later · © 2026 rrstudio — rrstudio tools -->
+<div class="container tool-page">
+  <header class="tool-intro">
+    <h1>{{ i18n.t('tool.sx.title') }}</h1>
+    <p class="tool-lead">{{ i18n.t('sx.lead') }}</p>
+  </header>
+
+  <app-privacy-note />
+
+  <app-share-link toolId="json-schema-xsd" [schema]="shareSchema" [state]="shareState" (restored)="restoreShared($event)" />
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('sx.mode')" [options]="modes()" [(value)]="mode" />
+    <button data-shortcut="swap" type="button" class="btn small" [disabled]="output() === ''" (click)="swap()">
+      <app-icon name="swap" /> {{ i18n.t('sx.swap') }}
+    </button>
+    <span class="spacer"></span>
+    <button type="button" class="btn small" (click)="loadSample()"><app-icon name="braces" /> {{ i18n.t('sx.sample') }}</button>
+    <button data-shortcut="clear" type="button" class="btn small" (click)="clear()"><app-icon name="trash" /> {{ i18n.t('common.clear') }}</button>
+  </div>
+
+  <div class="tool-toolbar">
+    <app-segmented [label]="i18n.t('sx.attrPrefix')" [options]="prefixes()" [(value)]="attrPrefix" />
+    @if (mode() === 'j2x') {
+      <label class="root-name">{{ i18n.t('sx.rootName') }}
+        <input type="text" class="input" maxlength="60" autocomplete="off" spellcheck="false" [value]="rootName()" (input)="rootName.set($any($event.target).value)" />
+      </label>
+    }
+    <app-segmented [label]="i18n.t('sx.indent')" [options]="indents()" [(value)]="indent" />
+  </div>
+
+  <app-file-drop [hint]="i18n.t('sx.drop.' + mode())" [accept]="mode() === 'j2x' ? '.json,application/json,text/plain' : '.xsd,.xml,text/xml,application/xml'" (fileSelected)="onFile($event)">
+    <div class="tool-panels">
+      <app-io-panel [label]="mode() === 'j2x' ? 'JSON Schema' : 'XSD'" inputId="sx-in" [meta]="meta(input())">
+        <textarea
+          id="sx-in"
+          class="io-textarea"
+          wrap="off"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          [placeholder]="i18n.t('sx.ph.' + mode())"
+          [attr.aria-invalid]="error() ? 'true' : null"
+          [value]="input()"
+          (input)="onInput($event)"
+        ></textarea>
+      </app-io-panel>
+
+      <app-io-panel [label]="mode() === 'j2x' ? 'XSD' : 'JSON Schema'" inputId="sx-out" [meta]="meta(output())">
+        <span panel-actions>
+          <button data-shortcut="download" type="button" class="btn small" [disabled]="output() === ''" (click)="download()">
+            <app-icon name="download" /> {{ i18n.t('sx.download') }}
+          </button>
+          <app-copy-button shortcut="copy" [text]="output()" [disabled]="output() === ''" />
+          <app-send-to from="json-schema-xsd" [kind]="mode() === 'j2x' ? 'text' : 'json'" [text]="output()" [disabled]="output() === ''" />
+        </span>
+        <textarea id="sx-out" class="io-textarea" readonly wrap="off" spellcheck="false" data-testid="sx-out" [placeholder]="i18n.t('sx.empty')" [value]="output()"></textarea>
+      </app-io-panel>
+    </div>
+  </app-file-drop>
+
+  <div class="tool-status" role="status" aria-live="polite">
+    @if (errorText(); as e) {
+      <p class="tool-error" data-testid="sx-error">{{ e }}</p>
+    } @else if (output() !== '') {
+      <p class="tool-ok" data-testid="sx-ok">{{ warnings().length === 0 ? i18n.t('sx.ok') : i18n.t('sx.okWarn', { n: warnings().length }) }}</p>
+    }
+  </div>
+
+  @if (warnings().length) {
+    <h2 class="eyebrow">{{ i18n.t('sx.warnings') }}</h2>
+    <ul class="warnings" [attr.aria-label]="i18n.t('sx.warnings')" data-testid="sx-warnings">
+      @for (w of warningTexts(); track $index) {
+        <li>
+          <span>{{ w.text }}</span>
+          @if (w.path) {
+            <code>{{ w.path }}</code>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

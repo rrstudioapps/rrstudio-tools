@@ -621,6 +621,12 @@ export const it = {
   'seo.yc.title': 'Confronto di due YAML o due CSV online | rrstudio tools',
   'seo.yc.desc':
     'Confronta due file YAML o CSV online: differenze strutturali con percorso, liste abbinate per chiave, righe CSV abbinate per colonna chiave. Nessun upload.',
+  'tool.sx.title': 'Convertitore JSON Schema ↔ XSD',
+  'tool.sx.desc':
+    'Converti uno schema JSON in XSD e un XSD in JSON Schema; ciò che non ha un equivalente è elencato come avviso.',
+  'seo.sx.title': 'Convertitore JSON Schema e XSD online | rrstudio tools',
+  'seo.sx.desc':
+    'Converti JSON Schema in XSD e XSD in JSON Schema online: elementi, attributi, tipi, restrizioni e occorrenze, con l\'elenco di ciò che non si può convertire. Nessun upload.',
   'tool.xsd.title': 'Validatore XSD',
   'tool.xsd.desc':
     'Controlla un XML con uno schema XSD: tipi, faccette, ordine e numero degli elementi, attributi obbligatori e ID, con il percorso XPath di ogni problema.',

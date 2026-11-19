@@ -622,6 +622,12 @@ export const en: Dict = {
   'seo.yc.title': 'Compare two YAML or CSV files online | rrstudio tools',
   'seo.yc.desc':
     'Compare two YAML or CSV files online: structural differences with path, lists matched by key, CSV rows matched by key column. Nothing is uploaded.',
+  'tool.sx.title': 'JSON Schema ↔ XSD converter',
+  'tool.sx.desc':
+    'Convert a JSON Schema to XSD and an XSD to JSON Schema; anything with no equivalent is listed as a warning.',
+  'seo.sx.title': 'JSON Schema to XSD and XSD to JSON Schema converter | rrstudio tools',
+  'seo.sx.desc':
+    'Convert JSON Schema to XSD and XSD to JSON Schema online: elements, attributes, types, restrictions and occurrences, with a list of what cannot be converted. Nothing is uploaded.',
   'tool.xsd.title': 'XSD validator',
   'tool.xsd.desc':
     'Check an XML against an XSD schema: types, facets, element order and count, required attributes and IDs, with the XPath of every problem.',
