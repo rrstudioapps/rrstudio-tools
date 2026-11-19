@@ -69,7 +69,6 @@ utenti:
   - id: 2
     nome: Anna Verdi
     ruoli: [design]
-note: null
 `,
   toml: `# Configurazione di esempio
 servizio = "api"
