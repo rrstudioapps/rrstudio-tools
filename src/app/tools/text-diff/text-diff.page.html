@@ -75,7 +75,7 @@
         <label class="check"><input data-shortcut="toggle-collapse" type="checkbox" [checked]="collapse()" (change)="collapse.set($any($event.target).checked)" /> {{ i18n.t('diff.collapse') }}</label>
         <label class="check"><input type="checkbox" [checked]="wrap()" (change)="wrap.set($any($event.target).checked)" /> {{ i18n.t('diff.wrap') }}</label>
         @if (groups() > 0) {
-          <span class="tool-ok pos-top">{{ positionText() }}</span>
+          <span class="tool-ok pos-top" data-testid="diff-position">{{ positionText() }}</span>
         }
       </div>
     <div class="summary" aria-live="polite" data-testid="diff-summary" [class.has-nav]="groups() > 0">
@@ -92,7 +92,7 @@
       }
       <span class="spacer"></span>
       @if (groups() > 0) {
-        <span class="tool-ok pos-low" data-testid="diff-position">{{ positionText() }}</span>
+        <span class="tool-ok pos-low">{{ positionText() }}</span>
         <button data-shortcut="prev" type="button" class="btn small" data-testid="diff-prev" [attr.aria-label]="i18n.t('diff.prev.aria')" (click)="go(-1)"><app-icon name="up" /> <span class="lbl">{{ i18n.t('diff.prev') }}</span></button>
         <button data-shortcut="next" type="button" class="btn small" data-testid="diff-next" [attr.aria-label]="i18n.t('diff.next.aria')" (click)="go(1)"><app-icon name="down" /> <span class="lbl">{{ i18n.t('diff.next') }}</span></button>
         <button type="button" class="btn small opts-btn" [attr.aria-expanded]="optsOpen()" (click)="optsOpen.set(!optsOpen())">{{ i18n.t('diff.opts.btn') }}</button>
