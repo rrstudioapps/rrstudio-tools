@@ -1,6 +1,6 @@
 rrstudio tools
 © 2026 rrstudio — https://tools.rr-dev.eu
-Source code: https://github.com/rrstudioapps/rrstudio-tools
+Source code: https://github.com/rrstudioapps/tools
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU Affero General Public License as published by the Free
@@ -18,7 +18,7 @@ Any copy, modified version or network deployment of this program must:
   1. keep this NOTICE file and the copyright headers in the source files;
   2. keep, in the user interface (for example in the footer), a visible
      attribution with the text "Based on rrstudio tools by rrstudio" linking to
-     https://github.com/rrstudioapps/rrstudio-tools;
+     https://github.com/rrstudioapps/tools;
   3. offer the complete corresponding source code of the version in use to its
      users, under the same license (AGPL-3.0, section 13).
 

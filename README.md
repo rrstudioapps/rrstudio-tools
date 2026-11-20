@@ -886,8 +886,8 @@ The site is an installable PWA (`public/manifest.webmanifest`, icons generated b
 Requirements: Node.js 24 and npm.
 
 ```sh
-git clone https://github.com/rrstudioapps/rrstudio-tools.git
-cd rrstudio-tools
+git clone https://github.com/rrstudioapps/tools.git
+cd tools
 npm ci
 npm start                 # dev server on http://localhost:4200
 npm test                  # unit tests (Vitest)
