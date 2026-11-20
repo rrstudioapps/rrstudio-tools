@@ -30,6 +30,12 @@ $ins-strong: color-mix(in srgb, var(--src-2) 34%, transparent);
   align-items: center;
   gap: var(--space-3) var(--space-4);
 }
+.pos-top {
+  margin-left: auto;
+}
+.pos-low {
+  display: none;
+}
 .summary {
   display: flex;
   flex-wrap: wrap;
@@ -210,6 +216,12 @@ mark.chg {
   }
   .opts-btn {
     display: inline-flex;
+  }
+  .pos-low {
+    display: inline;
+  }
+  .pos-top {
+    display: none;
   }
   .lbl {
     display: none;
