@@ -2160,7 +2160,7 @@ try {
       need(zip.buffer.subarray(0, 2).toString() === 'PK' && zip.buffer.includes('.jpg') && zip.buffer.includes('.png'), 'ZIP inatteso');
       await page.getByRole('button', { name: 'Deseleziona' }).click();
       await page.locator('[data-testid=pim-card] input[type=checkbox]').first().check();
-      await page.waitForFunction(() => /Scarica 1 in un ZIP/.test(document.querySelector('[data-testid=pim-zip]')?.textContent ?? ''));
+      await page.waitForFunction(() => document.querySelector('[data-testid=pim-zip]') && !document.querySelector('[data-testid=pim-zip]').disabled); // con una sola immagine scelta il pulsante torna attivo
       // PDF senza immagini
       const empty = await PDFDocument.create();
       empty.addPage();
@@ -2819,13 +2819,14 @@ try {
       await page.goto(base + path);
       await page.waitForTimeout(900);
       await setup(page);
-      const before = JSON.stringify(await snapshot(page));
       must(!(await page.evaluate(() => location.hash)), 'l\'hash cambia prima di premere il pulsante');
       await page.getByRole('button', { name: 'Copia link' }).click();
       await page.waitForFunction(() => location.hash.startsWith('#s='));
       const url = page.url();
       must(url.length <= 8000, 'link troppo lungo: ' + url.length);
       await page.getByRole('button', { name: 'Link copiato' }).waitFor();
+      // lo stato di riferimento si legge ora, quando il link è stato creato e la pagina ha finito di aggiornarsi (in CI la lettura prima del clic poteva essere in ritardo)
+      const before = JSON.stringify(await snapshot(page));
       const page2 = await ctx.newPage();
       watch(page2);
       await page2.goto(url);
